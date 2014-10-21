@@ -31,7 +31,7 @@
  * #L%
  */
 
-package tests.labeling;
+package net.imglib2.labeling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

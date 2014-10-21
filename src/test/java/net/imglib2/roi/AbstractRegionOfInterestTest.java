@@ -31,7 +31,7 @@
  * #L%
  */
 
-package tests.roi;
+package net.imglib2.roi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -58,7 +58,7 @@ import org.junit.Test;
  * TODO
  * 
  */
-public class TestAbstractRegionOfInterest
+public class AbstractRegionOfInterestTest
 {
 	static class RectangleRegionOfInterest extends AbstractIterableRegionOfInterest
 	{

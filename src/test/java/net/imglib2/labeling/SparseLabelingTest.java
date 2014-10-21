@@ -31,7 +31,7 @@
  * #L%
  */
 
-package tests.labeling;
+package net.imglib2.labeling;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -49,6 +49,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.sparse.NtreeImgFactory;
 import net.imglib2.labeling.DefaultROIStrategyFactory;
 import net.imglib2.labeling.Labeling;
 import net.imglib2.labeling.LabelingType;
@@ -60,15 +61,14 @@ import net.imglib2.type.numeric.real.DoubleType;
 import org.junit.Test;
 
 /**
- * TODO
+ * @author Tobias Pietzsch
  * 
- * @author Lee Kamentsky
  */
-public class LabelingTest
+public class SparseLabelingTest
 {
-	protected < T extends Comparable< T >> Labeling< T > makeLabeling( final T exemplar, final long[] dimensions )
+	protected < T extends Comparable< T >> Labeling< T > makeLabeling( final long[] dimensions )
 	{
-		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new NtreeImgFactory< IntType >().create( dimensions, new IntType() ) );
 		return labeling;
 	}
 
@@ -76,7 +76,7 @@ public class LabelingTest
 	{
 		assertTrue( labels.length > 0 );
 		assertEquals( labels.length, coordinates.length );
-		final Labeling< T > labeling = makeLabeling( labels[ 0 ], dimensions );
+		final Labeling< T > labeling = makeLabeling( dimensions );
 		final RandomAccess< LabelingType< T >> a = labeling.randomAccess();
 		for ( int i = 0; i < coordinates.length; i++ )
 		{
@@ -119,7 +119,7 @@ public class LabelingTest
 	public void testDefaultConstructor()
 	{
 		final long[] dimensions = { 5, 6, 7 };
-		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new NtreeImgFactory< IntType >().create( dimensions, new IntType() ) );
 		assertEquals( 3, labeling.numDimensions() );
 	}
 
@@ -127,16 +127,15 @@ public class LabelingTest
 	public void testFactoryConstructor()
 	{
 		final long[] dimensions = { 5, 6, 7 };
-
-		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new DefaultROIStrategyFactory< String >(), new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
-
+		Labeling< String > labeling;
+		labeling = new NativeImgLabeling< String, IntType >( new DefaultROIStrategyFactory< String >(), new NtreeImgFactory< IntType >().create( dimensions, new IntType() ) );
 		assertEquals( 3, labeling.numDimensions() );
 	}
 
 	@Test
 	public void testEmptyImage()
 	{
-		final Labeling< String > labeling = makeLabeling( "Foo", new long[] { 5, 6, 7 } );
+		final Labeling< String > labeling = makeLabeling( new long[] { 5, 6, 7 } );
 		assertTrue( labeling.getLabels().isEmpty() );
 		int iterations = 0;
 		for ( final LabelingType< String > t : labeling )
@@ -285,7 +284,7 @@ public class LabelingTest
 	public void testSphere()
 	{
 		final long[] dimensions = new long[] { 20, 20, 20 };
-		final Labeling< String > labeling = makeLabeling( "MyLabels", dimensions );
+		final Labeling< String > labeling = makeLabeling( dimensions );
 		labelSphere( labeling, "Foo", new double[] { 10, 9, 8 }, 5 );
 		/*
 		 * Test the extents
@@ -340,7 +339,7 @@ public class LabelingTest
 	public void testTwoLabels()
 	{
 		final long[] dimensions = new long[] { 20, 20, 40 };
-		final Labeling< String > labeling = makeLabeling( "MyLabels", dimensions );
+		final Labeling< String > labeling = makeLabeling( dimensions );
 		final String[] labels = { "Foo", "Bar" };
 		final double[][] centers = { { 10, 9, 8 }, { 8, 9, 30 } };
 		for ( int i = 0; i < 2; i++ )
@@ -380,7 +379,7 @@ public class LabelingTest
 	public void testOverlappingLabels()
 	{
 		final long[] dimensions = new long[] { 20, 20, 30 };
-		final Labeling< String > labeling = makeLabeling( "MyLabels", dimensions );
+		final Labeling< String > labeling = makeLabeling( dimensions );
 		final String[] labels = { "Foo", "Bar" };
 		final double[][] centers = { { 10, 9, 8 }, { 8, 9, 12 } };
 		for ( int i = 0; i < 2; i++ )
@@ -435,7 +434,7 @@ public class LabelingTest
 	public void TestCopy()
 	{
 		final long[] dimensions = new long[] { 20, 30 };
-		final Labeling< Integer > labeling = makeLabeling( 1, dimensions );
+		final Labeling< Integer > labeling = makeLabeling( dimensions );
 		final Random r = new Random( 202030 );
 		for ( final LabelingType< Integer > t : labeling )
 		{
@@ -459,7 +458,7 @@ public class LabelingTest
 	public void testCopyCursor()
 	{
 		final long[] dimensions = new long[] { 2, 2 };
-		final Labeling< Integer > labeling = makeLabeling( 1, dimensions );
+		final Labeling< Integer > labeling = makeLabeling( dimensions );
 
 		final Cursor< LabelingType< Integer >> c = labeling.cursor();
 		c.fwd();
@@ -478,7 +477,7 @@ public class LabelingTest
 	public void testCopyRandomAccess()
 	{
 		final long[] dimensions = new long[] { 2, 2 };
-		final Labeling< Integer > labeling = makeLabeling( 1, dimensions );
+		final Labeling< Integer > labeling = makeLabeling( dimensions );
 
 		final RandomAccess< LabelingType< Integer >> a = labeling.randomAccess();
 		a.setPosition( new long[] { 0, 0 } );
@@ -498,7 +497,7 @@ public class LabelingTest
 	{
 		final int rounds = 10;
 		final long[] dimensions = new long[] { 1000, 1000, 40 };
-		final Labeling< Integer > labeling = makeLabeling( 1, dimensions );
+		final Labeling< Integer > labeling = makeLabeling( dimensions );
 
 		for ( int r = 0; r < rounds; r++ )
 		{
@@ -511,4 +510,34 @@ public class LabelingTest
 		}
 	}
 
+	@Test
+	public void testSparseImgRndAccess()
+	{
+		final long[] dimensions = new long[] { 1000, 1000, 40 };
+		final Img< IntType > tree = new NtreeImgFactory< IntType >().create( dimensions, new IntType() );
+
+		final long[] posA = new long[] { 1, 1, 1 };
+		final long[] posB = new long[] { 5, 5, 5 };
+
+		final int label = 5;
+
+		final RandomAccess< IntType > randomAccess = tree.randomAccess();
+
+		// Set 1,1,1 to label
+		randomAccess.setPosition( posA );
+		randomAccess.get().set( label );
+
+		// Set 5,5,5 to label
+		randomAccess.setPosition( posB );
+		randomAccess.get().set( label );
+
+		// Set 1,1,1 to def label (defined in ntree img)
+		randomAccess.setPosition( posA );
+		randomAccess.get().set( 0 );
+
+		// Set tp 5,5,5
+		randomAccess.setPosition( posB );
+
+		assertEquals( randomAccess.get().get(), label );
+	}
 }
