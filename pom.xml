@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.imglib2</groupId>
+		<artifactId>pom-imglib2</artifactId>
+		<version>3.2</version>
+	</parent>
+
+	<artifactId>imglib2-roi</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+
+	<name>ImgLib2 ROI</name>
+	<description>Regions of interest in ImgLib2.</description>
+
+	<scm>
+		<connection>scm:git:git://github.com/imglib/imglib2-roi</connection>
+		<developerConnection>scm:git:git@github.com:imglib/imglib2-roi</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/imglib/imglib2-roi</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/imglib/imglib2-roi/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://jenkins.imagej.net/job/ImgLib2-ROI/</url>
+	</ciManagement>
+
+	<dependencies>
+		<!-- ImgLib2 dependencies -->
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2</artifactId>
+		</dependency>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<packageName>net.imglib2.roi</packageName>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
