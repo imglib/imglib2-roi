@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>imglib2-roi</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.2.0</version>
 
 	<name>ImgLib2 ROI</name>
 	<description>Regions of interest in ImgLib2.</description>
@@ -17,7 +17,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/imglib/imglib2-roi</connection>
 		<developerConnection>scm:git:git@github.com:imglib/imglib2-roi</developerConnection>
-		<tag>HEAD</tag>
+		<tag>imglib2-roi-0.2.0</tag>
 		<url>https://github.com/imglib/imglib2-roi</url>
 	</scm>
 	<issueManagement>
