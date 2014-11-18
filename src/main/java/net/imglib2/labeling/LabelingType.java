@@ -231,5 +231,17 @@ public class LabelingType< T extends Comparable< T >> implements Type< LabelingT
 	{
 		return mapping;
 	}
+	
+	/**
+	 * @return {@link IntegerType} holding the current index at the position of the LabelingType. 
+	 * 
+	 * NB: The returned {@link IntegerType} should be used read-only. Don't write to this type. 
+	 * The value of the {@link IntegerType} refers to a key in the {@link LabelingMapping}. 
+	 * Writing to this type may invalidate the caching of the {@link LabelingROIStrategy}.
+	 */
+	public IntegerType< ? > getIndex()
+	{
+		return type;
+	}
 
 }
