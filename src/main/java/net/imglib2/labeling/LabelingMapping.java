@@ -78,7 +78,7 @@ public class LabelingMapping< T extends Comparable< T >>
 		theEmptyList = intern( background );
 	}
 
-	private static class InternedList< T1 extends Comparable< T1 >> implements List< T1 >
+	protected static class InternedList< T1 extends Comparable< T1 >> implements List< T1 >
 	{
 		private final List< T1 > value;
 
