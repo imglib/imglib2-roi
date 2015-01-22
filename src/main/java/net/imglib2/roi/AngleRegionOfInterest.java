@@ -40,6 +40,7 @@ package net.imglib2.roi;
  * @author Barry DeZonia
  * 
  */
+@Deprecated
 public class AngleRegionOfInterest extends AbstractRegionOfInterest
 {
 

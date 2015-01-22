@@ -43,6 +43,7 @@ import net.imglib2.type.logic.BitType;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public interface RegionOfInterest extends RealRandomAccessibleRealInterval< BitType >
 {
 	/**

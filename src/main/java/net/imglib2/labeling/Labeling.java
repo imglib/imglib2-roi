@@ -47,6 +47,7 @@ import net.imglib2.roi.RegionOfInterest;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public interface Labeling< T extends Comparable< T >> extends RandomAccessibleInterval< LabelingType< T >>, IterableInterval< LabelingType< T >>
 {
 	/**

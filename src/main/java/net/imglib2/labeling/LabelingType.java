@@ -51,6 +51,7 @@ import net.imglib2.type.numeric.integer.IntType;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class LabelingType< T extends Comparable< T >> implements Type< LabelingType< T >>
 {
 	final protected long[] generation;

@@ -51,6 +51,7 @@ import net.imglib2.roi.RegionOfInterest;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public abstract class AbstractLabeling< T extends Comparable< T >> extends AbstractInterval implements Labeling< T >
 {
 

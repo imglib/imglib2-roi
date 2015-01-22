@@ -32,6 +32,7 @@
  */
 package net.imglib2.labeling;
 
+@Deprecated
 public interface NativeLabeling< T extends Comparable< T >> extends Labeling< T >
 {
 	public LabelingMapping< T > getMapping();

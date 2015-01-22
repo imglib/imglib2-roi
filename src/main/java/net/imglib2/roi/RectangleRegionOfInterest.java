@@ -51,6 +51,7 @@ import net.imglib2.RealPositionable;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class RectangleRegionOfInterest extends AbstractIterableRegionOfInterest
 {
 

@@ -48,6 +48,7 @@ import net.imglib2.RealPositionable;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class EllipseRegionOfInterest extends AbstractIterableRegionOfInterest
 {
 

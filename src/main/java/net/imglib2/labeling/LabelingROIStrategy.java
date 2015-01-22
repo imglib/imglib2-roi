@@ -49,6 +49,7 @@ import net.imglib2.roi.RegionOfInterest;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public interface LabelingROIStrategy< T extends Comparable< T >, L extends Labeling< T >>
 {
 	/**

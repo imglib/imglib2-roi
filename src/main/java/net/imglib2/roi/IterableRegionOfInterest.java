@@ -44,6 +44,7 @@ import net.imglib2.type.Type;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public interface IterableRegionOfInterest extends RegionOfInterest
 {
 	/**

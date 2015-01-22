@@ -56,6 +56,7 @@ import java.awt.image.WritableRaster;
  * 
  * @author Johannes Schindelin
  */
+@Deprecated
 public class GeneralPathRegionOfInterest extends
 		AbstractIterableRegionOfInterest implements GeneralPathSegmentHandler
 {

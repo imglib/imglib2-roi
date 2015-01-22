@@ -64,6 +64,7 @@ import net.imglib2.type.numeric.IntegerType;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class LabelingMapping< T extends Comparable< T >>
 {
 	final List< T > theEmptyList;

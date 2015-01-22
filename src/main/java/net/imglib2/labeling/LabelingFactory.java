@@ -43,6 +43,7 @@ import net.imglib2.util.Util;
  * 
  * @param <T>
  */
+@Deprecated
 public abstract class LabelingFactory< T extends Comparable< T >>
 {
 

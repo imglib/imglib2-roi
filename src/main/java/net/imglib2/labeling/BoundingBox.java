@@ -42,6 +42,7 @@ import java.util.Arrays;
  * @author Lee Kamentsky
  * @author leek
  */
+@Deprecated
 public class BoundingBox
 {
 	protected long[] min;

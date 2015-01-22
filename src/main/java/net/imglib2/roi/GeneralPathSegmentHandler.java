@@ -33,6 +33,7 @@
 
 package net.imglib2.roi;
 
+@Deprecated
 public interface GeneralPathSegmentHandler
 {
 

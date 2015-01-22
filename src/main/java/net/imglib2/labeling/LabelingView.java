@@ -54,6 +54,7 @@ import net.imglib2.view.iteration.SubIntervalIterable;
  * @author Christian Dietz (dietzc85@googlemail.com)
  * @author Martin Horn (martin.horn@uni-konstanz.de)
  */
+@Deprecated
 public class LabelingView< L extends Comparable< L > > extends
 		IterableRandomAccessibleInterval< LabelingType< L > > implements
 		Labeling< L >, SubIntervalIterable< LabelingType< L > >

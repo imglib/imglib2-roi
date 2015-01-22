@@ -38,6 +38,7 @@ package net.imglib2.labeling;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class DefaultROIStrategyFactory< T extends Comparable< T >> implements LabelingROIStrategyFactory< T >
 {
 

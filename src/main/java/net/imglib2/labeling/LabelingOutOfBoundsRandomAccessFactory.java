@@ -45,6 +45,7 @@ import net.imglib2.outofbounds.OutOfBoundsFactory;
  * 
  * @param <T>
  */
+@Deprecated
 public class LabelingOutOfBoundsRandomAccessFactory< T extends Comparable< T >, F extends Labeling< T >> implements OutOfBoundsFactory< LabelingType< T >, F >
 {
 

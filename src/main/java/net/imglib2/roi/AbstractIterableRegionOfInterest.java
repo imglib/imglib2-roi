@@ -52,6 +52,7 @@ import net.imglib2.type.Type;
  * 
  * @author Stephan Saalfeld
  */
+@Deprecated
 public abstract class AbstractIterableRegionOfInterest extends AbstractRegionOfInterest implements IterableRegionOfInterest
 {
 	static final private long SIZE_NOT_CACHED = -1;

@@ -46,6 +46,7 @@ import net.imglib2.outofbounds.OutOfBoundsConstantValue;
  * 
  * @param <T>
  */
+@Deprecated
 public class LabelingOutOfBoundsRandomAccess< T extends Comparable< T >> extends OutOfBoundsConstantValue< LabelingType< T >>
 {
 

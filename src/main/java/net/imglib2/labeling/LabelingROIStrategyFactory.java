@@ -38,6 +38,7 @@ package net.imglib2.labeling;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public interface LabelingROIStrategyFactory< T extends Comparable< T >>
 {
 	public < L extends Labeling< T >> LabelingROIStrategy< T, L > createLabelingROIStrategy( L labeling );

@@ -10,13 +10,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,12 +45,12 @@ import net.imglib2.type.logic.BitType;
 /**
  * A composite region of interest contains all points in its member regions of
  * interest
- * 
+ *
  * <b>Note</b>: please use the class {@link GeneralPathRegionOfInterest}
  * instead.
- * 
+ *
  * @deprecated
- * 
+ *
  * @author Stephan Saalfeld
  * @author Lee Kamentsky
  */
@@ -70,7 +70,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * Initialize an empty composite region of interest.
-	 * 
+	 *
 	 * @param nDimensions
 	 */
 	public CompositeRegionOfInterest( final int nDimensions )
@@ -80,7 +80,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * Initialize a composite region of interest with a single ROI
-	 * 
+	 *
 	 * @param roi
 	 */
 	public CompositeRegionOfInterest( final RegionOfInterest roi )
@@ -103,7 +103,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 	/**
 	 * Make the region of interest a combination of the new rest and all
 	 * previous
-	 * 
+	 *
 	 * @param roi
 	 */
 	public void or( final RegionOfInterest roi )
@@ -114,7 +114,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * Remove the region from the composite
-	 * 
+	 *
 	 * @param roi
 	 */
 	public void remove( final RegionOfInterest roi )
@@ -125,7 +125,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * Make the region the union of the current and this
-	 * 
+	 *
 	 * @param roi
 	 */
 	public void and( final RegionOfInterest roi )
@@ -136,7 +136,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * For points within the region, invert the membership.
-	 * 
+	 *
 	 * @param roi
 	 */
 	public void xor( final RegionOfInterest roi )
@@ -147,7 +147,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/**
 	 * Remove this region from the composite region of interest
-	 * 
+	 *
 	 * @param roi
 	 */
 	public void not( final RegionOfInterest roi )
@@ -165,7 +165,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.imglib2.roi.AbstractRegionOfInterest#isMember(double[])
 	 */
 	@Override
@@ -220,7 +220,7 @@ public class CompositeRegionOfInterest extends AbstractRegionOfInterest
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.imglib2.roi.AbstractRegionOfInterest#getRealExtrema(double[],
 	 * double[])
 	 */

@@ -55,6 +55,7 @@ import net.imglib2.roi.RegionOfInterest;
  *            random access.
  * @author Lee Kamentsky
  */
+@Deprecated
 public class DefaultROIStrategy< T extends Comparable< T >, L extends Labeling< T >> implements LabelingROIStrategy< T, L >
 {
 

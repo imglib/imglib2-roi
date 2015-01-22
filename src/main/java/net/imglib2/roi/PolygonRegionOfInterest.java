@@ -47,6 +47,7 @@ import net.imglib2.RealPoint;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public class PolygonRegionOfInterest extends AbstractIterableRegionOfInterest
 {
 

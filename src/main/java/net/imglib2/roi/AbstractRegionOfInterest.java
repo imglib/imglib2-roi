@@ -49,6 +49,7 @@ import net.imglib2.type.logic.BitType;
  * @author Lee Kamentsky
  * @author leek
  */
+@Deprecated
 public abstract class AbstractRegionOfInterest implements RegionOfInterest
 {
 	protected int nDimensions;

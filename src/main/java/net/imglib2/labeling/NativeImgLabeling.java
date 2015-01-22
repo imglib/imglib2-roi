@@ -54,6 +54,7 @@ import net.imglib2.view.iteration.SubIntervalIterable;
  * 
  * @author Lee Kamentsky, Christian Dietz, Martin Horn
  */
+@Deprecated
 public class NativeImgLabeling< T extends Comparable< T >, I extends IntegerType< I > > extends AbstractNativeLabeling< T > implements SubIntervalIterable< LabelingType< T > >
 {
 

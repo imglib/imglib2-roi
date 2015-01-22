@@ -55,6 +55,7 @@ import net.imglib2.view.Views;
  * @author Lee Kamentsky
  * @author leek
  */
+@Deprecated
 public class BinaryMaskRegionOfInterest< T extends BitType, I extends RandomAccessibleInterval< T >> extends AbstractRegionOfInterest implements IterableRegionOfInterest
 {
 	final I img;

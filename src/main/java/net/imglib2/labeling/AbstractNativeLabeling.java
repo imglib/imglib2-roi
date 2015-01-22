@@ -44,6 +44,7 @@ package net.imglib2.labeling;
  * 
  * @author Lee Kamentsky
  */
+@Deprecated
 public abstract class AbstractNativeLabeling< T extends Comparable< T >> extends AbstractLabeling< T > implements NativeLabeling< T >
 {
 
