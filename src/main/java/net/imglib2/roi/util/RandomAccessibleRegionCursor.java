@@ -25,7 +25,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 		super( interval );
 		randomAccess = interval.randomAccess();
 		n = numDimensions();
-		maxLineIndex = dimension( 0 );
+		maxLineIndex = dimension( 0 ) - 1;
 		maxIndex = size;
 		reset();
 	}
