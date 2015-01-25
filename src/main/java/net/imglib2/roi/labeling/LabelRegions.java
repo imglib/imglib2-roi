@@ -6,6 +6,8 @@ import java.util.Map;
 import net.imglib2.Cursor;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.view.Views;
 
 /**
  * Provides {@link LabelRegion}s for all labels of a {@link Labeling}.
@@ -70,7 +72,7 @@ public class LabelRegions< T >
 		}
 	}
 
-	protected final Labeling< T > labeling;
+	protected final RandomAccessibleInterval< LabelingType< T > > labeling;
 
 	protected final LabelingType< T > type;
 
@@ -78,10 +80,10 @@ public class LabelRegions< T >
 
 	protected Map< T, LabelStatistics > statistics;
 
-	public LabelRegions( final Labeling< T > labeling )
+	public LabelRegions( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
 		this.labeling = labeling;
-		type = labeling.firstElement();
+		type = Views.iterable( labeling ).firstElement();
 		generation = Long.MIN_VALUE;
 	}
 
@@ -112,7 +114,7 @@ public class LabelRegions< T >
 			statistics = new HashMap< T, LabelStatistics >();
 			LabelStatistics last = null;
 			T lastLabel = null;
-			final Cursor< LabelingType< T > > c = labeling.localizingCursor();
+			final Cursor< LabelingType< T > > c = Views.iterable( labeling ).localizingCursor();
 			while ( c.hasNext() )
 			{
 				final LabelingType< T > type = c.next();

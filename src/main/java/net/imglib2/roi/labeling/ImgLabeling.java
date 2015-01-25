@@ -66,7 +66,9 @@ import net.imglib2.view.iteration.SubIntervalIterable;
  */
 public class ImgLabeling< T, I extends IntegerType< I > >
 		extends AbstractWrappedInterval< RandomAccessibleInterval< I > >
-		implements Labeling< T >, SubIntervalIterable< LabelingType< T > >
+		implements RandomAccessibleInterval< LabelingType< T > >,
+				IterableInterval< LabelingType< T > >,
+				SubIntervalIterable< LabelingType< T > >
 {
 	private final RandomAccessibleInterval< I > indexAccessible;
 
@@ -88,7 +90,6 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		mapping = new LabelingMapping< T >( indexIterable.firstElement() );
 	}
 
-	@Override
 	public LabelingMapping< T > getMapping()
 	{
 		return mapping;

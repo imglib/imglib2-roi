@@ -4,17 +4,20 @@ import gnu.trove.list.array.TIntArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import net.imglib2.AbstractInterval;
 import net.imglib2.AbstractLocalizableInt;
 import net.imglib2.Cursor;
 import net.imglib2.Localizable;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.util.Util;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.view.Views;
 
 public class BuildFragmentProperties
 {
-	private final Labeling< ? > labeling;
+	private final RandomAccessibleInterval< ? extends LabelingType< ? > > labeling;
 
 	private final ArrayList< FragmentProperties > indexToFragmentProperties;
 
@@ -282,11 +285,10 @@ public class BuildFragmentProperties
 		}
 	}
 
-	public BuildFragmentProperties( final Labeling< ? > labeling )
+	public < T > BuildFragmentProperties( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
 		this.labeling = labeling;
-
-		final LabelingMapping< ? > mapping = labeling.getMapping();
+		final LabelingMapping< ? > mapping = Util.getLabelingMapping( labeling );
 		final int numFragments = mapping.numSets();
 		indexToFragmentProperties = new ArrayList< FragmentProperties >( numFragments );
 		for ( int i = 0; i < numFragments; ++i )
