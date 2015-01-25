@@ -47,10 +47,12 @@ import net.imglib2.type.numeric.IntegerType;
 
 /**
  * The LabelingMapping maps a set of labelings of a pixel to an index value
- * which can be more compactly stored than the set of labelings.
- * It provides is an {@link #intern(Set)} function that supplies a canonical object for each
- * set of labelings in a container, and functions {@link #addLabelToSetAtIndex(Object, int)}, {@link #removeLabelFromSetAtIndex(Object, int)}
- * for efficiently adding and removing labels to the set at a given index value.
+ * which can be more compactly stored than the set of labelings. It provides an
+ * {@link #intern(Set)} function that supplies a canonical object for each set
+ * of labelings in a container, and functions
+ * {@link #addLabelToSetAtIndex(Object, int)},
+ * {@link #removeLabelFromSetAtIndex(Object, int)} for efficiently adding and
+ * removing labels to the set at a given index value.
  *
  * @param <T>
  *            the desired type of the pixel labels, for instance {@link Integer}
