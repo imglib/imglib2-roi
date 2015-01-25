@@ -53,7 +53,12 @@ import net.imglib2.type.numeric.IntegerType;
  */
 public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 {
-	final protected long[] generation;
+	protected static class ModCount
+	{
+		private int modCount = 0;
+	}
+
+	protected final ModCount generation;
 
 	protected final LabelingMapping< T > mapping;
 
@@ -66,14 +71,14 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	 *            Wrapped type
 	 * @param mapping
 	 *            Mapping from wrapped type to LabelingList
-	 * @param generation
+	 * @param modCount
 	 *            Generation of the type
 	 */
-	protected LabelingType( final IntegerType< ? > type, final LabelingMapping< T > mapping, final long[] generation )
+	protected LabelingType( final IntegerType< ? > type, final LabelingMapping< T > mapping, final ModCount modCount )
 	{
 		this.type = type;
 		this.mapping = mapping;
-		this.generation = generation;
+		this.generation = modCount;
 	}
 
 	@Override
@@ -83,6 +88,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 			type.setInteger( c.type.getInteger() );
 		else
 			type.setInteger( mapping.intern( c ).index );
+		generation.modCount++;
 	}
 
 	@Override
@@ -90,8 +96,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	{
 		final IntegerType< ? > newtype = type.createVariable();
 		final LabelingMapping< T > newmapping = mapping.newInstance();
-		final long[] newgeneration = new long[ 1 ];
-		final LabelingType< T > t = new LabelingType< T >( newtype, newmapping, newgeneration );
+		final LabelingType< T > t = new LabelingType< T >( newtype, newmapping, new ModCount() );
 		return t;
 	}
 
@@ -105,8 +110,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	public LabelingType< T > copy()
 	{
 		final IntegerType< ? > newtype = type.copy();
-		final long[] newgeneration = new long[ 1 ];
-		final LabelingType< T > t = new LabelingType< T >( newtype, mapping, newgeneration );
+		final LabelingType< T > t = new LabelingType< T >( newtype, mapping, new ModCount() );
 		return t;
 	}
 
@@ -125,10 +129,9 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	 *
 	 * @return the generation of the underlying storage
 	 */
-	long getGeneration()
+	int getGeneration()
 	{
-		// TODO
-		return generation[ 0 ];
+		return generation.modCount;
 	}
 
 	public LabelingMapping< T > getMapping()

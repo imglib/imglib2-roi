@@ -76,7 +76,7 @@ public class LabelRegions< T >
 
 	protected final LabelingType< T > type;
 
-	protected long generation;
+	protected int generation;
 
 	protected Map< T, LabelStatistics > statistics;
 
@@ -84,7 +84,7 @@ public class LabelRegions< T >
 	{
 		this.labeling = labeling;
 		type = Views.iterable( labeling ).firstElement();
-		generation = Long.MIN_VALUE;
+		generation = type.getGeneration() - 1;
 	}
 
 	/**

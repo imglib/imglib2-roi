@@ -47,6 +47,7 @@ import net.imglib2.converter.AbstractConvertedRandomAccess;
 import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.view.Views;
 import net.imglib2.view.iteration.SubIntervalIterable;
+import net.imglib2.roi.labeling.LabelingType.ModCount;
 
 /**
  * A labeling backed by a {@link RandomAccessibleInterval image} of integer
@@ -76,7 +77,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 
 	private final boolean subIterable;
 
-	private final long[] generation;
+	private final ModCount generation;
 
 	private final LabelingMapping< T > mapping;
 
@@ -86,7 +87,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		indexAccessible = img;
 		indexIterable = Views.iterable( img );
 		subIterable = indexIterable instanceof SubIntervalIterable;
-		generation = new long[ 1 ];
+		generation = new ModCount();
 		mapping = new LabelingMapping< T >( indexIterable.firstElement() );
 	}
 
