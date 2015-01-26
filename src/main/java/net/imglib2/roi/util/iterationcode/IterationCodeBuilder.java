@@ -48,6 +48,9 @@ public class IterationCodeBuilder extends AbstractEuclideanSpace implements Iter
 		rasterBegin = 0;
 	}
 
+	/**
+	 * accumulate the given coordinates.
+	 */
 	public void add( final Localizable pos )
 	{
 		++size;
