@@ -1,79 +1,32 @@
 package net.imglib2.roi.labeling;
 
-import gnu.trove.list.array.TIntArrayList;
-
-import java.util.ArrayList;
-
 import net.imglib2.AbstractLocalizable;
-import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.Positionable;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
-import net.imglib2.outofbounds.OutOfBounds;
-import net.imglib2.outofbounds.OutOfBoundsConstantValue;
 import net.imglib2.roi.PositionableIterableRegion;
-import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
+import net.imglib2.roi.labeling.LabelRegions.FragmentProperties;
 import net.imglib2.type.logic.BoolType;
-import net.imglib2.util.Intervals;
 import net.imglib2.util.Util;
 
-/**
- * Present pixels of a given label in a {@link Labeling} as a
- * {@link PositionableIterableRegion}. The interval bounds represent the
- * bounding box of all pixels having the label. If a {@link RandomAccess} is
- * {@link #randomAccess(Interval) requested} for an interval not fully contained
- * in the bounding box, an {@link OutOfBounds} access is created with the value
- * false for pixels outside the bounding box.
- *
- * @param <T>
- *            the label type
- *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
- */
-public class LabelRegion< T > extends AbstractLocalizable implements PositionableIterableRegion< BoolType >, RandomAccessibleInterval< BoolType >
+public class IterableFragment extends AbstractLocalizable implements PositionableIterableRegion< BoolType >
 {
-	final LabelRegions< T > regions;
+	// TODO: remove
+	private final FragmentProperties frag;
 
-	private final LabelRegionProperties regionProperties;
+	protected final long[] currentOffset;
 
-	private final T label;
+	protected final long[] currentMin;
 
-	private final ArrayList< TIntArrayList > itcodes;
+	protected final long[] currentMax;
 
-	private final long[] currentOffset;
-
-	private final long[] currentMin;
-
-	private final long[] currentMax;
-
-	private long size;
-
-	private final RealPoint centerOfMass;
-
-	public LabelRegion( final LabelRegions< T > regions, final LabelRegionProperties regionProperties, final T label )
+	public IterableFragment( final FragmentProperties frag )
 	{
-		super( regions.numDimensions() );
-		this.regions = regions;
-		this.regionProperties = regionProperties;
-		this.label = label;
-
+		super( frag.numDimensions() );
 		currentOffset = new long[ n ];
-		currentMin = new long[ n ];
-		currentMax = new long[ n ];
-		final long[] bbmin = regionProperties.getBoundingBoxMin();
-		final long[] bbmax = regionProperties.getBoundingBoxMax();
-		for ( int d = 0; d < n; ++d )
-		{
-			currentMin[ d ] = currentOffset[ d ] + bbmin[ d ];
-			currentMax[ d ] = currentOffset[ d ] + bbmax[ d ];
-		}
-		size = 0;
-		itcodes = regionProperties.getItcodes();
-		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
+		currentMin = frag.getBoundingBoxMin().clone();
+		currentMax = frag.getBoundingBoxMax().clone();
+		this.frag = frag;
 	}
 
 	public void printOrigin()
@@ -95,59 +48,14 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		}
 	}
 
-	public T getLabel()
+	@Override
+	public FragmentCursor cursor()
 	{
-		return label;
-	}
-
-	// TODO: add mechanism to detect when label has been completely removed from labeling. Then, this LabelRegion should become empty.
-	private void update()
-	{
-		if ( regionProperties.updateIfNecessary() )
-		{
-			final long[] bbmin = regionProperties.getBoundingBoxMin();
-			final long[] bbmax = regionProperties.getBoundingBoxMax();
-			for ( int d = 0; d < n; ++d )
-			{
-				currentMin[ d ] = currentOffset[ d ] + bbmin[ d ];
-				currentMax[ d ] = currentOffset[ d ] + bbmax[ d ];
-			}
-			size = regionProperties.getSize();
-		}
-	}
-
-	public RealLocalizable getCenterOfMass()
-	{
-		update();
-		return centerOfMass;
+		return new FragmentCursor( frag, currentOffset );
 	}
 
 	@Override
-	public LabelRegionRandomAccess< T > randomAccess()
-	{
-		update();
-		return new LabelRegionRandomAccess< T >( this );
-	}
-
-	@Override
-	public RandomAccess< BoolType > randomAccess( final Interval interval )
-	{
-		update();
-		if ( Intervals.contains( this, interval ) )
-			return randomAccess();
-		else
-			return new OutOfBoundsConstantValue< BoolType >( this, new BoolType( false ) );
-	}
-
-	@Override
-	public LabelRegionCursor cursor()
-	{
-		update();
-		return new LabelRegionCursor( itcodes, currentOffset );
-	}
-
-	@Override
-	public LabelRegionCursor localizingCursor()
+	public FragmentCursor localizingCursor()
 	{
 		return cursor();
 	}
@@ -155,8 +63,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public long size()
 	{
-		update();
-		return size;
+		return frag.getSize();
 	}
 
 	@Override
@@ -172,7 +79,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	}
 
 	@Override
-	public LabelRegionCursor iterator()
+	public FragmentCursor iterator()
 	{
 		return cursor();
 	}
@@ -312,14 +219,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public double realMin( final int d )
 	{
-		update();
 		return currentMin[ d ];
 	}
 
 	@Override
 	public void realMin( final double[] min )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			min[ d ] = currentMin[ d ];
 	}
@@ -327,7 +232,6 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public void realMin( final RealPositionable min )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			min.setPosition( currentMin[ d ], d );
 	}
@@ -335,14 +239,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public double realMax( final int d )
 	{
-		update();
 		return currentMax[ d ];
 	}
 
 	@Override
 	public void realMax( final double[] max )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			max[ d ] = currentMax[ d ];
 	}
@@ -350,7 +252,6 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public void realMax( final RealPositionable max )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			max.setPosition( currentMax[ d ], d );
 	}
@@ -358,14 +259,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public long min( final int d )
 	{
-		update();
 		return currentMin[ d ];
 	}
 
 	@Override
 	public void min( final long[] min )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			min[ d ] = currentMin[ d ];
 	}
@@ -373,7 +272,6 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public void min( final Positionable min )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			min.setPosition( currentMin[ d ], d );
 	}
@@ -381,14 +279,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public long max( final int d )
 	{
-		update();
 		return currentMax[ d ];
 	}
 
 	@Override
 	public void max( final long[] max )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			max[ d ] = currentMax[ d ];
 	}
@@ -396,7 +292,6 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public void max( final Positionable max )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
 			max.setPosition( currentMax[ d ], d );
 	}
@@ -404,15 +299,13 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	@Override
 	public void dimensions( final long[] dimensions )
 	{
-		update();
 		for ( int d = 0; d < n; ++d )
-			dimensions[ d ] = currentMax[ d ] - currentMin[ d ] + 1;
+			dimensions[ d ] = dimension( d );
 	}
 
 	@Override
 	public long dimension( final int d )
 	{
-		update();
 		return currentMax[ d ] - currentMin[ d ] + 1;
 	}
 }
