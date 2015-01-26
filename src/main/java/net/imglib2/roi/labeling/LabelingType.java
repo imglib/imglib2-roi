@@ -91,6 +91,10 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		generation.modCount++;
 	}
 
+	/**
+	 * Note: This creates an <em>"independent"</em> {@link LabelingType}
+	 * instance that has its own {@link LabelingMapping}.
+	 */
 	@Override
 	public LabelingType< T > createVariable()
 	{
