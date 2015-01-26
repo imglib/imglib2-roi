@@ -233,4 +233,11 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 			c = Views.interval( indexAccessible, interval ).localizingCursor();
 		return new LabelingConvertedCursor( c );
 	}
+	
+	/**
+	 * @return RandomAccessibleInterval containing the indices
+	 */
+	public RandomAccessibleInterval< I > getIndexImg(){
+		return indexAccessible;
+	}
 }
