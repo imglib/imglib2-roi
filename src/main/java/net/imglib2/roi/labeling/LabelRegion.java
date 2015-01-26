@@ -9,7 +9,6 @@ import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
@@ -19,7 +18,6 @@ import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
-import net.imglib2.util.Util;
 
 /**
  * Present pixels of a given label in a {@link Labeling} as a
@@ -54,6 +52,8 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 
 	private final RealPoint centerOfMass;
 
+	private final Origin origin;
+
 	public LabelRegion( final LabelRegions< T > regions, final LabelRegionProperties regionProperties, final T label )
 	{
 		super( regions.numDimensions() );
@@ -74,25 +74,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		size = 0;
 		itcodes = regionProperties.getItcodes();
 		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
+		origin = new Origin();
 	}
 
-	public void printOrigin()
+	public Origin origin()
 	{
-		final long[] origin = new long[ n ];
-		for ( int d = 0; d < n; ++d )
-			origin[ d ] = position[ d ] - currentOffset[ d ];
-		System.out.println( Util.printCoordinates( origin ) );
-	}
-
-	public void setOrigin( final long[] origin )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			final long distance = position[ d ] - currentOffset[ d ] - origin[ d ];
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
+		return origin;
 	}
 
 	public T getLabel()
@@ -100,7 +87,8 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		return label;
 	}
 
-	// TODO: add mechanism to detect when label has been completely removed from labeling. Then, this LabelRegion should become empty.
+	// TODO: add mechanism to detect when label has been completely removed from
+	// labeling. Then, this LabelRegion should become empty.
 	private void update()
 	{
 		if ( regionProperties.updateIfNecessary() )
@@ -414,5 +402,151 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	{
 		update();
 		return currentMax[ d ] - currentMin[ d ] + 1;
+	}
+
+	public class Origin implements Localizable, Positionable
+	{
+		@Override
+		public int numDimensions()
+		{
+			return n;
+		}
+
+		@Override
+		public void localize( final float[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				pos[ d ] = position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public void localize( final double[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				pos[ d ] = position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public float getFloatPosition( final int d )
+		{
+			return position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public double getDoublePosition( final int d )
+		{
+			return position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public void localize( final int[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				pos[ d ] = ( int ) ( position[ d ] - currentOffset[ d ] );
+		}
+
+		@Override
+		public void localize( final long[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				pos[ d ] = position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public int getIntPosition( final int d )
+		{
+			return ( int ) ( position[ d ] - currentOffset[ d ] );
+		}
+
+		@Override
+		public long getLongPosition( final int d )
+		{
+			return position[ d ] - currentOffset[ d ];
+		}
+
+		@Override
+		public void fwd( final int d )
+		{
+			currentOffset[ d ]++;
+			currentMin[ d ]++;
+			currentMax[ d ]++;
+		}
+
+		@Override
+		public void bck( final int d )
+		{
+			currentOffset[ d ]--;
+			currentMin[ d ]--;
+			currentMax[ d ]--;
+		}
+
+		@Override
+		public void move( final int distance, final int d )
+		{
+			move( ( long ) distance, d );
+		}
+
+		@Override
+		public void move( final long distance, final int d )
+		{
+			currentOffset[ d ] += distance;
+			currentMin[ d ] += distance;
+			currentMax[ d ] += distance;
+		}
+
+		@Override
+		public void move( final Localizable localizable )
+		{
+			for ( int d = 0; d < n; ++d )
+				move( localizable.getLongPosition( d ), d );
+		}
+
+		@Override
+		public void move( final int[] distance )
+		{
+			for ( int d = 0; d < n; ++d )
+				move( distance[ d ], d );
+		}
+
+		@Override
+		public void move( final long[] distance )
+		{
+			for ( int d = 0; d < n; ++d )
+				move( distance[ d ], d );
+		}
+
+		@Override
+		public void setPosition( final Localizable localizable )
+		{
+			for ( int d = 0; d < n; ++d )
+				setPosition( localizable.getLongPosition( d ), d );
+		}
+
+		@Override
+		public void setPosition( final int[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				setPosition( pos[ d ], d );
+		}
+
+		@Override
+		public void setPosition( final long[] pos )
+		{
+			for ( int d = 0; d < n; ++d )
+				setPosition( pos[ d ], d );
+		}
+
+		@Override
+		public void setPosition( final int pos, final int d )
+		{
+			setPosition( ( long ) pos, d );
+		}
+
+		@Override
+		public void setPosition( final long pos, final int d )
+		{
+			final long distance = position[ d ] - currentOffset[ d ] - pos;
+			move( distance, d );
+		}
 	}
 }
