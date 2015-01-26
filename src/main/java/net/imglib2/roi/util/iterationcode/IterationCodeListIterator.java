@@ -2,7 +2,6 @@ package net.imglib2.roi.util.iterationcode;
 
 import gnu.trove.list.array.TIntArrayList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.imglib2.AbstractEuclideanSpace;
@@ -17,7 +16,7 @@ import net.imglib2.Positionable;
  */
 public class IterationCodeListIterator< P extends Positionable & Localizable > extends AbstractEuclideanSpace implements Iterator
 {
-	private final ArrayList< TIntArrayList > itcodesList;
+	private final List< TIntArrayList > itcodesList;
 
 	private final long[] offset;
 
@@ -35,13 +34,11 @@ public class IterationCodeListIterator< P extends Positionable & Localizable > e
 
 	private boolean hasNextRaster;
 
-	public IterationCodeListIterator( final List< IterationCode  > iterationCodes, final long[] offset, final P position )
+	public IterationCodeListIterator( final List< TIntArrayList  > itcodesList, final long[] offset, final P position )
 	{
 		super( position.numDimensions() );
 		this.position = position;
-		this.itcodesList = new ArrayList< TIntArrayList >( iterationCodes.size() );
-		for ( final IterationCode iterationCode : iterationCodes )
-			itcodesList.add( iterationCode.getItcode() );
+		this.itcodesList = itcodesList;
 		this.offset = offset;
 		reset();
 	}

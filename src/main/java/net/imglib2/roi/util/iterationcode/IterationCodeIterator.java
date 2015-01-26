@@ -29,9 +29,14 @@ public class IterationCodeIterator< P extends Positionable & Localizable > exten
 
 	public IterationCodeIterator( final IterationCode iterationCode, final long[] offset, final P position )
 	{
+		this( iterationCode.getItcode(), offset, position );
+	}
+
+	public IterationCodeIterator( final TIntArrayList itcode, final long[] offset, final P position )
+	{
 		super( position.numDimensions() );
 		this.position = position;
-		this.itcode = iterationCode.getItcode();
+		this.itcode = itcode;
 		this.offset = offset;
 		reset();
 	}
