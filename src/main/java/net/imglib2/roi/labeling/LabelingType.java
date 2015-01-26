@@ -129,7 +129,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	 *
 	 * @return the generation of the underlying storage
 	 */
-	int getGeneration()
+	public int getGeneration()
 	{
 		return generation.modCount;
 	}
