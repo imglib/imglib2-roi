@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
+import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
@@ -70,5 +71,17 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	public Cursor< T > localizingCursor()
 	{
 		return cursor();
+	}
+
+	@Override
+	public RandomAccess< T > randomAccess()
+	{
+		return sourceInterval.randomAccess();
+	}
+
+	@Override
+	public RandomAccess< T > randomAccess( final Interval interval )
+	{
+		return sourceInterval.randomAccess( interval );
 	}
 }

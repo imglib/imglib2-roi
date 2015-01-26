@@ -34,7 +34,7 @@ import net.imglib2.util.Util;
  *
  * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
  */
-public class LabelRegion< T > extends AbstractLocalizable implements PositionableIterableRegion< BoolType >, RandomAccessibleInterval< BoolType >
+public class LabelRegion< T > extends AbstractLocalizable implements PositionableIterableRegion< BoolType >
 {
 	final LabelRegions< T > regions;
 
