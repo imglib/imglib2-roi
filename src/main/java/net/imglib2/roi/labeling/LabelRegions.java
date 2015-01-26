@@ -315,11 +315,4 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		}
 		return false;
 	}
-
-	// TODO should not be public
-	public IterableFragment getFragment( final int index )
-	{
-		computeStatistics();
-		return new IterableFragment( indexToFragmentProperties.get( index ) );
-	}
 }
