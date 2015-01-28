@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.imglib2.type.numeric.IntegerType;
@@ -313,5 +314,58 @@ public class LabelingMapping< T >
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Internals. Can be derived for implementing de/serialisation of the
+	 * {@link LabelingMapping}.
+	 */
+	public static class SerialisationAccess< T >
+	{
+		private final LabelingMapping< T > labelingMapping;
+
+		protected SerialisationAccess( final LabelingMapping< T > labelingMapping )
+		{
+			this.labelingMapping = labelingMapping;
+		}
+
+		protected List< Set< T > > getLabelSets()
+		{
+			final ArrayList< Set< T > > labelSets= new ArrayList< Set< T > >( labelingMapping.numSets() );
+			for ( final InternedSet< T > interned : labelingMapping.setsByIndex )
+				labelSets.add( interned.getSet() );
+			return labelSets;
+		}
+
+		protected void setLabelSets( final List< Set< T > > labelSets )
+		{
+			if ( labelSets.isEmpty() )
+				throw new IllegalArgumentException( "expected non-empty list of label-sets" );
+
+			if ( !labelSets.get( 0 ).isEmpty() )
+				throw new IllegalArgumentException( "label-set at index 0 expected to be the empty label set" );
+
+			// clear everything
+			labelingMapping.internedSets.clear();
+			labelingMapping.setsByIndex.clear();
+			labelingMapping.addMapsByIndex.clear();
+			labelingMapping.subMapsByIndex.clear();
+
+			// add back the empty set
+			final InternedSet< T > theEmptySet = labelingMapping.theEmptySet;
+			labelingMapping.setsByIndex.add( theEmptySet );
+			labelingMapping.addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+			labelingMapping.subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+			labelingMapping.internedSets.put( theEmptySet.getSet(), theEmptySet );
+
+			// add remaining label sets
+			for ( int i = 1; i < labelSets.size(); ++i )
+			{
+				final Set< T > set = labelSets.get( i );
+				final InternedSet< T > interned = labelingMapping.intern( set );
+				if ( interned.index != i )
+					throw new IllegalArgumentException( "no duplicates allowed in list of label-sets" );
+			}
+		}
 	}
 }
