@@ -80,6 +80,13 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		origin = new Origin();
 	}
 
+	/**
+	 * Create a copy of this {@link LabelRegion}. The copy can be independently
+	 * positioned and its origin can be independently changed. All copies are
+	 * linked to the original Labeling and reflect all changes.
+	 *
+	 * @return an independent copy of this {@link LabelRegion}.
+	 */
 	public LabelRegion< T > copy()
 	{
 		final LabelRegion< T > r = new LabelRegion< T >( regions, regionProperties, label );
