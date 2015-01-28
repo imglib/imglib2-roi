@@ -32,8 +32,33 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 
 	private final ArrayList< FragmentProperties > indexToFragmentProperties;
 
+	/**
+	 * Maps labels to {@link LabelRegionProperties} for all currently non-empty labels in the labeling.
+	 */
 	private final HashMap< T, LabelRegionProperties > labelToLabelRegionProperties;
 
+	/**
+	 * Maps labels to {@link LabelRegionProperties} for all labels that were
+	 * ever seen. This is maintained to be able to "resurrect"
+	 * {@link LabelRegionProperties}: If a label becomes empty, its
+	 * {@link LabelRegionProperties} will be removed from the live map
+	 * {@link #labelToLabelRegionProperties}. If the label later becomes
+	 * non-empty again we can add the old {@link LabelRegionProperties} back
+	 * into the live map, meaning that {@link LabelRegion}s that reference it
+	 * will be updated correctly.
+	 */
+	private final HashMap< T, LabelRegionProperties > allLabelToLabelRegionProperties;
+
+	/**
+	 * maintains "canonical" {@link LabelRegion}s that were created by
+	 * {@link #getLabelRegion(Object)} or by {@link #iterator()} such that these
+	 * will not be re-created on subsequent calls.
+	 *
+	 * <p>
+	 * TODO: I'm not sure whether this is the best behavior. Maybe it is better
+	 * to always create new {@link LabelRegion}s, which are not re-positioned or
+	 * have had their origin changed.
+	 */
 	private final HashMap< T, LabelRegion< T > > labelToLabelRegion;
 
 	private int expectedGeneration;
@@ -45,13 +70,14 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		type = Views.iterable( labeling ).firstElement();
 		indexToFragmentProperties = new ArrayList< FragmentProperties >();
 		labelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
+		allLabelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
 		labelToLabelRegion = new HashMap< T, LabelRegion< T > >();
 		expectedGeneration = Views.iterable( labeling ).firstElement().getGeneration() - 1;
 	}
 
 	public LabelRegion< T > getLabelRegion( final T label )
 	{
-		computeStatistics();
+		update();
 		LabelRegion< T > labelRegion = labelToLabelRegion.get( label );
 		if ( labelRegion == null )
 		{
@@ -67,14 +93,14 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 	 */
 	public Set< T > getExistingLabels()
 	{
-		computeStatistics();
+		update();
 		return labelToLabelRegionProperties.keySet();
 	}
 
 	@Override
 	public Iterator< LabelRegion< T > > iterator()
 	{
-		computeStatistics();
+		update();
 		final Iterator< T > labelIterator = labelToLabelRegionProperties.keySet().iterator();
 		return new Iterator< LabelRegion<T> >()
 		{
@@ -173,15 +199,22 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		}
 
 		/**
-		 * @return true iff there was an update
+		 * Compute all statistics on the labels if cache is dirty. Returns the
+		 * generation (modification count of the labeling) for which the update
+		 * was computed. Getting the same generation from two consecutive
+		 * invocations of {@link #update()} means that there was no update
+		 * necessary in the second invocation.
+		 *
+		 * @return the current generation.
 		 */
-		boolean updateIfNecessary()
+		int update()
 		{
-			return labelRegions.computeStatistics();
+			return labelRegions.update();
 		}
 
 		void reset()
 		{
+			size = 0;
 			Arrays.fill( sumPositions, 0 );
 			Arrays.fill( centerOfMass, 0 );
 			Arrays.fill( bbmin, Long.MAX_VALUE );
@@ -212,8 +245,9 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 
 		void finish()
 		{
-			for ( int d = 0; d < n; d++ )
-				centerOfMass[ d ] = ( double ) sumPositions[ d ] / ( double ) size;
+			if ( size != 0 )
+				for ( int d = 0; d < n; d++ )
+					centerOfMass[ d ] = ( double ) sumPositions[ d ] / ( double ) size;
 		}
 
 		long getSize()
@@ -248,71 +282,87 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 	}
 
 	/**
-	 * Compute all statistics on the labels if cache is dirty.
+	 * Compute all statistics on the labels if cache is dirty. Returns the
+	 * generation (modification count of the labeling) for which the update was
+	 * computed. Getting the same generation from two consecutive invocations of
+	 * {@link #update()} means that there was no update necessary in the second
+	 * invocation.
 	 *
-	 * @return true iff statistics were recomputed.
+	 * @return the current generation.
 	 */
-	private synchronized boolean computeStatistics()
+	private int update()
 	{
 		if ( type.getGeneration() != expectedGeneration )
 		{
-			expectedGeneration = type.getGeneration();
-
-			final HashMap< T, LabelRegionProperties > oldLabelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >( labelToLabelRegionProperties );
-			for ( final LabelRegionProperties props : oldLabelToLabelRegionProperties.values() )
-				props.reset();
-			final HashMap< T, LabelRegion< T > > oldLabelToLabelRegion = new HashMap< T, LabelRegion< T > >( labelToLabelRegion );
-			indexToFragmentProperties.clear();
-			labelToLabelRegionProperties.clear();
-			labelToLabelRegion.clear();
-
-			final LabelingMapping< T > mapping = type.getMapping();
-			final int numFragments = mapping.numSets();
-			for ( int i = 0; i < numFragments; ++i )
-				indexToFragmentProperties.add( new FragmentProperties( i, labeling ) );
-
-			final Cursor< ? extends LabelingType< ? > > c = Views.flatIterable( labeling ).localizingCursor();
-			while ( c.hasNext() )
+			synchronized ( this )
 			{
-				final int index = c.next().getIndex().getInteger();
-				indexToFragmentProperties.get( index ).add( c );
-			}
-	//		generation = type.getGeneration();
-			for ( final FragmentProperties frag : indexToFragmentProperties )
-				frag.finish();
+				expectedGeneration = type.getGeneration();
 
-			// now build LabelProperties
-			for ( final FragmentProperties frag : indexToFragmentProperties )
-			{
-				final Set< T > fragLabels = mapping.labelsAtIndex( frag.getIndex() );
-				for ( final T label : fragLabels )
+				for ( final LabelRegionProperties props : labelToLabelRegionProperties.values() )
+					props.reset();
+
+				// remember existing LabelRegions created on previous getLabelRegion() or iterator()
+				final HashMap< T, LabelRegion< T > > oldLabelToLabelRegion = new HashMap< T, LabelRegion< T > >( labelToLabelRegion );
+
+				indexToFragmentProperties.clear();
+				labelToLabelRegionProperties.clear();
+				labelToLabelRegion.clear();
+
+				final LabelingMapping< T > mapping = type.getMapping();
+				final int numFragments = mapping.numSets();
+				for ( int i = 0; i < numFragments; ++i )
+					indexToFragmentProperties.add( new FragmentProperties( i, labeling ) );
+
+				final Cursor< ? extends LabelingType< ? > > c = Views.flatIterable( labeling ).localizingCursor();
+				while ( c.hasNext() )
 				{
-					LabelRegionProperties props = labelToLabelRegionProperties.get( label );
-					if ( props == null )
-					{
-						props = oldLabelToLabelRegionProperties.get( label );
-						if ( props == null )
-							props = new LabelRegionProperties( this );
-						labelToLabelRegionProperties.put( label, props );
-					}
-					props.add( frag );
+					final int index = c.next().getIndex().getInteger();
+					indexToFragmentProperties.get( index ).add( c );
 				}
-			}
-			for ( final Entry< T, LabelRegionProperties > entry : labelToLabelRegionProperties.entrySet() )
-			{
-				final T label = entry.getKey();
-				final LabelRegionProperties props = entry.getValue();
-				props.finish();
-				final LabelRegion< T > labelRegion = oldLabelToLabelRegion.get( label );
-				if ( labelRegion != null )
-					labelToLabelRegion.put( label, labelRegion );
-			}
+				// generation = type.getGeneration();
+				for ( final FragmentProperties frag : indexToFragmentProperties )
+					frag.finish();
 
-			oldLabelToLabelRegionProperties.clear();
-			oldLabelToLabelRegion.clear();
-			computeStatistics(); // call recursively in case there were more updates in the meantime
-			return true;
+				// now build LabelProperties
+				for ( final FragmentProperties frag : indexToFragmentProperties )
+				{
+					final Set< T > fragLabels = mapping.labelsAtIndex( frag.getIndex() );
+					for ( final T label : fragLabels )
+					{
+						LabelRegionProperties props = labelToLabelRegionProperties.get( label );
+						if ( props == null )
+						{
+							props = allLabelToLabelRegionProperties.get( label );
+							if ( props == null )
+							{
+								props = new LabelRegionProperties( this );
+								allLabelToLabelRegionProperties.put( label, props );
+							}
+							labelToLabelRegionProperties.put( label, props );
+						}
+						props.add( frag );
+					}
+				}
+
+				for ( final Entry< T, LabelRegionProperties > entry : labelToLabelRegionProperties.entrySet() )
+				{
+					final T label = entry.getKey();
+					final LabelRegionProperties props = entry.getValue();
+					props.finish();
+
+					// remember existing LabelRegions created on previous getLabelRegion() or iterator()
+					final LabelRegion< T > labelRegion = oldLabelToLabelRegion.get( label );
+					if ( labelRegion != null )
+						labelToLabelRegion.put( label, labelRegion );
+				}
+
+				oldLabelToLabelRegion.clear();
+
+				// call recursively in case there were more updates in the meantime
+				update();
+				return expectedGeneration;
+			}
 		}
-		return false;
+		return expectedGeneration;
 	}
 }

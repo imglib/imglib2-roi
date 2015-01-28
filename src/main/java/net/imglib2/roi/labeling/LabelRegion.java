@@ -54,6 +54,8 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 
 	private final Origin origin;
 
+	private int expectedGeneration;
+
 	public LabelRegion( final LabelRegions< T > regions, final LabelRegionProperties regionProperties, final T label )
 	{
 		super( regions.numDimensions() );
@@ -61,6 +63,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		this.regionProperties = regionProperties;
 		this.label = label;
 
+		expectedGeneration = regionProperties.update();
 		currentOffset = new long[ n ];
 		currentMin = new long[ n ];
 		currentMax = new long[ n ];
@@ -77,8 +80,20 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		origin = new Origin();
 	}
 
+	public LabelRegion< T > copy()
+	{
+		final LabelRegion< T > r = new LabelRegion< T >( regions, regionProperties, label );
+		System.arraycopy( position, 0, r.position, 0, n );
+		System.arraycopy( currentOffset, 0, r.currentOffset, 0, n );
+		System.arraycopy( currentMin, 0, r.currentMin, 0, n );
+		System.arraycopy( currentMax, 0, r.currentMax, 0, n );
+		r.expectedGeneration = expectedGeneration;
+		return r;
+	}
+
 	public Origin origin()
 	{
+		update();
 		return origin;
 	}
 
@@ -87,12 +102,12 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		return label;
 	}
 
-	// TODO: add mechanism to detect when label has been completely removed from
-	// labeling. Then, this LabelRegion should become empty.
 	private void update()
 	{
-		if ( regionProperties.updateIfNecessary() )
+		final int generation = regionProperties.update();
+		if ( generation != expectedGeneration )
 		{
+			expectedGeneration = generation;
 			final long[] bbmin = regionProperties.getBoundingBoxMin();
 			final long[] bbmax = regionProperties.getBoundingBoxMax();
 			for ( int d = 0; d < n; ++d )
