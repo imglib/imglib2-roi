@@ -74,7 +74,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 			currentMin[ d ] = currentOffset[ d ] + bbmin[ d ];
 			currentMax[ d ] = currentOffset[ d ] + bbmax[ d ];
 		}
-		size = 0;
+		size = regionProperties.getSize();
 		itcodes = regionProperties.getItcodes();
 		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
 		origin = new Origin();
