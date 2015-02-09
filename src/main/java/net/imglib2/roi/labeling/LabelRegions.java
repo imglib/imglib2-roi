@@ -72,7 +72,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		labelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
 		allLabelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
 		labelToLabelRegion = new HashMap< T, LabelRegion< T > >();
-		expectedGeneration = Views.iterable( labeling ).firstElement().getGeneration() - 1;
+		expectedGeneration = type.getGeneration() - 1;
 	}
 
 	public LabelRegion< T > getLabelRegion( final T label )

@@ -166,6 +166,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
+		generation.modCount++;
 		return true;
 	}
 
@@ -179,13 +180,20 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
+		generation.modCount++;
 		return true;
 	}
 
 	@Override
 	public void clear()
 	{
-		type.setInteger( mapping.emptySet().index );
+		final int index = type.getInteger();
+		final int newindex = mapping.emptySet().index;
+		if ( newindex != index )
+		{
+			type.setInteger( newindex );
+			generation.modCount++;
+		}
 	}
 
 	@Override
@@ -246,6 +254,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
+		generation.modCount++;
 		return true;
 	}
 
@@ -260,6 +269,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
+		generation.modCount++;
 		return true;
 	}
 
