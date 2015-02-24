@@ -35,9 +35,6 @@ package net.imglib2.roi.labeling;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
-
-import net.imglib2.type.Type;
 import net.imglib2.type.numeric.IntegerType;
 
 /**
@@ -51,7 +48,7 @@ import net.imglib2.type.numeric.IntegerType;
  * @author Lee Kamentsky
  * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
  */
-public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
+public class LabelingType< T > implements GenericLabelingType< LabelingType< T >, T >
 {
 	protected static class ModCount
 	{
