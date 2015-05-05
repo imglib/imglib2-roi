@@ -264,7 +264,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 				sumPositions[ d ] += fragSumPositions[ d ];
 
 			final long[] fragBBMin = frag.getBoundingBoxMin();
-			final long[] fragBBMax = frag.getBoundingBoxMin();
+			final long[] fragBBMax = frag.getBoundingBoxMax();
 			for ( int d = 0; d < n; d++ )
 			{
 				if ( fragBBMin[ d ] < bbmin[ d ] )
