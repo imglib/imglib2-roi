@@ -362,6 +362,9 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 				// now build LabelProperties
 				for ( final FragmentProperties frag : indexToFragmentProperties )
 				{
+					if ( frag.getSize() <= 0 )
+						continue;
+
 					final Set< T > fragLabels = mapping.labelsAtIndex( frag.getIndex() );
 					for ( final T label : fragLabels )
 					{
