@@ -316,4 +316,20 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		}
 		return mapping.setAtIndex( type.getInteger() ).set.equals( obj );
 	}
+
+	/**
+	 * Creates a new {@link LabelingType} based on the underlying
+	 * {@link IntegerType} of the existing {@link LabelingType} with a different
+	 * label type L
+	 * 
+	 * @param newType
+	 *            the type of the labels of the created {@link LabelingType}
+	 * 
+	 * @return new {@link LabelingType} 
+	 */
+	public < L > LabelingType< L > createVariable( Class< ? extends L > newType )
+	{
+		return new LabelingType< L >( this.type.createVariable(),
+				new LabelingMapping< L >( this.type ), new ModCount() );
+	}
 }
