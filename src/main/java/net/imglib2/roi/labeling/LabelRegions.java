@@ -50,7 +50,10 @@ import net.imglib2.roi.util.iterationcode.IterationCodeBuilder;
 import net.imglib2.view.Views;
 
 /**
- * Provides {@link LabelRegion}s for all labels of a {@link Labeling}.
+ * Provides {@link LabelRegion}s for all labels of a labeling.
+ *
+ * <p>
+ * A labeling can be for example an {@link ImgLabeling} or a view onto an {@link ImgLabeling}.
  *
  * @param <T>
  *            the label type
