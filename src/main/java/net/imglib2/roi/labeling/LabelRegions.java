@@ -353,7 +353,12 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 				while ( c.hasNext() )
 				{
 					final int index = c.next().getIndex().getInteger();
-					indexToFragmentProperties.get( index ).add( c );
+					// TODO: Do a benchmark: For sparsely labeled images it
+					// might be faster to use a non-localizing Cursor, because
+					// we don't collect background coordinates. What is the
+					// trade-off?
+					if ( index > 0 )
+						indexToFragmentProperties.get( index ).add( c );
 				}
 				// generation = type.getGeneration();
 				for ( final FragmentProperties frag : indexToFragmentProperties )
