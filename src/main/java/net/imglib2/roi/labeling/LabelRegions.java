@@ -334,7 +334,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 			{
 				expectedGeneration = type.getGeneration();
 
-				for ( final LabelRegionProperties props : labelToLabelRegionProperties.values() )
+				for ( final LabelRegionProperties props : allLabelToLabelRegionProperties.values() )
 					props.reset();
 
 				// remember existing LabelRegions created on previous getLabelRegion() or iterator()
