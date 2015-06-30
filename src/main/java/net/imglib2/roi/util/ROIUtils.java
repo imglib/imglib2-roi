@@ -39,7 +39,7 @@ import net.imglib2.roi.labeling.LabelingType;
 import net.imglib2.type.BooleanType;
 import net.imglib2.view.Views;
 
-public class Util
+public class ROIUtils
 {
 	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
 	{

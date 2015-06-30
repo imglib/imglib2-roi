@@ -61,7 +61,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 
 	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, Util.countTrue( interval ) );
+		return new IterableRandomAccessibleRegion< T >( interval, ROIUtils.countTrue( interval ) );
 	}
 
 	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
