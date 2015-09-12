@@ -39,7 +39,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.BooleanType;
 
-public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements Cursor< T >
+public class RandomAccessibleRegionCursor<T extends BooleanType< T >> extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements Cursor< Void >
 {
 	private final RandomAccess< T > randomAccess;
 
@@ -74,9 +74,9 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 	}
 
 	@Override
-	public T get()
+	public Void get()
 	{
-		return randomAccess.get();
+		return null;
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 	}
 
 	@Override
-	public T next()
+	public Void next()
 	{
 		fwd();
 		return get();

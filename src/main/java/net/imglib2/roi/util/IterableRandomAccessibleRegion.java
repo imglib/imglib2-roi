@@ -77,7 +77,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	}
 
 	@Override
-	public T firstElement()
+	public Void firstElement()
 	{
 		return cursor().next();
 	}
@@ -89,19 +89,19 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	}
 
 	@Override
-	public Iterator< T > iterator()
+	public Iterator< Void > iterator()
 	{
 		return cursor();
 	}
 
 	@Override
-	public Cursor< T > cursor()
+	public Cursor< Void> cursor()
 	{
 		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
 	}
 
 	@Override
-	public Cursor< T > localizingCursor()
+	public Cursor< Void > localizingCursor()
 	{
 		return cursor();
 	}

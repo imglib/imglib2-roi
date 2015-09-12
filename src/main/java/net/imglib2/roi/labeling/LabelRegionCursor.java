@@ -41,12 +41,9 @@ import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.Point;
 import net.imglib2.roi.util.iterationcode.IterationCodeListIterator;
-import net.imglib2.type.logic.BoolType;
 
-public class LabelRegionCursor extends AbstractLocalizable implements Cursor< BoolType >
+public class LabelRegionCursor extends AbstractLocalizable implements Cursor< Void >
 {
-	private final BoolType type = new BoolType( true );
-
 	private final IterationCodeListIterator< Point > iter;
 
 	public LabelRegionCursor( final ArrayList< TIntArrayList > itcodesList, final long[] offset )
@@ -62,9 +59,9 @@ public class LabelRegionCursor extends AbstractLocalizable implements Cursor< Bo
 	}
 
 	@Override
-	public BoolType get()
+	public Void get()
 	{
-		return type;
+		return null;
 	}
 
 	@Override
@@ -92,10 +89,10 @@ public class LabelRegionCursor extends AbstractLocalizable implements Cursor< Bo
 	}
 
 	@Override
-	public BoolType next()
+	public Void next()
 	{
 		fwd();
-		return get();
+		return null;
 	}
 
 	@Override
