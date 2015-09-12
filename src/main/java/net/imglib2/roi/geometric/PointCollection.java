@@ -101,6 +101,12 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 	{
 		return cursor();
 	}
+	
+	
+	public Collection< ? extends Localizable > getVertices()
+	{
+		return vertices;
+	}
 
 	@Override
 	public RandomAccess< BoolType > randomAccess()
