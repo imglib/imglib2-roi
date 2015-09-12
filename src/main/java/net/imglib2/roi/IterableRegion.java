@@ -53,5 +53,5 @@ import net.imglib2.type.BooleanType;
  *
  * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
  */
-public interface IterableRegion< T extends BooleanType< T > > extends IterableInterval< T >, RandomAccessibleInterval< T >
+public interface IterableRegion< T extends BooleanType< T > > extends IterableInterval< Void >, RandomAccessibleInterval< T >
 {}

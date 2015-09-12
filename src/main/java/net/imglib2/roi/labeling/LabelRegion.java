@@ -203,9 +203,9 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	}
 
 	@Override
-	public BoolType firstElement()
+	public Void firstElement()
 	{
-		return cursor().next();
+		return null;
 	}
 
 	@Override
