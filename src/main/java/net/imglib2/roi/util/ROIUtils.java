@@ -82,10 +82,10 @@ public class ROIUtils
 		{
 			for ( int d = 0; d < numDims; d++ )
 			{
-				long pos = l.getLongPosition( d );
+				final long pos = l.getLongPosition( d );
 				if ( pos < min[ d ] )
 					min[ d ] = pos;
-				else if ( pos > max[ d ] )
+				if ( pos > max[ d ] )
 					max[ d ] = pos;
 			}
 		}
@@ -112,7 +112,7 @@ public class ROIUtils
 				double pos = l.getDoublePosition( d );
 				if ( pos < min[ d ] )
 					min[ d ] = pos;
-				else if ( pos > max[ d ] )
+				if ( pos > max[ d ] )
 					max[ d ] = pos;
 			}
 		}
