@@ -51,7 +51,6 @@ public class Regions
 		return SamplingIterableInterval.create( region, img );
 	}
 
-	@SuppressWarnings( "unchecked" )
 	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof IterableRegion )
