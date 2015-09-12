@@ -33,7 +33,18 @@
  */
 package net.imglib2.roi.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import net.imglib2.FinalInterval;
+import net.imglib2.FinalRealInterval;
+import net.imglib2.Interval;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.labeling.LabelingMapping;
 import net.imglib2.roi.labeling.LabelingType;
 import net.imglib2.type.BooleanType;
@@ -53,5 +64,58 @@ public class ROIUtils
 	public static < T > LabelingMapping< T > getLabelingMapping( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
 		return Views.iterable( labeling ).firstElement().getMapping();
+	}
+
+	public static Interval getBounds( final Collection< ? extends Localizable > vertices )
+	{
+		assert( vertices.size() != 0 );
+
+		final int numDims = vertices.iterator().next().numDimensions();
+		final long[] min = new long[ numDims ];
+		Arrays.fill( min, Long.MAX_VALUE );
+
+		final long[] max = new long[ numDims ];
+		Arrays.fill( max, Long.MIN_VALUE );
+
+		for ( final Localizable l : vertices )
+		{
+			for ( int d = 0; d < numDims; d++ )
+			{
+				long pos = l.getLongPosition( d );
+				if ( pos < min[ d ] )
+					min[ d ] = pos;
+				else if ( pos > max[ d ] )
+					max[ d ] = pos;
+			}
+		}
+
+		return new FinalInterval( min, max );
+	}
+
+	public static RealInterval getBoundsReal( final Collection< ? extends RealLocalizable > vertices )
+	{
+		assert( vertices.size() != 0 );
+
+		final int numDims = vertices.iterator().next().numDimensions();
+
+		final double[] min = new double[ numDims ];
+		Arrays.fill( min, Double.POSITIVE_INFINITY );
+
+		final double[] max = new double[ numDims ];
+		Arrays.fill( max, Double.NEGATIVE_INFINITY );
+
+		for ( final RealLocalizable l : vertices )
+		{
+			for ( int d = 0; d < numDims; d++ )
+			{
+				double pos = l.getDoublePosition( d );
+				if ( pos < min[ d ] )
+					min[ d ] = pos;
+				else if ( pos > max[ d ] )
+					max[ d ] = pos;
+			}
+		}
+
+		return new FinalRealInterval( min, max );
 	}
 }
