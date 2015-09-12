@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geometric;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.imglib2.Localizable;
@@ -59,6 +60,6 @@ public class RasterizedPolygonalChain extends PointCollection
 	 */
 	public RasterizedPolygonalChain( final List< ? extends RealLocalizable > vertices )
 	{
-		super( ROIUtils.bresenham( vertices ) );
+		super( Collections.unmodifiableList( ROIUtils.bresenham( vertices ) ) );
 	}
 }
