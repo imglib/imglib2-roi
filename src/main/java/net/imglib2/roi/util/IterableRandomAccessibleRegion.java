@@ -95,7 +95,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	}
 
 	@Override
-	public Cursor< Void> cursor()
+	public Cursor< Void > cursor()
 	{
 		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
 	}

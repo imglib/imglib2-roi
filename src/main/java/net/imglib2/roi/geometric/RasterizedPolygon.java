@@ -49,9 +49,8 @@ import net.imglib2.view.Views;
  * @author Daniel Seebacher, University of Konstanz
  *
  */
-public class RasterizedPolygon extends IterableRandomAccessibleRegion< BoolType >implements IterableRegion< BoolType >
+public class RasterizedPolygon extends IterableRandomAccessibleRegion< BoolType > implements IterableRegion< BoolType >
 {
-
 	public RasterizedPolygon( final Polygon polygon )
 	{
 		this( Views.interval( Views.raster( polygon ), Intervals.smallestContainingInterval( polygon ) ) );
@@ -61,5 +60,4 @@ public class RasterizedPolygon extends IterableRandomAccessibleRegion< BoolType 
 	{
 		super( region, ROIUtils.countTrue( region ) );
 	}
-
 }

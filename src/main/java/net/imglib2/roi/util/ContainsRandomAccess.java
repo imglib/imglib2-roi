@@ -45,7 +45,6 @@ import net.imglib2.type.logic.BoolType;
  * @author Christian Dietz, University of Konstanz
  * @author Daniel Seebacher, University of Konstanz
  * @author Tobias Pietzsch
- *
  */
 public class ContainsRandomAccess extends Point implements RandomAccess< BoolType >
 {

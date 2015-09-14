@@ -69,7 +69,7 @@ public class ROIUtils
 
 	public static Interval getBounds( final Collection< ? extends Localizable > vertices )
 	{
-		assert( vertices.size() != 0 );
+		assert ( vertices.size() != 0 );
 
 		final int numDims = vertices.iterator().next().numDimensions();
 		final long[] min = new long[ numDims ];
@@ -95,7 +95,7 @@ public class ROIUtils
 
 	public static RealInterval getBoundsReal( final Collection< ? extends RealLocalizable > vertices )
 	{
-		assert( vertices.size() != 0 );
+		assert ( vertices.size() != 0 );
 
 		final int numDims = vertices.iterator().next().numDimensions();
 
@@ -109,7 +109,7 @@ public class ROIUtils
 		{
 			for ( int d = 0; d < numDims; d++ )
 			{
-				double pos = l.getDoublePosition( d );
+				final double pos = l.getDoublePosition( d );
 				if ( pos < min[ d ] )
 					min[ d ] = pos;
 				if ( pos > max[ d ] )
@@ -123,8 +123,8 @@ public class ROIUtils
 	public static List< Localizable > bresenham( final List< ? extends RealLocalizable > vertices )
 	{
 
-		assert( vertices.size() > 1 );
-		assert( vertices.iterator().next().numDimensions() == 2 );
+		assert ( vertices.size() > 1 );
+		assert ( vertices.iterator().next().numDimensions() == 2 );
 
 		final ArrayList< Localizable > tmp = new ArrayList< Localizable >();
 		for ( int i = 0; i < vertices.size(); i++ )

@@ -44,7 +44,6 @@ import net.imglib2.type.logic.BoolType;
  * 
  * @author Christian Dietz, University of Konstanz
  * @author Tobias Pietzsch
- *
  */
 public class ContainsRealRandomAccess extends RealPoint implements RealRandomAccess< BoolType >
 {

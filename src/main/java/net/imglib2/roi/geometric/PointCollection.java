@@ -57,10 +57,9 @@ import net.imglib2.type.logic.BoolType;
  */
 public class PointCollection extends AbstractInterval implements IterableRegion< BoolType >
 {
-
 	private final Collection< ? extends Localizable > vertices;
 
-	public PointCollection( Collection< ? extends Localizable > vertices )
+	public PointCollection( final Collection< ? extends Localizable > vertices )
 	{
 		super( ROIUtils.getBounds( vertices ) );
 		this.vertices = vertices;
@@ -101,8 +100,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 	{
 		return cursor();
 	}
-	
-	
+
 	public Collection< ? extends Localizable > getVertices()
 	{
 		return vertices;
@@ -113,7 +111,6 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 	{
 		return new ContainsRandomAccess( new Contains< Localizable >()
 		{
-
 			@Override
 			public int numDimensions()
 			{
@@ -136,7 +133,6 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 
 	private static class PointCollectionCursor extends AbstractCursor< Void >
 	{
-
 		private final Collection< ? extends Localizable > collection;
 
 		private Iterator< ? extends Localizable > currentIt;
@@ -178,13 +174,13 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		// set? If so, shouldn't we set currentPos to something?
 
 		@Override
-		public void localize( long[] position )
+		public void localize( final long[] position )
 		{
 			currentPos.localize( position );
 		}
 
 		@Override
-		public long getLongPosition( int d )
+		public long getLongPosition( final int d )
 		{
 			return currentPos.getLongPosition( d );
 		}

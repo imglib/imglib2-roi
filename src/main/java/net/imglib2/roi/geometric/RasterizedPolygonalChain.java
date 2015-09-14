@@ -48,7 +48,6 @@ import net.imglib2.roi.util.ROIUtils;
  * @author Tobias Pietzsch
  * @author Christian Dietz, University of Konstanz
  * @author Daniel Seebacher, University of Konstanz
- * 
  */
 public class RasterizedPolygonalChain extends PointCollection
 {
