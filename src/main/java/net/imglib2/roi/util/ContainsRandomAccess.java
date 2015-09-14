@@ -61,7 +61,7 @@ public class ContainsRandomAccess extends Point implements RandomAccess< BoolTyp
 
 	protected ContainsRandomAccess( final ContainsRandomAccess cra )
 	{
-		super( cra.numDimensions() );
+		super( cra );
 		contains = cra.contains;
 		type = cra.type.copy();
 	}
