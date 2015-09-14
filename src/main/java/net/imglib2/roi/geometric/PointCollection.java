@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,15 +33,19 @@
  */
 package net.imglib2.roi.geometric;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import net.imglib2.AbstractCursor;
 import net.imglib2.AbstractInterval;
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
+import net.imglib2.KDTree;
 import net.imglib2.Localizable;
 import net.imglib2.RandomAccess;
+import net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree;
 import net.imglib2.roi.IterableRegion;
 import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRandomAccess;
@@ -50,7 +54,7 @@ import net.imglib2.type.logic.BoolType;
 
 /**
  * {@link Collection} of {@link Localizable}s as {@link IterableRegion}.
- * 
+ *
  * @author Tobias Pietzsch
  * @author Christian Dietz, University of Konstanz.
  * @author Daniel Seebacher, University of Konstanz.
@@ -58,6 +62,8 @@ import net.imglib2.type.logic.BoolType;
 public class PointCollection extends AbstractInterval implements IterableRegion< BoolType >
 {
 	private final Collection< ? extends Localizable > vertices;
+
+	private NearestNeighborSearchOnKDTree< ? extends Localizable > search;
 
 	public PointCollection( final Collection< ? extends Localizable > vertices )
 	{
@@ -109,26 +115,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 	@Override
 	public RandomAccess< BoolType > randomAccess()
 	{
-		return new ContainsRandomAccess( new Contains< Localizable >()
-		{
-			@Override
-			public int numDimensions()
-			{
-				return PointCollection.this.numDimensions();
-			}
-
-			@Override
-			public boolean contains( final Localizable o )
-			{
-				return vertices.contains( o );
-			}
-
-			@Override
-			public Contains< Localizable > copyContains() 
-			{
-				return this;
-			}
-		} );
+		return new ContainsRandomAccess( new KDTreeContains() );
 	}
 
 	@Override
@@ -154,7 +141,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 			reset();
 		}
 
-		private PointCollectionCursor( final Collection< ? extends Localizable > collection, int idx )
+		private PointCollectionCursor( final Collection< ? extends Localizable > collection, final int idx )
 		{
 			this( collection );
 			jumpFwd( idx );
@@ -177,7 +164,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		public void reset()
 		{
 			currentIt = collection.iterator();
-			idx = 0; 
+			idx = 0;
 		}
 
 		@Override
@@ -211,6 +198,45 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		public AbstractCursor< Void > copyCursor()
 		{
 			return copy();
+		}
+	}
+
+	private synchronized < T extends Localizable > void initSearch( final Collection< T > v )
+	{
+		if ( search != null )
+			return;
+		final List< T > vertexList = new ArrayList< T >( v );
+		search = new NearestNeighborSearchOnKDTree< T >( new KDTree< T >( vertexList, vertexList ) );
+	}
+
+	private class KDTreeContains implements Contains< Localizable >
+	{
+		private final NearestNeighborSearchOnKDTree< ? extends Localizable > s;
+
+		public KDTreeContains()
+		{
+			if ( search == null )
+				initSearch( vertices );
+			s = search.copy();
+		}
+
+		@Override
+		public int numDimensions()
+		{
+			return PointCollection.this.numDimensions();
+		}
+
+		@Override
+		public boolean contains( final Localizable o )
+		{
+			s.search( o );
+			return s.getSquareDistance() < 0.5;
+		}
+
+		@Override
+		public KDTreeContains copyContains()
+		{
+			return new KDTreeContains();
 		}
 	}
 }
