@@ -125,4 +125,9 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 		return new RasterizedPolygon( this );
 	}
 
+	@Override
+	public Polygon copyContains() 
+	{
+		return this;
+	}
 }

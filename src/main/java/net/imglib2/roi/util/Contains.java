@@ -56,4 +56,11 @@ public interface Contains< L extends RealLocalizable > extends EuclideanSpace
 	 * @return true, if implementor contains l
 	 */
 	boolean contains( final L l );
+
+	/**
+	 * Create a copy of the {@link Contains}
+	 * 
+	 * @return copy
+	 */
+	Contains< L > copyContains();
 }

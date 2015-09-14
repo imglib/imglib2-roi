@@ -122,6 +122,12 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 			{
 				return vertices.contains( o );
 			}
+
+			@Override
+			public Contains< Localizable > copyContains() 
+			{
+				return this;
+			}
 		} );
 	}
 

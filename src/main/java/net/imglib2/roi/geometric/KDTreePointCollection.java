@@ -60,7 +60,7 @@ import net.imglib2.type.logic.BoolType;
  * @author Christian Dietz, University of Konstanz.
  * @author Daniel Seebacher, University of Konstanz.
  */
-public class KDTreePointCollection extends AbstractInterval implements IterableRegion< BoolType >, Contains< Localizable >
+public class KDTreePointCollection extends AbstractInterval implements IterableRegion< BoolType >
 {
 	private final KDTree< ? extends Localizable > kdtree;
 
@@ -114,31 +114,9 @@ public class KDTreePointCollection extends AbstractInterval implements IterableR
 	}
 
 	@Override
-	public boolean contains( final Localizable l )
-	{
-		return false;
-	}
-
-	@Override
 	public RandomAccess< BoolType > randomAccess()
 	{
-		return new ContainsRandomAccess( new Contains< Localizable >()
-		{
-			private final NearestNeighborSearchOnKDTree< ? extends Localizable > s = search.copy();
-
-			@Override
-			public int numDimensions()
-			{
-				return kdtree.numDimensions();
-			}
-
-			@Override
-			public boolean contains( final Localizable o )
-			{
-				s.search( o );
-				return s.getSquareDistance() < 0.5;
-			}
-		} );
+		return new ContainsRandomAccess( new KDTreeContains() );
 	}
 
 	@Override
@@ -212,6 +190,30 @@ public class KDTreePointCollection extends AbstractInterval implements IterableR
 		public PointCollectionCursor copyCursor()
 		{
 			return copy();
+		}
+	}
+	
+	private class KDTreeContains implements Contains< Localizable >
+	{
+		private final NearestNeighborSearchOnKDTree< ? extends Localizable > s = search.copy();
+
+		@Override
+		public int numDimensions()
+		{
+			return kdtree.numDimensions();
+		}
+
+		@Override
+		public boolean contains( final Localizable o )
+		{
+			s.search( o );
+			return s.getSquareDistance() < 0.5;
+		}
+
+		@Override
+		public KDTreeContains copyContains() 
+		{
+			return new KDTreeContains();
 		}
 	}
 }
