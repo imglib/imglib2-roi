@@ -7,14 +7,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.type.logic.BoolType;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class GeometricROITest
 {
@@ -60,6 +60,7 @@ public class GeometricROITest
 		final Cursor< Void > cursor = rp.cursor();
 		while ( cursor.hasNext() )
 		{
+			cursor.fwd();
 			sz++;
 		}
 		assertEquals( "Cursor Size", 100, sz );
@@ -83,6 +84,7 @@ public class GeometricROITest
 		final Cursor< Void > cursor = polygonalChain.cursor();
 		while ( cursor.hasNext() )
 		{
+			cursor.fwd();
 			sz++;
 		}
 		assertEquals( "Cursor Size", 40, sz );
