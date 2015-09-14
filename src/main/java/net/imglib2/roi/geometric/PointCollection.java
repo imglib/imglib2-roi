@@ -139,11 +139,19 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 
 		private Localizable currentPos;
 
+		private int idx;
+
 		public PointCollectionCursor( final Collection< ? extends Localizable > collection )
 		{
 			super( collection.iterator().next().numDimensions() );
 			this.collection = collection;
-			this.currentIt = collection.iterator();
+			reset();
+		}
+
+		private PointCollectionCursor( final Collection< ? extends Localizable > collection, int idx )
+		{
+			this( collection );
+			jumpFwd( idx );
 		}
 
 		@Override
@@ -155,6 +163,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		@Override
 		public void fwd()
 		{
+			++idx;
 			currentPos = currentIt.next();
 		}
 
@@ -162,6 +171,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		public void reset()
 		{
 			currentIt = collection.iterator();
+			idx = 0; 
 		}
 
 		@Override
@@ -188,7 +198,7 @@ public class PointCollection extends AbstractInterval implements IterableRegion<
 		@Override
 		public AbstractCursor< Void > copy()
 		{
-			return new PointCollectionCursor( collection );
+			return new PointCollectionCursor( collection, idx );
 		}
 
 		@Override
