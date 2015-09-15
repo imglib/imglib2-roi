@@ -31,90 +31,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util;
+package net.imglib2.roi.geometric;
 
-import java.util.Iterator;
-
-import net.imglib2.AbstractWrappedInterval;
-import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
-import net.imglib2.type.BooleanType;
+import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.roi.util.ROIUtils;
+import net.imglib2.type.logic.BoolType;
+import net.imglib2.util.Intervals;
+import net.imglib2.view.Views;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
+ * Rasterized {@link Polygon}.
+ * 
+ * @author Tobias Pietzsch
+ * @author Christian Dietz, University of Konstanz
+ * @author Daniel Seebacher, University of Konstanz
  *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
- *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
  */
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class RasterizedPolygon extends IterableRandomAccessibleRegion< BoolType > implements IterableRegion< BoolType >
 {
-	final long size;
-
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
+	public RasterizedPolygon( final Polygon polygon )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, ROIUtils.countTrue( interval ) );
+		this( Views.interval( Views.raster( polygon ), Intervals.smallestContainingInterval( polygon ) ) );
 	}
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
+	public RasterizedPolygon( final RandomAccessibleInterval< BoolType > region )
 	{
-		super( interval );
-		this.size = size;
-	}
-
-	@Override
-	public long size()
-	{
-		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		return cursor().next();
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public Iterator< Void > iterator()
-	{
-		return cursor();
-	}
-
-	@Override
-	public Cursor< Void > cursor()
-	{
-		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
-	}
-
-	@Override
-	public Cursor< Void > localizingCursor()
-	{
-		return cursor();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess()
-	{
-		return sourceInterval.randomAccess();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
-	{
-		return sourceInterval.randomAccess( interval );
+		super( region, ROIUtils.countTrue( region ) );
 	}
 }

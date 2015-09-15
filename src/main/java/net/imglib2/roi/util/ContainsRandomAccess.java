@@ -1,3 +1,4 @@
+
 /*
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
@@ -33,88 +34,54 @@
  */
 package net.imglib2.roi.util;
 
-import java.util.Iterator;
-
-import net.imglib2.AbstractWrappedInterval;
-import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.IterableInterval;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.IterableRegion;
-import net.imglib2.type.BooleanType;
+import net.imglib2.type.logic.BoolType;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
- *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
- *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * {@link RandomAccess} based on {@link Contains} with {@link Localizable}s.
+ * 
+ * @author Christian Dietz, University of Konstanz
+ * @author Daniel Seebacher, University of Konstanz
+ * @author Tobias Pietzsch
  */
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class ContainsRandomAccess extends Point implements RandomAccess< BoolType >
 {
-	final long size;
+	private final Contains< ? super Localizable > contains;
 
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
+	private final BoolType type;
+
+	public ContainsRandomAccess( final Contains< ? super Localizable > contains )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, ROIUtils.countTrue( interval ) );
+		super( contains.numDimensions() );
+		this.contains = contains;
+		type = new BoolType();
 	}
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
+	protected ContainsRandomAccess( final ContainsRandomAccess cra )
 	{
-		super( interval );
-		this.size = size;
-	}
-
-	@Override
-	public long size()
-	{
-		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		return cursor().next();
+		super( cra );
+		contains = cra.contains;
+		type = cra.type.copy();
 	}
 
 	@Override
-	public Object iterationOrder()
+	public BoolType get()
 	{
-		return this;
+		type.set( contains.contains( this ) );
+		return type;
 	}
 
 	@Override
-	public Iterator< Void > iterator()
+	public ContainsRandomAccess copy()
 	{
-		return cursor();
+		return new ContainsRandomAccess( this );
 	}
 
 	@Override
-	public Cursor< Void > cursor()
+	public RandomAccess< BoolType > copyRandomAccess()
 	{
-		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
-	}
-
-	@Override
-	public Cursor< Void > localizingCursor()
-	{
-		return cursor();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess()
-	{
-		return sourceInterval.randomAccess();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
-	{
-		return sourceInterval.randomAccess( interval );
+		return copy();
 	}
 }

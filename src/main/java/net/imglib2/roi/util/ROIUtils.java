@@ -33,7 +33,19 @@
  */
 package net.imglib2.roi.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import net.imglib2.FinalInterval;
+import net.imglib2.FinalRealInterval;
+import net.imglib2.Interval;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.labeling.LabelingMapping;
 import net.imglib2.roi.labeling.LabelingType;
 import net.imglib2.type.BooleanType;
@@ -53,5 +65,104 @@ public class ROIUtils
 	public static < T > LabelingMapping< T > getLabelingMapping( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
 		return Views.iterable( labeling ).firstElement().getMapping();
+	}
+
+	public static Interval getBounds( final Collection< ? extends Localizable > vertices )
+	{
+		assert ( vertices.size() != 0 );
+
+		final int numDims = vertices.iterator().next().numDimensions();
+		final long[] min = new long[ numDims ];
+		Arrays.fill( min, Long.MAX_VALUE );
+
+		final long[] max = new long[ numDims ];
+		Arrays.fill( max, Long.MIN_VALUE );
+
+		for ( final Localizable l : vertices )
+		{
+			for ( int d = 0; d < numDims; d++ )
+			{
+				final long pos = l.getLongPosition( d );
+				if ( pos < min[ d ] )
+					min[ d ] = pos;
+				if ( pos > max[ d ] )
+					max[ d ] = pos;
+			}
+		}
+
+		return new FinalInterval( min, max );
+	}
+
+	public static RealInterval getBoundsReal( final Collection< ? extends RealLocalizable > vertices )
+	{
+		assert ( vertices.size() != 0 );
+
+		final int numDims = vertices.iterator().next().numDimensions();
+
+		final double[] min = new double[ numDims ];
+		Arrays.fill( min, Double.POSITIVE_INFINITY );
+
+		final double[] max = new double[ numDims ];
+		Arrays.fill( max, Double.NEGATIVE_INFINITY );
+
+		for ( final RealLocalizable l : vertices )
+		{
+			for ( int d = 0; d < numDims; d++ )
+			{
+				final double pos = l.getDoublePosition( d );
+				if ( pos < min[ d ] )
+					min[ d ] = pos;
+				if ( pos > max[ d ] )
+					max[ d ] = pos;
+			}
+		}
+
+		return new FinalRealInterval( min, max );
+	}
+
+	public static List< Localizable > bresenham( final List< ? extends RealLocalizable > vertices )
+	{
+
+		assert ( vertices.size() > 1 );
+		assert ( vertices.iterator().next().numDimensions() == 2 );
+
+		final ArrayList< Localizable > tmp = new ArrayList< Localizable >();
+		for ( int i = 0; i < vertices.size(); i++ )
+		{
+
+			long x0 = Math.round( vertices.get( i ).getDoublePosition( 0 ) );
+			long y0 = Math.round( vertices.get( i ).getDoublePosition( 1 ) );
+			final long x1 = Math.round( vertices.get( ( i + 1 ) % vertices.size() ).getDoublePosition( 0 ) );
+			final long y1 = Math.round( vertices.get( ( i + 1 ) % vertices.size() ).getDoublePosition( 1 ) );
+
+			final long dx = Math.abs( x1 - x0 ), sx = x0 < x1 ? 1 : -1;
+			final long dy = -Math.abs( y1 - y0 ), sy = y0 < y1 ? 1 : -1;
+
+			long err = dx + dy, e2; /* error value e_xy */
+
+			while ( true )
+			{
+				tmp.add( new Point( x0, y0 ) );
+				if ( x0 == x1 && y0 == y1 )
+					break;
+				e2 = 2 * err;
+				if ( e2 > dy )
+				{
+					err += dy;
+					x0 += sx;
+				} /* e_xy+e_x > 0 */
+				if ( e2 < dx )
+				{
+					err += dx;
+					y0 += sy;
+				} /* e_xy+e_y < 0 */
+			}
+
+			// remove last point, because the last point is the identical to the
+			// first point of the next edge
+			tmp.remove( tmp.size() - 1 );
+		}
+
+		return tmp;
 	}
 }
