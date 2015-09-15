@@ -61,6 +61,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	public Polygon( final List< ? extends RealLocalizable > vertices )
 	{
 		super( ROIUtils.getBoundsReal( vertices ) );
+		assert( this.n == 2 );
 		this.vertices = vertices;
 	}
 
