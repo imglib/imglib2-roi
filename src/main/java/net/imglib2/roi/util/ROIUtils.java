@@ -120,6 +120,9 @@ public class ROIUtils
 		return new FinalRealInterval( min, max );
 	}
 
+	// TODO: bresenham(vertices) assumes closed loop of vertices (first vertex
+	// is repeated after last vertex). It would be useful to have a version that
+	// doesn't assume that, and a version that just takes 2 points.
 	public static List< Localizable > bresenham( final List< ? extends RealLocalizable > vertices )
 	{
 
