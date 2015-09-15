@@ -28,10 +28,10 @@ public class GeometricROITest
 	{
 
 		final List< RealLocalizable > points = new ArrayList< RealLocalizable >();
-		points.add( new RealPoint( 10, 10 ) );
-		points.add( new RealPoint( 20, 10 ) );
-		points.add( new RealPoint( 20, 20 ) );
-		points.add( new RealPoint( 10, 20 ) );
+		points.add( new RealPoint( 10d, 10d ) );
+		points.add( new RealPoint( 20d, 10d ) );
+		points.add( new RealPoint( 20d, 20d ) );
+		points.add( new RealPoint( 10d, 20d ) );
 
 		polygon = new Polygon( points );
 		polygonalChain = new RasterizedPolygonalChain( points );
@@ -44,7 +44,7 @@ public class GeometricROITest
 		assertEquals( "Polygon Size", 4, polygon.getVertices().size() );
 
 		// check point in polygon test
-		final RealPoint realPoint = new RealPoint( 15, 15 );
+		final RealPoint realPoint = new RealPoint( 15d, 15d );
 		assertTrue( "Point in Polygon Test", polygon.contains( realPoint ) );
 	}
 
