@@ -39,19 +39,18 @@ import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccessible;
-import net.imglib2.type.BooleanType;
 
-public class SamplingIterableInterval< B extends BooleanType< B >, T >
-	extends AbstractWrappedInterval< IterableInterval< B > > implements IterableInterval< T >
+public class SamplingIterableInterval< T >
+	extends AbstractWrappedInterval< IterableInterval< Void > > implements IterableInterval< T >
 {
 	final RandomAccessible< T > target;
 
-	public static < B extends BooleanType< B >, T > SamplingIterableInterval< B, T > create( final IterableInterval< B > region, final RandomAccessible< T > target )
+	public static < T > SamplingIterableInterval< T > create( final IterableInterval< Void > region, final RandomAccessible< T > target )
 	{
-		return new SamplingIterableInterval< B, T >( region, target );
+		return new SamplingIterableInterval< T >( region, target );
 	}
 
-	public SamplingIterableInterval( final IterableInterval< B > region, final RandomAccessible< T > target )
+	public SamplingIterableInterval( final IterableInterval< Void > region, final RandomAccessible< T > target )
 	{
 		super( region );
 		this.target = target;
@@ -60,13 +59,13 @@ public class SamplingIterableInterval< B extends BooleanType< B >, T >
 	@Override
 	public Cursor< T > cursor()
 	{
-		return new SamplingCursor< B, T >( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor< T >( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
 	public Cursor< T > localizingCursor()
 	{
-		return new SamplingCursor< B, T >( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor< T >( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class Regions
 	// TODO: bind to (respectively sample from) RandomAccessible
 	// TODO: out-of-bounds / clipping
 
-	public static < B extends BooleanType< B >, T > IterableInterval< T > sample( final IterableInterval< B > region, final RandomAccessible< T > img )
+	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
 	{
 		return SamplingIterableInterval.create( region, img );
 	}

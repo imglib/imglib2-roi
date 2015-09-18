@@ -36,13 +36,12 @@ package net.imglib2.roi.util;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.converter.AbstractConvertedCursor;
-import net.imglib2.type.BooleanType;
 
-public class SamplingCursor< B extends BooleanType< B >, T > extends AbstractConvertedCursor< B, T >
+public class SamplingCursor< T > extends AbstractConvertedCursor< Void, T >
 {
 	protected final RandomAccess< T > target;
 
-	public SamplingCursor( final Cursor< B > source, final RandomAccess< T > target )
+	public SamplingCursor( final Cursor< Void > source, final RandomAccess< T > target )
 	{
 		super( source );
 		this.target = target;
@@ -56,13 +55,13 @@ public class SamplingCursor< B extends BooleanType< B >, T > extends AbstractCon
 	}
 
 	@Override
-	public SamplingCursor< B, T > copy()
+	public SamplingCursor< T > copy()
 	{
-		return new SamplingCursor< B, T >( source.copyCursor(), target.copyRandomAccess() );
+		return new SamplingCursor< T >( source.copyCursor(), target.copyRandomAccess() );
 	}
 
 	@Override
-	public SamplingCursor< B, T > copyCursor()
+	public SamplingCursor< T > copyCursor()
 	{
 		return copy();
 	}
