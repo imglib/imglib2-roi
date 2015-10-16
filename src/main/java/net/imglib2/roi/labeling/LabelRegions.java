@@ -332,79 +332,81 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		{
 			synchronized ( this )
 			{
-				expectedGeneration = type.getGeneration();
-
-				for ( final LabelRegionProperties props : allLabelToLabelRegionProperties.values() )
-					props.reset();
-
-				// remember existing LabelRegions created on previous getLabelRegion() or iterator()
-				final HashMap< T, LabelRegion< T > > oldLabelToLabelRegion = new HashMap< T, LabelRegion< T > >( labelToLabelRegion );
-
-				indexToFragmentProperties.clear();
-				labelToLabelRegionProperties.clear();
-				labelToLabelRegion.clear();
-
-				final LabelingMapping< T > mapping = type.getMapping();
-				final int numFragments = mapping.numSets();
-				for ( int i = 0; i < numFragments; ++i )
-					indexToFragmentProperties.add( new FragmentProperties( i, labeling ) );
-
-				final Cursor< ? extends LabelingType< ? > > c = Views.flatIterable( labeling ).localizingCursor();
-				while ( c.hasNext() )
+				final int generation = type.getGeneration();
+				if ( generation != expectedGeneration )
 				{
-					final int index = c.next().getIndex().getInteger();
-					// TODO: Do a benchmark: For sparsely labeled images it
-					// might be faster to use a non-localizing Cursor, because
-					// we don't collect background coordinates. What is the
-					// trade-off?
-					if ( index > 0 )
-						indexToFragmentProperties.get( index ).add( c );
-				}
-				// generation = type.getGeneration();
-				for ( final FragmentProperties frag : indexToFragmentProperties )
-					frag.finish();
-
-				// now build LabelProperties
-				for ( final FragmentProperties frag : indexToFragmentProperties )
-				{
-					if ( frag.getSize() <= 0 )
-						continue;
-
-					final Set< T > fragLabels = mapping.labelsAtIndex( frag.getIndex() );
-					for ( final T label : fragLabels )
-					{
-						LabelRegionProperties props = labelToLabelRegionProperties.get( label );
-						if ( props == null )
-						{
-							props = allLabelToLabelRegionProperties.get( label );
-							if ( props == null )
-							{
-								props = new LabelRegionProperties( this );
-								allLabelToLabelRegionProperties.put( label, props );
-							}
-							labelToLabelRegionProperties.put( label, props );
-						}
-						props.add( frag );
-					}
-				}
-
-				for ( final Entry< T, LabelRegionProperties > entry : labelToLabelRegionProperties.entrySet() )
-				{
-					final T label = entry.getKey();
-					final LabelRegionProperties props = entry.getValue();
-					props.finish();
+					for ( final LabelRegionProperties props : allLabelToLabelRegionProperties.values() )
+						props.reset();
 
 					// remember existing LabelRegions created on previous getLabelRegion() or iterator()
-					final LabelRegion< T > labelRegion = oldLabelToLabelRegion.get( label );
-					if ( labelRegion != null )
-						labelToLabelRegion.put( label, labelRegion );
+					final HashMap< T, LabelRegion< T > > oldLabelToLabelRegion = new HashMap< T, LabelRegion< T > >( labelToLabelRegion );
+
+					indexToFragmentProperties.clear();
+					labelToLabelRegionProperties.clear();
+					labelToLabelRegion.clear();
+
+					final LabelingMapping< T > mapping = type.getMapping();
+					final int numFragments = mapping.numSets();
+					for ( int i = 0; i < numFragments; ++i )
+						indexToFragmentProperties.add( new FragmentProperties( i, labeling ) );
+
+					final Cursor< ? extends LabelingType< ? > > c = Views.flatIterable( labeling ).localizingCursor();
+					while ( c.hasNext() )
+					{
+						final int index = c.next().getIndex().getInteger();
+						// TODO: Do a benchmark: For sparsely labeled images it
+						// might be faster to use a non-localizing Cursor, because
+						// we don't collect background coordinates. What is the
+						// trade-off?
+						if ( index > 0 )
+							indexToFragmentProperties.get( index ).add( c );
+					}
+					// generation = type.getGeneration();
+					for ( final FragmentProperties frag : indexToFragmentProperties )
+						frag.finish();
+
+					// now build LabelProperties
+					for ( final FragmentProperties frag : indexToFragmentProperties )
+					{
+						if ( frag.getSize() <= 0 )
+							continue;
+
+						final Set< T > fragLabels = mapping.labelsAtIndex( frag.getIndex() );
+						for ( final T label : fragLabels )
+						{
+							LabelRegionProperties props = labelToLabelRegionProperties.get( label );
+							if ( props == null )
+							{
+								props = allLabelToLabelRegionProperties.get( label );
+								if ( props == null )
+								{
+									props = new LabelRegionProperties( this );
+									allLabelToLabelRegionProperties.put( label, props );
+								}
+								labelToLabelRegionProperties.put( label, props );
+							}
+							props.add( frag );
+						}
+					}
+
+					for ( final Entry< T, LabelRegionProperties > entry : labelToLabelRegionProperties.entrySet() )
+					{
+						final T label = entry.getKey();
+						final LabelRegionProperties props = entry.getValue();
+						props.finish();
+
+						// remember existing LabelRegions created on previous getLabelRegion() or iterator()
+						final LabelRegion< T > labelRegion = oldLabelToLabelRegion.get( label );
+						if ( labelRegion != null )
+							labelToLabelRegion.put( label, labelRegion );
+					}
+
+					oldLabelToLabelRegion.clear();
+
+					// call recursively in case there were more updates in the meantime
+					expectedGeneration = generation;
+					update();
 				}
-
-				oldLabelToLabelRegion.clear();
-
-				// call recursively in case there were more updates in the meantime
-				update();
-				return expectedGeneration;
 			}
 		}
 		return expectedGeneration;
