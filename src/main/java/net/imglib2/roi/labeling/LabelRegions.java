@@ -53,7 +53,13 @@ import net.imglib2.view.Views;
  * Provides {@link LabelRegion}s for all labels of a labeling.
  *
  * <p>
- * A labeling can be for example an {@link ImgLabeling} or a view onto an {@link ImgLabeling}.
+ * A labeling can be for example an {@link ImgLabeling} or a view onto an
+ * {@link ImgLabeling}.
+ *
+ * <p>
+ * Changes to the underlying labeling are correctly reflected.
+ * {@link LabelRegions} is thread-safe, however, concurrently modifying the
+ * labeling and accessing the {@link LabelRegions} has undefined results.
  *
  * @param <T>
  *            the label type
