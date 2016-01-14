@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>gov.nist.math</groupId>
 			<artifactId>jama</artifactId>
-		</dependency>
+		</dependency> 
 		
 		<!-- Test dependencies -->
 		<dependency>
