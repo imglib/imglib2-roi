@@ -13,13 +13,13 @@ import net.imglib2.type.logic.BoolType;
 import Jama.Matrix;
 
 /**
- * This class represents a rotatable and positionable object in continuous space having an extension >= 0. Easiest example: a cuboid in 3d space.
+ * This class represents a rotatable and positionable binary geometric region of interest in continuous space having an extension >= 0. Easiest example: a cuboid in 3d space.
  * 
  * @author Robert Haase, Scientific Computing Facility, MPI-CBG, rhaase@mpi-cbg.de
  * @version 1.0.0 Jan 13, 2016
  */
-public abstract class AbstractGeometricShape extends AbstractRealInterval implements RealRandomAccessibleRealInterval<BoolType>, Contains<RealLocalizable>,
-				RealPositionable {
+public abstract class AbstractGeometricShape extends AbstractRealInterval implements RealRandomAccessibleRealIntervalContains,
+				RealPositionable, RealLocalizable {
 	protected double[] semiAxisLengths;
 	protected double[][] rotationMatrix;
 	protected double[][] inverseRotationMatrix;
@@ -87,9 +87,7 @@ public abstract class AbstractGeometricShape extends AbstractRealInterval implem
 		System.arraycopy(semiAxisLengths, 0, this.semiAxisLengths, 0, semiAxisLengths.length);
 
 		this.rotationMatrix = new double[n][n];
-		for (int d = 0; d < n; d++) {
-			System.arraycopy(rotationMatrix[d], 0, this.rotationMatrix[d], 0, n);
-		}
+		copyMatrix(this.rotationMatrix, rotationMatrix);
 
 		this.inverseRotationMatrix = new double[n][n];
 		invertMatrix(this.rotationMatrix, this.inverseRotationMatrix);
@@ -100,6 +98,45 @@ public abstract class AbstractGeometricShape extends AbstractRealInterval implem
 
 		updateBoundingBox();
 	}
+	
+	public double getSemiAxisLength(int d)
+	{
+		return semiAxisLengths[d];
+	}
+	
+	public void setSemiAxisLength(double value, int d)
+	{
+		semiAxisLengths[d] = value;
+		updateBoundingBox();
+	}
+	
+	public void setSemiAxisLength(double[] value)
+	{
+		System.arraycopy(value, 0, this.semiAxisLengths, 0, semiAxisLengths.length);
+		updateBoundingBox();
+	}
+	
+	public double[][] getRotationMatrix()
+	{
+		double[][] matrix = new double[n][n];
+		copyMatrix(rotationMatrix, matrix);
+		return matrix;
+	}
+	
+	public void setRotationMatrix(double[][] matrix)
+	{
+		copyMatrix(matrix, rotationMatrix);
+		invertMatrix(this.rotationMatrix, this.inverseRotationMatrix);
+		updateBoundingBox();
+	}
+	
+	private void copyMatrix(double[][] source, double[][] target)
+	{
+		for (int d = 0; d < n; d++) {
+			System.arraycopy(source[d], 0, target[d], 0, n);
+		}
+	}
+	
 
 	/**
 	 * internal handler to initialize a rotation corresponding to a null transform
@@ -350,6 +387,31 @@ public abstract class AbstractGeometricShape extends AbstractRealInterval implem
 	public void setPosition(double position, int d) {
 		this.position[d] = position;
 		updateBoundingBox();
+	}
+	
+
+	@Override
+	public void localize(float[] position) {
+		for (int d = 0; d < n; d++)
+		{
+			position[d] = (float)this.position[d];
+		}
+	}
+
+	@Override
+	public void localize(double[] position) {
+		System.arraycopy(this.position, 0, position, 0, this.position.length);
+
+	}
+
+	@Override
+	public float getFloatPosition(int d) {
+		return (float)position[d];
+	}
+
+	@Override
+	public double getDoublePosition(int d) {
+		return position[d];
 	}
 
 }

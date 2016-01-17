@@ -3,10 +3,17 @@ package net.imglib2.roi.geometric;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 
+/**
+ * This class represents a rectangle/cuboid/hyperrectangle region of interest in n-d space.
+ *
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG, rhaase@mpi-cbg.de
+ * @version 1.0.0 Jan 14, 2016
+ *
+ */
 public class HyperRectangle extends AbstractGeometricShape {
 
 	/**
-	 * Initialize the hypercube with position 0 in n dimensions. The extent in all dimensions is zero as well. Furthermore, the object is not rotated in space by default.
+	 * Initialize the rectangle with position 0 in n dimensions. The extent in all dimensions is zero as well. Furthermore, the object is not rotated in space by default.
 	 * @param n
 	 */
 	public HyperRectangle(int n) {
@@ -14,7 +21,7 @@ public class HyperRectangle extends AbstractGeometricShape {
 	}
 
 	/**
-	 * Initialize the hypercube with a given center position and extent. 
+	 * Initialize the rectangle with a given center position and extent. 
 	 * @param center position of the cube in space, given in pixel coordinates
 	 * @param semiAxisLengths array containing n elements representing half values of width/height/depth/...
 	 */
@@ -23,7 +30,7 @@ public class HyperRectangle extends AbstractGeometricShape {
 	}
 
 	/**
-	 * Initialize the cube with 
+	 * Initialize the rectangle with 
 	 * @param center
 	 * @param semiAxisLengths
 	 * @param rotationMatrix
@@ -33,7 +40,7 @@ public class HyperRectangle extends AbstractGeometricShape {
 	}
 
 	/**
-	 * This function determines if a position is inside the cuboid or not.
+	 * This function determines if a position is inside the rectangle or not.
 	 */
 	public boolean contains(RealLocalizable l) {
 		double[] questionablePosition = new double[n];
@@ -69,8 +76,6 @@ public class HyperRectangle extends AbstractGeometricShape {
 		}
 
 		// collect all corner positions of the unrotated object
-		
-		int counter = 0;
 		for (int i = 0; i < boundingBoxPositions.length; i++) {
 			for (int d = 0; d < n; d++) {
 				if ((i & (1 << d)) > 0)
@@ -83,7 +88,6 @@ public class HyperRectangle extends AbstractGeometricShape {
 				}
 			}
 		}
-		
 
 		// rotate them as configured
 		for (int i = 0; i < boundingBoxPositions.length; i++) {
@@ -106,4 +110,8 @@ public class HyperRectangle extends AbstractGeometricShape {
 		}
 	}
 
+	public HyperRectangle copy()
+	{
+		return new HyperRectangle(new RealPoint(position), semiAxisLengths, rotationMatrix);
+	}
 }

@@ -3,6 +3,7 @@ package net.imglib2.roi.geometric;
 import java.util.Arrays;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 
 /**
  * This class implements a positionable, rotatable elipsoid in space with possible different extensions in different dimensions.
@@ -134,4 +135,20 @@ public class HyperEllipsoid extends AbstractGeometricShape {
 			max[d] += position[d];
 		}
 	}
+
+	public double getExponent() {
+		return exponent;
+	}
+
+	public void setExponent(double exponent) {
+		this.exponent = exponent;
+		
+		updateBoundingBox();
+	}
+	
+	public HyperEllipsoid copy()
+	{	
+		return new HyperEllipsoid(new RealPoint(position), semiAxisLengths, rotationMatrix, exponent);
+	}
+
 }
