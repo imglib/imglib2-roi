@@ -3,7 +3,6 @@ package net.imglib2.roi.geometric;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -70,9 +69,6 @@ public class GeometricShapeTest {
 						{Math.sin(angle) , Math.cos(angle)}
 		};
 
-		System.out.println(Arrays.toString(rotationMatrix[0]));
-		System.out.println(Arrays.toString(rotationMatrix[1]));
-		
 		
 		AbstractGeometricShape hc = new HyperRectangle(new RealPoint( new double[]{4.5, 4.5} ), new double[]{2,3}, rotationMatrix);
 		
@@ -93,6 +89,9 @@ public class GeometricShapeTest {
 		RealRandomAccess<BoolType> rra = hc.realRandomAccess();
 		RandomAccessible<BoolType> ra = Views.raster(hc);
 		RandomAccessibleInterval<BoolType> rai = Views.interval(ra, interval);
+		
+		rra.numDimensions();
+		rai.numDimensions();
 	}
 
 	@Test
@@ -377,6 +376,9 @@ public class GeometricShapeTest {
 		//new GeometricShapeTest().testIfDifferenceWorksProperly();
 		//new GeometricShapeTest().testIfExclusiveOrWorksProperly();
 		//new GeometricShapeTest().testIfIntersectionWorksProperly();
-		new GeometricShapeTest().testIfNotWorksProperly();
+		//new GeometricShapeTest().testIfNotWorksProperly();
+		
+		new GeometricShapeTest().testTwoDimensionalRectangle();
+		
 	}
 }

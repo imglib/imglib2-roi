@@ -1,12 +1,10 @@
 package net.imglib2.roi.operators;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.Localizable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.geometric.RealRandomAccessibleRealIntervalContains;
 import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;

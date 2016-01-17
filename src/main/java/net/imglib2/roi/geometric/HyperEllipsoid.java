@@ -97,8 +97,6 @@ public class HyperEllipsoid extends AbstractGeometricShape {
 			max[d] = 0;
 		}
 
-		// collect all corner positions of the unrotated object
-		int counter = 0;
 		for (int i = 0; i < boundingBoxPositions.length; i++) {
 			for (int d = 0; d < n; d++) {
 				if ((i & (1 << d)) > 0)
