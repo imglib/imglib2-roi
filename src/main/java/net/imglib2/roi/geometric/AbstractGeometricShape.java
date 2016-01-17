@@ -85,7 +85,7 @@ public abstract class AbstractGeometricShape extends AbstractRealInterval implem
 		System.arraycopy(semiAxisLengths, 0, this.semiAxisLengths, 0, semiAxisLengths.length);
 
 		this.rotationMatrix = new double[n][n];
-		copyMatrix(this.rotationMatrix, rotationMatrix);
+		copyMatrix(rotationMatrix, this.rotationMatrix);
 
 		this.inverseRotationMatrix = new double[n][n];
 		invertMatrix(this.rotationMatrix, this.inverseRotationMatrix);
@@ -158,6 +158,7 @@ public abstract class AbstractGeometricShape extends AbstractRealInterval implem
 	 */
 	private void invertMatrix(double[][] source, double[][] target) {
 		Matrix m = new Matrix(source);
+
 		double[][] temp = m.inverse().getArray();
 		for (int i = 0; i < n; i++) {
 			System.arraycopy(temp, 0, target, 0, n);
