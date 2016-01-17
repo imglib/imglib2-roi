@@ -1,9 +1,11 @@
 package net.imglib2.roi.geometric;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import org.junit.Test;
 
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
@@ -17,12 +19,15 @@ import net.imglib2.roi.operators.RealBinaryNot;
 import net.imglib2.roi.operators.RealBinaryUnion;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
-import net.imglib2.view.IntervalView;
-import net.imglib2.view.RandomAccessibleOnRealRandomAccessible;
 import net.imglib2.view.Views;
 
-import org.junit.Test;
-
+/**
+ * Tests for elipsoids, rectangles (in n dimensions) and logical operations
+ *
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG, rhaase@mpi-cbg.de
+ * @version 1.0.0 Jan 14, 2016
+ *
+ */
 public class GeometricShapeTest {
 
 	//@Test
@@ -84,7 +89,7 @@ public class GeometricShapeTest {
 		
 		
 		
-		
+		// Just test if the following compiles...
 		RealRandomAccess<BoolType> rra = hc.realRandomAccess();
 		RandomAccessible<BoolType> ra = Views.raster(hc);
 		RandomAccessibleInterval<BoolType> rai = Views.interval(ra, interval);
@@ -221,9 +226,6 @@ public class GeometricShapeTest {
 	
 	private String getGeometricShapeAsAsciiArt(RealRandomAccessibleRealIntervalContains ags)
 	{
-		//System.out.println("min/max x: " + ags.realMin(0) + "/" + ags.realMax(0));
-		//System.out.println("min/max y: " + ags.realMin(1) + "/" + ags.realMax(1));
-		
 		String res = "";
 		for (int x = (int) (ags.realMin(1)) - 2; x <= (int)ags.realMax(1) + 2; x++)
 		{
@@ -371,10 +373,10 @@ public class GeometricShapeTest {
 		//new GeometricShapeTest().testHyperEllipsoid();
 		//new GeometricShapeTest().testHyperCubeWithoutVolume();
 		//new GeometricShapeTest().testTwoDimensionalRectangle();
-		new GeometricShapeTest().testIfUnionWorksProperly();
-		new GeometricShapeTest().testIfDifferenceWorksProperly();
-		new GeometricShapeTest().testIfExclusiveOrWorksProperly();
-		new GeometricShapeTest().testIfIntersectionWorksProperly();
+		//new GeometricShapeTest().testIfUnionWorksProperly();
+		//new GeometricShapeTest().testIfDifferenceWorksProperly();
+		//new GeometricShapeTest().testIfExclusiveOrWorksProperly();
+		//new GeometricShapeTest().testIfIntersectionWorksProperly();
 		new GeometricShapeTest().testIfNotWorksProperly();
 	}
 }
