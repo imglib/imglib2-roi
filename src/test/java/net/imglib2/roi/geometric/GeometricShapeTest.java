@@ -10,6 +10,11 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
+import net.imglib2.roi.operators.RealBinaryDifference;
+import net.imglib2.roi.operators.RealBinaryExclusiveOr;
+import net.imglib2.roi.operators.RealBinaryIntersection;
+import net.imglib2.roi.operators.RealBinaryNot;
+import net.imglib2.roi.operators.RealBinaryUnion;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.IntervalView;
@@ -214,7 +219,7 @@ public class GeometricShapeTest {
 		System.out.println("\n");
 	}
 	
-	private String getGeometricShapeAsAsciiArt(AbstractGeometricShape ags)
+	private String getGeometricShapeAsAsciiArt(RealRandomAccessibleRealIntervalContains ags)
 	{
 		//System.out.println("min/max x: " + ags.realMin(0) + "/" + ags.realMax(0));
 		//System.out.println("min/max y: " + ags.realMin(1) + "/" + ags.realMax(1));
@@ -238,10 +243,138 @@ public class GeometricShapeTest {
 		return res;
 	}
 	
-	public static void main(final String... args) throws IOException {
-		new GeometricShapeTest().testHyperEllipsoid();
-		new GeometricShapeTest().testHyperCubeWithoutVolume();
-		new GeometricShapeTest().testTwoDimensionalRectangle();
+	@Test
+	public void testIfUnionWorksProperly()
+	{
+
+		HyperRectangle hr1 = new HyperRectangle(new RealPoint( new double[]{5, 5} ), new double[]{2,2});
+		HyperRectangle hr2 = new HyperRectangle(new RealPoint( new double[]{6, 6} ), new double[]{2,2});
 		
+		RealBinaryUnion uo = new RealBinaryUnion(hr1, hr2);
+	
+
+		String result = getGeometricShapeAsAsciiArt(uo);
+		
+		String reference = " _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ # # # # # _ _ _\n" +
+				" _ _ # # # # # # _ _\n" +
+				" _ _ # # # # # # _ _\n" +
+				" _ _ # # # # # # _ _\n" +
+				" _ _ # # # # # # _ _\n" +
+				" _ _ _ # # # # # _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n";
+		assertTrue(reference.compareTo(result) == 0);
+	}
+	
+	@Test
+	public void testIfIntersectionWorksProperly()
+	{
+
+		HyperRectangle hr1 = new HyperRectangle(new RealPoint( new double[]{5, 5} ), new double[]{2,2});
+		HyperRectangle hr2 = new HyperRectangle(new RealPoint( new double[]{6, 6} ), new double[]{2,2});
+		
+		RealBinaryIntersection ui = new RealBinaryIntersection(hr1, hr2);
+	
+		String result = getGeometricShapeAsAsciiArt(ui);
+		
+		String reference = " _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ # # # # _ _ _\n" +
+				" _ _ _ # # # # _ _ _\n" +
+				" _ _ _ # # # # _ _ _\n" +
+				" _ _ _ # # # # _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n";
+		assertTrue(reference.compareTo(result) == 0);
+	}
+	
+
+	@Test
+	public void testIfDifferenceWorksProperly()
+	{
+
+		HyperRectangle hr1 = new HyperRectangle(new RealPoint( new double[]{5, 5} ), new double[]{2,2});
+		HyperRectangle hr2 = new HyperRectangle(new RealPoint( new double[]{6, 6} ), new double[]{2,2});
+		
+		RealBinaryDifference ui = new RealBinaryDifference(hr1, hr2);
+	
+		String result = getGeometricShapeAsAsciiArt(ui);
+		
+		String reference = " _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ # # # # # _ _ _\n" +
+				" _ _ # _ _ _ _ _ _ _\n" +
+				" _ _ # _ _ _ _ _ _ _\n" +
+				" _ _ # _ _ _ _ _ _ _\n" +
+				" _ _ # _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n";
+		
+		assertTrue(reference.compareTo(result) == 0);
+	}
+	
+
+	@Test
+	public void testIfExclusiveOrWorksProperly()
+	{
+
+		HyperRectangle hr1 = new HyperRectangle(new RealPoint( new double[]{5, 5} ), new double[]{2,2});
+		HyperRectangle hr2 = new HyperRectangle(new RealPoint( new double[]{6, 6} ), new double[]{2,2});
+		
+		RealBinaryExclusiveOr ui = new RealBinaryExclusiveOr(hr1, hr2);
+	
+		String result = getGeometricShapeAsAsciiArt(ui);
+		
+		String reference = " _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ # # # # # _ _ _\n" +
+				" _ _ # _ _ _ _ # _ _\n" +
+				" _ _ # _ _ _ _ # _ _\n" +
+				" _ _ # _ _ _ _ # _ _\n" +
+				" _ _ # _ _ _ _ # _ _\n" +
+				" _ _ _ # # # # # _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n" +
+				" _ _ _ _ _ _ _ _ _ _\n";
+
+		assertTrue(reference.compareTo(result) == 0);
+	}
+	
+	@Test
+	public void testIfNotWorksProperly()
+	{
+
+		HyperRectangle hr1 = new HyperRectangle(new RealPoint( new double[]{5, 5} ), new double[]{2,2});
+		
+		RealBinaryNot ui = new RealBinaryNot(hr1);
+	
+		String result = getGeometricShapeAsAsciiArt(ui);
+		
+		String reference = " # # # # # # # # #\n" +
+				" # # # # # # # # #\n" +
+				" # # _ _ _ _ _ # #\n" +
+				" # # _ _ _ _ _ # #\n" +
+				" # # _ _ _ _ _ # #\n" +
+				" # # _ _ _ _ _ # #\n" +
+				" # # _ _ _ _ _ # #\n" +
+				" # # # # # # # # #\n" +
+				" # # # # # # # # #\n";
+
+		assertTrue(reference.compareTo(result) == 0);
+	}
+	
+	public static void main(final String... args) throws IOException {
+		//new GeometricShapeTest().testHyperEllipsoid();
+		//new GeometricShapeTest().testHyperCubeWithoutVolume();
+		//new GeometricShapeTest().testTwoDimensionalRectangle();
+		new GeometricShapeTest().testIfUnionWorksProperly();
+		new GeometricShapeTest().testIfDifferenceWorksProperly();
+		new GeometricShapeTest().testIfExclusiveOrWorksProperly();
+		new GeometricShapeTest().testIfIntersectionWorksProperly();
+		new GeometricShapeTest().testIfNotWorksProperly();
 	}
 }
