@@ -1,7 +1,5 @@
 package net.imglib2.roi.geometric;
 
-import java.util.Arrays;
-
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 

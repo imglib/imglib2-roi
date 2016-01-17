@@ -12,9 +12,14 @@ import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
 import net.imglib2.type.logic.BoolType;
 
+/**
+ * This is an abstract class as base for all binary operators which allow combining continuous regions of interest like in the theory of sets. Example intersection of two ROIs.
+ *
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG, rhaase@mpi-cbg.de
+ * @version 1.0.0 Jan 14, 2016
+ *
+ */
 public abstract class AbstractRealBinaryOperator extends AbstractRealInterval implements RealRandomAccessibleRealIntervalContains {
-	
-	
 	
 	protected RealRandomAccessibleRealIntervalContains leftOperand;
 	protected RealRandomAccessibleRealIntervalContains rightOperand;

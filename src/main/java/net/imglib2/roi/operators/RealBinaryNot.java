@@ -10,6 +10,16 @@ import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
 import net.imglib2.type.logic.BoolType;
 
+/**
+ * 
+ * This class represents a negation of a continuous region of interest.
+ * 
+ * TODO: Discuss if the negation of an ROI isn't endless in space and should therefore not be an Interval.
+ *
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG, rhaase@mpi-cbg.de
+ * @version 1.0.0 Jan 14, 2016
+ *
+ */
 public class RealBinaryNot extends AbstractRealInterval implements RealRandomAccessibleRealIntervalContains{
 
 	protected RealRandomAccessibleRealIntervalContains operand;

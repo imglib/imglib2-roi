@@ -1,16 +1,14 @@
 package net.imglib2.roi.geometric;
 
+import Jama.Matrix;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.Localizable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.RealRandomAccessibleRealInterval;
-import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
 import net.imglib2.type.logic.BoolType;
-import Jama.Matrix;
 
 /**
  * This class represents a rotatable and positionable binary geometric region of interest in continuous space having an extension >= 0. Easiest example: a cuboid in 3d space.
