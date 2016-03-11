@@ -54,7 +54,7 @@ import net.imglib2.util.Intervals;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
+public class Polygon extends AbstractRealInterval implements RealRandomAccessibleRealIntervalContains
 {
 	private final List< ? extends RealLocalizable > vertices;
 
