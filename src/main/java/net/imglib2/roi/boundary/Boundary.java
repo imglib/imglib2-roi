@@ -11,12 +11,13 @@ import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import net.imglib2.type.BooleanType;
 import net.imglib2.type.logic.BoolType;
 
 /**
- * An {@link IterableRegion} of the boundary pixels of a source
- * {@link IterableRegion}. A pixel is a boundary pixel if
+ * An {@link IterableRegion} of the boundary pixels of a source boolean
+ * {@link RandomAccessibleInterval}. A pixel is a boundary pixel if
  * <ol>
  * <li>the corresponding source pixel is {@code true} (in the source region),
  * and
@@ -50,12 +51,12 @@ public final class Boundary< T extends BooleanType< T > >
 
 	private final int size;
 
-	public Boundary( final IterableRegion< T > region )
+	public Boundary( final RandomAccessibleInterval< T > region )
 	{
 		this( region, FOUR_CONNECTED );
 	}
 
-	public Boundary( final IterableRegion< T > region, final StructuringElement structuringElement )
+	public Boundary( final RandomAccessibleInterval< T > region, final StructuringElement structuringElement )
 	{
 		super( region );
 		this.structuringElement = structuringElement;
@@ -210,9 +211,9 @@ public final class Boundary< T extends BooleanType< T > >
 
 		private boolean valid;
 
-		public BoundaryConstructor( final IterableRegion< T > region, final StructuringElement structuringElement )
+		public BoundaryConstructor( final RandomAccessibleInterval< T > region, final StructuringElement structuringElement )
 		{
-			c = region.localizingCursor();
+			c = Regions.iterable( region ).localizingCursor();
 			a = structuringElement == FOUR_CONNECTED
 					? new BoundaryRandomAccess4< T >( region )
 					: new BoundaryRandomAccess8< T >( region );
