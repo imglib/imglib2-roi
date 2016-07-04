@@ -117,7 +117,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 	public void reset()
 	{
 		index = 0;
-		lineIndex = 0;
+		lineIndex = -1;
 		min( randomAccess );
 		randomAccess.bck( 0 );
 	}
