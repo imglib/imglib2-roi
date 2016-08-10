@@ -52,7 +52,7 @@ import net.imglib2.type.BooleanType;
  * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
  * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >

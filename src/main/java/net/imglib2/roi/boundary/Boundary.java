@@ -65,7 +65,7 @@ import net.imglib2.type.logic.BoolType;
  * @param <T>
  *            BooleanType of the source {@link IterableRegion}.
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public final class Boundary< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< BoolType >

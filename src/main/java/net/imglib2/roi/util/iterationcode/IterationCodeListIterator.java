@@ -45,7 +45,7 @@ import net.imglib2.Positionable;
 /**
  * TODO
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class IterationCodeListIterator< P extends Positionable & Localizable > extends AbstractEuclideanSpace implements Iterator
 {

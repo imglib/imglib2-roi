@@ -52,8 +52,8 @@ import net.imglib2.view.iteration.SubIntervalIterable;
  * Allows a {@link RandomAccessibleInterval} of type {@link LabelingType} to be
  * treated as a {@link Labeling}.
  * 
- * @author Christian Dietz (dietzc85@googlemail.com)
- * @author Martin Horn (martin.horn@uni-konstanz.de)
+ * @author Christian Dietz
+ * @author Martin Horn
  */
 @Deprecated
 public class LabelingView< L extends Comparable< L > > extends

@@ -64,7 +64,7 @@ import net.imglib2.view.Views;
  * @param <T>
  *            the label type
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterable< LabelRegion< T > >
 {

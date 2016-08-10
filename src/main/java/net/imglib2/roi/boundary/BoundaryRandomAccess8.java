@@ -51,7 +51,7 @@ import net.imglib2.type.logic.BoolType;
  *
  * @param <T>
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public final class BoundaryRandomAccess8< T extends BooleanType< T > > extends AbstractConvertedRandomAccess< T, BoolType >
 {

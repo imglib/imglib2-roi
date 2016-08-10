@@ -50,7 +50,7 @@ import net.imglib2.type.numeric.IntegerType;
  *            to number objects or {@link String} for user-assigned label names.
  *
  * @author Lee Kamentsky
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 {

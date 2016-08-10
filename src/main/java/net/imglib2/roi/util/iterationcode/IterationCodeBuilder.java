@@ -43,7 +43,7 @@ import net.imglib2.Localizable;
 /**
  * TODO
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class IterationCodeBuilder extends AbstractEuclideanSpace implements IterationCode
 {

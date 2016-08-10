@@ -64,7 +64,7 @@ import net.imglib2.roi.labeling.LabelingType.ModCount;
  * @see LabelingMapping
  *
  * @author Lee Kamentsky, Christian Dietz, Martin Horn
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class ImgLabeling< T, I extends IntegerType< I > >
 		extends AbstractWrappedInterval< RandomAccessibleInterval< I > >

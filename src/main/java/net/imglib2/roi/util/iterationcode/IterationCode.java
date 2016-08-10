@@ -39,7 +39,7 @@ import gnu.trove.list.array.TIntArrayList;
 /**
  * TODO
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public interface IterationCode extends EuclideanSpace
 {

@@ -44,7 +44,7 @@ import net.imglib2.Localizable;
  * {@link #update(Localizable) aggregating} positions contained in the region.
  *
  * @author Lee Kamentsky
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class BoundingBox extends AbstractInterval
 {

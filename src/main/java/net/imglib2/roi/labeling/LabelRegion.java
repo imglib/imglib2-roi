@@ -63,7 +63,7 @@ import net.imglib2.util.Intervals;
  * @param <T>
  *            the label type
  *
- * @author Tobias Pietzsch <tobias.pietzsch@gmail.com>
+ * @author Tobias Pietzsch
  */
 public class LabelRegion< T > extends AbstractLocalizable implements PositionableIterableRegion< BoolType >
 {
