@@ -31,32 +31,94 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+package net.imglib2.roi.boundary;
 
-package net.imglib2.roi;
+import static org.junit.Assert.assertTrue;
 
-import net.imglib2.RealRandomAccessibleRealInterval;
+import org.junit.Test;
+
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.logic.BitType;
 
-/**
- * A RegionOfInterest defines a set of points in a space. The "get" value from
- * BitType will tell you whether a point is in or out.
- * 
- * 
- * @author Lee Kamentsky
- */
-@Deprecated
-public interface RegionOfInterest extends RealRandomAccessibleRealInterval< BitType >
+public class BoundaryRandomAccessTest
 {
-	/**
-	 * Determine whether a point is a member of the region of interest
-	 * 
-	 * @param position
-	 *            position in question
-	 * @return true if a member
-	 */
-	boolean contains( double[] position );
+	@Test
+	public void testBoundaryRandomAccess8()
+	{
+		final int[] region = new int[]
+		{
+			0, 0, 1, 1, 1, 1,
+			0, 0, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1,
+			0, 1, 1, 1, 1, 0,
+			0, 0, 1, 1, 0, 0
+		};
+		final int[] b8 = new int[]
+		{
+			0, 0, 1, 1, 1, 1,
+			0, 0, 1, 0, 0, 1,
+			1, 1, 1, 0, 0, 1,
+			1, 1, 0, 0, 1, 1,
+			0, 1, 1, 1, 1, 0,
+			0, 0, 1, 1, 0, 0
+		};
 
-	void move( double displacement, int d );
+		final Img< BitType > regionImg = ArrayImgs.bits( 6, 6 );
+		final Cursor< BitType > c = regionImg.localizingCursor();
+		int i = 0;
+		while ( c.hasNext() )
+			c.next().set( region[ i++ ] != 0 );
 
-	void move( double[] displacement );
+		final BoundaryRandomAccess8< BitType > ba = new BoundaryRandomAccess8< BitType >( regionImg );
+		c.reset();
+		i = 0;
+		while ( c.hasNext() )
+		{
+			c.fwd();
+			ba.setPosition( c );
+			assertTrue( ba.get().get() == ( b8[ i++ ] != 0 ) );
+		}
+	}
+
+	@Test
+	public void testBoundaryRandomAccess4()
+	{
+		final int[] region = new int[]
+		{
+			0, 0, 1, 1, 1, 1,
+			0, 0, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1,
+			0, 1, 1, 1, 1, 0,
+			0, 0, 1, 1, 0, 0
+		};
+		final int[] b4 = new int[]
+		{
+			0, 0, 1, 1, 1, 1,
+			0, 0, 1, 0, 0, 1,
+			1, 1, 0, 0, 0, 1,
+			1, 0, 0, 0, 0, 1,
+			0, 1, 0, 0, 1, 0,
+			0, 0, 1, 1, 0, 0
+		};
+
+		final Img< BitType > regionImg = ArrayImgs.bits( 6, 6 );
+		final Cursor< BitType > c = regionImg.localizingCursor();
+		int i = 0;
+		while ( c.hasNext() )
+			c.next().set( region[ i++ ] != 0 );
+
+		final BoundaryRandomAccess4< BitType > ba = new BoundaryRandomAccess4< BitType >( regionImg );
+		c.reset();
+		i = 0;
+		while ( c.hasNext() )
+		{
+			c.fwd();
+			ba.setPosition( c );
+			assertTrue( ba.get().get() == ( b4[ i++ ] != 0 ) );
+		}
+	}
 }
