@@ -36,6 +36,7 @@ package net.imglib2.roi;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.roi.sampler.PositionableIterableRegionRandomAccessible;
 import net.imglib2.roi.util.IterableRandomAccessibleRegion;
 import net.imglib2.roi.util.SamplingIterableInterval;
 import net.imglib2.type.BooleanType;
@@ -57,5 +58,10 @@ public class Regions
 			return ( IterableRegion< B > ) region;
 		else
 			return IterableRandomAccessibleRegion.create( region );
+	}
+	
+	public static < T > RandomAccessible< IterableInterval< T > > sample( final PositionableIterableRegion< ? > region, final RandomAccessible< T > img )
+	{
+		return new PositionableIterableRegionRandomAccessible< T >( region, img );
 	}
 }
