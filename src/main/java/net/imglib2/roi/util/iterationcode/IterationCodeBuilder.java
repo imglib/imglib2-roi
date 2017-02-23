@@ -33,15 +33,14 @@
  */
 package net.imglib2.roi.util.iterationcode;
 
-import gnu.trove.list.array.TIntArrayList;
-
 import java.util.Arrays;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 
 /**
- * TODO
+ * Create an {@link IterationCode} by {@link #add(Localizable)  accumulating} coordinates.
  *
  * @author Tobias Pietzsch
  */
@@ -82,7 +81,9 @@ public class IterationCodeBuilder extends AbstractEuclideanSpace implements Iter
 	}
 
 	/**
-	 * accumulate the given coordinates.
+	 * Accumulate the given coordinates. Assumes that the positions come in in
+	 * flat iteration order. (It also works otherwise, but the generated
+	 * {@link IterationCode} will not be optimal...).
 	 */
 	public void add( final Localizable pos )
 	{

@@ -40,7 +40,13 @@ import net.imglib2.Localizable;
 import net.imglib2.Positionable;
 
 /**
- * TODO
+ * Iterates all positions in the bitmask encoded by a given
+ * {@link IterationCode}. It is constructed with a {@link Positionable}
+ * {@link Localizable}, that represents the position and is moved around while
+ * iterating.
+ *
+ * @param <P>
+ *            type of the position field.
  *
  * @author Tobias Pietzsch
  */
