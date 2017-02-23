@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.imglib2.labeling.LabelingROIStrategy;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.IntegerType;
 
