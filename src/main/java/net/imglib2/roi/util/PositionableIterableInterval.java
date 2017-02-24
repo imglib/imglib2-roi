@@ -4,19 +4,20 @@ import java.util.Iterator;
 
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
-import net.imglib2.Sampler;
 
-public class PositionableIterableInterval extends AbstractPositionableInterval implements IterableInterval< Void >
+public class PositionableIterableInterval< T, I extends IterableInterval< T > >
+		extends AbstractPositionableInterval
+		implements IterableInterval< T >
 {
-	private final IterableInterval< Void > source;
+	protected final I source;
 
-	public PositionableIterableInterval( final IterableInterval< Void > source )
+	public PositionableIterableInterval( final I source )
 	{
 		super( source );
 		this.source = source;
 	}
 
-	protected PositionableIterableInterval( final PositionableIterableInterval other )
+	protected PositionableIterableInterval( final PositionableIterableInterval< T, I > other )
 	{
 		super( other );
 		this.source = other.source;
@@ -29,7 +30,7 @@ public class PositionableIterableInterval extends AbstractPositionableInterval i
 	}
 
 	@Override
-	public Void firstElement()
+	public T firstElement()
 	{
 		return source.firstElement();
 	}
@@ -41,149 +42,81 @@ public class PositionableIterableInterval extends AbstractPositionableInterval i
 	}
 
 	@Override
-	public Iterator< Void > iterator()
+	public Iterator< T > iterator()
 	{
 		return cursor();
 	}
 
 	@Override
-	public Cursor< Void > cursor()
+	public Cursor< T > cursor()
 	{
 		return new PositionableIterableIntervalCursor( source.cursor() );
 	}
 
 	@Override
-	public Cursor< Void > localizingCursor()
+	public Cursor< T > localizingCursor()
 	{
 		return new PositionableIterableIntervalCursor( source.localizingCursor() );
 	}
 
-	class PositionableIterableIntervalCursor implements Cursor< Void >
+	class PositionableIterableIntervalCursor extends OffsetLocalizable< Cursor< T > > implements Cursor< T >
 	{
-		private final Cursor< Void > cursor;
-
-		public PositionableIterableIntervalCursor( final Cursor< Void > cursor )
+		public PositionableIterableIntervalCursor( final Cursor< T > cursor )
 		{
-			this.cursor = cursor;
+			super( cursor, currentOffset );
 		}
 
 		@Override
-		public Void get()
+		public T get()
 		{
 			return null;
 		}
 
 		@Override
-		public Sampler< Void > copy()
-		{
-			return new PositionableIterableIntervalCursor( cursor.copyCursor() );
-		}
-
-		@Override
 		public void jumpFwd( final long steps )
 		{
-			cursor.jumpFwd( steps );
+			source.jumpFwd( steps );
 		}
 
 		@Override
 		public void fwd()
 		{
-			cursor.fwd();
+			source.fwd();
 		}
 
 		@Override
 		public void reset()
 		{
-			cursor.reset();
+			source.reset();
 		}
 
 		@Override
 		public boolean hasNext()
 		{
-			return cursor.hasNext();
+			return source.hasNext();
 		}
 
 		@Override
-		public Void next()
+		public T next()
 		{
-			return cursor.next();
+			return source.next();
 		}
 
 		@Override
-		public Cursor< Void > copyCursor()
+		public PositionableIterableIntervalCursor copy()
 		{
-			return cursor.copyCursor();
+			return new PositionableIterableIntervalCursor( source.copyCursor() );
 		}
 
 		@Override
-		public void localize( final float[] position )
+		public PositionableIterableIntervalCursor copyCursor()
 		{
-			for ( int i = 0; i < position.length; i++ )
-			{
-				position[ i ] = cursor.getFloatPosition( i ) + currentOffset[ i ];
-			}
-		}
-
-		@Override
-		public void localize( final double[] position )
-		{
-			for ( int i = 0; i < position.length; i++ )
-			{
-				position[ i ] = cursor.getDoublePosition( i ) + currentOffset[ i ];
-			}
-		}
-
-		@Override
-		public float getFloatPosition( final int d )
-		{
-			return cursor.getFloatPosition( d ) + currentOffset[ d ];
-		}
-
-		@Override
-		public double getDoublePosition( final int d )
-		{
-			return cursor.getDoublePosition( d ) + currentOffset[ d ];
-		}
-
-		@Override
-		public int numDimensions()
-		{
-			return cursor.numDimensions();
-		}
-
-		@Override
-		public void localize( final int[] position )
-		{
-			for ( int i = 0; i < position.length; i++ )
-			{
-				position[ i ] = ( int ) ( cursor.getIntPosition( i ) + currentOffset[ i ] );
-			}
-		}
-
-		@Override
-		public void localize( final long[] position )
-		{
-			for ( int i = 0; i < position.length; i++ )
-			{
-				position[ i ] = cursor.getLongPosition( i ) + currentOffset[ i ];
-			}
-		}
-
-		@Override
-		public int getIntPosition( final int d )
-		{
-			return ( int ) ( cursor.getIntPosition( d ) + currentOffset[ d ] );
-		}
-
-		@Override
-		public long getLongPosition( final int d )
-		{
-			return cursor.getLongPosition( d ) + currentOffset[ d ];
+			return copy();
 		}
 	}
 
-	public PositionableIterableInterval copy()
+	public PositionableIterableInterval< T, I > copy()
 	{
-		return new PositionableIterableInterval( this );
+		return new PositionableIterableInterval<>( this );
 	}
 }
