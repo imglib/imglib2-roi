@@ -33,13 +33,24 @@
  */
 package net.imglib2.roi;
 
+import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
+import net.imglib2.Localizable;
+import net.imglib2.Positionable;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.sampler.PositionableIterableRegionRandomAccessible;
+import net.imglib2.roi.util.AbstractPositionableInterval;
 import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.roi.util.PositionableIntervalRandomAccessible;
 import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.roi.util.PositionableIntervalRandomAccessible.PositionableIntervalFactory;
+import net.imglib2.roi.util.PositionableIterableInterval;
+import net.imglib2.roi.util.PositionableIterationCode;
+import net.imglib2.roi.util.ROIUtils;
+import net.imglib2.roi.util.iterationcode.IterationCode;
+import net.imglib2.roi.util.iterationcode.IterationCodeBuilder;
 import net.imglib2.type.BooleanType;
+import net.imglib2.view.Views;
 
 public class Regions
 {
@@ -59,9 +70,50 @@ public class Regions
 		else
 			return IterableRandomAccessibleRegion.create( region );
 	}
-	
-	public static < T > RandomAccessible< IterableInterval< T > > sample( final PositionableIterableRegion< ? > region, final RandomAccessible< T > img )
+
+	public static < B extends BooleanType< B >, T > RandomAccessible< IterableInterval< T > > sample( final RandomAccessibleInterval< B > region, final RandomAccessible< T > img )
 	{
-		return new PositionableIterableRegionRandomAccessible< T >( region, img );
+		final IterationCode code = ROIUtils.deriveIterationCode( region );
+		return new PositionableIntervalRandomAccessible< T, PositionableIterationCode >( new PositionableIntervalFactory< PositionableIterationCode >()
+		{
+
+			@Override
+			public PositionableIterationCode create()
+			{
+				return new PositionableIterationCode( code );
+			}
+
+			@Override
+			public PositionableIterationCode copy( PositionableIterationCode copy )
+			{
+				return copy.copy();
+			}
+		}, img );
 	}
+
+	// TODO do we still want to copy it over to an iterationcode? if so, when?
+	public static < B extends BooleanType< B >, T > RandomAccessible< IterableInterval< T > > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	{
+		return new PositionableIntervalRandomAccessible< T, PositionableIterableInterval >( new PositionableIntervalFactory< PositionableIterableInterval >()
+		{
+
+			@Override
+			public PositionableIterableInterval create()
+			{
+				return new PositionableIterableInterval( region );
+			}
+
+			@Override
+			public PositionableIterableInterval copy( PositionableIterableInterval source )
+			{
+				return source.copy();
+			}
+		}, img );
+	}
+
+	public static < T, P extends Positionable & IterableInterval< Void > > RandomAccessible< IterableInterval< T > > sample( final PositionableIntervalFactory< P > fac, final RandomAccessible< T > img )
+	{
+		return new PositionableIntervalRandomAccessible< T, P >( fac, img );
+	}
+
 }

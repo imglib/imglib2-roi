@@ -75,6 +75,15 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 			+ Util.printCoordinates( currentMax )
 			+ " )";
 	}
+	// copy constructor
+	protected AbstractPositionableInterval( final long[] min, final long[] max, final long[] offset )
+	{
+		super( min.length );
+		currentOffset = offset;
+		currentMin = min;
+		currentMax = max;
+		origin = new Origin();
+	}
 
 	public AbstractPositionableInterval( final Interval initial )
 	{

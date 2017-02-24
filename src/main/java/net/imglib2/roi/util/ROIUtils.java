@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.FinalRealInterval;
 import net.imglib2.Interval;
@@ -48,6 +49,8 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.labeling.LabelingMapping;
 import net.imglib2.roi.labeling.LabelingType;
+import net.imglib2.roi.util.iterationcode.IterationCode;
+import net.imglib2.roi.util.iterationcode.IterationCodeBuilder;
 import net.imglib2.type.BooleanType;
 import net.imglib2.view.Views;
 
@@ -167,5 +170,18 @@ public class ROIUtils
 		}
 
 		return tmp;
+	}
+
+	public static < B extends BooleanType< B > > IterationCode deriveIterationCode( RandomAccessibleInterval< B > region )
+	{
+		final IterationCodeBuilder builder = new IterationCodeBuilder( region.numDimensions(), region.min( 0 ) );
+		final Cursor< B > c = Views.iterable( region ).localizingCursor();
+		while ( c.hasNext() )
+		{
+			if ( c.next().get() )
+				builder.add( c );
+		}
+
+		return builder;
 	}
 }

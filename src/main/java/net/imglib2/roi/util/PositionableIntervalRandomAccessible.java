@@ -1,44 +1,31 @@
-package net.imglib2.roi.sampler;
+package net.imglib2.roi.util;
 
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
+import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
-import net.imglib2.Sampler;
-import net.imglib2.roi.PositionableIterableRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
 
 /**
- * Get an {@link IterableInterval} that contains all possible
- * {@link PositionableIterableRegion} on the source {@link RandomAccessible}.
  *
- * <p>
- * A {@link Cursor} on the resulting accessible
- * {@link PositionableIterableRegion}s. As usual, when the cursor is moved, an
- * iterable interval {@link Sampler#get() obtained} previously from the cursor
- * should be considered invalid.
- * </p>
- *
- * @author Christian Dietz
- *
- * @param <T>
  */
-public class PositionableIterableRegionRandomAccessible< T > implements RandomAccessible< IterableInterval< T > >
+public class PositionableIntervalRandomAccessible< T, P extends Positionable & IterableInterval< Void > > implements RandomAccessible< IterableInterval< T > >
 {
 
 	private final int n;
 
-	private final PositionableIterableRegion< ? > region;
+	private final P region;
 
 	private final RandomAccessible< T > source;
 
-	public PositionableIterableRegionRandomAccessible( final PositionableIterableRegion< ? > region, final RandomAccessible< T > source )
-	{
-		assert ( source.numDimensions() == region.numDimensions() );
+	private final PositionableIntervalFactory< P > fac;
 
-		this.region = region;
+	public PositionableIntervalRandomAccessible( final PositionableIntervalFactory< P > fac, final RandomAccessible< T > source )
+	{
+		this.region = fac.create();
+		this.fac = fac;
 		this.source = source;
 		this.n = region.numDimensions();
 	}
@@ -56,67 +43,103 @@ public class PositionableIterableRegionRandomAccessible< T > implements RandomAc
 	}
 
 	@Override
-	public RandomAccess< IterableInterval< T > > randomAccess( Interval interval )
+	public RandomAccess< IterableInterval< T > > randomAccess( final Interval interval )
 	{
 		return randomAccess();
 	}
 
 	class PositionableIterableRegionRandomAccessSafe implements RandomAccess< IterableInterval< T > >
 	{
+		private final SamplingIterableInterval< T > samplingInterval;
 
-		private SamplingIterableInterval< T > samplingInterval;
+		private final SamplingCursor< T > theCursor;
 
-		public PositionableIterableRegionRandomAccessSafe( final RandomAccessible< T > source, final PositionableIterableRegion< ? > neighborhood )
+		private final SamplingCursor< T > theLocalizingCursor;
+
+		private final long[] position;
+
+		public PositionableIterableRegionRandomAccessSafe( final RandomAccessible< T > source, final P region )
 		{
-			samplingInterval = new SamplingIterableInterval< T >( neighborhood, source );
+			final RandomAccess< T > theTarget = source.randomAccess();
+
+			position = new long[ region.numDimensions() ];
+			theCursor = new SamplingCursor< T >( region.cursor(), theTarget );
+			theLocalizingCursor = new SamplingCursor< T >( region.localizingCursor(), theTarget );
+
+			samplingInterval = new SamplingIterableInterval< T >( region, source )
+			{
+				@Override
+				public Cursor< T > cursor()
+				{
+					return theCursor;
+				}
+
+				@Override
+				public Cursor< T > localizingCursor()
+				{
+					return theLocalizingCursor;
+				}
+			};
 		}
 
 		@Override
 		public void localize( int[] position )
 		{
-			region.localize( position );
+			for ( int i = 0; i < position.length; i++ )
+			{
+				position[ i ] = ( int ) this.position[ i ];
+			}
 		}
 
 		@Override
 		public void localize( long[] position )
 		{
-			region.localize( position );
+			for ( int i = 0; i < position.length; i++ )
+			{
+				position[ i ] = ( int ) this.position[ i ];
+			}
 		}
 
 		@Override
 		public int getIntPosition( int d )
 		{
-			return region.getIntPosition( d );
+			return ( int ) position[ d ];
 		}
 
 		@Override
 		public long getLongPosition( int d )
 		{
-			return region.getLongPosition( d );
+			return position[ d ];
 		}
 
 		@Override
 		public void localize( float[] position )
 		{
-			region.localize( position );
+			for ( int i = 0; i < position.length; i++ )
+			{
+				position[ i ] = ( int ) this.position[ i ];
+			}
 		}
 
 		@Override
 		public void localize( double[] position )
 		{
-			region.localize( position );
+			for ( int i = 0; i < position.length; i++ )
+			{
+				position[ i ] = ( int ) this.position[ i ];
+			}
 		}
 
 		@Override
 		public float getFloatPosition( int d )
 		{
-			return region.getFloatPosition( d );
+			return position[ d ];
 		}
 
 		@Override
 		public double getDoublePosition( int d )
 		{
-			return region.getDoublePosition( d );
+			return position[ d ];
 		}
 
 		@Override
@@ -206,7 +229,7 @@ public class PositionableIterableRegionRandomAccessible< T > implements RandomAc
 		@Override
 		public RandomAccess< IterableInterval< T > > copy()
 		{
-			return new PositionableIterableRegionRandomAccessSafe( source, region.copy() );
+			return new PositionableIterableRegionRandomAccessSafe( source, fac.copy( region ) );
 		}
 
 		@Override
@@ -215,6 +238,14 @@ public class PositionableIterableRegionRandomAccessible< T > implements RandomAc
 			return copy();
 		}
 
+	}
+
+	// workaround for copy
+	public interface PositionableIntervalFactory< P extends Positionable & IterableInterval< Void > >
+	{
+		P create();
+
+		P copy( P source );
 	}
 
 }
