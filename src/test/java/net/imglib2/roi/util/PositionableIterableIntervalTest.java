@@ -77,7 +77,7 @@ public class PositionableIterableIntervalTest
 		final Random r = new Random( SEED );
 		for ( BitType bit : bits )
 		{
-			bit.set( r.nextDouble() > 0.3 );
+			bit.set( r.nextBoolean() );
 		}
 
 		iterable = new PositionableIntervalFactory< PositionableIterableInterval< Void, IterableRegion< BitType > > >()
@@ -127,7 +127,7 @@ public class PositionableIterableIntervalTest
 			}
 		};
 
-		final Img< FloatType > rnd = creatRandomImg( 400, 400 );
+		final Img< FloatType > rnd = creatRandomImg( 10, 10 );
 		target = Views.interval( Views.extendBorder( rnd ), rnd );
 	}
 
