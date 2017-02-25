@@ -34,6 +34,8 @@
 package net.imglib2.roi.util;
 
 import net.imglib2.Cursor;
+import net.imglib2.Dimensions;
+import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
@@ -120,7 +122,13 @@ public class PositionableIntervalRandomAccessible< T, P extends Localizable & Po
 		{
 			super( region );
 
-			final RandomAccess< T > targetRA = target.randomAccess();
+			// TODO Remove workaround
+			final RandomAccess< T > targetRA;
+			if ( target instanceof Interval )
+				targetRA = target.randomAccess( expand( ( Interval ) target, delegate ) );
+			else
+				targetRA = target.randomAccess();
+
 			final Cursor< T > c = new SamplingCursor<>( delegate.cursor(), targetRA );
 			final Cursor< T > cl = new SamplingCursor<>( delegate.localizingCursor(), targetRA );
 
@@ -129,15 +137,33 @@ public class PositionableIntervalRandomAccessible< T, P extends Localizable & Po
 				@Override
 				public Cursor< T > cursor()
 				{
+					c.reset();
 					return c;
 				}
 
 				@Override
 				public Cursor< T > localizingCursor()
 				{
+					cl.reset();
 					return cl;
 				}
 			};
+		}
+
+		// TODO remove as soon as method is available in imglib2-core release (see Intervals.expand(..))
+		private FinalInterval expand( final Interval interval, final Dimensions border )
+		{
+			final int n = interval.numDimensions();
+			final long[] min = new long[ n ];
+			final long[] max = new long[ n ];
+			interval.min( min );
+			interval.max( max );
+			for ( int d = 0; d < n; ++d )
+			{
+				min[ d ] -= border.dimension( d );
+				max[ d ] += border.dimension( d );
+			}
+			return new FinalInterval( min, max );
 		}
 
 		@Override
