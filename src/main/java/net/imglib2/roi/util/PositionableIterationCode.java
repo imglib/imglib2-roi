@@ -35,6 +35,7 @@ package net.imglib2.roi.util;
 
 import java.util.Iterator;
 
+import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.IterableInterval;
@@ -107,20 +108,20 @@ public class PositionableIterationCode extends AbstractPositionableInterval impl
 		return cursor();
 	}
 
-	class PositionableIterableIntervalCursor extends OffsetLocalizable< Point > implements Cursor< Void >
+	class PositionableIterableIntervalCursor extends AbstractLocalizable implements Cursor< Void >
 	{
 		private final IterationCodeIterator< Point > iterator;
 
 		public PositionableIterableIntervalCursor()
 		{
-			super( new Point( new long[ code.numDimensions() ] ), currentMin );
-			this.iterator = new IterationCodeIterator<>( code, new long[ code.numDimensions() ], source );
+			super(code.numDimensions());
+			this.iterator = new IterationCodeIterator<>( code, currentOffset, Point.wrap( position ) );
 		}
 
 		private PositionableIterableIntervalCursor( PositionableIterableIntervalCursor other )
 		{
-			super( new Point( other.source ), currentMin );
-			this.iterator = new IterationCodeIterator<>( other.iterator, source );
+			super( other.position );
+			this.iterator = new IterationCodeIterator<>( other.iterator, Point.wrap( position ) );
 		}
 
 		@Override
