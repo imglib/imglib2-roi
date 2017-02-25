@@ -54,7 +54,7 @@ public class LabelRegionCursor extends AbstractLocalizable implements Cursor< Vo
 
 	protected LabelRegionCursor( final LabelRegionCursor c )
 	{
-		super( c.n );
+		super( c.position );
 		iter = new IterationCodeListIterator< Point >( c.iter, Point.wrap( position ) );
 	}
 
