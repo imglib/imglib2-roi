@@ -38,6 +38,7 @@ import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.Positionable;
 import net.imglib2.RealPositionable;
+import net.imglib2.roi.Origin;
 import net.imglib2.util.Util;
 
 /**
@@ -74,7 +75,7 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 		currentMax = new long[ n ];
 		initial.min( currentMin );
 		initial.max( currentMax );
-		origin = new Origin();
+		origin = new TheOrigin();
 	}
 
 	protected AbstractPositionableInterval( final AbstractPositionableInterval other )
@@ -83,7 +84,7 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 		currentOffset = other.currentOffset.clone();
 		currentMin = other.currentMin.clone();
 		currentMax = other.currentMax.clone();
-		origin = new Origin();
+		origin = new TheOrigin();
 	}
 
 	public Origin origin()
@@ -316,7 +317,7 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 		return currentMax[ d ] - currentMin[ d ] + 1;
 	}
 
-	public class Origin implements Localizable, Positionable
+	public class TheOrigin implements Origin
 	{
 		@Override
 		public int numDimensions()

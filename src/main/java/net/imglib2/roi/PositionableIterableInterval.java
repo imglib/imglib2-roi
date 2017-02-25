@@ -3,6 +3,7 @@ package net.imglib2.roi;
 import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
 import net.imglib2.Positionable;
+import net.imglib2.type.logic.BitType;
 
 /**
  * An {@link IterableInterval} that can be moved around.
@@ -18,4 +19,18 @@ import net.imglib2.Positionable;
  * @author Tobias Pietzsch
  */
 public interface PositionableIterableInterval< T > extends IterableInterval< T >, Localizable, Positionable
-{}
+{
+	/**
+	 * Get the {@link Positionable}, {@link Localizable}  Interval.
+	 *
+	 * <p>
+	 * The origin is basically a negative offset to the position. For example if
+	 * a positionable mask is made from a {@link BitType} image with a circular
+	 * pattern, then it is more natural if the mask position refers to the
+	 * center of the pattern instead of the upper left corner of the
+	 * {@link BitType} image. This can be achieved by positioning the origin.
+	 *
+	 * @return the origin to which the interval is relative.
+	 */
+	public Origin origin();
+}
