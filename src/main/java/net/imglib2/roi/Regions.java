@@ -67,6 +67,14 @@ public class Regions
 			return IterableRandomAccessibleRegion.create( region );
 	}
 
+	/*
+	 * TODO: It should be somehow possible to shift the origin of every
+	 * PositionableIterableRegion. Adding it to the interface is a bit
+	 * inconvenient, because it is cumbersome to implement. I would prefer to
+	 * add a Regions method to do it. Or a new interface?
+	 * PositionableIterableRegionWithOrigin?
+	 */
+
 	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof PositionableIterableRegion )
