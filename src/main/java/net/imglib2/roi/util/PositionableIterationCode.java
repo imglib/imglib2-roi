@@ -38,9 +38,9 @@ import java.util.Iterator;
 import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
-import net.imglib2.IterableInterval;
 import net.imglib2.Point;
 import net.imglib2.Sampler;
+import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.util.iterationcode.IterationCode;
 import net.imglib2.roi.util.iterationcode.IterationCodeIterator;
 
@@ -51,7 +51,7 @@ import net.imglib2.roi.util.iterationcode.IterationCodeIterator;
  *
  */
 // TODO: rename!!!
-public class PositionableIterationCode extends AbstractPositionableInterval implements IterableInterval< Void >
+public class PositionableIterationCode extends AbstractPositionableInterval implements PositionableIterableInterval< Void >
 {
 	private final IterationCode code;
 

@@ -37,6 +37,7 @@ import java.util.Iterator;
 
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
+import net.imglib2.roi.PositionableIterableInterval;
 
 /**
  * {@link IterableInterval} which can be positioned at arbitrary positions.
@@ -48,9 +49,9 @@ import net.imglib2.IterableInterval;
  * @param <I>
  */
 //TODO: rename
-public class PositionableIterableInterval< T, I extends IterableInterval< T > >
+public class PositionableIterableIntervalImp< T, I extends IterableInterval< T > >
 		extends AbstractPositionableInterval
-		implements IterableInterval< T >
+		implements PositionableIterableInterval< T >
 {
 	protected final I source;
 
