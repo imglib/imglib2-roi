@@ -48,6 +48,13 @@ public class Regions
 
 	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
 	{
+		/*
+		 * TODO: this can be made faster in certain cases. For example a
+		 * LabelRegion, instead of creating a LabelRegionCursor and then
+		 * connecting that to a RA<T> with a SamplingCursor, we could simply
+		 * build a Cursor that let's the InterationCode run directly on the
+		 * RA<T>. Find out how to do it.
+		 */
 		return SamplingIterableInterval.create( region, img );
 	}
 

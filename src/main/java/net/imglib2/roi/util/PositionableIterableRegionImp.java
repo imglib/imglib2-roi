@@ -39,6 +39,7 @@ import net.imglib2.roi.IterableRegion;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.type.BooleanType;
 
+// TODO: rename
 public class PositionableIterableRegionImp< T extends BooleanType< T > >
 		extends PositionableIterableInterval< Void, IterableRegion< T > >
 		implements PositionableIterableRegion< T >

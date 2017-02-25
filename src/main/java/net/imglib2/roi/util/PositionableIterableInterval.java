@@ -47,6 +47,7 @@ import net.imglib2.IterableInterval;
  * @param <T>
  * @param <I>
  */
+//TODO: rename
 public class PositionableIterableInterval< T, I extends IterableInterval< T > >
 		extends AbstractPositionableInterval
 		implements IterableInterval< T >

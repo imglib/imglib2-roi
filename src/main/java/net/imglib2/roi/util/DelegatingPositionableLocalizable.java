@@ -39,11 +39,12 @@ import net.imglib2.Positionable;
 /**
  * A {@link Positionable} {@link Localizable} delegating all calls to a
  * <P> delegate
- * 
+ *
  * @author Christian Dietz
  *
  * @param <P>
  */
+// TODO: move to imglib2-core?!
 public class DelegatingPositionableLocalizable< P extends Positionable & Localizable > implements Positionable, Localizable
 {
 	protected P delegate;

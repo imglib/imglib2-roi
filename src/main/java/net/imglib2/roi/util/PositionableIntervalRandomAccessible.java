@@ -43,21 +43,21 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.Sampler;
 
 /**
- * Provides to sample a source of type <T> at random positions. The sampled
+ * Provides to sample a source of type {@code T} at random positions. The sampled
  * positions are defined by the provided {@link Localizable}
  * {@link Positionable} {@link IterableInterval}.
- * 
- * @author Christian Dietz
  *
  * @param <T>
  *            type of target to sample
  * @param <P>
  *            type of {@link Localizable} {@link Positionable}
  *            {@link IterableInterval} used to sample target
+ *
+ * @author Christian Dietz
  */
+// TODO: rename?
 public class PositionableIntervalRandomAccessible< T, P extends Localizable & Positionable & IterableInterval< Void > > implements RandomAccessible< IterableInterval< T > >
 {
-
 	private final boolean isSafe;
 
 	private final PositionableIntervalFactory< P > factory;
@@ -65,11 +65,10 @@ public class PositionableIntervalRandomAccessible< T, P extends Localizable & Po
 	private final RandomAccessible< T > target;
 
 	/**
-	 * 
+	 *
 	 * @param factory
-	 *            {@link PositionableIntervalFactory} to create and/or copy
-	 *            <P>
-	 * 
+	 *            {@link PositionableIntervalFactory} to create and/or copy {@code P}
+	 *
 	 * @param target
 	 *            the {@link RandomAccessible} which is sampled
 	 * @param isSafe
@@ -195,8 +194,7 @@ public class PositionableIntervalRandomAccessible< T, P extends Localizable & Po
 	}
 
 	/**
-	 * Factory to create and copy a
-	 * <P>
+	 * Factory to create and copy a {@code P}
 	 *
 	 * @param <P>
 	 *            the {@link Localizable} {@link Positionable}

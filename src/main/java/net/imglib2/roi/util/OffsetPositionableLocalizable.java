@@ -9,6 +9,7 @@ import net.imglib2.Positionable;
  *
  * @author Tobias Pietzsch
  */
+// TODO: move to core? (probably not)
 public class OffsetPositionableLocalizable< P extends Positionable & Localizable > extends OffsetLocalizable< P > implements Positionable
 {
 	public OffsetPositionableLocalizable( final P source, final long[] offset )

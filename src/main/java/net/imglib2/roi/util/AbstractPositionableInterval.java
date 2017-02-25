@@ -55,6 +55,7 @@ import net.imglib2.util.Util;
  *
  * @author Tobias Pietzsch
  */
+// TODO: rename? PositionableInterval?
 public class AbstractPositionableInterval extends AbstractLocalizable implements Positionable, Interval
 {
 	protected final long[] currentOffset;

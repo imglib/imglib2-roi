@@ -9,6 +9,7 @@ import net.imglib2.Localizable;
  *
  * @author Tobias Pietzsch
  */
+//TODO: move to core? (probably not)
 public class OffsetLocalizable< L extends Localizable > extends AbstractEuclideanSpace implements Localizable
 {
 	protected L source;

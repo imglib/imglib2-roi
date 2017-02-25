@@ -49,6 +49,7 @@ import net.imglib2.roi.util.iterationcode.IterationCodeIterator;
  * @author Christian Dietz
  *
  */
+// TODO: rename!!!
 public class PositionableIterationCode extends AbstractPositionableInterval implements IterableInterval< Void >
 {
 	private final IterationCode code;
