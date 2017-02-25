@@ -39,7 +39,15 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.BooleanType;
 
-public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements Cursor< Void >
+/**
+ * A {@link Cursor} that iterates {@code true} pixels of a {@link BooleanType}
+ * {@link RandomAccessibleInterval} by moving a {@link RandomAccess} in flat
+ * iteration order.
+ *
+ * @author Tobias Pietzsch
+ */
+public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
+		extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements Cursor< Void >
 {
 	private final RandomAccess< T > randomAccess;
 
