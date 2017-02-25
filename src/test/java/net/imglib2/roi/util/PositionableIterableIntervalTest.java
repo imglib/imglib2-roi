@@ -63,11 +63,11 @@ public class PositionableIterableIntervalTest
 
 	private PositionableIntervalFactory< PositionableIterationCode > code;
 
-	private PositionableIntervalFactory< PositionableIterableInterval< Void, IterableRegion< BitType > > > iterable;
+	private PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > > iterable;
 
 	private IntervalView< FloatType > target;
 
-	private PositionableIntervalFactory< PositionableIterableInterval< Void, IterableRegion< BitType > > > region;
+	private PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > > region;
 
 	@Before
 	public void testPositionables()
@@ -80,33 +80,33 @@ public class PositionableIterableIntervalTest
 			bit.set( r.nextBoolean() );
 		}
 
-		iterable = new PositionableIntervalFactory< PositionableIterableInterval< Void, IterableRegion< BitType > > >()
+		iterable = new PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > >()
 		{
 
 			@Override
-			public PositionableIterableInterval< Void, IterableRegion< BitType > > create()
+			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > create()
 			{
-				return new PositionableIterableInterval<>( Regions.iterable( bits ) );
+				return new PositionableIterableIntervalImp<>( Regions.iterable( bits ) );
 			}
 
 			@Override
-			public PositionableIterableInterval< Void, IterableRegion< BitType > > copy( PositionableIterableInterval< Void, IterableRegion< BitType > > source )
+			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > copy( PositionableIterableIntervalImp< Void, IterableRegion< BitType > > source )
 			{
 				return source.copy();
 			}
 		};
 
-		region = new PositionableIntervalFactory< PositionableIterableInterval< Void, IterableRegion< BitType > > >()
+		region = new PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > >()
 		{
 
 			@Override
-			public PositionableIterableInterval< Void, IterableRegion< BitType > > create()
+			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > create()
 			{
 				return new PositionableIterableRegionImp<>( Regions.iterable( bits ) );
 			}
 
 			@Override
-			public PositionableIterableInterval< Void, IterableRegion< BitType > > copy( PositionableIterableInterval< Void, IterableRegion< BitType > > source )
+			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > copy( PositionableIterableIntervalImp< Void, IterableRegion< BitType > > source )
 			{
 				return source.copy();
 			}

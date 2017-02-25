@@ -41,7 +41,7 @@ import net.imglib2.type.BooleanType;
 
 // TODO: rename
 public class PositionableIterableRegionImp< T extends BooleanType< T > >
-		extends PositionableIterableInterval< Void, IterableRegion< T > >
+		extends PositionableIterableIntervalImp< Void, IterableRegion< T > >
 		implements PositionableIterableRegion< T >
 {
 	public PositionableIterableRegionImp( final IterableRegion< T > source )

@@ -54,13 +54,13 @@ public class PositionableIterableInterval< T, I extends IterableInterval< T > >
 {
 	protected final I source;
 
-	public PositionableIterableInterval( final I source )
+	public PositionableIterableIntervalImp( final I source )
 	{
 		super( source );
 		this.source = source;
 	}
 
-	protected PositionableIterableInterval( final PositionableIterableInterval< T, I > other )
+	protected PositionableIterableIntervalImp( final PositionableIterableIntervalImp< T, I > other )
 	{
 		super( other );
 		this.source = other.source;
@@ -158,8 +158,8 @@ public class PositionableIterableInterval< T, I extends IterableInterval< T > >
 		}
 	}
 
-	public PositionableIterableInterval< T, I > copy()
+	public PositionableIterableIntervalImp< T, I > copy()
 	{
-		return new PositionableIterableInterval<>( this );
+		return new PositionableIterableIntervalImp<>( this );
 	}
 }
