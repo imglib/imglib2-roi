@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,32 +35,37 @@ package net.imglib2.roi.util;
 
 import java.util.Iterator;
 
-import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
-import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccessible;
+import net.imglib2.roi.Origin;
+import net.imglib2.roi.PositionableIterableInterval;
 
 /**
- * Binds a {@link Void} {@link IterableInterval} (i.e., a region) to a target
- * image, such that it iterates over the target pixels under {@code true} pixels
- * of the region.
+ * Binds a {@link Void} {@link PositionableIterableInterval} (i.e., a region) to
+ * a target image, such that it iterates over the target pixels under
+ * {@code true} pixels of the region. The source region is positionable, and so
+ * is the resulting {@link SamplingPositionableIterableInterval}. Setting the
+ * position amounts to shifting the mask region over the target image.
+ * <p>
+ * <em>Note that modifying the position of the
+ * {@link SamplingPositionableIterableInterval} invalidates all cursors that
+ * were obtained at an older position.</em>
  *
  * @param <T>
  *            target image type
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Christian Dietz
+ * @author Tobias Pietzsch
  */
-public class SamplingIterableInterval< T >
-	extends AbstractWrappedInterval< IterableInterval< Void > > implements IterableInterval< T >
+public class SamplingPositionableIterableInterval< T >
+	extends AbstractWrappedPositionableInterval< PositionableIterableInterval< Void > >
+	implements PositionableIterableInterval< T >
 {
 	final RandomAccessible< T > target;
 
-	public static < T > SamplingIterableInterval< T > create( final IterableInterval< Void > region, final RandomAccessible< T > target )
-	{
-		return new SamplingIterableInterval< T >( region, target );
-	}
-
-	public SamplingIterableInterval( final IterableInterval< Void > region, final RandomAccessible< T > target )
+	public  SamplingPositionableIterableInterval(
+			final PositionableIterableInterval< Void > region,
+			final RandomAccessible< T > target )
 	{
 		super( region );
 		this.target = target;
@@ -69,13 +74,13 @@ public class SamplingIterableInterval< T >
 	@Override
 	public Cursor< T > cursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor<>( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
 	public Cursor< T > localizingCursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor<>( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
@@ -100,5 +105,11 @@ public class SamplingIterableInterval< T >
 	public Iterator< T > iterator()
 	{
 		return cursor();
+	}
+
+	@Override
+	public Origin origin()
+	{
+		return sourceInterval.origin();
 	}
 }

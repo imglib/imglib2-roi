@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,72 +33,70 @@
  */
 package net.imglib2.roi.util;
 
-import java.util.Iterator;
+import static net.imglib2.util.IntervalsTemp.expand;
 
-import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
-import net.imglib2.IterableInterval;
+import net.imglib2.Interval;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
+import net.imglib2.roi.PositionableIterableInterval;
 
 /**
- * Binds a {@link Void} {@link IterableInterval} (i.e., a region) to a target
- * image, such that it iterates over the target pixels under {@code true} pixels
- * of the region.
+ * Binds a {@link Void} {@link PositionableIterableInterval} (i.e., a region) to
+ * a target image, such that it iterates over the target pixels under
+ * {@code true} pixels of the region. The source region is positionable, and so
+ * is the resulting {@link SamplingPositionableIterableInterval}. Setting the
+ * position amounts to shifting the mask region over the target image.
+ * <p>
+ * <em>Note that modifying the position of the
+ * {@link SamplingPositionableIterableInterval} invalidates all cursors that
+ * were obtained at an older position.</em>
+ * <p>
+ * This is a <em>unsafe</em> version of {@link SamplingIterableInterval}: Every
+ * time, a {@link Cursor} is requested (using {@link #cursor()} etc)
+ * the same {@link Cursor} instance is re-used. If you require to have more than
+ * one {@link Cursor} at a given time you can {@link Cursor#copy() copy} the cursor.
  *
  * @param <T>
  *            target image type
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Christian Dietz
+ * @author Tobias Pietzsch
  */
-public class SamplingIterableInterval< T >
-	extends AbstractWrappedInterval< IterableInterval< Void > > implements IterableInterval< T >
+public class SamplingPositionableIterableIntervalUnsafe< T >
+	extends SamplingPositionableIterableInterval< T >
 {
-	final RandomAccessible< T > target;
+	private SamplingCursor< T > cursor;
 
-	public static < T > SamplingIterableInterval< T > create( final IterableInterval< Void > region, final RandomAccessible< T > target )
-	{
-		return new SamplingIterableInterval< T >( region, target );
-	}
+	private SamplingCursor< T > localizingCursor;
 
-	public SamplingIterableInterval( final IterableInterval< Void > region, final RandomAccessible< T > target )
+	public SamplingPositionableIterableIntervalUnsafe( final PositionableIterableInterval< Void > region, final RandomAccessible< T > target )
 	{
-		super( region );
-		this.target = target;
+		super( region, target );
 	}
 
 	@Override
 	public Cursor< T > cursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
+		if ( cursor == null )
+			cursor = new SamplingCursor<>( sourceInterval.cursor(), targetRA() );
+		return cursor;
 	}
 
 	@Override
 	public Cursor< T > localizingCursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
+		if ( localizingCursor == null )
+			localizingCursor = new SamplingCursor<>( sourceInterval.localizingCursor(), targetRA() );
+		return localizingCursor;
 	}
 
-	@Override
-	public long size()
+	private RandomAccess< T > targetRA()
 	{
-		return sourceInterval.size();
-	}
-
-	@Override
-	public T firstElement()
-	{
-		return cursor().next();
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return sourceInterval.iterationOrder();
-	}
-
-	@Override
-	public Iterator< T > iterator()
-	{
-		return cursor();
+		// TODO Remove workaround
+		if ( target instanceof Interval )
+			return target.randomAccess( expand( ( Interval ) target, sourceInterval ) );
+		else
+			return target.randomAccess( sourceInterval );
 	}
 }
