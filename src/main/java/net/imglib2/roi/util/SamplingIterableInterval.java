@@ -57,7 +57,7 @@ public class SamplingIterableInterval< T >
 
 	public static < T > SamplingIterableInterval< T > create( final IterableInterval< Void > region, final RandomAccessible< T > target )
 	{
-		return new SamplingIterableInterval< T >( region, target );
+		return new SamplingIterableInterval<>( region, target );
 	}
 
 	public SamplingIterableInterval( final IterableInterval< Void > region, final RandomAccessible< T > target )
@@ -69,13 +69,13 @@ public class SamplingIterableInterval< T >
 	@Override
 	public Cursor< T > cursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor<>( sourceInterval.cursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
 	public Cursor< T > localizingCursor()
 	{
-		return new SamplingCursor< T >( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
+		return new SamplingCursor<>( sourceInterval.localizingCursor(), target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
