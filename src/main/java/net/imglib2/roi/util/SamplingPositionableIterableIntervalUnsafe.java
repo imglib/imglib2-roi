@@ -75,6 +75,12 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 		super( region, target );
 	}
 
+	protected SamplingPositionableIterableIntervalUnsafe(
+			final SamplingPositionableIterableIntervalUnsafe< T > other )
+	{
+		super( other );
+	}
+
 	@Override
 	public Cursor< T > cursor()
 	{
@@ -98,5 +104,11 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 			return target.randomAccess( expand( ( Interval ) target, sourceInterval ) );
 		else
 			return target.randomAccess( sourceInterval );
+	}
+
+	@Override
+	public SamplingPositionableIterableInterval< T > copy()
+	{
+		return new SamplingPositionableIterableIntervalUnsafe<>( this );
 	}
 }

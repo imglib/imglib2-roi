@@ -34,4 +34,11 @@ public interface PositionableIterableInterval< T, I extends PositionableIterable
 	 * @return the origin to which the interval is relative.
 	 */
 	public Origin origin();
+
+	/**
+	 * Make a copy of this {@link PositionableIterableInterval} which can be positioned independently.
+	 *
+	 * @return a copy with an independent position
+	 */
+	public I copy();
 }

@@ -63,12 +63,19 @@ public class SamplingPositionableIterableInterval< T >
 {
 	final RandomAccessible< T > target;
 
-	public  SamplingPositionableIterableInterval(
+	public SamplingPositionableIterableInterval(
 			final PositionableIterableInterval< Void, ? > region,
 			final RandomAccessible< T > target )
 	{
 		super( region );
 		this.target = target;
+	}
+
+	protected SamplingPositionableIterableInterval(
+			final SamplingPositionableIterableInterval< T > other )
+	{
+		super( other.sourceInterval.copy() );
+		this.target = other.target;
 	}
 
 	@Override
@@ -111,5 +118,11 @@ public class SamplingPositionableIterableInterval< T >
 	public Origin origin()
 	{
 		return sourceInterval.origin();
+	}
+
+	@Override
+	public SamplingPositionableIterableInterval< T > copy()
+	{
+		return new SamplingPositionableIterableInterval<>( this );
 	}
 }

@@ -69,6 +69,7 @@ public class PositionableIterationCode
 		this.code = other.code;
 	}
 
+	@Override
 	public PositionableIterationCode copy()
 	{
 		return new PositionableIterationCode( this );
