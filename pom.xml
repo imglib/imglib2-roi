@@ -45,8 +45,8 @@
 		<url>https://github.com/imglib/imglib2-roi/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/ImgLib2-ROI/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/imglib/imglib2-roi</url>
 	</ciManagement>
 
 	<developers>
