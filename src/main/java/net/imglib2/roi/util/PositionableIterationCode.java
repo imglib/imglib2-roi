@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,12 +46,14 @@ import net.imglib2.roi.util.iterationcode.IterationCodeIterator;
 
 /**
  * {@link IterationCode} which can start at arbitrary positions.
- * 
+ *
  * @author Christian Dietz
  *
  */
 // TODO: rename!!!
-public class PositionableIterationCode extends AbstractPositionableInterval implements PositionableIterableInterval< Void >
+public class PositionableIterationCode
+		extends AbstractPositionableInterval
+		implements PositionableIterableInterval< Void, PositionableIterationCode >
 {
 	private final IterationCode code;
 
@@ -118,7 +120,7 @@ public class PositionableIterationCode extends AbstractPositionableInterval impl
 			this.iterator = new IterationCodeIterator<>( code, currentOffset, Point.wrap( position ) );
 		}
 
-		private PositionableIterableIntervalCursor( PositionableIterableIntervalCursor other )
+		private PositionableIterableIntervalCursor( final PositionableIterableIntervalCursor other )
 		{
 			super( other.position );
 			this.iterator = new IterationCodeIterator<>( other.iterator, Point.wrap( position ) );
@@ -137,7 +139,7 @@ public class PositionableIterationCode extends AbstractPositionableInterval impl
 		}
 
 		@Override
-		public void jumpFwd( long steps )
+		public void jumpFwd( final long steps )
 		{
 			iterator.jumpFwd( steps );
 		}

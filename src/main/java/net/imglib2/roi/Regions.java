@@ -63,7 +63,7 @@ public class Regions
 		return SamplingIterableInterval.create( region, img );
 	}
 
-	public static < T > PositionableIterableInterval< T > sample( final PositionableIterableInterval< Void > region, final RandomAccessible< T > img )
+	public static < T > PositionableIterableInterval< T, ? > sample( final PositionableIterableInterval< Void, ? > region, final RandomAccessible< T > img )
 	{
 		return sample( region, img, false );
 	}
@@ -91,7 +91,7 @@ public class Regions
 	 * @param unsafe
 	 * @return
 	 */
-	public static < T > PositionableIterableInterval< T > sample( final PositionableIterableInterval< Void > region, final RandomAccessible< T > img, final boolean unsafe )
+	public static < T > PositionableIterableInterval< T, ? > sample( final PositionableIterableInterval< Void, ? > region, final RandomAccessible< T > img, final boolean unsafe )
 	{
 		/*
 		 * TODO: this can be made faster in certain cases. For example a
@@ -121,10 +121,10 @@ public class Regions
 	 * PositionableIterableRegionWithOrigin?
 	 */
 
-	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
+	public static < B extends BooleanType< B > > PositionableIterableRegion< B, ? > positionable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof PositionableIterableRegion )
-			return ( PositionableIterableRegion< B > ) region;
+			return ( PositionableIterableRegion< B, ? > ) region;
 		else
 			return new PositionableIterableRegionImp<>( Regions.iterable( region ) );
 	}

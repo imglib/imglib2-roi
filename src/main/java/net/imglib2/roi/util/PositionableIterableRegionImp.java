@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,8 +41,8 @@ import net.imglib2.type.BooleanType;
 
 // TODO: rename
 public class PositionableIterableRegionImp< T extends BooleanType< T > >
-		extends PositionableIterableIntervalImp< Void, IterableRegion< T > >
-		implements PositionableIterableRegion< T >
+		extends AbstractPositionableIterableInterval< Void, IterableRegion< T >, PositionableIterableRegionImp< T > >
+		implements PositionableIterableRegion< T, PositionableIterableRegionImp< T > >
 {
 	public PositionableIterableRegionImp( final IterableRegion< T > source )
 	{
@@ -85,5 +85,11 @@ public class PositionableIterableRegionImp< T extends BooleanType< T > >
 		{
 			return copy();
 		}
+	}
+
+	@Override
+	public PositionableIterableRegionImp< T > copy()
+	{
+		return new PositionableIterableRegionImp<>( this );
 	}
 }
