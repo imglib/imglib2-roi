@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.geometric;
+package net.imglib2.roi.geom.real;
 
 import java.util.ArrayList;
 import java.util.Collections;
