@@ -41,8 +41,8 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.Regions;
-import net.imglib2.roi.util.Contains;
-import net.imglib2.roi.util.ContainsRealRandomAccess;
+import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealRandomAccess;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
@@ -53,7 +53,7 @@ import net.imglib2.util.Intervals;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon2D extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
+public class Polygon2D extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Mask< RealLocalizable >
 {
 	private final List< ? extends RealLocalizable > vertices;
 
@@ -101,7 +101,7 @@ public class Polygon2D extends AbstractRealInterval implements RealRandomAccessi
 	@Override
 	public RealRandomAccess< BoolType > realRandomAccess()
 	{
-		return new ContainsRealRandomAccess( this );
+		return new MaskRealRandomAccess( this );
 	}
 
 	@Override

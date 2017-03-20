@@ -1,4 +1,3 @@
-
 /*
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
@@ -32,56 +31,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util;
+package net.imglib2.roi.mask;
 
-import net.imglib2.Localizable;
-import net.imglib2.Point;
-import net.imglib2.RandomAccess;
-import net.imglib2.type.logic.BoolType;
+import net.imglib2.EuclideanSpace;
+import net.imglib2.RealLocalizable;
 
 /**
- * {@link RandomAccess} based on {@link Contains} with {@link Localizable}s.
+ * Implementing class know if it contains a certain {@link RealLocalizable} of
+ * type {@code <L>} or not.
  * 
- * @author Christian Dietz, University of Konstanz
- * @author Daniel Seebacher, University of Konstanz
  * @author Tobias Pietzsch
+ * @author Christian Dietz, University of Konstanz
+ *
+ * @param <L>
+ *            type of the tested object
  */
-public class ContainsRandomAccess extends Point implements RandomAccess< BoolType >
+public interface Mask< L extends RealLocalizable > extends EuclideanSpace
 {
-	private final Contains< ? super Localizable > contains;
+	/**
+	 * Tests if implementor contains a {@link RealLocalizable}.
+	 * 
+	 * @param l
+	 *            object which is tested
+	 * @return true, if implementor contains l
+	 */
+	boolean contains( final L l );
 
-	private final BoolType type;
-
-	public ContainsRandomAccess( final Contains< ? super Localizable > contains )
-	{
-		super( contains.numDimensions() );
-		this.contains = contains;
-		type = new BoolType();
-	}
-
-	protected ContainsRandomAccess( final ContainsRandomAccess cra )
-	{
-		super( cra );
-		contains = cra.contains;
-		type = cra.type.copy();
-	}
-
-	@Override
-	public BoolType get()
-	{
-		type.set( contains.contains( this ) );
-		return type;
-	}
-
-	@Override
-	public ContainsRandomAccess copy()
-	{
-		return new ContainsRandomAccess( this );
-	}
-
-	@Override
-	public RandomAccess< BoolType > copyRandomAccess()
-	{
-		return copy();
-	}
+	/**
+	 * Create a copy of the {@link Mask}
+	 * 
+	 * @return copy
+	 */
+	Mask< L > copyContains();
 }

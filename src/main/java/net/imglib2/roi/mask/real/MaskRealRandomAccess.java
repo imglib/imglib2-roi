@@ -31,36 +31,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util;
+package net.imglib2.roi.mask.real;
 
-import net.imglib2.EuclideanSpace;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
+import net.imglib2.RealRandomAccess;
+import net.imglib2.roi.mask.Mask;
+import net.imglib2.type.logic.BoolType;
 
 /**
- * Implementing class know if it contains a certain {@link RealLocalizable} of
- * type {@code <L>} or not.
+ * {@link RealRandomAccess} based on {@link Mask} with
+ * {@link RealLocalizable}s.
  * 
- * @author Tobias Pietzsch
  * @author Christian Dietz, University of Konstanz
- *
- * @param <L>
- *            type of the tested object
+ * @author Tobias Pietzsch
  */
-public interface Contains< L extends RealLocalizable > extends EuclideanSpace
+public class MaskRealRandomAccess extends RealPoint implements RealRandomAccess< BoolType >
 {
-	/**
-	 * Tests if implementor contains a {@link RealLocalizable}.
-	 * 
-	 * @param l
-	 *            object which is tested
-	 * @return true, if implementor contains l
-	 */
-	boolean contains( final L l );
+	private final Mask< ? super RealLocalizable > contains;
 
-	/**
-	 * Create a copy of the {@link Contains}
-	 * 
-	 * @return copy
-	 */
-	Contains< L > copyContains();
+	private final BoolType type;
+
+	public MaskRealRandomAccess( final Mask< ? super RealLocalizable > contains )
+	{
+		super( contains.numDimensions() );
+		this.contains = contains;
+		type = new BoolType();
+	}
+
+	protected MaskRealRandomAccess( final MaskRealRandomAccess cra )
+	{
+		super( cra.numDimensions() );
+		contains = cra.contains;
+		type = cra.type.copy();
+	}
+
+	@Override
+	public BoolType get()
+	{
+		type.set( contains.contains( this ) );
+		return type;
+	}
+
+	@Override
+	public MaskRealRandomAccess copy()
+	{
+		return new MaskRealRandomAccess( this );
+	}
+
+	@Override
+	public RealRandomAccess< BoolType > copyRealRandomAccess()
+	{
+		return copy();
+	}
 }
