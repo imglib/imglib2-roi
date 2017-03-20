@@ -42,6 +42,7 @@ import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import net.imglib2.type.BooleanType;
 
 /**
@@ -61,7 +62,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 
 	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, ROIUtils.countTrue( interval ) );
+		return new IterableRandomAccessibleRegion< T >( interval, Regions.countTrue( interval ) );
 	}
 
 	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
