@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,29 +37,28 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.roi.mask.Mask;
-import net.imglib2.type.logic.BoolType;
+import net.imglib2.type.BooleanType;
 
 /**
- * {@link RealRandomAccess} based on {@link Mask} with
- * {@link RealLocalizable}s.
- * 
+ * {@link RealRandomAccess} based on {@link Mask} with {@link RealLocalizable}s.
+ *
  * @author Christian Dietz, University of Konstanz
  * @author Tobias Pietzsch
  */
-public class MaskRealRandomAccess extends RealPoint implements RealRandomAccess< BoolType >
+public class MaskRealRandomAccess< B extends BooleanType< B > > extends RealPoint implements RealRandomAccess< B >
 {
-	private final Mask< ? super RealLocalizable > contains;
+	private final Mask< RealLocalizable > contains;
 
-	private final BoolType type;
+	private final B type;
 
-	public MaskRealRandomAccess( final Mask< ? super RealLocalizable > contains )
+	public MaskRealRandomAccess( final Mask< RealLocalizable > contains, final B type )
 	{
 		super( contains.numDimensions() );
 		this.contains = contains;
-		type = new BoolType();
+		this.type = type.copy();
 	}
 
-	protected MaskRealRandomAccess( final MaskRealRandomAccess cra )
+	protected MaskRealRandomAccess( final MaskRealRandomAccess< B > cra )
 	{
 		super( cra.numDimensions() );
 		contains = cra.contains;
@@ -67,20 +66,20 @@ public class MaskRealRandomAccess extends RealPoint implements RealRandomAccess<
 	}
 
 	@Override
-	public BoolType get()
+	public B get()
 	{
 		type.set( contains.contains( this ) );
 		return type;
 	}
 
 	@Override
-	public MaskRealRandomAccess copy()
+	public MaskRealRandomAccess< B > copy()
 	{
-		return new MaskRealRandomAccess( this );
+		return new MaskRealRandomAccess<>( this );
 	}
 
 	@Override
-	public RealRandomAccess< BoolType > copyRealRandomAccess()
+	public RealRandomAccess< B > copyRealRandomAccess()
 	{
 		return copy();
 	}
