@@ -1,0 +1,150 @@
+/*
+ * #%L
+ * ImgLib2: a general-purpose, multidimensional image processing library.
+ * %%
+ * Copyright (C) 2009 - 2016 Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
+ * John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
+ * Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
+ * Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
+ * Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
+ * Jean-Yves Tinevez and Michael Zinsmaier.
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+package net.imglib2.roi.geom;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import net.imglib2.RealPoint;
+import net.imglib2.roi.geom.real.DefaultLine;
+import net.imglib2.roi.geom.real.Line;
+
+import org.junit.Test;
+
+public class LineTest
+{
+	@Test
+	public void testLine()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
+
+		assertEquals( l.numDimensions(), 2 );
+
+		// On line segment
+		assertTrue( l.contains( new RealPoint( new double[] { 4.5, 0.9 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 2, 2.4 } ) ) );
+
+		// On line, but not within interval
+		assertFalse( l.contains( new RealPoint( new double[] { 0, 3.6 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 9, -1.8 } ) ) );
+
+		// Off line
+		assertFalse( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 4.5, 1 } ) ) );
+
+		// Check if endpoints on line
+		assertTrue( l.contains( new RealPoint( new double[] { 1, 3 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 6, 0 } ) ) );
+
+		// line characteristics
+		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 3, 0 );
+		assertEquals( l.endpointTwo()[ 0 ], 6, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 0, 0 );
+	}
+
+	@Test
+	public void testHigherDimSpaceLine()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 1, 1, 1, 1 }, new double[] { 10, 10, 10, 10, 10 }, false );
+
+		assertEquals( l.numDimensions(), 5 );
+
+		// On line
+		assertTrue( l.contains( new RealPoint( new double[] { 6, 6, 6, 6, 6 } ) ) );
+
+		// Off line
+		assertFalse( l.contains( new RealPoint( new double[] { 0, 0, 0, 0, 0 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 2, 2, 2.0001, 2, 2 } ) ) );
+
+		// line characteristics
+		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 2 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 3 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 4 ], 1, 0 );
+		assertEquals( l.endpointTwo()[ 0 ], 10, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 10, 0 );
+		assertEquals( l.endpointTwo()[ 2 ], 10, 0 );
+		assertEquals( l.endpointTwo()[ 3 ], 10, 0 );
+		assertEquals( l.endpointTwo()[ 4 ], 10, 0 );
+	}
+
+	@Test
+	public void testHorizontalLine()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 1 }, new double[] { 12, 1 }, false );
+
+		// On line
+		assertTrue( l.contains( new RealPoint( new double[] { 6.25, 1 } ) ) );
+
+		// Off line
+		assertFalse( l.contains( new RealPoint( new double[] { 10, 1.01 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 12.5, 1 } ) ) );
+
+		// Endpoints
+		assertTrue( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 12, 1 } ) ) );
+
+		// line characteristics
+		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
+		assertEquals( l.endpointTwo()[ 0 ], 12, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 1, 0 );
+	}
+
+	@Test
+	public void testVerticalLine()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 1 }, new double[] { 1, 17 }, false );
+
+		// On line
+		assertTrue( l.contains( new RealPoint( new double[] { 1, 14.125 } ) ) );
+
+		// Off line
+		assertFalse( l.contains( new RealPoint( new double[] { 1.0625, 4 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 1, 0.99 } ) ) );
+
+		// Endpoints
+		assertTrue( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 1, 17 } ) ) );
+
+		// line characteristics
+		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
+		assertEquals( l.endpointTwo()[ 0 ], 1, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 17, 0 );
+	}
+}
