@@ -42,7 +42,6 @@ import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
 import net.imglib2.roi.util.ROIUtils;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
@@ -119,11 +118,6 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	public List< ? extends RealLocalizable > getVertices()
 	{
 		return vertices;
-	}
-
-	public IterableRandomAccessibleRegion< BoolType > rasterize()
-	{
-		return new RasterizedPolygon( this );
 	}
 
 	@Override

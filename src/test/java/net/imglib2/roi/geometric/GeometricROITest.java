@@ -54,8 +54,6 @@ public class GeometricROITest
 
 	private static Polygon polygon;
 
-	private static RasterizedPolygonalChain polygonalChain;
-
 	@BeforeClass
 	public static void initTest()
 	{
@@ -67,7 +65,6 @@ public class GeometricROITest
 		points.add( new RealPoint( 10d, 20d ) );
 
 		polygon = new Polygon( points );
-		polygonalChain = new RasterizedPolygonalChain( points );
 	}
 
 	@Test
@@ -79,54 +76,5 @@ public class GeometricROITest
 		// check point in polygon test
 		final RealPoint realPoint = new RealPoint( 15d, 15d );
 		assertTrue( "Point in Polygon Test", polygon.contains( realPoint ) );
-	}
-
-	@Test
-	public void testRasterizedPolygon()
-	{
-		// check size
-		final RasterizedPolygon rp = new RasterizedPolygon( polygon );
-		assertEquals( "Rasterized Polygon Size", 100, rp.size() );
-
-		// check size with cursor
-		long sz = 0;
-		final Cursor< Void > cursor = rp.cursor();
-		while ( cursor.hasNext() )
-		{
-			cursor.fwd();
-			sz++;
-		}
-		assertEquals( "Cursor Size", 100, sz );
-
-		// check random access
-		final RandomAccess< BoolType > randomAccess = rp.randomAccess();
-		randomAccess.setPosition( new int[] { 15, 15 } );
-		assertTrue( "Random Access Inside", randomAccess.get().get() );
-		randomAccess.setPosition( new int[] { 5, 5 } );
-		assertFalse( "Random Access Outside", randomAccess.get().get() );
-	}
-
-	@Test
-	public void testRasterizedPolygonalChain()
-	{
-		// check size
-		assertEquals( "Rasterized Contour Size", 40, polygonalChain.size() );
-
-		// check size with cursor
-		long sz = 0;
-		final Cursor< Void > cursor = polygonalChain.cursor();
-		while ( cursor.hasNext() )
-		{
-			cursor.fwd();
-			sz++;
-		}
-		assertEquals( "Cursor Size", 40, sz );
-
-		// check random access
-		final RandomAccess< BoolType > randomAccess = polygonalChain.randomAccess();
-		randomAccess.setPosition( new int[] { 12, 10 } );
-		assertTrue( "Random Access On Line", randomAccess.get().get() );
-		randomAccess.setPosition( new int[] { 5, 5 } );
-		assertFalse( "Random Access Not On Line", randomAccess.get().get() );
 	}
 }
