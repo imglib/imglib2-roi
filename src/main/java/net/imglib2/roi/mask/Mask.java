@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,36 +31,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package net.imglib2.roi.mask;
 
 import net.imglib2.EuclideanSpace;
+import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 
 /**
- * Implementing class know if it contains a certain {@link RealLocalizable} of
- * type {@code <L>} or not.
- * 
+ * Base interface for all things that divide an N-space into two parts.
+ *
+ * @author Alison Walter
+ * @author Curtis Rueden
  * @author Tobias Pietzsch
  * @author Christian Dietz, University of Konstanz
- *
  * @param <L>
- *            type of the tested object
+ *            location in N-space; typically a {@link RealLocalizable} or
+ *            subtype (e.g., {@link Localizable}).
  */
-public interface Mask< L extends RealLocalizable > extends EuclideanSpace
+public interface Mask< L > extends EuclideanSpace
 {
-	/**
-	 * Tests if implementor contains a {@link RealLocalizable}.
-	 * 
-	 * @param l
-	 *            object which is tested
-	 * @return true, if implementor contains l
-	 */
-	boolean contains( final L l );
 
 	/**
-	 * Create a copy of the {@link Mask}
-	 * 
-	 * @return copy
+	 * Tests if the mask contains a location in N-space.
+	 *
+	 * @param l
+	 *            location in N-space to test
+	 * @return true, if the mask contains the location
 	 */
-	Mask< L > copyContains();
+	boolean contains( final L l );
 }

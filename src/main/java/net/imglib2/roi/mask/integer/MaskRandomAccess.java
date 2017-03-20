@@ -1,4 +1,3 @@
-
 /*
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
@@ -12,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,29 +37,29 @@ import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.roi.mask.Mask;
-import net.imglib2.type.logic.BoolType;
+import net.imglib2.type.BooleanType;
 
 /**
  * {@link RandomAccess} based on {@link Mask} with {@link Localizable}s.
- * 
+ *
  * @author Christian Dietz, University of Konstanz
  * @author Daniel Seebacher, University of Konstanz
  * @author Tobias Pietzsch
  */
-public class MaskRandomAccess extends Point implements RandomAccess< BoolType >
+public class MaskRandomAccess< B extends BooleanType< B > > extends Point implements RandomAccess< B >
 {
-	private final Mask< ? super Localizable > contains;
+	private final Mask<Localizable> contains;
 
-	private final BoolType type;
+	private final B type;
 
-	public MaskRandomAccess( final Mask< ? super Localizable > contains )
+	public MaskRandomAccess( final Mask< Localizable > contains, final B type )
 	{
 		super( contains.numDimensions() );
 		this.contains = contains;
-		type = new BoolType();
+		this.type = type.copy();
 	}
 
-	protected MaskRandomAccess( final MaskRandomAccess cra )
+	protected MaskRandomAccess( final MaskRandomAccess< B > cra )
 	{
 		super( cra );
 		contains = cra.contains;
@@ -68,20 +67,20 @@ public class MaskRandomAccess extends Point implements RandomAccess< BoolType >
 	}
 
 	@Override
-	public BoolType get()
+	public B get()
 	{
 		type.set( contains.contains( this ) );
 		return type;
 	}
 
 	@Override
-	public MaskRandomAccess copy()
+	public MaskRandomAccess< B > copy()
 	{
-		return new MaskRandomAccess( this );
+		return new MaskRandomAccess<>( this );
 	}
 
 	@Override
-	public RandomAccess< BoolType > copyRandomAccess()
+	public RandomAccess< B > copyRandomAccess()
 	{
 		return copy();
 	}
