@@ -1,3 +1,4 @@
+
 /*
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
@@ -31,36 +32,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util;
+package net.imglib2.roi.mask.integer;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
-import net.imglib2.RealRandomAccess;
+import net.imglib2.Localizable;
+import net.imglib2.Point;
+import net.imglib2.RandomAccess;
+import net.imglib2.roi.mask.Mask;
 import net.imglib2.type.logic.BoolType;
 
 /**
- * {@link RealRandomAccess} based on {@link Contains} with
- * {@link RealLocalizable}s.
+ * {@link RandomAccess} based on {@link Mask} with {@link Localizable}s.
  * 
  * @author Christian Dietz, University of Konstanz
+ * @author Daniel Seebacher, University of Konstanz
  * @author Tobias Pietzsch
  */
-public class ContainsRealRandomAccess extends RealPoint implements RealRandomAccess< BoolType >
+public class MaskRandomAccess extends Point implements RandomAccess< BoolType >
 {
-	private final Contains< ? super RealLocalizable > contains;
+	private final Mask< ? super Localizable > contains;
 
 	private final BoolType type;
 
-	public ContainsRealRandomAccess( final Contains< ? super RealLocalizable > contains )
+	public MaskRandomAccess( final Mask< ? super Localizable > contains )
 	{
 		super( contains.numDimensions() );
 		this.contains = contains;
 		type = new BoolType();
 	}
 
-	protected ContainsRealRandomAccess( final ContainsRealRandomAccess cra )
+	protected MaskRandomAccess( final MaskRandomAccess cra )
 	{
-		super( cra.numDimensions() );
+		super( cra );
 		contains = cra.contains;
 		type = cra.type.copy();
 	}
@@ -73,13 +75,13 @@ public class ContainsRealRandomAccess extends RealPoint implements RealRandomAcc
 	}
 
 	@Override
-	public ContainsRealRandomAccess copy()
+	public MaskRandomAccess copy()
 	{
-		return new ContainsRealRandomAccess( this );
+		return new MaskRandomAccess( this );
 	}
 
 	@Override
-	public RealRandomAccess< BoolType > copyRealRandomAccess()
+	public RandomAccess< BoolType > copyRandomAccess()
 	{
 		return copy();
 	}
