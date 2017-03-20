@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -49,22 +49,22 @@ import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
 /**
- * A {@link Polygon} defined by a {@link List} of {@link RealLocalizable}s.
+ * A {@link Polygon2D} defined by a {@link List} of {@link RealLocalizable}s.
  *
  * @author Tobias Pietzsch
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
+public class Polygon2D extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
 {
 	private final List< ? extends RealLocalizable > vertices;
 
 	private final List< ? extends RealLocalizable > unmodifiableVertices;
 
-	public Polygon( final List< ? extends RealLocalizable > vertices )
+	public Polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		super( Regions.getBoundsReal( vertices ) );
-		assert( this.n == 2 );
+		assert ( this.n == 2 );
 		this.vertices = new ArrayList<>( vertices );
 		unmodifiableVertices = Collections.unmodifiableList( this.vertices );
 	}
@@ -116,8 +116,8 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	}
 
 	/**
-	 * Get vertices defining the {@link Polygon}
-	 * 
+	 * Get vertices defining the {@link Polygon2D}
+	 *
 	 * @return {@link List} of {@link RealLocalizable}
 	 */
 	public List< ? extends RealLocalizable > getVertices()
@@ -126,7 +126,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	}
 
 	@Override
-	public Polygon copyContains() 
+	public Polygon2D copyContains()
 	{
 		return this;
 	}

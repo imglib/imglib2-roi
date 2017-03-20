@@ -52,7 +52,7 @@ import org.junit.Test;
 public class GeometricROITest
 {
 
-	private static Polygon polygon;
+	private static Polygon2D polygon;
 
 	@BeforeClass
 	public static void initTest()
@@ -64,7 +64,7 @@ public class GeometricROITest
 		points.add( new RealPoint( 20d, 20d ) );
 		points.add( new RealPoint( 10d, 20d ) );
 
-		polygon = new Polygon( points );
+		polygon = new Polygon2D( points );
 	}
 
 	@Test
