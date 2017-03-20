@@ -47,17 +47,17 @@ import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
 /**
- * A {@link Polygon} defined by a {@link List} of {@link RealLocalizable}s.
+ * A {@link Polygon2D} defined by a {@link List} of {@link RealLocalizable}s.
  *
  * @author Tobias Pietzsch
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
+public class Polygon2D extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Contains< RealLocalizable >
 {
 	private final List< ? extends RealLocalizable > vertices;
 
-	public Polygon( final List< ? extends RealLocalizable > vertices )
+	public Polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		super( Regions.getBoundsReal( vertices ) );
 		assert( this.n == 2 );
@@ -111,7 +111,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	}
 
 	/**
-	 * Get vertices defining the {@link Polygon}
+	 * Get vertices defining the {@link Polygon2D}
 	 * 
 	 * @return {@link List} of {@link RealLocalizable}
 	 */
@@ -121,7 +121,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	}
 
 	@Override
-	public Polygon copyContains() 
+	public Polygon2D copyContains() 
 	{
 		return this;
 	}
