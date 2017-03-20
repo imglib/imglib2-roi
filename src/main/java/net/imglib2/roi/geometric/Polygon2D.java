@@ -38,14 +38,8 @@ import java.util.Collections;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealRandomAccess;
-import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.Regions;
-import net.imglib2.roi.mask.Mask;
-import net.imglib2.roi.mask.real.MaskRealRandomAccess;
-import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
 /**
@@ -55,7 +49,7 @@ import net.imglib2.util.Intervals;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon2D extends AbstractRealInterval implements RealRandomAccessibleRealInterval< BoolType >, Mask< RealLocalizable >
+public class Polygon2D extends AbstractRealInterval
 {
 	private final List< ? extends RealLocalizable > vertices;
 
@@ -73,7 +67,6 @@ public class Polygon2D extends AbstractRealInterval implements RealRandomAccessi
 	 * Return true if the given point is contained inside the boundary. See:
 	 * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 	 */
-	@Override
 	public boolean contains( final RealLocalizable localizable )
 	{
 		if ( Intervals.contains( this, localizable ) )
@@ -103,18 +96,6 @@ public class Polygon2D extends AbstractRealInterval implements RealRandomAccessi
 		return false;
 	}
 
-	@Override
-	public RealRandomAccess< BoolType > realRandomAccess()
-	{
-		return new MaskRealRandomAccess( this );
-	}
-
-	@Override
-	public RealRandomAccess< BoolType > realRandomAccess( final RealInterval interval )
-	{
-		return realRandomAccess();
-	}
-
 	/**
 	 * Get vertices defining the {@link Polygon2D}
 	 *
@@ -123,11 +104,5 @@ public class Polygon2D extends AbstractRealInterval implements RealRandomAccessi
 	public List< ? extends RealLocalizable > getVertices()
 	{
 		return unmodifiableVertices;
-	}
-
-	@Override
-	public Polygon2D copyContains()
-	{
-		return this;
 	}
 }
