@@ -40,9 +40,9 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.roi.Regions;
 import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
-import net.imglib2.roi.util.ROIUtils;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
@@ -59,7 +59,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 
 	public Polygon( final List< ? extends RealLocalizable > vertices )
 	{
-		super( ROIUtils.getBoundsReal( vertices ) );
+		super( Regions.getBoundsReal( vertices ) );
 		assert( this.n == 2 );
 		this.vertices = vertices;
 	}
