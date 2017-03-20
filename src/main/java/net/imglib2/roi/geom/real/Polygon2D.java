@@ -31,50 +31,73 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.geometric;
+package net.imglib2.roi.geom.real;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
+import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
-import net.imglib2.type.logic.BoolType;
+import net.imglib2.roi.Regions;
+import net.imglib2.util.Intervals;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-public class GeometricROITest
+/**
+ * A {@link Polygon2D} defined by a {@link List} of {@link RealLocalizable}s.
+ *
+ * @author Tobias Pietzsch
+ * @author Daniel Seebacher, University of Konstanz
+ * @author Christian Dietz, University of Konstanz
+ */
+public class Polygon2D extends AbstractRealInterval
 {
+	private final List< ? extends RealLocalizable > vertices;
 
-	private static Polygon2D polygon;
-
-	@BeforeClass
-	public static void initTest()
+	public Polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
-
-		final List< RealLocalizable > points = new ArrayList< RealLocalizable >();
-		points.add( new RealPoint( 10d, 10d ) );
-		points.add( new RealPoint( 20d, 10d ) );
-		points.add( new RealPoint( 20d, 20d ) );
-		points.add( new RealPoint( 10d, 20d ) );
-
-		polygon = new Polygon2D( points );
+		super( Regions.getBoundsReal( vertices ) );
+		assert( this.n == 2 );
+		this.vertices = vertices;
 	}
 
-	@Test
-	public void testPolygon()
+	/**
+	 * Return true if the given point is contained inside the boundary. See:
+	 * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+	 */
+	public boolean contains( final RealLocalizable localizable )
 	{
-		// check size
-		assertEquals( "Polygon Size", 4, polygon.getVertices().size() );
+		if ( Intervals.contains( this, localizable ) )
+		{
+			int i;
+			int j;
+			boolean result = false;
+			for ( i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++ )
+			{
+				final double j1 = vertices.get( j ).getDoublePosition( 1 );
+				final double j0 = vertices.get( j ).getDoublePosition( 0 );
 
-		// check point in polygon test
-		final RealPoint realPoint = new RealPoint( 15d, 15d );
-		assertTrue( "Point in Polygon Test", polygon.contains( realPoint ) );
+				final double i0 = vertices.get( i ).getDoublePosition( 0 );
+				final double i1 = vertices.get( i ).getDoublePosition( 1 );
+
+				final double l1 = localizable.getDoublePosition( 1 );
+				final double l0 = localizable.getDoublePosition( 0 );
+
+				if ( ( i1 > l1 ) != ( j1 > l1 ) && ( l0 < ( j0 - i0 ) * ( l1 - i1 ) / ( j1 - i1 ) + i0 ) )
+				{
+					result = !result;
+				}
+			}
+
+			return result;
+		}
+		return false;
+	}
+
+	/**
+	 * Get vertices defining the {@link Polygon2D}
+	 * 
+	 * @return {@link List} of {@link RealLocalizable}
+	 */
+	public List< ? extends RealLocalizable > getVertices()
+	{
+		return vertices;
 	}
 }
