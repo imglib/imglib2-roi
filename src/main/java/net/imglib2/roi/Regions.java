@@ -134,6 +134,76 @@ public class Regions
 		return new FinalRealInterval( min, max );
 	}
 
+	/**
+	 * Finds the smallest {@link RealInterval} which contains all vertices.
+	 *
+	 * @param vertices
+	 *            A 2D array containing all the vertices, where the first index
+	 *            indicates the vertex and the second indicates the dimension.
+	 *            So {@code vertices[ 0 ][ 2 ]} is the value of the first vertex
+	 *            in the third dimension.
+	 * @return A {@link RealInterval} which contains all the vertices
+	 */
+	public static RealInterval getBoundsReal( final double[][] vertices )
+	{
+		final int dims = vertices[ 0 ].length;
+		final double[] min = new double[ dims ];
+		final double[] max = new double[ dims ];
+
+		double maxValue;
+		double minValue;
+		for ( int i = 0; i < dims; i++ )
+		{
+			maxValue = vertices[ 0 ][ i ];
+			minValue = vertices[ 0 ][ i ];
+			for ( int j = 1; j < vertices.length; j++ )
+			{
+				if ( vertices[ j ][ i ] < minValue )
+					minValue = vertices[ j ][ i ];
+				if ( vertices[ j ][ i ] > maxValue )
+					maxValue = vertices[ j ][ i ];
+			}
+			min[ i ] = minValue;
+			max[ i ] = maxValue;
+		}
+
+		return new FinalRealInterval( min, max );
+	}
+
+	/**
+	 * Finds the smallest {@link RealInterval} which contains all x, y
+	 * coordinates. If the x and y arrays are not equal in length the larger
+	 * array will be truncated.
+	 *
+	 * @param x
+	 *            x coordinates of the vertices
+	 * @param y
+	 *            y coordinates of the vertices
+	 * @return A {@link RealInterval} which contains all the vertices
+	 */
+	public static RealInterval getBoundsReal( final double[] x, final double[] y )
+	{
+		final int l = x.length <= y.length ? x.length : y.length;
+		final double[] min = new double[] { x[ 0 ], y[ 0 ] };
+		final double[] max = new double[] { x[ 0 ], y[ 0 ] };
+
+		for ( int i = 1; i < l; i++ )
+		{
+			final double xi = x[ i ];
+			final double yi = y[ i ];
+
+			if ( xi < min[ 0 ] )
+				min[ 0 ] = xi;
+			if ( xi > max[ 0 ] )
+				max[ 0 ] = xi;
+			if ( yi < min[ 1 ] )
+				min[ 1 ] = yi;
+			if ( yi > max[ 1 ] )
+				max[ 1 ] = yi;
+		}
+		return new FinalRealInterval( min, max );
+	}
+
 	// TODO: bresenham(vertices) assumes closed loop of vertices (first vertex
 	// is repeated after last vertex). It would be useful to have a version that
 	// doesn't assume that, and a version that just takes 2 points.
