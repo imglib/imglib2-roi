@@ -49,7 +49,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class DefaultPolygon2D extends AbstractRealInterval
+public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 {
 	private final TDoubleArrayList x;
 
@@ -77,6 +77,7 @@ public class DefaultPolygon2D extends AbstractRealInterval
 	 * Return true if the given point is contained inside the boundary. See:
 	 * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 	 */
+	@Override
 	public boolean contains( final RealLocalizable localizable )
 	{
 		final double xl = localizable.getDoublePosition( 0 );
@@ -105,20 +106,17 @@ public class DefaultPolygon2D extends AbstractRealInterval
 		return false;
 	}
 
-	/**
-	 * Get the vertices defining the {@link DefaultPolygon2D}.
-	 */
-	public double[][] getVertices()
+	/** Return a copy of the vertex */
+	@Override
+	public double[] vertex( final int pos )
 	{
-		final double[][] vert = new double[ x.size() ][ 2 ];
+		return new double[] { x.get( pos ), y.get( pos ) };
+	}
 
-		for ( int i = 0; i < x.size(); i++ )
-		{
-			vert[ i ][ 0 ] = x.get( i );
-			vert[ i ][ 1 ] = y.get( i );
-		}
-
-		return vert;
+	@Override
+	public int numVertices()
+	{
+		return x.size();
 	}
 
 	// -- Helper methods --
