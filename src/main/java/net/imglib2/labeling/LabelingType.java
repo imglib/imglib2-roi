@@ -246,4 +246,9 @@ public class LabelingType< T extends Comparable< T >> implements Type< LabelingT
 		return type;
 	}
 
+	@Override
+	public boolean valueEquals( final LabelingType< T > t )
+	{
+		return getLabeling().equals( t.getLabeling() );
+	}
 }

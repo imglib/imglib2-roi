@@ -33,17 +33,24 @@
  */
 package net.imglib2.roi.util.iterationcode;
 
-import gnu.trove.list.array.TIntArrayList;
-
 import java.util.List;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Iterator;
 import net.imglib2.Localizable;
 import net.imglib2.Positionable;
+import net.imglib2.roi.labeling.LabelRegion;
 
 /**
- * TODO
+ * Iterates a bitmask that is encoded by a list of {@link IterationCode}s. (This
+ * is used to iterate a {@link LabelRegion} which is the union of fragments
+ * which are encoded by {@link IterationCode}s.) It is constructed with a
+ * {@link Positionable} {@link Localizable}, that represents the position and is
+ * moved around while iterating.
+ *
+ * @param <P>
+ *            type of the position field.
  *
  * @author Tobias Pietzsch
  */

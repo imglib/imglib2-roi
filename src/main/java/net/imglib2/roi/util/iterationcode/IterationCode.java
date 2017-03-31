@@ -33,11 +33,34 @@
  */
 package net.imglib2.roi.util.iterationcode;
 
-import net.imglib2.EuclideanSpace;
 import gnu.trove.list.array.TIntArrayList;
+import net.imglib2.EuclideanSpace;
 
 /**
- * TODO
+ * Iteration code encodes a bitmask as a set of intervals along dimension 0.
+ * It is a list of numbers (see {@link #getItcode()}) structured as follows:
+ *
+ * <pre>
+ * {@code
+ * [o0]             a general X offset
+ *                  (to ensure that no negative X coordinates occur.)
+ * [p1, ..., pn]    the starting position in dimensions 1, ..., n
+ *
+ * Then follows a arbitrary long sequence of tuples
+ * [p0min, p0max] where p0min >= 0
+ *  or
+ * [-dim, p1, ..., p(dim)] where -dim < 0.
+ * Based on the sign of first element it can be decided which it is.
+ * In the second case, the first element determines the length of the tuple.
+ *
+ * [p0min, p0max] means that the positions from [p0min + o0, p1, ..., pn] to
+ * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
+ * current starting position in dimensions 1, ..., n.
+ *
+ * [dim, p1, ..., p(-dim)] modifies dimensions p1, ..., p(-dim) of the current
+ * starting position.
+ * }
+ * </pre>
  *
  * @author Tobias Pietzsch
  */
