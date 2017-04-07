@@ -43,19 +43,19 @@ import net.imglib2.util.Intervals;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
- * A {@link Polygon2D} defined by the given vertices x and y coordinates.
+ * A {@link DefaultPolygon2D} defined by the given vertices x and y coordinates.
  *
  * @author Tobias Pietzsch
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class Polygon2D extends AbstractRealInterval
+public class DefaultPolygon2D extends AbstractRealInterval
 {
 	private final TDoubleArrayList x;
 
 	private final TDoubleArrayList y;
 
-	public Polygon2D( final List< ? extends RealLocalizable > vertices )
+	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		super( Regions.getBoundsReal( vertices ) );
 
@@ -65,7 +65,7 @@ public class Polygon2D extends AbstractRealInterval
 		populateXY( vertices );
 	}
 
-	public Polygon2D( final double[] x, final double[] y )
+	public DefaultPolygon2D( final double[] x, final double[] y )
 	{
 		super( Regions.getBoundsReal( x, y ) );
 
@@ -106,7 +106,7 @@ public class Polygon2D extends AbstractRealInterval
 	}
 
 	/**
-	 * Get the vertices defining the {@link Polygon2D}.
+	 * Get the vertices defining the {@link DefaultPolygon2D}.
 	 */
 	public double[][] getVertices()
 	{
