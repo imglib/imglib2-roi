@@ -201,4 +201,62 @@ public class BoxTest
 		assertEquals( hc.center()[ 2 ], 5, 0 );
 		assertEquals( hc.center()[ 3 ], 5, 0 );
 	}
+
+	@Test
+	public void testMutatingClosedBox()
+	{
+		final Box b = new ClosedBox( new double[] { 2, 2 }, new double[] { 5, 5 } );
+
+		assertEquals( b.center()[ 0 ], 3.5, 0 );
+		assertEquals( b.sideLength( 1 ), 3, 0 );
+		assertTrue( b.contains( new RealPoint( new double[] { 3.25, 4 } ) ) );
+		assertFalse( b.contains( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
+
+		b.setCenter( new double[]{ 5, 10 } );
+
+		assertEquals( b.center()[ 0 ], 5, 0 );
+		assertEquals( b.sideLength( 1 ), 3, 0 );
+		assertFalse( b.contains( new RealPoint( new double[] { 3.25, 4 } ) ) );
+		assertTrue( b.contains( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
+		assertFalse( b.contains( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
+
+		b.setSideLength( 0, 6 );
+
+		assertEquals( b.sideLength( 0 ), 6, 0 );
+		assertEquals( b.sideLength( 1 ), 3, 0 );
+		assertTrue( b.contains( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
+	}
+
+	@Test
+	public void testMutatingOpenBox()
+	{
+		final Box b = new OpenBox( new double[] { 1.25, 2 }, new double[] { 5, 3.5 } );
+
+		assertEquals( b.center()[ 0 ], 3.125, 0 );
+		assertEquals( b.center()[ 1 ], 2.75, 0 );
+		assertEquals( b.sideLength( 0 ), 3.75, 0 );
+		assertEquals( b.sideLength( 1 ), 1.5, 0 );
+		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertFalse( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+
+		b.setCenter( new double[]{ 2, 3 } );
+
+		assertEquals( b.center()[ 0 ], 2, 0 );
+		assertEquals( b.center()[ 1 ], 3, 0 );
+		assertEquals( b.sideLength( 0 ), 3.75, 0 );
+		assertEquals( b.sideLength( 1 ), 1.5, 0 );
+		assertFalse( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertTrue( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+		assertFalse( b.contains( new RealPoint( new double[] { 0.25, -3 } ) ) );
+
+		b.setSideLength( 1, 15 );
+
+		assertEquals( b.center()[ 0 ], 2, 0 );
+		assertEquals( b.center()[ 1 ], 3, 0 );
+		assertEquals( b.sideLength( 0 ), 3.75, 0 );
+		assertEquals( b.sideLength( 1 ), 15, 0 );
+		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertTrue( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+		assertTrue( b.contains( new RealPoint( new double[] { 0.25, -3 } ) ) );
+	}
 }

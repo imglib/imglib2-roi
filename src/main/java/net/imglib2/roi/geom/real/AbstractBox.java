@@ -56,7 +56,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 	 *            An array containing maximum position in each dimension. A copy
 	 *            of this array is stored.
 	 */
-	public AbstractBox( double[] min, double[] max )
+	public AbstractBox( final double[] min, final double[] max )
 	{
 		super( min, max );
 	}
@@ -81,4 +81,23 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 		return center;
 	}
 
+	@Override
+	public void setCenter( final double[] center )
+	{
+		for ( int d = 0; d < n; d++ )
+		{
+			final double halfSideLength = sideLength( d ) / 2.0;
+			min[ d ] = center[ d ] - halfSideLength;
+			max[ d ] = center[ d ] + halfSideLength;
+		}
+
+	}
+
+	@Override
+	public void setSideLength( final int d, final double length )
+	{
+		final double[] center = center();
+		max[ d ] = center[ d ] + length / 2.0;
+		min[ d ] = center[ d ] - length / 2.0;
+	}
 }

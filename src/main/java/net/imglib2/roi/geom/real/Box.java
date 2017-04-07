@@ -44,9 +44,15 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface Box extends Mask< RealLocalizable >
 {
-	/** Return side length of Box in dimension d */
+	/** Returns side length of Box in dimension d. */
 	double sideLength( int d );
 
-	/** Return the center of the Box */
+	/** Returns the center of the Box. */
 	double[] center();
+
+	/** Centers the box at the new coordinates. */
+	void setCenter( double[] center );
+
+	/** Updates the length of the side in dimension d. */
+	void setSideLength( int d, double length );
 }
