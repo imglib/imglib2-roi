@@ -38,6 +38,7 @@ import java.util.List;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.Regions;
+import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.util.Intervals;
 
 import gnu.trove.list.array.TDoubleArrayList;
@@ -80,29 +81,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 	@Override
 	public boolean contains( final RealLocalizable localizable )
 	{
-		final double xl = localizable.getDoublePosition( 0 );
-		final double yl = localizable.getDoublePosition( 1 );
-
-		if ( Intervals.contains( this, localizable ) )
-		{
-			int i;
-			int j;
-			boolean result = false;
-			for ( i = 0, j = x.size() - 1; i < y.size(); j = i++ )
-			{
-				final double xj = x.get( j );
-				final double yj = y.get( j );
-
-				final double xi = x.get( i );
-				final double yi = y.get( i );
-
-				if ( ( yi > yl ) != ( yj > yl ) && ( xl < ( xj - xi ) * ( yl - yi ) / ( yj - yi ) + xi ) )
-				{
-					result = !result;
-				}
-			}
-			return result;
-		}
+		if ( Intervals.contains( this, localizable ) ) { return GeomMaths.pnpoly( x, y, localizable ); }
 		return false;
 	}
 
