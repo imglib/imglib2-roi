@@ -2,7 +2,7 @@
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
- * Copyright (C) 2009 - 2017 Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
+ * Copyright (C) 2009 - 2016 Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
  * John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
  * Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
  * Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
@@ -31,82 +31,74 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package net.imglib2.roi.geom.real;
 
 import java.util.List;
 
-import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.util.Intervals;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 /**
- * A {@link DefaultPolygon2D} defined by the given vertices x and y coordinates.
+ * A {@link Polygon2D} which contains no boundary points, and is defined by the
+ * provided vertices.
  *
- * @author Tobias Pietzsch
- * @author Daniel Seebacher, University of Konstanz
- * @author Christian Dietz, University of Konstanz
+ * <p>
+ * This implementation of a polygon does not support creating a single polygon
+ * object which is actually multiple polygons. It does support self-intersecting
+ * polygons with even-odd winding.
+ * </p>
+ *
+ * @author Alison Walter
  */
-public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
+public class OpenPolygon2D extends DefaultPolygon2D
 {
-	protected final TDoubleArrayList x;
-
-	protected final TDoubleArrayList y;
-
-	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
+	public OpenPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
-		super( Regions.getBoundsReal( vertices ) );
-
-		x = new TDoubleArrayList( vertices.size() );
-		y = new TDoubleArrayList( vertices.size() );
-
-		populateXY( vertices );
+		super( vertices );
 	}
 
-	public DefaultPolygon2D( final double[] x, final double[] y )
+	public OpenPolygon2D( final double[] x, final double[] y )
 	{
-		super( Regions.getBoundsReal( x, y ) );
-
-		this.x = new TDoubleArrayList( x );
-		this.y = new TDoubleArrayList( y );
+		super( x, y );
 	}
 
-	/**
-	 * Return true if the given point is contained inside the boundary. See:
-	 * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-	 */
 	@Override
 	public boolean contains( final RealLocalizable localizable )
 	{
-		if ( Intervals.contains( this, localizable ) ) { return GeomMaths.pnpoly( x, y, localizable ); }
-		return false;
-	}
-
-	/** Return a copy of the vertex */
-	@Override
-	public double[] vertex( final int pos )
-	{
-		return new double[] { x.get( pos ), y.get( pos ) };
-	}
-
-	@Override
-	public int numVertices()
-	{
-		return x.size();
-	}
-
-	// -- Helper methods --
-
-	private void populateXY( final List< ? extends RealLocalizable > vertices )
-	{
-		for ( int i = 0; i < vertices.size(); i++ )
+		if ( Intervals.contains( this, localizable ) )
 		{
-			final RealLocalizable r = vertices.get( i );
-			x.add( r.getDoublePosition( 0 ) );
-			y.add( r.getDoublePosition( 1 ) );
+			// check edges, this needs to be done first because pnpoly has
+			// unknown edge behavior
+			boolean edge = false;
+			final double[] pt1 = new double[ 2 ];
+			final double[] pt2 = new double[ 2 ];
+			for ( int i = 0; i < x.size(); i++ )
+			{
+				pt1[ 0 ] = x.get( i );
+				pt1[ 1 ] = y.get( i );
+
+				if ( i == x.size() - 1 )
+				{
+					pt2[ 0 ] = x.get( 0 );
+					pt2[ 1 ] = y.get( 0 );
+				}
+				else
+				{
+					pt2[ 0 ] = x.get( i + 1 );
+					pt2[ 1 ] = y.get( i + 1 );
+				}
+
+				edge = GeomMaths.lineContains( pt1, pt2, localizable );
+
+				if ( edge )
+					return false;
+			}
+
+			// not on edge, check inside
+			return GeomMaths.pnpoly( x, y, localizable );
 		}
+		return false;
 	}
 }
