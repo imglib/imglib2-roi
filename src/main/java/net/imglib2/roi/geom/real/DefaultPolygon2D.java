@@ -44,7 +44,15 @@ import net.imglib2.util.Intervals;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
- * A {@link DefaultPolygon2D} defined by the given vertices x and y coordinates.
+ * A {@link DefaultPolygon2D} defined by the given vertices. The resulting
+ * polygon may contain some edge points, all edge points, or no edge points
+ * depending on the specified shape.
+ *
+ * <p>
+ * If consistent edge point inclusion/exclusion is needed see
+ * {@link OpenPolygon2D} or {@link ClosedPolygon2D}. These implementations will
+ * be less efficient but have consistent edge behavior.
+ * </p>
  *
  * @author Tobias Pietzsch
  * @author Daniel Seebacher, University of Konstanz
@@ -56,6 +64,14 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 
 	protected final TDoubleArrayList y;
 
+	/**
+	 * Creates a 2D polygon with the provided vertices.
+	 *
+	 * @param vertices
+	 *            List of vertices which will be copied. All
+	 *            {@link RealLocalizable}s in the provided list are assumed to
+	 *            have the same number of dimensions.
+	 */
 	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		super( Regions.getBoundsReal( vertices ) );
@@ -66,6 +82,14 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 		populateXY( vertices );
 	}
 
+	/**
+	 * Creates a 2D polygon with vertices at the provided x, y coordinates.
+	 *
+	 * @param x
+	 *            X coordinates of the vertices which will be copied
+	 * @param y
+	 *            Y coordinates of the vertices which will be copied
+	 */
 	public DefaultPolygon2D( final double[] x, final double[] y )
 	{
 		super( Regions.getBoundsReal( x, y ) );
