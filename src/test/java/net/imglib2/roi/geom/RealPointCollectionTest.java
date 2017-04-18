@@ -58,6 +58,8 @@ public class RealPointCollectionTest
 
 	private static List< RealPoint > points = new ArrayList<>();
 
+	private static final RealPoint testAddPoint = new RealPoint( new double[] { 10.25, 111 } );
+
 	@Before
 	public void setup()
 	{
@@ -139,5 +141,66 @@ public class RealPointCollectionTest
 		final Iterator< RealPoint > itr = pts.iterator();
 		while ( itr.hasNext() )
 			assertTrue( points.contains( itr.next() ) );
+	}
+
+	@Test
+	public void DefaultRPCAddPoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+
+		assertFalse( rpc.contains( testAddPoint ) );
+
+		rpc.addPoint( testAddPoint );
+		assertTrue( rpc.contains( testAddPoint ) );
+	}
+
+	@Test
+	public void DefaultRPCRemovePoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+
+		assertTrue( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
+
+		// remove based on hash
+		rpc.removePoint( points.get( 4 ) );
+		assertFalse( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
+	}
+
+	@Test
+	public void KDTreeRPCAddPoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
+
+		exception.expect( UnsupportedOperationException.class );
+		rpc.addPoint( new RealPoint( new double[] { 6, 2 } ) );
+	}
+
+	@Test
+	public void KDTreeRPCRemovePoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
+
+		exception.expect( UnsupportedOperationException.class );
+		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
+	}
+
+	@Test
+	public void RealPointSampleListRPCAddPoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+
+		assertFalse( rpc.contains( testAddPoint ) );
+
+		rpc.addPoint( testAddPoint );
+		assertTrue( rpc.contains( testAddPoint ) );
+	}
+
+	@Test
+	public void RealPointSampleListRPCRemovePoint()
+	{
+		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+
+		exception.expect( UnsupportedOperationException.class );
+		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
 	}
 }
