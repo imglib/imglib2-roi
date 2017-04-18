@@ -83,6 +83,14 @@ public class RealPointSampleListRealPointCollection< L extends RealLocalizable >
 		super( points );
 	}
 
+	@Override
+	public void addPoint( final L point )
+	{
+		final double[] pos = new double[ n ];
+		point.localize( pos );
+		( ( RealPointSampleList< L > ) this.points() ).add( new RealPoint( pos ), point );
+	}
+
 	// -- Helper methods --
 
 	/**

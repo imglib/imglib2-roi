@@ -41,6 +41,26 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 		return points;
 	}
 
+	@Override
+	public void addPoint( final L point )
+	{
+		points.add( point );
+	}
+
+	/**
+	 * Removes the given point from the set, if the point is found in the set.
+	 *
+	 * @param point
+	 *            point to be removed, it must have the same hash as a point in
+	 *            the set in order to be removed
+	 * @return true if point was removed, false otherwise
+	 */
+	@Override
+	public boolean removePoint( final L point )
+	{
+		return points.remove( point );
+	}
+
 	// -- Helper methods --
 
 	private double squareDistance( final L ptOne, final RealLocalizable ptTwo )

@@ -46,4 +46,31 @@ public interface RealPointCollection< L extends RealLocalizable > extends Mask< 
 {
 	/** Returns the points in the collection. */
 	Iterable< L > points();
+
+	/**
+	 * Optional operation. Adds a point to the collection.
+	 *
+	 * @param point
+	 *            Point to add to collection
+	 * @throws UnsupportedOperationException
+	 *             Not all RealPoinCollections are mutable
+	 */
+	default void addPoint( final L point )
+	{
+		throw new UnsupportedOperationException( "addPoint" );
+	}
+
+	/**
+	 * Optional operation. Removes a point from the collection.
+	 *
+	 * @param point
+	 *            Point to remove from collection
+	 * @return true if point removed, false otherwise
+	 * @throws UnsupportedOperationException
+	 *             Not all RealPoinCollections are mutable
+	 */
+	default boolean removePoint( final L point )
+	{
+		throw new UnsupportedOperationException( "removePoint" );
+	}
 }
