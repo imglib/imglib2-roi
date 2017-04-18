@@ -44,9 +44,15 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface Line extends Mask< RealLocalizable >
 {
-	/** Return the position of the first endpoint */
+	/** Returns the position of the first endpoint. */
 	double[] endpointOne();
 
-	/** Return the position of the second endpoint */
+	/** Returns the position of the second endpoint. */
 	double[] endpointTwo();
+
+	/** Sets the position of the first endpoint. */
+	void setEndpointOne( double[] pos );
+
+	/** Sets the position of the second endpoint. */
+	void setEndpointTwo( double[] pos );
 }

@@ -47,9 +47,9 @@ import net.imglib2.util.Intervals;
  */
 public class DefaultLine extends AbstractRealInterval implements Line
 {
-	private final double[] pointOne;
+	private double[] pointOne;
 
-	private final double[] pointTwo;
+	private double[] pointTwo;
 
 	/**
 	 * Creates a line with endpoints at the given positions.
@@ -116,6 +116,20 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	public double[] endpointTwo()
 	{
 		return pointTwo.clone();
+	}
+
+	@Override
+	public void setEndpointOne( final double[] pos )
+	{
+		pointOne = pos.clone();
+		setMinMax();
+	}
+
+	@Override
+	public void setEndpointTwo( final double[] pos )
+	{
+		pointTwo = pos.clone();
+		setMinMax();
 	}
 
 	// -- Helper methods --

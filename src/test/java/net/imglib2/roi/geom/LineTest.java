@@ -147,4 +147,40 @@ public class LineTest
 		assertEquals( l.endpointTwo()[ 0 ], 1, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 17, 0 );
 	}
+
+	@Test
+	public void testMutatedLine()
+	{
+		final Line l = new DefaultLine( new double[] { 2, 3 }, new double[] { 4, 7 }, false );
+
+		assertEquals( l.endpointOne()[ 0 ], 2, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 3, 0 );
+		assertEquals( l.endpointTwo()[ 0 ], 4, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 7, 0 );
+		assertTrue( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+
+		// change first endpoint
+		l.setEndpointOne( new double[] { 1, 1 } );
+
+		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
+		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
+		assertTrue( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+
+		// change second endpoint
+		l.setEndpointTwo( new double[] { 7, 7 } );
+
+		assertEquals( l.endpointTwo()[ 0 ], 7, 0 );
+		assertEquals( l.endpointTwo()[ 1 ], 7, 0 );
+		assertFalse( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertTrue( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+
+	}
 }
