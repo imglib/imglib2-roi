@@ -43,9 +43,9 @@ import net.imglib2.RealLocalizable;
  */
 public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid
 {
-	protected final double exponent;
+	protected double exponent;
 
-	protected final double[] center;
+	protected double[] center;
 
 	protected final double[] semiAxisLengths;
 
@@ -90,5 +90,23 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	public double[] center()
 	{
 		return center.clone();
+	}
+
+	@Override
+	public void setExponent( final double exponent )
+	{
+		this.exponent = exponent;
+	}
+
+	@Override
+	public void setSemiAxisLength( final int d, final double length )
+	{
+		semiAxisLengths[ d ] = length;
+	}
+
+	@Override
+	public void setCenter( final double[] center )
+	{
+		this.center = center.clone();
 	}
 }

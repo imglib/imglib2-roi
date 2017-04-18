@@ -43,6 +43,9 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface Sphere extends Ellipsoid
 {
-	/** Return the radius of this sphere */
+	/** Returns the radius of this sphere. */
 	double radius();
+
+	/** Sets the radius. */
+	void setRadius( double radius );
 }

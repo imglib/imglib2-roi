@@ -43,5 +43,15 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface Ellipsoid extends SuperEllipsoid
 {
-
+	/**
+	 * Ellipsoids have exponents of 2.
+	 *
+	 * @throws UnsupportedOperationException
+	 *             Ellipsoids, by definition, have an exponent of 2
+	 */
+	@Override
+	default void setExponent( final double exponent )
+	{
+		throw new UnsupportedOperationException( "setExponent: can only have an exponent of 2" );
+	}
 }
