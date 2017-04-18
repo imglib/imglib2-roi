@@ -37,6 +37,7 @@ package net.imglib2.roi.geom.real;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
+import net.imglib2.Interval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
@@ -104,5 +105,50 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	public int numVertices()
 	{
 		return vertices.size();
+	}
+
+	@Override
+	public void setVertex( final int index, final double[] vertex )
+	{
+		vertices.set( index, vertex );
+		updateMinMax();
+	}
+
+	@Override
+	public void addVertex( final int index, final double[] vertex )
+	{
+		vertices.add( index, vertex );
+		updateMinMax();
+	}
+
+	@Override
+	public void removeVertex( final int index )
+	{
+		vertices.remove( index );
+		updateMinMax();
+	}
+
+	// -- Helper methods --
+
+	/**
+	 * Updates the min and max of the {@link Interval}.
+	 */
+	private void updateMinMax()
+	{
+		for ( int d = 0; d < n; d++ )
+		{
+			double maxVal = vertices.get( 0 )[ d ];
+			double minVal = vertices.get( 0 )[ d ];
+			for ( int i = 1; i < vertices.size(); i++ )
+			{
+				final double val = vertices.get( i )[ d ];
+				if ( val > maxVal )
+					maxVal = val;
+				if ( val < minVal )
+					minVal = val;
+			}
+			max[ d ] = maxVal;
+			min[ d ] = minVal;
+		}
 	}
 }

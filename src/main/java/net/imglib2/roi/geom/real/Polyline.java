@@ -44,9 +44,18 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface Polyline extends Mask< RealLocalizable >
 {
-	/** Return the vertex at the specified position */
+	/** Returns the vertex at the specified position. */
 	double[] vertex( final int pos );
 
-	/** Return the number of vertices which define this polyline */
+	/** Returns the number of vertices which define this polyline. */
 	int numVertices();
+
+	/** Sets the position of the vertex at the specified index. */
+	void setVertex( int index, double[] vertex );
+
+	/** Adds a vertex at the given index. */
+	void addVertex( int index, double[] vertex );
+
+	/** Removes the vertex at the given index. */
+	void removeVertex( int index );
 }
