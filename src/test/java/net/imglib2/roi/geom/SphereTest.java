@@ -42,7 +42,9 @@ import net.imglib2.roi.geom.real.ClosedSphere;
 import net.imglib2.roi.geom.real.OpenSphere;
 import net.imglib2.roi.geom.real.Sphere;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link Sphere}.
@@ -51,6 +53,9 @@ import org.junit.Test;
  */
 public class SphereTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	@Test
 	public void testOpenCircle()
 	{
@@ -101,5 +106,76 @@ public class SphereTest
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
 		assertEquals( s.radius(), 8, 0 );
+	}
+
+	@Test
+	public void testSphereSetExponent()
+	{
+		final Sphere s = new OpenSphere( new double[] { 1, 1 }, 4 );
+
+		exception.expect( UnsupportedOperationException.class );
+		s.setExponent( 0.25 );
+	}
+
+	@Test
+	public void testMutateOpenSphere()
+	{
+		final Sphere s = new OpenSphere( new double[] { 3, 2 }, 5 );
+
+		assertEquals( s.center()[ 0 ], 3, 0 );
+		assertEquals( s.center()[ 1 ], 2, 0 );
+		assertEquals( s.radius(), 5, 0 );
+		assertTrue( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+
+		// change center
+		s.setCenter( new double[] { -10, 10 } );
+
+		assertEquals( s.center()[ 0 ], -10, 0 );
+		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+
+		// change radius, via change semi-axis length
+		s.setSemiAxisLength( 1, 8 );
+		assertEquals( s.radius(), 8, 0 );
+		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
+		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
+		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+	}
+
+	@Test
+	public void testMutateClosedSphere()
+	{
+		final Sphere s = new ClosedSphere( new double[] { 3, 2 }, 5 );
+
+		assertEquals( s.center()[ 0 ], 3, 0 );
+		assertEquals( s.center()[ 1 ], 2, 0 );
+		assertEquals( s.radius(), 5, 0 );
+		assertTrue( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+
+		// change center
+		s.setCenter( new double[] { -10, 10 } );
+
+		assertEquals( s.center()[ 0 ], -10, 0 );
+		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+
+		// change radius, via change semi-axis length
+		s.setSemiAxisLength( 1, 8 );
+		assertEquals( s.radius(), 8, 0 );
+		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
+		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
+		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertTrue( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 	}
 }

@@ -164,4 +164,94 @@ public class SuperEllipsoidTest
 		assertEquals( se.semiAxisLength( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 2 ), 1.5, 0 );
 	}
+
+	@Test
+	public void testMutateOpenSuperEllipsoid()
+	{
+		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+
+		assertEquals( se.exponent(), 2, 0 );
+		assertEquals( se.center()[ 0 ], 2, 0 );
+		assertEquals( se.center()[ 1 ], 2, 0 );
+		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
+		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
+		assertTrue( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+
+		// change center
+		se.setCenter( new double[] { 5.5, 6 } );
+
+		assertEquals( se.center()[ 0 ], 5.5, 0 );
+		assertEquals( se.center()[ 1 ], 6, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+
+		// change semi-axis length
+		se.setSemiAxisLength( 0, 3 );
+
+		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
+		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+
+		// change exponent
+		se.setExponent( 8.25 );
+
+		assertEquals( se.exponent(), 8.25, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+	}
+
+	@Test
+	public void testMutateClosedSuperEllipsoid()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+
+		assertEquals( se.exponent(), 2, 0 );
+		assertEquals( se.center()[ 0 ], 2, 0 );
+		assertEquals( se.center()[ 1 ], 2, 0 );
+		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
+		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
+		assertTrue( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+
+		// change center
+		se.setCenter( new double[] { 5.5, 6 } );
+
+		assertEquals( se.center()[ 0 ], 5.5, 0 );
+		assertEquals( se.center()[ 1 ], 6, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+
+		// change semi-axis length
+		se.setSemiAxisLength( 0, 3 );
+
+		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
+		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+
+		// change exponent
+		se.setExponent( 8.25 );
+
+		assertEquals( se.exponent(), 8.25, 0 );
+		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertTrue( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+	}
 }

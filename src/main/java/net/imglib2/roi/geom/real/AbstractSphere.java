@@ -43,9 +43,9 @@ import net.imglib2.RealLocalizable;
  */
 public abstract class AbstractSphere extends AbstractEuclideanSpace implements Sphere
 {
-	protected final double[] center;
+	protected double[] center;
 
-	protected final double radius;
+	protected double radius;
 
 	/**
 	 * Creates an n-d sphere.
@@ -88,5 +88,27 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	public double radius()
 	{
 		return radius;
+	}
+
+	/**
+	 * Sets the radius of this sphere. The dimension, d, is ignored since
+	 * spheres have the same extension in all dimensions.
+	 */
+	@Override
+	public void setSemiAxisLength( final int d, final double length )
+	{
+		setRadius( length );
+	}
+
+	@Override
+	public void setCenter( final double[] center )
+	{
+		this.center = center.clone();
+	}
+
+	@Override
+	public void setRadius( final double radius )
+	{
+		this.radius = radius;
 	}
 }

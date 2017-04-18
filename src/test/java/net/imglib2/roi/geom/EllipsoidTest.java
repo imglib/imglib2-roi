@@ -42,7 +42,9 @@ import net.imglib2.roi.geom.real.ClosedEllipsoid;
 import net.imglib2.roi.geom.real.Ellipsoid;
 import net.imglib2.roi.geom.real.OpenEllipsoid;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link Ellipsoid}.
@@ -51,6 +53,9 @@ import org.junit.Test;
  */
 public class EllipsoidTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	@Test
 	public void testOpenEllipsoid()
 	{
@@ -99,5 +104,78 @@ public class EllipsoidTest
 		assertEquals( e.center()[ 1 ], 23, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 9, 0 );
+	}
+
+	@Test
+	public void testEllipsoidSetExponent()
+	{
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
+
+		exception.expect( UnsupportedOperationException.class );
+		e.setExponent( 3 );
+	}
+
+	@Test
+	public void testMutateOpenEllipsoid()
+	{
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+
+		assertEquals( e.center()[ 0 ], 0, 0 );
+		assertEquals( e.center()[ 1 ], 6.25, 0 );
+		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
+		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
+		assertTrue( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+
+		// change center
+		e.setCenter( new double[] { 10, 15 } );
+
+		assertEquals( e.center()[ 0 ], 10, 0 );
+		assertEquals( e.center()[ 1 ], 15, 0 );
+		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+
+		// change semi-axis length
+		e.setSemiAxisLength( 0, 4 );
+
+		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
+		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
+		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+	}
+
+	@Test
+	public void testMutateClosedEllipsoid()
+	{
+		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+
+		assertEquals( e.center()[ 0 ], 0, 0 );
+		assertEquals( e.center()[ 1 ], 6.25, 0 );
+		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
+		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
+		assertTrue( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+
+		// change center
+		e.setCenter( new double[] { 10, 15 } );
+
+		assertEquals( e.center()[ 0 ], 10, 0 );
+		assertEquals( e.center()[ 1 ], 15, 0 );
+		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+
+		// change semi-axis length
+		e.setSemiAxisLength( 0, 4 );
+
+		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
+		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
+		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertTrue( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
 	}
 }

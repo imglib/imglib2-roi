@@ -61,4 +61,16 @@ public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implement
 
 	@Override
 	public abstract boolean contains( RealLocalizable l );
+
+	/**
+	 * Ellipsoids have exponents of 2.
+	 *
+	 * @throws UnsupportedOperationException
+	 *             Ellipsoids, by definition, have an exponent of 2
+	 */
+	@Override
+	public void setExponent( final double exponent )
+	{
+		throw new UnsupportedOperationException( "setExponent: can only have an exponent of 2" );
+	}
 }

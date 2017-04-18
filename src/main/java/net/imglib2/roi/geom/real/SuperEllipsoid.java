@@ -44,14 +44,23 @@ import net.imglib2.roi.mask.Mask;
  */
 public interface SuperEllipsoid extends Mask< RealLocalizable >
 {
-	/** Return the exponent of this superellipsoid */
+	/** Returns the exponent of this superellipsoid */
 	double exponent();
 
 	/**
-	 * Return the semi-axis length of the superellipsoid in a given dimension d
+	 * Returns the semi-axis length of the superellipsoid in a given dimension d
 	 */
 	double semiAxisLength( int d );
 
-	/** Return the center of the superellipsoid */
+	/** Returns the center of the superellipsoid */
 	double[] center();
+
+	/** Sets the exponent. */
+	void setExponent( double exponent );
+
+	/** Sets the semi-axis length in dimension d. */
+	void setSemiAxisLength( int d, double length );
+
+	/** Centers the superellipsoid at the given coordinates. */
+	void setCenter( double[] center );
 }
