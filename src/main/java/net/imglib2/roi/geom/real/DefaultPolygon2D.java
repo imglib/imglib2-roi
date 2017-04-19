@@ -68,13 +68,15 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 	 * Creates a 2D polygon with the provided vertices.
 	 *
 	 * @param vertices
-	 *            List of vertices which will be copied. All
-	 *            {@link RealLocalizable}s in the provided list are assumed to
-	 *            have the same number of dimensions.
+	 *            List of vertices which will be copied. Each vertex should have
+	 *            a position in 2D space, positions beyond 2D will be ignored.
 	 */
 	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
-		super( Regions.getBoundsReal( vertices ) );
+		// Regions.getBoundsReal(...) could create an interval with n > 2, if
+		// the first vertex had n > 2. Instead create 2D interval, and then set
+		// min/max.
+		super( 2 );
 
 		x = new TDoubleArrayList( vertices.size() );
 		y = new TDoubleArrayList( vertices.size() );
@@ -83,7 +85,9 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 	}
 
 	/**
-	 * Creates a 2D polygon with vertices at the provided x, y coordinates.
+	 * Creates a 2D polygon with vertices at the provided x, y coordinates. If
+	 * the x and y arrays have unequal lengths, the longer array will be
+	 * truncated.
 	 *
 	 * @param x
 	 *            X coordinates of the vertices which will be copied
@@ -94,8 +98,19 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 	{
 		super( Regions.getBoundsReal( x, y ) );
 
-		this.x = new TDoubleArrayList( x );
-		this.y = new TDoubleArrayList( y );
+		if ( x.length == y.length )
+		{
+			this.x = new TDoubleArrayList( x );
+			this.y = new TDoubleArrayList( y );
+		}
+		else
+		{
+			final int l = x.length < y.length ? x.length : y.length;
+			this.x = new TDoubleArrayList( l );
+			this.x.add( x, 0, l );
+			this.y = new TDoubleArrayList( l );
+			this.y.add( y, 0, l );
+		}
 	}
 
 	/**
@@ -122,6 +137,10 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 		return x.size();
 	}
 
+	/**
+	 * If the given vertex has more than 2 dimensions, the higher dimensions
+	 * will be ignored.
+	 */
 	@Override
 	public void setVertex( final int index, final double[] vertex )
 	{
@@ -130,6 +149,10 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 		updateMinMax();
 	}
 
+	/**
+	 * If the given vertex has more than 2 dimensions, the higher dimensions
+	 * will be ignored.
+	 */
 	@Override
 	public void addVertex( final int index, final double[] vertex )
 	{
@@ -148,14 +171,37 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 
 	// -- Helper methods --
 
+	/**
+	 * Populates the x and y arrays, and sets min/max values.
+	 *
+	 * @param vertices
+	 *            Contains the vertices, dimensions beyond two will be ignored.
+	 */
 	private void populateXY( final List< ? extends RealLocalizable > vertices )
 	{
+		double minX = Double.POSITIVE_INFINITY;
+		double minY = Double.POSITIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY;
+		double maxY = Double.NEGATIVE_INFINITY;
 		for ( int i = 0; i < vertices.size(); i++ )
 		{
-			final RealLocalizable r = vertices.get( i );
-			x.add( r.getDoublePosition( 0 ) );
-			y.add( r.getDoublePosition( 1 ) );
+			final double xi = vertices.get( i ).getDoublePosition( 0 );
+			final double yi = vertices.get( i ).getDoublePosition( 1 );
+			x.add( xi );
+			y.add( yi );
+			if ( xi > maxX )
+				maxX = xi;
+			if ( xi < minX )
+				minX = xi;
+			if ( yi > maxY )
+				maxY = yi;
+			if ( yi < minY )
+				minY = yi;
 		}
+		max[ 0 ] = maxX;
+		max[ 1 ] = maxY;
+		min[ 0 ] = minX;
+		min[ 1 ] = minY;
 	}
 
 	/**
@@ -163,18 +209,18 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 	 */
 	private void updateMinMax()
 	{
-		for( int i = 0; i < x.size(); i++ )
+		for ( int i = 0; i < x.size(); i++ )
 		{
 			final double xi = x.get( i );
 			final double yi = y.get( i );
 
-			if( xi < min[ 0 ] )
+			if ( xi < min[ 0 ] )
 				min[ 0 ] = xi;
-			if( xi > max[ 0 ] )
+			if ( xi > max[ 0 ] )
 				max[ 0 ] = xi;
-			if( yi < min[ 1 ] )
+			if ( yi < min[ 1 ] )
 				min[ 1 ] = yi;
-			if( yi > max[ 1 ] )
+			if ( yi > max[ 1 ] )
 				max[ 1 ] = yi;
 		}
 	}

@@ -42,7 +42,9 @@ import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
 import net.imglib2.roi.geom.real.OpenBox;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link Box}.
@@ -51,10 +53,13 @@ import org.junit.Test;
  */
 public class BoxTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	@Test
 	public void testTwoDimensionalOpenRectangle()
 	{
-		final Box b = new OpenBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 });
+		final Box b = new OpenBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
 		assertFalse( b.contains( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
@@ -84,7 +89,7 @@ public class BoxTest
 	@Test
 	public void testTwoDimensionalClosedRectangle()
 	{
-		final Box b = new ClosedBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 });
+		final Box b = new ClosedBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
 		assertTrue( b.contains( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
@@ -113,7 +118,7 @@ public class BoxTest
 	@Test
 	public void testHighDimensionalOpenBox()
 	{
-		final Box hc = new OpenBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 });
+		final Box hc = new OpenBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
 		assertFalse( hc.contains( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
@@ -159,7 +164,7 @@ public class BoxTest
 	@Test
 	public void testHighDimensionalClosedBox()
 	{
-		final Box hc = new ClosedBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 });
+		final Box hc = new ClosedBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
 		assertTrue( hc.contains( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
@@ -212,7 +217,7 @@ public class BoxTest
 		assertTrue( b.contains( new RealPoint( new double[] { 3.25, 4 } ) ) );
 		assertFalse( b.contains( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
 
-		b.setCenter( new double[]{ 5, 10 } );
+		b.setCenter( new double[] { 5, 10 } );
 
 		assertEquals( b.center()[ 0 ], 5, 0 );
 		assertEquals( b.sideLength( 1 ), 3, 0 );
@@ -239,7 +244,7 @@ public class BoxTest
 		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
 		assertFalse( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
 
-		b.setCenter( new double[]{ 2, 3 } );
+		b.setCenter( new double[] { 2, 3 } );
 
 		assertEquals( b.center()[ 0 ], 2, 0 );
 		assertEquals( b.center()[ 1 ], 3, 0 );
@@ -258,5 +263,54 @@ public class BoxTest
 		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
 		assertTrue( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
 		assertTrue( b.contains( new RealPoint( new double[] { 0.25, -3 } ) ) );
+	}
+
+	@Test
+	public void testMinGreaterThanMax()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new ClosedBox( new double[] { 1, 2, 3 }, new double[] { 1, 2 } );
+	}
+
+	@Test
+	public void testMaxGreaterThanMin()
+	{
+		final Box b = new ClosedBox( new double[] { 1, 2, 3 }, new double[] { 3, 4, 5, 6 } );
+
+		assertEquals( b.numDimensions(), 3 );
+		assertEquals( b.sideLength( 2 ), 2, 0 );
+
+		exception.expect( ArrayIndexOutOfBoundsException.class );
+		b.sideLength( 3 );
+	}
+
+	@Test
+	public void testSetNegativeEdgeLength()
+	{
+		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+
+		exception.expect( IllegalArgumentException.class );
+		b.setSideLength( 1, -2.25 );
+	}
+
+	@Test
+	public void testSetCenterTooShort()
+	{
+		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+
+		exception.expect( IllegalArgumentException.class );
+		b.setCenter( new double[] { 3 } );
+	}
+
+	@Test
+	public void testSetCenterTooLong()
+	{
+		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+		b.setCenter( new double[] { 7.25, 3.125, 4 } );
+
+		final double[] c = b.center();
+		assertEquals( c.length, 2 );
+		assertEquals( c[ 0 ], 7.25, 0 );
+		assertEquals( c[ 1 ], 3.125, 0 );
 	}
 }

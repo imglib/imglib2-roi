@@ -33,6 +33,8 @@
  */
 package net.imglib2.roi.geom.real;
 
+import java.util.Arrays;
+
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.Interval;
 import net.imglib2.RealLocalizable;
@@ -69,7 +71,11 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	}
 
 	/**
-	 * Creates a line with endpoints at the given positions.
+	 * Creates a line with endpoints at the given positions. If {@code pointOne}
+	 * and {@code pointTwo} do not have the same length, the dimensionality of
+	 * the space is the smaller of the two. If the arrays are copied they will
+	 * be truncated to this dimensionality, if they are not copied they are not
+	 * truncated.
 	 *
 	 * @param pointOne
 	 *            The position of the first point. This is the position which
@@ -83,11 +89,11 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	 */
 	public DefaultLine( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
-		super( pointOne.length );
+		super( Math.min( pointOne.length, pointTwo.length ) );
 		if ( copy )
 		{
-			this.pointOne = pointOne.clone();
-			this.pointTwo = pointTwo.clone();
+			this.pointOne = Arrays.copyOf( pointOne, n );
+			this.pointTwo = Arrays.copyOf( pointTwo, n );
 		}
 		else
 		{
@@ -100,7 +106,7 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	@Override
 	public boolean contains( final RealLocalizable l )
 	{
-		if ( Intervals.contains( this, l ) ) { return GeomMaths.lineContains( pointOne, pointTwo, l ); }
+		if ( Intervals.contains( this, l ) ) { return GeomMaths.lineContains( pointOne, pointTwo, l, n ); }
 		return false;
 	}
 
@@ -108,27 +114,47 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	@Override
 	public double[] endpointOne()
 	{
-		return pointOne.clone();
+		return Arrays.copyOf( pointOne, n );
 	}
 
 	/** Returns a copy of the second double[] passed to the constructor */
 	@Override
 	public double[] endpointTwo()
 	{
-		return pointTwo.clone();
+		return Arrays.copyOf( pointTwo, n );
 	}
 
+	/**
+	 * Sets the position of the first endpoint.
+	 *
+	 * @param pos
+	 *            A copy of this array is stored. If pos is less than {@code n}
+	 *            an exception is thrown, if pos is longer than {@code n} it
+	 *            will be truncated.
+	 */
 	@Override
 	public void setEndpointOne( final double[] pos )
 	{
-		pointOne = pos.clone();
+		if ( pos.length < n )
+			throw new IllegalArgumentException( "Position must have a length of at least " + n );
+		System.arraycopy( pos, 0, pointOne, 0, n );
 		setMinMax();
 	}
 
+	/**
+	 * Sets the position of the second endpoint.
+	 *
+	 * @param pos
+	 *            A copy of this array is stored. If pos is less than {@code n}
+	 *            an exception is thrown, if pos is longer than {@code n} it
+	 *            will be truncated.
+	 */
 	@Override
 	public void setEndpointTwo( final double[] pos )
 	{
-		pointTwo = pos.clone();
+		if ( pos.length < n )
+			throw new IllegalArgumentException( "Position must have a length of at least " + n );
+		System.arraycopy( pos, 0, pointTwo, 0, n );
 		setMinMax();
 	}
 

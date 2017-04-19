@@ -59,7 +59,8 @@ public class KDTreeRealPointCollection< L extends RealLocalizable > extends NNSR
 	 *
 	 * @param points
 	 *            Points which should be included in this point collection. This
-	 *            Collection will be used to create a KDTree.
+	 *            Collection will be used to create a KDTree. The first point
+	 *            determines the dimensionality of the collection.
 	 */
 	public KDTreeRealPointCollection( final Collection< L > points )
 	{
@@ -73,7 +74,8 @@ public class KDTreeRealPointCollection< L extends RealLocalizable > extends NNSR
 	 * @param tree
 	 *            KDTree which all the contains the desired points. The values
 	 *            at each node in the tree will be ignored, only the positions
-	 *            will be used. Points cannot be added or removed.
+	 *            will be used. The first point determines the dimensionality of
+	 *            the collection. Points cannot be added or removed.
 	 */
 	public KDTreeRealPointCollection( final KDTree< L > tree )
 	{

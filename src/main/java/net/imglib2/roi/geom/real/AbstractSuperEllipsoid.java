@@ -50,7 +50,8 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	protected final double[] semiAxisLengths;
 
 	/**
-	 * Initialize the ellipse with a given center position and extent.
+	 * Creates an n-d superellipsoid, where n is determined by the length of
+	 * the smaller array.
 	 *
 	 * @param center
 	 *            position of the superellipsoid in space, given in pixel
@@ -62,12 +63,23 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	 */
 	public AbstractSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
-		super( center.length );
-		assert ( center.length == semiAxisLengths.length ): "center and semiAxisLengths must have the same length";
+		super( Math.min( center.length, semiAxisLengths.length ) );
 
-		this.center = center.clone();
-		this.semiAxisLengths = semiAxisLengths.clone();
+		if( exponent <= 0 )
+			throw new IllegalArgumentException("exponent must be positve and non-zero");
+
 		this.exponent = exponent;
+		this.semiAxisLengths = new double[ n ];
+		this.center = new double[ n ];
+
+		for ( int i = 0; i < n; i++ )
+		{
+			final double val = semiAxisLengths[ i ];
+			if ( val <= 0 )
+				throw new IllegalArgumentException( "Semi-axis lengths must be positive and non-zero" );
+			this.semiAxisLengths[ i ] = val;
+			this.center[ i ] = center[ i ];
+		}
 	}
 
 	@Override
@@ -95,18 +107,31 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	@Override
 	public void setExponent( final double exponent )
 	{
+		if( exponent <= 0 )
+			throw new IllegalArgumentException("exponent must be positve and non-zero");
 		this.exponent = exponent;
 	}
 
 	@Override
 	public void setSemiAxisLength( final int d, final double length )
 	{
+		if ( length <= 0 )
+			throw new IllegalArgumentException( "Semi-axis length must be positive and non-zero" );
 		semiAxisLengths[ d ] = length;
 	}
 
+	/**
+	 * Sets the center.
+	 *
+	 * @param center
+	 *            if this array is longer than {@code n} it will be truncated,
+	 *            if shorter an {@link IllegalArgumentException} is thrown
+	 */
 	@Override
 	public void setCenter( final double[] center )
 	{
-		this.center = center.clone();
+		if ( center.length < n )
+			throw new IllegalArgumentException( "Center must have a length of at least " + n );
+		System.arraycopy( center, 0, this.center, 0, n );
 	}
 }

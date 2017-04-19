@@ -49,7 +49,8 @@ public class OpenSphere extends AbstractSphere
 	 * @param center
 	 *            Point where the sphere is centered
 	 * @param radius
-	 *            Radius of the sphere
+	 *            Radius of the sphere, must be positive and non-zero. A zero
+	 *            radius would result in an empty region.
 	 */
 	public OpenSphere( final double[] center, final double radius )
 	{

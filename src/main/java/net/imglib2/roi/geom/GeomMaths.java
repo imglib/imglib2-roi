@@ -58,10 +58,9 @@ public class GeomMaths
 	 * @param testPoint
 	 *            Point to test
 	 */
-	public static boolean lineContains( final double[] endpointOne, final double[] endpointTwo, final RealLocalizable testPoint )
+	public static boolean lineContains( final double[] endpointOne, final double[] endpointTwo, final RealLocalizable testPoint, final int dims )
 	{
-		final int dims = endpointOne.length;
-		final double[] directionVector = computeDirectionVector( endpointOne, endpointTwo );
+		final double[] directionVector = computeDirectionVector( endpointOne, endpointTwo, dims );
 		final double[] testVector = new double[ dims ];
 		double projection = 0;
 
@@ -133,11 +132,10 @@ public class GeomMaths
 	 */
 	public static < R extends RealLocalizable > List< double[] > createVerticesList( final List< R > pts )
 	{
-		final int dims = pts.get( 0 ).numDimensions();
 		final List< double[] > vert = new ArrayList<>();
 		for ( int i = 0; i < pts.size(); i++ )
 		{
-			final double[] location = new double[ dims ];
+			final double[] location = new double[ pts.get( i ).numDimensions() ];
 			pts.get( i ).localize( location );
 			vert.add( location );
 		}
@@ -168,10 +166,9 @@ public class GeomMaths
 	/**
 	 * Creates a direction vector from pointOne to pointTwo.
 	 */
-	private static double[] computeDirectionVector( final double[] pointOne, final double[] pointTwo )
+	private static double[] computeDirectionVector( final double[] pointOne, final double[] pointTwo, final int dims )
 	{
-		final double[] directionVector = new double[ pointOne.length ];
-		final int dims = pointOne.length;
+		final double[] directionVector = new double[ dims ];
 		double magnitude = 0;
 		for ( int d = 0; d < dims; d++ )
 		{

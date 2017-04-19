@@ -44,9 +44,10 @@ import net.imglib2.RealLocalizable;
  */
 public class OpenEllipsoid extends AbstractEllipsoid
 {
+
 	/**
 	 * Creates an n-d ellipsoid, where n is determined by the length of the
-	 * center array.
+	 * smaller array.
 	 *
 	 * @param center
 	 *            Array containing the positions in each dimension at which the

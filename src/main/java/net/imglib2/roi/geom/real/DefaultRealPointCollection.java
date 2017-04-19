@@ -10,12 +10,28 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 {
 	private final HashSet< L > points;
 
+	/**
+	 * Creates a point collection which includes points in the given
+	 * {@code HashSet}.
+	 *
+	 * @param points
+	 *            points to include in the collection, the first point
+	 *            determines the dimensionality of the collection
+	 */
 	public DefaultRealPointCollection( final HashSet< L > points )
 	{
 		super( points.iterator().next().numDimensions() );
 		this.points = points;
 	}
 
+	/**
+	 * Creates a point collection which includes points in the given
+	 * {@code Collection}.
+	 *
+	 * @param points
+	 *            points to include in the collection, the first point
+	 *            determines the dimensionality of the collection
+	 */
 	public DefaultRealPointCollection( final Collection< L > points )
 	{
 		this( new HashSet<>( points ) );
@@ -44,6 +60,8 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	@Override
 	public void addPoint( final L point )
 	{
+		if ( point.numDimensions() != n )
+			throw new IllegalArgumentException( "Point must have " + n + " dimensions" );
 		points.add( point );
 	}
 

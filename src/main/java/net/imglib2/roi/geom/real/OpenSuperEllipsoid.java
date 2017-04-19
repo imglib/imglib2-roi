@@ -48,7 +48,8 @@ public class OpenSuperEllipsoid extends AbstractSuperEllipsoid
 {
 
 	/**
-	 * Initialize the ellipse with a given center position and extent.
+	 * Creates an n-d super ellipsoid, where n is determined by the length of
+	 * the smaller array
 	 *
 	 * @param center
 	 *            position of the superellipsoid in space, given in pixel

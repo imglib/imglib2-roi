@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -177,5 +178,74 @@ public class EllipsoidTest
 		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
 		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
 		assertTrue( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+	}
+
+	@Test
+	public void testNegativeSemiAxisLength()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, -6 } );
+	}
+
+	@Test
+	public void testZeroSemiAxisLength()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 0, 4 } );
+	}
+
+	@Test
+	public void testCenterLonger()
+	{
+		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
+
+		assertEquals( e.numDimensions(), 2 );
+		assertEquals( e.center().length, 2 );
+		assertArrayEquals( e.center(), new double[] { 0, 0 }, 0 );
+	}
+
+	@Test
+	public void testSemiAxisLengthLonger()
+	{
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
+
+		assertEquals( e.numDimensions(), 2 );
+		assertArrayEquals( e.center(), new double[] { 0, 0 }, 0 );
+
+		assertEquals( e.semiAxisLength( 0 ), 3, 0 );
+		assertEquals( e.semiAxisLength( 1 ), 6, 0 );
+
+		exception.expect( ArrayIndexOutOfBoundsException.class );
+		e.semiAxisLength( 2 );
+	}
+
+	@Test
+	public void testSetNegativeSemiAxisLength()
+	{
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
+
+		exception.expect( IllegalArgumentException.class );
+		e.setSemiAxisLength( 0, -0.125 );
+	}
+
+	@Test
+	public void testSetCenterTooShort()
+	{
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
+
+		exception.expect( IllegalArgumentException.class );
+		e.setCenter( new double[] { 4, 3 } );
+	}
+
+	@Test
+	public void testSetCenterTooLong()
+	{
+		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
+
+		e.setCenter( new double[] { 4, 12, 5 } );
+		final double[] c = e.center();
+		assertEquals( c.length, 2 );
+		assertEquals( c[ 0 ], 4, 0 );
+		assertEquals( c[ 1 ], 12, 0 );
 	}
 }

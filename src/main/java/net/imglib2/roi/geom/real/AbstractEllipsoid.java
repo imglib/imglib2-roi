@@ -44,8 +44,8 @@ public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implement
 {
 
 	/**
-	 * Creates an n-d ellipsoid, where n is determined by the length of the
-	 * center array.
+	 * Creates an n-d superellipsoid, where n is determined by the length of
+	 * the smaller array.
 	 *
 	 * @param center
 	 *            Array containing the positions in each dimension at which the

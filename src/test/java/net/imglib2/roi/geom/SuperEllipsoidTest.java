@@ -42,7 +42,9 @@ import net.imglib2.roi.geom.real.ClosedSuperEllipsoid;
 import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link SuperEllipsoid}.
@@ -51,6 +53,9 @@ import org.junit.Test;
  */
 public class SuperEllipsoidTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	@Test
 	public void testOpen2DSuperEllipse()
 	{
@@ -253,5 +258,84 @@ public class SuperEllipsoidTest
 		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
 		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
 		assertTrue( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+	}
+
+	@Test
+	public void testCenterLonger()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0, 3 }, new double[] { 3, 2 }, 2 );
+
+		final double[] c = se.center();
+		assertEquals( c.length, se.numDimensions() );
+		assertEquals( c[ 0 ], 0, 0 );
+		assertEquals( c[ 1 ], 0, 0 );
+	}
+
+	@Test
+	public void testSemiAxisLonger()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4, 6 }, 2 );
+
+		assertEquals( se.numDimensions(), 2 );
+		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
+		assertEquals( se.semiAxisLength( 1 ), 4, 0 );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		se.semiAxisLength( 2 );
+	}
+
+	@Test
+	public void testNegativeSemiAxisLength()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, -4 }, 5 );
+	}
+
+	@Test
+	public void testNegativeExponent()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4 }, -0.5 );
+	}
+
+	@Test
+	public void testSetCenterTooLong()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+
+		se.setCenter( new double[] { 3, 3, 3, 3 } );
+		final double[] c = se.center();
+
+		assertEquals( c.length, se.numDimensions() );
+		assertEquals( c[ 0 ], 3, 0 );
+		assertEquals( c[ 1 ], 3, 0 );
+		assertEquals( c[ 2 ], 3, 0 );
+	}
+
+	@Test
+	public void testSetCenterTooShort()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+
+		exception.expect( IllegalArgumentException.class );
+		se.setCenter( new double[] { 1, 1 } );
+	}
+
+	@Test
+	public void testSetNegativeSemiAxisLength()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+
+		exception.expect( IllegalArgumentException.class );
+		se.setSemiAxisLength( 0, -0.01 );
+	}
+
+	@Test
+	public void testSetZeroExponent()
+	{
+		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+
+		exception.expect( IllegalArgumentException.class );
+		se.setExponent( 0 );
 	}
 }

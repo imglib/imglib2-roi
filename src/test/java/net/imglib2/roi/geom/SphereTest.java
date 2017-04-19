@@ -178,4 +178,43 @@ public class SphereTest
 		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
 		assertTrue( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 	}
+
+	@Test
+	public void testNegativeRadius()
+	{
+		exception.expect( IllegalArgumentException.class );
+		new OpenSphere( new double[] { 3, 2 }, -5 );
+	}
+
+	@Test
+	public void testSetNegativeRadius()
+	{
+		final Sphere cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
+
+		exception.expect( IllegalArgumentException.class );
+		cs.setRadius( -2 );
+	}
+
+	@Test
+	public void testSetTooShortCenter()
+	{
+		final Sphere cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		cs.setCenter( new double[] { 1, 1 } );
+	}
+
+	@Test
+	public void testSetTooLongCenter()
+	{
+		final Sphere os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
+
+		os.setCenter( new double[] { 1, 2, 3, 4 } );
+
+		final double[] c = os.center();
+		assertEquals( c.length, os.numDimensions() );
+		assertEquals( c[ 0 ], 1, 0 );
+		assertEquals( c[ 1 ], 2, 0 );
+		assertEquals( c[ 2 ], 3, 0 );
+	}
 }
