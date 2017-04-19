@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,10 +42,15 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.DefaultLine;
 import net.imglib2.roi.geom.real.Line;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class LineTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	@Test
 	public void testLine()
 	{
@@ -182,5 +188,55 @@ public class LineTest
 		assertTrue( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
 		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
 
+	}
+
+	@Test
+	public void testPointOneArraysLonger()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 1, 1, 1 }, new double[] { 10, 10 }, false );
+
+		assertEquals( l.numDimensions(), 2 );
+		assertArrayEquals( l.endpointOne(), new double[] { 1, 1 }, 0 );
+		assertArrayEquals( l.endpointTwo(), new double[] { 10, 10 }, 0 );
+	}
+
+	@Test
+	public void testPointTwoArraysLonger()
+	{
+		final Line l = new DefaultLine( new double[] { 1 }, new double[] { 101, 1, 2, 3 }, true );
+
+		assertEquals( l.numDimensions(), 1 );
+		assertArrayEquals( l.endpointOne(), new double[] { 1 }, 0 );
+		assertArrayEquals( l.endpointTwo(), new double[] { 101 }, 0 );
+	}
+
+	@Test
+	public void testUnequalLengthRealLocalizables()
+	{
+		final Line l = new DefaultLine( new RealPoint( new double[] { 1, 1, 1 } ), new RealPoint( new double[] { 20, 20 } ) );
+
+		assertEquals( l.numDimensions(), 2 );
+		assertArrayEquals( l.endpointOne(), new double[] { 1, 1 }, 0 );
+		assertArrayEquals( l.endpointTwo(), new double[] { 20, 20 }, 0 );
+	}
+
+	@Test
+	public void testSetFirstEndPointTooShort()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
+
+		exception.expect( IllegalArgumentException.class );
+		l.setEndpointOne( new double[] { 0.0625, -5, 0 } );
+	}
+
+	@Test
+	public void testSetSecondEndPointTooLong()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
+
+		l.setEndpointTwo( new double[] { 1.0625, -0.0325, 10.5, 12.25, 5 } );
+		final double[] ptTwo = l.endpointTwo();
+		assertEquals( ptTwo.length, 4 );
+		assertArrayEquals( ptTwo, new double[] { 1.0625, -0.0325, 10.5, 12.25 }, 0 );
 	}
 }

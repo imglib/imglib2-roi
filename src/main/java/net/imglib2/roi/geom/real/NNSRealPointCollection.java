@@ -59,7 +59,8 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	 * @param interval
 	 *            Contains the points which will be included in this collection.
 	 *            This will be used to create a
-	 *            {@link NearestNeighborSearchOnIterableRealInterval}.
+	 *            {@link NearestNeighborSearchOnIterableRealInterval}.The first
+	 *            point determines the dimensionality of the collection.
 	 */
 	public NNSRealPointCollection( final IterableRealInterval< L > interval )
 	{
@@ -71,14 +72,20 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	 *
 	 * @param interval
 	 *            Contains the points which will be included in this collection.
+	 *            This will be used to create a
+	 *            {@link NearestNeighborSearchOnIterableRealInterval}. The first
+	 *            point determines the dimensionality of the collection.
 	 * @param search
 	 *            Will be used to check if a point is contained by the
 	 *            collection.
+	 *
 	 */
 	public NNSRealPointCollection( final IterableRealInterval< L > interval, final NearestNeighborSearch< L > search )
 	{
 		super( interval.numDimensions() );
 		this.interval = interval;
+		if ( search == null )
+			throw new NullPointerException( "search cannot be null" );
 		this.search = search;
 	}
 

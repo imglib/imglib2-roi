@@ -58,6 +58,10 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	public AbstractSphere( final double[] center, final double radius )
 	{
 		super( center.length );
+
+		if ( radius <= 0 )
+			throw new IllegalArgumentException( "Radius must be positive and non-zero." );
+
 		this.center = center.clone();
 		this.radius = radius;
 	}
@@ -100,15 +104,21 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		setRadius( length );
 	}
 
+	/**
+	 * If the array has length > n, it will be truncated, if < n an exception is
+	 * thrown.
+	 */
 	@Override
 	public void setCenter( final double[] center )
 	{
-		this.center = center.clone();
+		System.arraycopy( center, 0, this.center, 0, n );
 	}
 
 	@Override
 	public void setRadius( final double radius )
 	{
+		if ( radius <= 0 )
+			throw new IllegalArgumentException( "Radius must be positive and non-zero." );
 		this.radius = radius;
 	}
 }

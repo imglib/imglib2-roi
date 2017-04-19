@@ -34,6 +34,7 @@
 
 package net.imglib2.roi.geom.real;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
@@ -53,7 +54,9 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	private final List< double[] > vertices;
 
 	/**
-	 * Creates a polyline with the specified vertices.
+	 * Creates a polyline with the specified vertices. The dimensionality of the
+	 * space is determined by the dimensionality of the first vertex. Vertices
+	 * with more dimensions will be truncated, if less an error is thrown.
 	 *
 	 * @param vertices
 	 *            Vertices which define the polyline in the desired order.
@@ -65,7 +68,9 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	}
 
 	/**
-	 * Creates a polyline with the specified vertices.
+	 * Creates a polyline with the specified vertices. The dimensionality of the
+	 * space is determined by the dimensionality of the first vertex. Vertices
+	 * with more dimensions will be truncated, if less an error is thrown.
 	 *
 	 * @param vertices
 	 *            Vertices which define the polyline in the desired order.
@@ -83,7 +88,7 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 		{
 			for ( int i = 1; i < vertices.size(); i++ )
 			{
-				final boolean testLineContains = GeomMaths.lineContains( vertices.get( i - 1 ), vertices.get( i ), l );
+				final boolean testLineContains = GeomMaths.lineContains( vertices.get( i - 1 ), vertices.get( i ), l, n );
 				if ( testLineContains )
 					return true;
 			}
@@ -98,7 +103,7 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	@Override
 	public double[] vertex( final int pos )
 	{
-		return vertices.get( pos );
+		return Arrays.copyOf( vertices.get( pos ), n );
 	}
 
 	@Override
@@ -110,6 +115,8 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	@Override
 	public void setVertex( final int index, final double[] vertex )
 	{
+		if ( vertex.length != n )
+			throw new IllegalArgumentException( "Vertex must have " + n + " dimensions" );
 		vertices.set( index, vertex );
 		updateMinMax();
 	}
@@ -117,6 +124,8 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	@Override
 	public void addVertex( final int index, final double[] vertex )
 	{
+		if ( vertex.length != n )
+			throw new IllegalArgumentException( "Vertex must have " + n + " dimensions" );
 		vertices.add( index, vertex );
 		updateMinMax();
 	}

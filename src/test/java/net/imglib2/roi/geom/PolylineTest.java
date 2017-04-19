@@ -47,7 +47,9 @@ import net.imglib2.roi.geom.real.DefaultPolyline;
 import net.imglib2.roi.geom.real.Polyline;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests {@link Polyline}.
@@ -56,6 +58,9 @@ import org.junit.Test;
  */
 public class PolylineTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	private static List< RealLocalizable > simple;
 
 	private static List< RealLocalizable > fourD;
@@ -219,7 +224,6 @@ public class PolylineTest
 		assertTrue( pl.contains( new RealPoint( new double[] { 5, 9 } ) ) );
 	}
 
-	// { { 2, 3 }, { 0.25, -12.125 }, { 200, 5.25 } };
 	@Test
 	public void testAddVertex()
 	{
@@ -249,5 +253,77 @@ public class PolylineTest
 		assertEquals( pl.numVertices(), 2 );
 		assertArrayEquals( pl.vertex( 1 ), doubleVertices[ 2 ], 0 );
 		assertTrue( pl.contains( new RealPoint( new double[] { 13, 3.125 } ) ) );
+	}
+
+	@Test
+	public void testFirstRealLocalizableHigherDim()
+	{
+		final List< RealLocalizable > pts = new ArrayList<>();
+		pts.add( new RealPoint( new double[] { 1, 1, 1, 1 } ) );
+		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
+		pts.add( new RealPoint( new double[] { 9, 9, 9, 9 } ) );
+
+		exception.expect( ArrayIndexOutOfBoundsException.class );
+		new DefaultPolyline( pts );
+	}
+
+	@Test
+	public void testLaterRealLocalizableHigherDim()
+	{
+		final List< RealLocalizable > pts = new ArrayList<>();
+		pts.add( new RealPoint( new double[] { 1, 1 } ) );
+		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
+		pts.add( new RealPoint( new double[] { 9, 9, 9, 9 } ) );
+
+		final Polyline p = new DefaultPolyline( pts );
+
+		assertEquals( p.numDimensions(), 2 );
+		assertArrayEquals( p.vertex( 1 ), new double[] { 5, 5 }, 0 );
+		assertArrayEquals( p.vertex( 2 ), new double[] { 9, 9 }, 0 );
+	}
+
+	@Test
+	public void testSetVertexNotN()
+	{
+		final Polyline p = new DefaultPolyline( simple );
+
+		exception.expect( IllegalArgumentException.class );
+		p.setVertex( 0, new double[] { 1, 2, 3 } );
+	}
+
+	@Test
+	public void testAddVertexNotN()
+	{
+		final Polyline p = new DefaultPolyline( fourD );
+
+		exception.expect( IllegalArgumentException.class );
+		p.addVertex( 3, new double[] { 1, 2, 3 } );
+	}
+
+	@Test
+	public void testSetVertexInvalidIndex()
+	{
+		final Polyline p = new DefaultPolyline( simple );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.setVertex( 6, new double[] { 1, 2 } );
+	}
+
+	@Test
+	public void testAddVertexInvalidIndex()
+	{
+		final Polyline p = new DefaultPolyline( simple );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.addVertex( 6, new double[] { 1, 2 } );
+	}
+
+	@Test
+	public void testRemoveVertexInvalidIndex()
+	{
+		final Polyline p = new DefaultPolyline( simple );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.removeVertex( 6 );
 	}
 }

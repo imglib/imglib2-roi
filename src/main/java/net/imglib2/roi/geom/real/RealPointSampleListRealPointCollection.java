@@ -76,7 +76,8 @@ public class RealPointSampleListRealPointCollection< L extends RealLocalizable >
 	 * @param points
 	 *            Contains the points which will be included in this collection.
 	 *            Only the positions of the points will be used, the values at
-	 *            those positions will be ignored.
+	 *            those positions will be ignored. The first point determines
+	 *            the dimensionality of the collection.
 	 */
 	public RealPointSampleListRealPointCollection( final RealPointSampleList< L > points )
 	{
@@ -86,6 +87,8 @@ public class RealPointSampleListRealPointCollection< L extends RealLocalizable >
 	@Override
 	public void addPoint( final L point )
 	{
+		if ( point.numDimensions() != n )
+			throw new IllegalArgumentException( "Point must have " + n + " dimensions" );
 		final double[] pos = new double[ n ];
 		point.localize( pos );
 		( ( RealPointSampleList< L > ) this.points() ).add( new RealPoint( pos ), point );

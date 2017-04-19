@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -48,10 +49,15 @@ import net.imglib2.roi.geom.real.OpenPolygon2D;
 import net.imglib2.roi.geom.real.Polygon2D;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class Polygon2DTest
 {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
+
 	private static List< RealLocalizable > points = new ArrayList<>();
 
 	private static List< RealLocalizable > edge = new ArrayList<>();
@@ -227,5 +233,136 @@ public class Polygon2DTest
 		assertEquals( p.vertex( 1 )[ 0 ], 25, 0 );
 		assertEquals( p.vertex( 1 )[ 1 ], 15, 0 );
 		assertFalse( p.contains( new RealPoint( new double[] { 20.125, 17 } ) ) );
+	}
+
+	@Test
+	public void testFirstRealLocalizableHigherDim()
+	{
+		final List< RealLocalizable > pts = new ArrayList<>();
+		pts.add( new RealPoint( new double[] { 0, 0, 0 } ) );
+		pts.add( new RealPoint( new double[] { 5, 5 } ) );
+		pts.add( new RealPoint( new double[] { 10, 10 } ) );
+
+		final Polygon2D p = new DefaultPolygon2D( pts );
+		assertArrayEquals( p.vertex( 0 ), new double[] { 0, 0 }, 0 );
+	}
+
+	@Test
+	public void testLaterRealLocalizableHigherDim()
+	{
+		final List< RealLocalizable > pts = new ArrayList<>();
+		pts.add( new RealPoint( new double[] { 0, 0 } ) );
+		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
+		pts.add( new RealPoint( new double[] { 10, 10 } ) );
+
+		final Polygon2D p = new DefaultPolygon2D( pts );
+
+		assertEquals( p.numVertices(), 3 );
+		assertArrayEquals( p.vertex( 1 ), new double[] { 5, 5 }, 0 );
+	}
+
+	@Test
+	public void testRealLocalizableSmallerDim()
+	{
+		final List< RealLocalizable > pts = new ArrayList<>();
+		pts.add( new RealPoint( new double[] { 0, 0 } ) );
+		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
+		pts.add( new RealPoint( new double[] { 10 } ) );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		new DefaultPolygon2D( pts );
+	}
+
+	@Test
+	public void testUnequalXY()
+	{
+		final double[] x = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		final double[] y = new double[] { 1, 2, 3, 4, 5, 6, 7 };
+
+		final Polygon2D p = new DefaultPolygon2D( x, y );
+
+		assertEquals( p.numVertices(), 7 );
+		assertArrayEquals( p.vertex( 6 ), new double[] { 7, 7 }, 0 );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.vertex( 7 );
+	}
+
+	@Test
+	public void testDimGreaterThanTwo()
+	{
+		final List< RealPoint > vertices = new ArrayList<>();
+		vertices.add( new RealPoint( new double[] { 1, 2, 3 } ) );
+		vertices.add( new RealPoint( new double[] { -1, -2, -3 } ) );
+		vertices.add( new RealPoint( new double[] { 10, 9, 8 } ) );
+
+		final Polygon2D p = new DefaultPolygon2D( vertices );
+		assertEquals( p.numVertices(), 3 );
+		assertArrayEquals( p.vertex( 0 ), new double[] { 1, 2 }, 0 );
+		assertArrayEquals( p.vertex( 1 ), new double[] { -1, -2 }, 0 );
+		assertArrayEquals( p.vertex( 2 ), new double[] { 10, 9 }, 0 );
+	}
+
+	@Test
+	public void testSetVertexMoreThanTwo()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		p.setVertex( 0, new double[] { 1, 2, 3 } );
+		assertArrayEquals( p.vertex( 0 ), new double[] { 1, 2 }, 0 );
+	}
+
+	@Test
+	public void testAddVertexMoreThanTwo()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		p.addVertex( 3, new double[] { 1, 2, 3 } );
+		assertArrayEquals( p.vertex( 3 ), new double[] { 1, 2 }, 0 );
+	}
+
+	@Test
+	public void testSetVertexLessThanTwo()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.setVertex( 0, new double[] { 1 } );
+	}
+
+	@Test
+	public void testAddVertexLessThanTwo()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.addVertex( 3, new double[] { } );
+	}
+
+	@Test
+	public void testSetVertexInvalidIndex()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.setVertex( 6, new double[] { 1, 2 } );
+	}
+
+	@Test
+	public void testAddVertexInvalidIndex()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.addVertex( 6, new double[] { 1, 2 } );
+	}
+
+	@Test
+	public void testRemoveVertexInvalidIndex()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		exception.expect( IndexOutOfBoundsException.class );
+		p.removeVertex( 6 );
 	}
 }

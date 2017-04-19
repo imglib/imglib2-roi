@@ -92,7 +92,7 @@ public class ClosedPolygon2D extends DefaultPolygon2D
 					pt2[ 1 ] = y.get( i + 1 );
 				}
 
-				edge = GeomMaths.lineContains( pt1, pt2, localizable );
+				edge = GeomMaths.lineContains( pt1, pt2, localizable, n );
 
 				if ( edge )
 					return true;

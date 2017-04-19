@@ -59,6 +59,8 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 	public AbstractBox( final double[] min, final double[] max )
 	{
 		super( min, max );
+		if ( max.length < min.length )
+			throw new IllegalArgumentException( "Max array cannot be smaller than the min array" );
 	}
 
 	@Override
@@ -81,21 +83,31 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 		return center;
 	}
 
+	/**
+	 * Sets the center of the box.
+	 *
+	 * @param center
+	 *            contains the position of new center in each dimension,
+	 *            positions dimensions greater than {@code n} will be ignored
+	 */
 	@Override
 	public void setCenter( final double[] center )
 	{
+		if ( center.length < n )
+			throw new IllegalArgumentException( "Center must have at least length " + n );
 		for ( int d = 0; d < n; d++ )
 		{
 			final double halfSideLength = sideLength( d ) / 2.0;
 			min[ d ] = center[ d ] - halfSideLength;
 			max[ d ] = center[ d ] + halfSideLength;
 		}
-
 	}
 
 	@Override
 	public void setSideLength( final int d, final double length )
 	{
+		if ( length < 0 )
+			throw new IllegalArgumentException( "Cannot have negative edge lengths " );
 		final double[] center = center();
 		max[ d ] = center[ d ] + length / 2.0;
 		min[ d ] = center[ d ] - length / 2.0;
