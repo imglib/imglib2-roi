@@ -49,4 +49,13 @@ public interface Polygon2D extends Mask< RealLocalizable >
 
 	/** Get the number of vertices */
 	int numVertices();
+
+	/** Sets the position of the vertex at the specified index. */
+	void setVertex( int index, double[] vertex );
+
+	/** Adds a vertex at the given index. */
+	void addVertex( int index, double[] vertex );
+
+	/** Removes the vertex at the given index. */
+	void removeVertex( int index );
 }

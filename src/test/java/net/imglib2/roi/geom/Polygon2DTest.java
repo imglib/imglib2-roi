@@ -186,4 +186,46 @@ public class Polygon2DTest
 		assertEquals( polygon.vertex( 2 )[ 0 ], points.get( 2 ).getDoublePosition( 0 ), 0 );
 		assertEquals( polygon.vertex( 2 )[ 1 ], points.get( 2 ).getDoublePosition( 1 ), 0 );
 	}
+
+	@Test
+	public void testSetVertex()
+	{
+		final Polygon2D p = new DefaultPolygon2D( points );
+
+		assertFalse( p.contains( new RealPoint( new double[] { 30, 11 } ) ) );
+
+		p.setVertex( 3, new double[] { 40, 10 } );
+		assertEquals( p.numVertices(), 5, 0 );
+		assertEquals( p.vertex( 3 )[ 0 ], 40, 0 );
+		assertEquals( p.vertex( 3 )[ 1 ], 10, 1 );
+		assertTrue( p.contains( new RealPoint( new double[] { 30, 11 } ) ) );
+	}
+
+	@Test
+	public void testAddVertex()
+	{
+		final Polygon2D p = new ClosedPolygon2D( points );
+
+		assertFalse( p.contains( new RealPoint( new double[] { 20, 6.5 } ) ) );
+
+		p.addVertex( 4, new double[] { 20, 5 } );
+		assertEquals( p.numVertices(), 6, 0 );
+		assertEquals( p.vertex( 4 )[ 0 ], 20, 0 );
+		assertEquals( p.vertex( 4 )[ 1 ], 5, 0 );
+		assertTrue( p.contains( new RealPoint( new double[] { 20, 6.5 } ) ) );
+	}
+
+	@Test
+	public void testRemoveVertex()
+	{
+		final Polygon2D p = new OpenPolygon2D( points );
+
+		assertTrue( p.contains( new RealPoint( new double[] { 20.125, 17 } ) ) );
+
+		p.removeVertex( 1 );
+		assertEquals( p.numVertices(), 4, 0 );
+		assertEquals( p.vertex( 1 )[ 0 ], 25, 0 );
+		assertEquals( p.vertex( 1 )[ 1 ], 15, 0 );
+		assertFalse( p.contains( new RealPoint( new double[] { 20.125, 17 } ) ) );
+	}
 }
