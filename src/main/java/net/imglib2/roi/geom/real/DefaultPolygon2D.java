@@ -122,6 +122,30 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 		return x.size();
 	}
 
+	@Override
+	public void setVertex( final int index, final double[] vertex )
+	{
+		x.set( index, vertex[ 0 ] );
+		y.set( index, vertex[ 1 ] );
+		updateMinMax();
+	}
+
+	@Override
+	public void addVertex( final int index, final double[] vertex )
+	{
+		x.insert( index, vertex[ 0 ] );
+		y.insert( index, vertex[ 1 ] );
+		updateMinMax();
+	}
+
+	@Override
+	public void removeVertex( final int index )
+	{
+		x.removeAt( index );
+		y.removeAt( index );
+		updateMinMax();
+	}
+
 	// -- Helper methods --
 
 	private void populateXY( final List< ? extends RealLocalizable > vertices )
@@ -131,6 +155,27 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D
 			final RealLocalizable r = vertices.get( i );
 			x.add( r.getDoublePosition( 0 ) );
 			y.add( r.getDoublePosition( 1 ) );
+		}
+	}
+
+	/**
+	 * Updates the min and max values of the containing interval.
+	 */
+	private void updateMinMax()
+	{
+		for( int i = 0; i < x.size(); i++ )
+		{
+			final double xi = x.get( i );
+			final double yi = y.get( i );
+
+			if( xi < min[ 0 ] )
+				min[ 0 ] = xi;
+			if( xi > max[ 0 ] )
+				max[ 0 ] = xi;
+			if( yi < min[ 1 ] )
+				min[ 1 ] = yi;
+			if( yi > max[ 1 ] )
+				max[ 1 ] = yi;
 		}
 	}
 }
