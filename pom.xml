@@ -191,5 +191,10 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>junit-benchmarks</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
