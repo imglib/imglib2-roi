@@ -44,7 +44,7 @@ import net.imglib2.RealPositionable;
  * A (hyper) ellipse defined by an origin and a radius per dimension where the
  * region of interest is defined by:
  * 
- * &sum;((X<sup>n</sup> - O<sup>n</sup>)/R<sup>n</sup>)<sup>2</sup> <= 1
+ * &sum;((X<sup>n</sup> - O<sup>n</sup>)/R<sup>n</sup>)<sup>2</sup> &leq; 1
  * 
  * 
  * @author Lee Kamentsky

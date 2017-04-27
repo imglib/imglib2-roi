@@ -80,12 +80,9 @@ public class NativeImgLabeling< T extends Comparable< T >, I extends IntegerType
 	 * Create a labeling backed by a native image with custom strategy and image
 	 * factory
 	 * 
-	 * @param dim
-	 *            - dimensions of the labeling
 	 * @param strategyFactory
 	 *            - the strategy factory that drives iteration and statistics
-	 * @param imgFactory
-	 *            - the image factory to generate the native image
+	 * @param img
 	 */
 	public NativeImgLabeling( final LabelingROIStrategyFactory< T > strategyFactory, final Img< I > img )
 	{

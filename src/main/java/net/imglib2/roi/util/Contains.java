@@ -38,7 +38,7 @@ import net.imglib2.RealLocalizable;
 
 /**
  * Implementing class know if it contains a certain {@link RealLocalizable} of
- * type <L> or not.
+ * type {@code <L>} or not.
  * 
  * @author Tobias Pietzsch
  * @author Christian Dietz, University of Konstanz

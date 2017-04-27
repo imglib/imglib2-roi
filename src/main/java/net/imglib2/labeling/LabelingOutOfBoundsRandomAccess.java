@@ -43,7 +43,7 @@ import net.imglib2.outofbounds.OutOfBoundsConstantValue;
  * TODO
  * 
  * @author Lee Kamentsky
- * @modified Christian Dietz
+ * @author Christian Dietz
  * 
  * @param <T>
  */
