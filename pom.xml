@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>imglib2-roi</artifactId>
-	<version>0.4.6-SNAPSHOT</version>
+	<version>0.4.7-SNAPSHOT</version>
 
 	<name>ImgLib2 ROI</name>
 	<description>Regions of interest in ImgLib2.</description>
