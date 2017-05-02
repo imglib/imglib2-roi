@@ -1,26 +1,35 @@
 package net.imglib2.roi.geom.real;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 
+import gnu.trove.list.array.TDoubleArrayList;
+
+/**
+ * {@link RealPointCollection} backed by a {@code HashMap}.
+ *
+ * @author Alison Walter
+ */
 public class DefaultRealPointCollection< L extends RealLocalizable > extends AbstractEuclideanSpace implements RealPointCollection< L >
 {
-	private final HashSet< L > points;
+	private final HashMap< TDoubleArrayList, L > points;
 
 	/**
 	 * Creates a point collection which includes points in the given
-	 * {@code HashSet}.
+	 * {@code HashMap}.
 	 *
 	 * @param points
 	 *            points to include in the collection, the first point
-	 *            determines the dimensionality of the collection
+	 *            determines the dimensionality of the collection. The keys in
+	 *            the map should be {@code TDoubleArrayList}s which correspond
+	 *            to the position of the points.
 	 */
-	public DefaultRealPointCollection( final HashSet< L > points )
+	public DefaultRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
-		super( points.iterator().next().numDimensions() );
+		super( points.values().iterator().next().numDimensions() );
 		this.points = points;
 	}
 
@@ -34,14 +43,14 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	 */
 	public DefaultRealPointCollection( final Collection< L > points )
 	{
-		this( new HashSet<>( points ) );
+		this( createHashMap( points ) );
 	}
 
 	@Override
 	public boolean contains( final RealLocalizable l )
 	{
 		double bestDistance = Double.POSITIVE_INFINITY;
-		for ( final L pt : points )
+		for ( final L pt : points.values() )
 		{
 			final double distance = squareDistance( pt, l );
 			if ( distance < bestDistance )
@@ -54,7 +63,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	@Override
 	public Iterable< L > points()
 	{
-		return points;
+		return points.values();
 	}
 
 	@Override
@@ -62,7 +71,10 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	{
 		if ( point.numDimensions() != n )
 			throw new IllegalArgumentException( "Point must have " + n + " dimensions" );
-		points.add( point );
+
+		final double[] l = new double[ point.numDimensions() ];
+		point.localize( l );
+		points.put( new TDoubleArrayList( l ), point );
 	}
 
 	/**
@@ -71,12 +83,13 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	 * @param point
 	 *            point to be removed, it must have the same hash as a point in
 	 *            the set in order to be removed
-	 * @return true if point was removed, false otherwise
 	 */
 	@Override
-	public boolean removePoint( final L point )
+	public void removePoint( final L point )
 	{
-		return points.remove( point );
+		final double[] l = new double[ point.numDimensions() ];
+		point.localize( l );
+		points.remove( new TDoubleArrayList( l ) );
 	}
 
 	// -- Helper methods --
@@ -87,5 +100,18 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 		for ( int i = 0; i < n; i++ )
 			distance += ( ptOne.getDoublePosition( i ) - ptTwo.getDoublePosition( i ) ) * ( ptOne.getDoublePosition( i ) - ptTwo.getDoublePosition( i ) );
 		return distance;
+	}
+
+	private static < L extends RealLocalizable > HashMap< TDoubleArrayList, L > createHashMap( final Collection< L > points )
+	{
+		final HashMap< TDoubleArrayList, L > map = new HashMap<>();
+
+		for ( final L p : points )
+		{
+			final double[] l = new double[ p.numDimensions() ];
+			p.localize( l );
+			map.put( new TDoubleArrayList( l ), p );
+		}
+		return map;
 	}
 }

@@ -165,8 +165,7 @@ public class RealPointCollectionTest
 
 		assertTrue( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
 
-		// remove based on hash
-		rpc.removePoint( points.get( 4 ) );
+		rpc.removePoint( new RealPoint( new double[] { -13, -13 } ) );
 		assertFalse( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
 	}
 

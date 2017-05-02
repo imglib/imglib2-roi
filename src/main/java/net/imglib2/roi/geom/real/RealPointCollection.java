@@ -65,11 +65,10 @@ public interface RealPointCollection< L extends RealLocalizable > extends Mask< 
 	 *
 	 * @param point
 	 *            Point to remove from collection
-	 * @return true if point removed, false otherwise
 	 * @throws UnsupportedOperationException
 	 *             Not all RealPoinCollections are mutable
 	 */
-	default boolean removePoint( final L point )
+	default void removePoint( final L point )
 	{
 		throw new UnsupportedOperationException( "removePoint" );
 	}
