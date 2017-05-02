@@ -125,7 +125,7 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	 *
 	 * @param center
 	 *            if this array is longer than {@code n} it will be truncated,
-	 *            if shorter an {@link IllegalArgumentException} is thrown
+	 *            if shorter an {@link IllegalArgumentException} is thrown.
 	 */
 	@Override
 	public void setCenter( final double[] center )

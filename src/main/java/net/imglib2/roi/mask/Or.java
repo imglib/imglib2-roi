@@ -47,4 +47,12 @@ public interface Or< L > extends MaskBinaryOperation< L >
 	{
 		return leftOperand().contains( l ) || rightOperand().contains( l );
 	}
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		if( leftOperand().boundaryType() == rightOperand().boundaryType() )
+			return leftOperand().boundaryType();
+		return BoundaryType.UNSPECIFIED;
+	}
 }

@@ -41,6 +41,7 @@ import static org.junit.Assert.assertTrue;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.DefaultLine;
 import net.imglib2.roi.geom.real.Line;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,6 +80,7 @@ public class LineTest
 		assertEquals( l.endpointOne()[ 1 ], 3, 0 );
 		assertEquals( l.endpointTwo()[ 0 ], 6, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 0, 0 );
+		assertTrue( l.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -106,6 +108,7 @@ public class LineTest
 		assertEquals( l.endpointTwo()[ 2 ], 10, 0 );
 		assertEquals( l.endpointTwo()[ 3 ], 10, 0 );
 		assertEquals( l.endpointTwo()[ 4 ], 10, 0 );
+		assertTrue( l.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -129,6 +132,7 @@ public class LineTest
 		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
 		assertEquals( l.endpointTwo()[ 0 ], 12, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 1, 0 );
+		assertTrue( l.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -152,6 +156,7 @@ public class LineTest
 		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
 		assertEquals( l.endpointTwo()[ 0 ], 1, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 17, 0 );
+		assertTrue( l.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

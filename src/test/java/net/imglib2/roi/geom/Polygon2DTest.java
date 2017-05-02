@@ -47,6 +47,7 @@ import net.imglib2.roi.geom.real.ClosedPolygon2D;
 import net.imglib2.roi.geom.real.DefaultPolygon2D;
 import net.imglib2.roi.geom.real.OpenPolygon2D;
 import net.imglib2.roi.geom.real.Polygon2D;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -119,6 +120,7 @@ public class Polygon2DTest
 		assertEquals( polygon.vertex( 2 )[ 1 ], points.get( 2 ).getDoublePosition( 1 ), 0 );
 		assertEquals( polygon.vertex( 4 )[ 0 ], points.get( 4 ).getDoublePosition( 0 ), 0 );
 		assertEquals( polygon.vertex( 4 )[ 1 ], points.get( 4 ).getDoublePosition( 1 ), 0 );
+		assertTrue( polygon.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
 
 	@Test
@@ -155,6 +157,7 @@ public class Polygon2DTest
 		assertEquals( polygon.vertex( 3 )[ 1 ], points.get( 3 ).getDoublePosition( 1 ), 0 );
 		assertEquals( polygon.vertex( 4 )[ 0 ], points.get( 4 ).getDoublePosition( 0 ), 0 );
 		assertEquals( polygon.vertex( 4 )[ 1 ], points.get( 4 ).getDoublePosition( 1 ), 0 );
+		assertTrue( polygon.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -191,6 +194,7 @@ public class Polygon2DTest
 		assertEquals( polygon.vertex( 1 )[ 1 ], points.get( 1 ).getDoublePosition( 1 ), 0 );
 		assertEquals( polygon.vertex( 2 )[ 0 ], points.get( 2 ).getDoublePosition( 0 ), 0 );
 		assertEquals( polygon.vertex( 2 )[ 1 ], points.get( 2 ).getDoublePosition( 1 ), 0 );
+		assertTrue( polygon.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

@@ -73,4 +73,10 @@ public interface RealPointCollection< L extends RealLocalizable > extends Mask< 
 	{
 		throw new UnsupportedOperationException( "removePoint" );
 	}
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

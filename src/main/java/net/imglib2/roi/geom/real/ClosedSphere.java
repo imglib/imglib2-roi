@@ -67,4 +67,10 @@ public class ClosedSphere extends AbstractSphere
 
 		return distancePowered <= radius * radius;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

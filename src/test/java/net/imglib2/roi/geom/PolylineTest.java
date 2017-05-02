@@ -45,6 +45,7 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.DefaultPolyline;
 import net.imglib2.roi.geom.real.Polyline;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -121,6 +122,7 @@ public class PolylineTest
 			assertEquals( vert[ 0 ], simple.get( i ).getDoublePosition( 0 ), 0 );
 			assertEquals( vert[ 1 ], simple.get( i ).getDoublePosition( 1 ), 0 );
 		}
+		assertTrue( pl.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -150,6 +152,7 @@ public class PolylineTest
 			assertEquals( vert[ 2 ], fourD.get( i ).getDoublePosition( 2 ), 0 );
 			assertEquals( vert[ 3 ], fourD.get( i ).getDoublePosition( 3 ), 0 );
 		}
+		assertTrue( pl.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -182,6 +185,7 @@ public class PolylineTest
 			assertEquals( vert[ 0 ], intersect.get( i ).getDoublePosition( 0 ), 0 );
 			assertEquals( vert[ 1 ], intersect.get( i ).getDoublePosition( 1 ), 0 );
 		}
+		assertTrue( pl.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -206,6 +210,7 @@ public class PolylineTest
 		assertEquals( doubleVertices.length, pl.numVertices() );
 		for ( int i = 0; i < doubleVertices.length; i++ )
 			assertArrayEquals( pl.vertex( i ), doubleVertices[ i ], 0 );
+		assertTrue( pl.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

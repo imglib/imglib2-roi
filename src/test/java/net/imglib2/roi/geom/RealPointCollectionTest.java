@@ -45,6 +45,7 @@ import net.imglib2.roi.geom.real.DefaultRealPointCollection;
 import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
 import net.imglib2.roi.geom.real.RealPointCollection;
 import net.imglib2.roi.geom.real.RealPointSampleListRealPointCollection;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -95,6 +96,7 @@ public class RealPointCollectionTest
 		final Iterator< RealPoint > itr = pts.iterator();
 		while ( itr.hasNext() )
 			assertTrue( points.contains( itr.next() ) );
+		assertTrue( rpc.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -118,6 +120,7 @@ public class RealPointCollectionTest
 		final Iterator< RealPoint > itr = pts.iterator();
 		while ( itr.hasNext() )
 			assertTrue( points.contains( itr.next() ) );
+		assertTrue( rpc.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -141,6 +144,7 @@ public class RealPointCollectionTest
 		final Iterator< RealPoint > itr = pts.iterator();
 		while ( itr.hasNext() )
 			assertTrue( points.contains( itr.next() ) );
+		assertTrue( rpc.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

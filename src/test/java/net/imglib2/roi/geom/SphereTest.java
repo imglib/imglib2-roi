@@ -41,6 +41,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.ClosedSphere;
 import net.imglib2.roi.geom.real.OpenSphere;
 import net.imglib2.roi.geom.real.Sphere;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,6 +81,7 @@ public class SphereTest
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
 		assertEquals( s.radius(), 8, 0 );
+		assertTrue( s.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -106,6 +108,7 @@ public class SphereTest
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
 		assertEquals( s.radius(), 8, 0 );
+		assertTrue( s.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

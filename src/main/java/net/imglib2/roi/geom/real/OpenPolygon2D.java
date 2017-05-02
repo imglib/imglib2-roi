@@ -101,4 +101,10 @@ public class OpenPolygon2D extends DefaultPolygon2D
 		}
 		return false;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }
