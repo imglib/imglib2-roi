@@ -41,6 +41,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.ClosedSuperEllipsoid;
 import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -81,6 +82,7 @@ public class SuperEllipsoidTest
 		assertEquals( se.center()[ 1 ], 10, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 8, 0 );
+		assertTrue( se.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -108,6 +110,7 @@ public class SuperEllipsoidTest
 		assertEquals( se.center()[ 1 ], 10, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 8, 0 );
+		assertTrue( se.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -138,6 +141,7 @@ public class SuperEllipsoidTest
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 2 ), 1.5, 0 );
+		assertTrue( se.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -168,6 +172,7 @@ public class SuperEllipsoidTest
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 2 ), 1.5, 0 );
+		assertTrue( se.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

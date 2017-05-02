@@ -48,6 +48,7 @@ import net.imglib2.roi.geom.real.OpenBox;
 import net.imglib2.roi.mask.DefaultNot;
 import net.imglib2.roi.mask.Mask;
 import net.imglib2.roi.mask.Masks;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Test;
 
@@ -69,6 +70,8 @@ public class UnaryOperationTest
 
 		assertFalse( rm.contains( new RealPoint( new double[] { 1.1, 2 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 10, 10 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -93,6 +96,8 @@ public class UnaryOperationTest
 		// Inside rotated rectangle but not original
 		assertFalse( b.contains( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
 		assertTrue( affine.contains( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
+
+		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -116,6 +121,8 @@ public class UnaryOperationTest
 		// inside rotated only
 		assertFalse( b.contains( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
 		assertTrue( affine.contains( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
+
+		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -134,6 +141,8 @@ public class UnaryOperationTest
 		// inside transformed only
 		assertFalse( b.contains( new RealPoint( new double[] { 22, 9 } ) ) );
 		assertTrue( affine.contains( new RealPoint( new double[] { 22, 9 } ) ) );
+
+		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	// -- Helper methods --

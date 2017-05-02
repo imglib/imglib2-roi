@@ -47,4 +47,10 @@ public interface Xor< L > extends MaskBinaryOperation< L >
 	{
 		return leftOperand().contains( l ) ^ rightOperand().contains( l );
 	}
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		return BoundaryType.UNSPECIFIED;
+	}
 }

@@ -75,4 +75,10 @@ public class ClosedBox extends AbstractBox
 		}
 		return isInside;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

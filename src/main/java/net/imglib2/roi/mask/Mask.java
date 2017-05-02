@@ -53,6 +53,19 @@ public interface Mask< L > extends EuclideanSpace
 {
 
 	/**
+	 * Defines the edge behavior of the Mask.
+	 * <ul>
+	 * <li>CLOSED: contains all points on the boundary</li>
+	 * <li>OPEN: contains no points on the boundary</li>
+	 * <li>UNSPECIFIED: boundary behavior is unclear</li>
+	 * </ul>
+	 */
+	enum BoundaryType
+	{
+		CLOSED, OPEN, UNSPECIFIED
+	}
+
+	/**
 	 * Tests if the mask contains a location in N-space.
 	 *
 	 * @param l
@@ -60,4 +73,10 @@ public interface Mask< L > extends EuclideanSpace
 	 * @return true, if the mask contains the location
 	 */
 	boolean contains( final L l );
+
+	/** Returns the boundary behavior of this Mask. */
+	default BoundaryType boundaryType()
+	{
+		return BoundaryType.UNSPECIFIED;
+	}
 }

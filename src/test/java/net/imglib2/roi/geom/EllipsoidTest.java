@@ -42,6 +42,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.ClosedEllipsoid;
 import net.imglib2.roi.geom.real.Ellipsoid;
 import net.imglib2.roi.geom.real.OpenEllipsoid;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -80,6 +81,7 @@ public class EllipsoidTest
 		assertEquals( e.center()[ 1 ], 23, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 9, 0 );
+		assertTrue( e.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -105,6 +107,7 @@ public class EllipsoidTest
 		assertEquals( e.center()[ 1 ], 23, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 9, 0 );
+		assertTrue( e.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

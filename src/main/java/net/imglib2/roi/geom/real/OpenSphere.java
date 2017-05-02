@@ -68,4 +68,10 @@ public class OpenSphere extends AbstractSphere
 
 		return distancePowered < radius * radius;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }

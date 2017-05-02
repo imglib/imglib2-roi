@@ -103,4 +103,10 @@ public class ClosedPolygon2D extends DefaultPolygon2D
 		}
 		return false;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

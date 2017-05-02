@@ -58,4 +58,10 @@ public interface Polyline extends Mask< RealLocalizable >
 
 	/** Removes the vertex at the given index. */
 	void removeVertex( int index );
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

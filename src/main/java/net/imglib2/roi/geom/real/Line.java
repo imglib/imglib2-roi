@@ -55,4 +55,10 @@ public interface Line extends Mask< RealLocalizable >
 
 	/** Sets the position of the second endpoint. */
 	void setEndpointTwo( double[] pos );
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
+	}
 }

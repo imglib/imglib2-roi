@@ -81,4 +81,10 @@ public class DefaultMaskAffineTransform extends AbstractUnaryOperation< Mask< Re
 	{
 		return affine;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return operand().boundaryType();
+	}
 }

@@ -47,4 +47,12 @@ public interface Not< L > extends MaskUnaryOperation< L >
 	{
 		return !operand().contains( l );
 	}
+
+	@Override
+	default BoundaryType boundaryType()
+	{
+		if ( operand().boundaryType() == BoundaryType.UNSPECIFIED )
+			return BoundaryType.UNSPECIFIED;
+		return operand().boundaryType() == BoundaryType.CLOSED ? BoundaryType.OPEN : BoundaryType.CLOSED;
+	}
 }

@@ -72,4 +72,10 @@ public class OpenEllipsoid extends AbstractEllipsoid
 
 		return distancePowered < 1.0;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }

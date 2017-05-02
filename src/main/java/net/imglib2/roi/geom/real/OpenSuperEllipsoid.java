@@ -75,4 +75,10 @@ public class OpenSuperEllipsoid extends AbstractSuperEllipsoid
 
 		return distancePowered < 1.0;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }

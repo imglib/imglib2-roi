@@ -47,6 +47,7 @@ import net.imglib2.roi.mask.DefaultOr;
 import net.imglib2.roi.mask.DefaultSubtract;
 import net.imglib2.roi.mask.DefaultXor;
 import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Test;
 
@@ -73,6 +74,8 @@ public class BinaryOperationTest
 		assertFalse( rm.contains( new RealPoint( new double[] { 3, 3 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 100, 1 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 5, 3 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
 
 	@Test
@@ -89,6 +92,8 @@ public class BinaryOperationTest
 
 		assertFalse( rm.contains( new RealPoint( new double[] { 3, 8 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 10, 10 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -108,6 +113,8 @@ public class BinaryOperationTest
 		assertFalse( rm.contains( new RealPoint( new double[] { 3, 4 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 6, 7 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 8, 15 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
 
 	@Test
@@ -123,5 +130,7 @@ public class BinaryOperationTest
 
 		assertFalse( rm.contains( new RealPoint( new double[] { 5, 5 } ) ) );
 		assertFalse( rm.contains( new RealPoint( new double[] { 20, 1 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
 }

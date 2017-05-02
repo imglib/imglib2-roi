@@ -41,6 +41,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
 import net.imglib2.roi.geom.real.OpenBox;
+import net.imglib2.roi.mask.Mask.BoundaryType;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,6 +85,7 @@ public class BoxTest
 		assertEquals( b.sideLength( 1 ), 6.5, 0 );
 		assertEquals( b.center()[ 0 ], 3.2, 1e-15 );
 		assertEquals( b.center()[ 1 ], 0.0125, 1e-15 );
+		assertTrue( b.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -113,6 +115,7 @@ public class BoxTest
 		assertEquals( b.sideLength( 1 ), 6.5, 0 );
 		assertEquals( b.center()[ 0 ], 3.2, 1e-15 );
 		assertEquals( b.center()[ 1 ], 0.0125, 1e-15 );
+		assertTrue( b.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test
@@ -159,6 +162,7 @@ public class BoxTest
 		assertEquals( hc.center()[ 1 ], 5, 0 );
 		assertEquals( hc.center()[ 2 ], 5, 0 );
 		assertEquals( hc.center()[ 3 ], 5, 0 );
+		assertTrue( hc.boundaryType() == BoundaryType.OPEN );
 	}
 
 	@Test
@@ -205,6 +209,7 @@ public class BoxTest
 		assertEquals( hc.center()[ 1 ], 5, 0 );
 		assertEquals( hc.center()[ 2 ], 5, 0 );
 		assertEquals( hc.center()[ 3 ], 5, 0 );
+		assertTrue( hc.boundaryType() == BoundaryType.CLOSED );
 	}
 
 	@Test

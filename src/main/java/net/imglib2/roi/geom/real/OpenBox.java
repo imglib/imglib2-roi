@@ -76,4 +76,10 @@ public class OpenBox extends AbstractBox
 
 		return isInside;
 	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }
