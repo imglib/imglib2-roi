@@ -165,6 +165,9 @@ Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
 Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
 Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
 Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
+
+		<!-- TEMP: Until pom-imglib2 extends pom-scijava 15.0.0 or later. -->
+		<imglib2.version>4.3.0</imglib2.version>
 	</properties>
 
 	<dependencies>
