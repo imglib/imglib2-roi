@@ -14,6 +14,7 @@ import net.imglib2.roi.geom.real.ClosedPolygon2D;
 import net.imglib2.roi.geom.real.ClosedSphere;
 import net.imglib2.roi.geom.real.ClosedSuperEllipsoid;
 import net.imglib2.roi.geom.real.DefaultLine;
+import net.imglib2.roi.geom.real.DefaultPointMask;
 import net.imglib2.roi.geom.real.DefaultPolygon2D;
 import net.imglib2.roi.geom.real.DefaultPolyline;
 import net.imglib2.roi.geom.real.DefaultRealPointCollection;
@@ -26,6 +27,7 @@ import net.imglib2.roi.geom.real.OpenEllipsoid;
 import net.imglib2.roi.geom.real.OpenPolygon2D;
 import net.imglib2.roi.geom.real.OpenSphere;
 import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
+import net.imglib2.roi.geom.real.PointMask;
 import net.imglib2.roi.geom.real.Polygon2D;
 import net.imglib2.roi.geom.real.Polyline;
 import net.imglib2.roi.geom.real.RealPointCollection;
@@ -87,6 +89,20 @@ public class GeomMasks
 	public static Line line( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
 		return new DefaultLine( pointOne, pointTwo, copy );
+	}
+
+	// -- Point --
+
+	/** Creates a {@link DefaultPointMask}. */
+	public static PointMask point( final double[] point )
+	{
+		return new DefaultPointMask( point );
+	}
+
+	/** Creates a {@link DefaultPointMask}. */
+	public static PointMask point( final RealLocalizable point )
+	{
+		return new DefaultPointMask( point );
 	}
 
 	// -- Polygon2D --
