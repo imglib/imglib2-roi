@@ -181,6 +181,12 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<version>3.0.3</version>
 		</dependency>
 
+		<!-- Third-party dependencies -->
+		<dependency>
+			<groupId>gov.nist.math</groupId>
+			<artifactId>jama</artifactId>
+		</dependency> 
+		
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
