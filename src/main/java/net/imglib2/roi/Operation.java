@@ -32,20 +32,27 @@
  * #L%
  */
 
-package net.imglib2.roi.mask;
+package net.imglib2.roi;
 
-import net.imglib2.roi.BinaryOperation;
+import java.util.List;
 
 /**
- * {@link Mask} result of an operation between two {@link Mask} operands.
+ * The result of an operation between n operands.
  *
- * @author Curtis Rueden
+ * @author Alison Walter
+ * @param <T>
+ *            Type of the operands.
  */
-public interface MaskBinaryOperation< L > extends MaskOperation< L >, BinaryOperation< Mask< L > >
+public interface Operation< T >
 {
-	@Override
-	default int numDimensions()
-	{
-		return leftOperand().numDimensions();
-	}
+
+	/** The number of operands. */
+	int numOperands();
+
+	/**
+	 * An unmodifiable {@code List} of all operands. This {@code List} is
+	 * intended for read only purposes.
+	 */
+	List< T > operands();
+
 }

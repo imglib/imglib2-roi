@@ -34,18 +34,21 @@
 
 package net.imglib2.roi;
 
+import java.util.Collections;
+
 /**
  * Abstract base class for {@link UnaryOperation}s.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractUnaryOperation< T > implements UnaryOperation< T >
+public abstract class AbstractUnaryOperation< T > extends AbstractOperation< T > implements UnaryOperation< T >
 {
 
 	private final T operand;
 
 	public AbstractUnaryOperation( final T operand )
 	{
+		super( Collections.singletonList( operand ) );
 		this.operand = operand;
 	}
 

@@ -41,7 +41,7 @@ import net.imglib2.roi.UnaryOperation;
  *
  * @author Curtis Rueden
  */
-public interface MaskUnaryOperation< L > extends UnaryOperation< Mask< L > >, Mask< L >
+public interface MaskUnaryOperation< L > extends MaskOperation< L >, UnaryOperation< Mask< L > >
 {
 	@Override
 	default int numDimensions()
