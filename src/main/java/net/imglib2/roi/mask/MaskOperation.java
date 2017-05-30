@@ -34,18 +34,19 @@
 
 package net.imglib2.roi.mask;
 
-import net.imglib2.roi.BinaryOperation;
+import net.imglib2.roi.Operation;
 
 /**
- * {@link Mask} result of an operation between two {@link Mask} operands.
+ * {@link Mask} result of an operation between n {@link Mask} operands.
  *
- * @author Curtis Rueden
+ * @author Alison Walter
  */
-public interface MaskBinaryOperation< L > extends MaskOperation< L >, BinaryOperation< Mask< L > >
+public interface MaskOperation< L > extends Operation< Mask< L > >, Mask< L >
 {
+
 	@Override
 	default int numDimensions()
 	{
-		return leftOperand().numDimensions();
+		return operands().get( 0 ).numDimensions();
 	}
 }

@@ -41,7 +41,7 @@ package net.imglib2.roi;
  * @param <T>
  *            Type of the operand.
  */
-public interface UnaryOperation< T >
+public interface UnaryOperation< T > extends Operation< T >
 {
 
 	/** The argument upon which to operate. */

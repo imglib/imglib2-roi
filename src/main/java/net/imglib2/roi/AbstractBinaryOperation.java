@@ -34,12 +34,14 @@
 
 package net.imglib2.roi;
 
+import java.util.Arrays;
+
 /**
  * Abstract base class for {@link BinaryOperation}s.
  *
  * @author Curtis Rueden
  */
-public abstract class AbstractBinaryOperation< T > implements BinaryOperation< T >
+public abstract class AbstractBinaryOperation< T > extends AbstractOperation< T > implements BinaryOperation< T >
 {
 	private final T leftOperand;
 
@@ -47,6 +49,7 @@ public abstract class AbstractBinaryOperation< T > implements BinaryOperation< T
 
 	public AbstractBinaryOperation( final T leftOperand, final T rightOperand )
 	{
+		super( Arrays.asList( leftOperand, rightOperand ) );
 		this.leftOperand = leftOperand;
 		this.rightOperand = rightOperand;
 	}
