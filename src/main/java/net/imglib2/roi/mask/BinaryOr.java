@@ -39,7 +39,7 @@ package net.imglib2.roi.mask;
  *
  * @author Curtis Rueden
  */
-public interface Or< L > extends MaskBinaryOperation< L >
+public interface BinaryOr< L > extends MaskBinaryOperation< L >
 {
 
 	@Override

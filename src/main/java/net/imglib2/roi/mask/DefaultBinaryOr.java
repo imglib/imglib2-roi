@@ -37,14 +37,14 @@ package net.imglib2.roi.mask;
 import net.imglib2.roi.AbstractBinaryOperation;
 
 /**
- * Simple implementation of {@link Or}.
+ * Simple implementation of {@link BinaryOr}.
  *
  * @author Curtis Rueden
  */
-public class DefaultOr< L > extends AbstractBinaryOperation< Mask< L > > implements Or< L >
+public class DefaultBinaryOr< L > extends AbstractBinaryOperation< Mask< L > > implements BinaryOr< L >
 {
 
-	public DefaultOr( final Mask< L > leftOperand, final Mask< L > rightOperand )
+	public DefaultBinaryOr( final Mask< L > leftOperand, final Mask< L > rightOperand )
 	{
 		super( leftOperand, rightOperand );
 	}

@@ -43,7 +43,7 @@ import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
 import net.imglib2.roi.geom.real.OpenBox;
 import net.imglib2.roi.mask.DefaultAnd;
-import net.imglib2.roi.mask.DefaultOr;
+import net.imglib2.roi.mask.DefaultBinaryOr;
 import net.imglib2.roi.mask.DefaultSubtract;
 import net.imglib2.roi.mask.DefaultXor;
 import net.imglib2.roi.mask.Mask;
@@ -83,7 +83,7 @@ public class BinaryOperationTest
 	{
 		final Box b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
 		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
-		final Mask< RealLocalizable > rm = new DefaultOr<>( b, b2 );
+		final Mask< RealLocalizable > rm = new DefaultBinaryOr<>( b, b2 );
 
 		assertTrue( rm.contains( new RealPoint( new double[] { 4, 8 } ) ) );
 		assertTrue( rm.contains( new RealPoint( new double[] { 6, 5 } ) ) );
