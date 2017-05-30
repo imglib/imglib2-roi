@@ -66,7 +66,7 @@ public final class Masks
 
 	public static <L> Mask<L> or( final Mask<L> leftOperand, final Mask<L> rightOperand )
 	{
-		return new DefaultOr<>( leftOperand, rightOperand );
+		return new DefaultBinaryOr<>( leftOperand, rightOperand );
 	}
 
 	public static <L> Mask<L> subtract( final Mask<L> leftOperand, final Mask<L> rightOperand )
