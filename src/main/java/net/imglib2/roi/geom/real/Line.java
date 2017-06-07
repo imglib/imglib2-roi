@@ -34,15 +34,14 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} which defines a line defined in n-d space.
+ * A {@link MaskRealInterval} which defines a line defined in n-d space.
  *
  * @author Alison Walter
  */
-public interface Line extends Mask< RealLocalizable >
+public interface Line extends MaskRealInterval
 {
 	/** Returns the position of the first endpoint. */
 	double[] endpointOne();

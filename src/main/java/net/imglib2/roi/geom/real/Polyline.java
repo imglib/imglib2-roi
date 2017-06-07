@@ -34,15 +34,14 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} which defines a polyline in n-d space.
+ * A {@link MaskRealInterval} which defines a polyline in n-d space.
  *
  * @author Alison Walter
  */
-public interface Polyline extends Mask< RealLocalizable >
+public interface Polyline extends MaskRealInterval
 {
 	/** Returns the vertex at the specified position. */
 	double[] vertex( final int pos );

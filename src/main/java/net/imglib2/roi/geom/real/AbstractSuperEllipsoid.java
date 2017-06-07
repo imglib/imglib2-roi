@@ -35,6 +35,7 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 
 /**
  * Abstract base class for {@link SuperEllipsoid} implementations.
@@ -50,8 +51,8 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	protected final double[] semiAxisLengths;
 
 	/**
-	 * Creates an n-d superellipsoid, where n is determined by the length of
-	 * the smaller array.
+	 * Creates an n-d superellipsoid, where n is determined by the length of the
+	 * smaller array.
 	 *
 	 * @param center
 	 *            position of the superellipsoid in space, given in pixel
@@ -65,8 +66,8 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	{
 		super( Math.min( center.length, semiAxisLengths.length ) );
 
-		if( exponent <= 0 )
-			throw new IllegalArgumentException("exponent must be positve and non-zero");
+		if ( exponent <= 0 )
+			throw new IllegalArgumentException( "exponent must be positve and non-zero" );
 
 		this.exponent = exponent;
 		this.semiAxisLengths = new double[ n ];
@@ -84,6 +85,46 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 
 	@Override
 	public abstract boolean contains( final RealLocalizable l );
+
+	@Override
+	public double realMin( final int d )
+	{
+		return center[ d ] - semiAxisLengths[ d ];
+	}
+
+	@Override
+	public void realMin( final double[] min )
+	{
+		for ( int i = 0; i < n; i++ )
+			min[ i ] = realMin( i );
+	}
+
+	@Override
+	public void realMin( final RealPositionable min )
+	{
+		for ( int i = 0; i < n; i++ )
+			min.setPosition( realMin( i ), i );
+	}
+
+	@Override
+	public double realMax( final int d )
+	{
+		return center[ d ] + semiAxisLengths[ d ];
+	}
+
+	@Override
+	public void realMax( final double[] max )
+	{
+		for ( int i = 0; i < n; i++ )
+			max[ i ] = realMax( i );
+	}
+
+	@Override
+	public void realMax( final RealPositionable max )
+	{
+		for ( int i = 0; i < n; i++ )
+			max.setPosition( realMax( i ), i );
+	}
 
 	@Override
 	public double exponent()
@@ -107,8 +148,8 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	@Override
 	public void setExponent( final double exponent )
 	{
-		if( exponent <= 0 )
-			throw new IllegalArgumentException("exponent must be positve and non-zero");
+		if ( exponent <= 0 )
+			throw new IllegalArgumentException( "exponent must be positve and non-zero" );
 		this.exponent = exponent;
 	}
 

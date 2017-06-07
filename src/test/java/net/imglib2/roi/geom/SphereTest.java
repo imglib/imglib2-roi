@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -219,5 +220,38 @@ public class SphereTest
 		assertEquals( c[ 0 ], 1, 0 );
 		assertEquals( c[ 1 ], 2, 0 );
 		assertEquals( c[ 2 ], 3, 0 );
+	}
+
+	@Test
+	public void testBounds()
+	{
+		// Bounds should be the same for open and closed spheres
+		final Sphere s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		double[] min = new double[] { 3 - 5, 2 - 5, 1 - 5 };
+		double[] max = new double[] { 3 + 5, 2 + 5, 1 + 5 };
+		final double[] sMin = new double[ 3 ];
+		final double[] sMax = new double[ 3 ];
+		s.realMin( sMin );
+		s.realMax( sMax );
+
+		assertArrayEquals( min, sMin, 0 );
+		assertArrayEquals( max, sMax, 0 );
+
+		// Mutate sphere
+		s.setRadius( 2 );
+		min = new double[] { 3 - 2, 2 - 2, 1 - 2 };
+		max = new double[] { 3 + 2, 2 + 2, 1 + 2 };
+		s.realMin( sMin );
+		s.realMax( sMax );
+		assertArrayEquals( min, sMin, 0 );
+		assertArrayEquals( max, sMax, 0 );
+
+		s.setCenter( new double[] { 0, 0, 0 } );
+		min = new double[] { -2, -2, -2 };
+		max = new double[] { 2, 2, 2 };
+		s.realMin( sMin );
+		s.realMax( sMax );
+		assertArrayEquals( min, sMin, 0 );
+		assertArrayEquals( max, sMax, 0 );
 	}
 }

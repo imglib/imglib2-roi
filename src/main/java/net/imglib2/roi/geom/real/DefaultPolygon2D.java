@@ -37,6 +37,7 @@ import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.util.Intervals;

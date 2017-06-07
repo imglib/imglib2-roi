@@ -83,4 +83,26 @@ public class PointMaskTest
 		exception.expect( IllegalArgumentException.class );
 		pt.setLocation( new double[] { -3 } );
 	}
+
+	@Test
+	public void testBounds()
+	{
+		double[] loc = new double[] { 0.5, -7.125 };
+		final PointMask pt = new DefaultPointMask( loc );
+		final double[] ptMin = new double[ 2 ];
+		final double[] ptMax = new double[ 2 ];
+		pt.realMin( ptMin );
+		pt.realMax( ptMax );
+
+		assertArrayEquals( loc, ptMin, 0 );
+		assertArrayEquals( loc, ptMax, 0 );
+
+		// Mutate point
+		pt.setLocation( new double[] { 0.25, 83 } );
+		loc = new double[] { 0.25, 83 };
+		pt.realMin( ptMin );
+		pt.realMax( ptMax );
+		assertArrayEquals( loc, ptMin, 0 );
+		assertArrayEquals( loc, ptMax, 0 );
+	}
 }

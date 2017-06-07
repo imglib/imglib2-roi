@@ -36,6 +36,7 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.roi.mask.Mask;
 
 /**
@@ -88,6 +89,42 @@ public class DefaultPointMask extends AbstractEuclideanSpace implements PointMas
 		return true;
 	}
 
+	@Override
+	public double realMin( final int d )
+	{
+		return location[ d ];
+	}
+
+	@Override
+	public void realMin( final double[] min )
+	{
+		System.arraycopy( location, 0, min, 0, n );
+	}
+
+	@Override
+	public void realMin( final RealPositionable min )
+	{
+		min.setPosition( location.clone() );
+	}
+
+	@Override
+	public double realMax( final int d )
+	{
+		return realMin( d );
+	}
+
+	@Override
+	public void realMax( final double[] max )
+	{
+		realMin( max );
+	}
+
+	@Override
+	public void realMax( final RealPositionable max )
+	{
+		realMin( max );
+	}
+
 	/** Returns a copy of the location. */
 	@Override
 	public double[] location()
@@ -103,5 +140,4 @@ public class DefaultPointMask extends AbstractEuclideanSpace implements PointMas
 
 		System.arraycopy( location, 0, this.location, 0, n );
 	}
-
 }

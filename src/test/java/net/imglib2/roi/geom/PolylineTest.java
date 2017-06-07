@@ -331,4 +331,40 @@ public class PolylineTest
 		exception.expect( IndexOutOfBoundsException.class );
 		p.removeVertex( 6 );
 	}
+
+	@Test
+	public void testBounds()
+	{
+		final Polyline pl = new DefaultPolyline( simple );
+		final double[] max = new double[] { 30, 10 };
+		final double[] min = new double[] { 0, 0 };
+		final double[] plMin = new double[ 2 ];
+		final double[] plMax = new double[ 2 ];
+		pl.realMin( plMin );
+		pl.realMax( plMax );
+
+		assertArrayEquals( min, plMin, 0 );
+		assertArrayEquals( max, plMax, 0 );
+
+		pl.setVertex( 0, new double[] { 1, 1 } );
+		min[ 0 ] = 1;
+		pl.realMin( plMin );
+		pl.realMax( plMax );
+		assertArrayEquals( min, plMin, 0 );
+		assertArrayEquals( max, plMax, 0 );
+
+		pl.addVertex( 3, new double[] { 5, -1 } );
+		min[ 1 ] = -1;
+		pl.realMin( plMin );
+		pl.realMax( plMax );
+		assertArrayEquals( min, plMin, 0 );
+		assertArrayEquals( max, plMax, 0 );
+
+		pl.removeVertex( 4 );
+		max[ 0 ] = 20;
+		pl.realMin( plMin );
+		pl.realMax( plMax );
+		assertArrayEquals( min, plMin, 0 );
+		assertArrayEquals( max, plMax, 0 );
+	}
 }

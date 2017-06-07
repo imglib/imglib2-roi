@@ -35,14 +35,14 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} which defines a collection of real space points in n-d space.
+ * A {@link MaskRealInterval} which defines a collection of real space points in n-d space.
  *
  * @author Alison Walter
  */
-public interface RealPointCollection< L extends RealLocalizable > extends Mask< RealLocalizable >
+public interface RealPointCollection< L extends RealLocalizable > extends MaskRealInterval
 {
 	/** Returns the points in the collection. */
 	Iterable< L > points();

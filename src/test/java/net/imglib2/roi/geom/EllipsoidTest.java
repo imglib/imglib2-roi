@@ -251,4 +251,37 @@ public class EllipsoidTest
 		assertEquals( c[ 0 ], 4, 0 );
 		assertEquals( c[ 1 ], 12, 0 );
 	}
+
+	@Test
+	public void testBounds()
+	{
+		// Bounds should be the same for open or closed ellipsoids
+		final Ellipsoid e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		double[] min = new double[] { 12 - 4, 23 - 9 };
+		double[] max = new double[] { 12 + 4, 23 + 9 };
+		final double[] eMin = new double[ 2 ];
+		final double[] eMax = new double[ 2 ];
+		e.realMin( eMin );
+		e.realMax( eMax );
+
+		assertArrayEquals( min, eMin, 0 );
+		assertArrayEquals( max, eMax, 0 );
+
+		// Mutate ellipsoids
+		e.setSemiAxisLength( 0, 0.25 );
+		min[ 0 ] = 12 - 0.25;
+		max[ 0 ] = 12 + 0.25;
+		e.realMin( eMin );
+		e.realMax( eMax );
+		assertArrayEquals( min, eMin, 0 );
+		assertArrayEquals( max, eMax, 0 );
+
+		e.setCenter( new double[] { 120, -30 } );
+		min = new double[] { 120 - 0.25, -30 - 9 };
+		max = new double[] { 120 + 0.25, -30 + 9 };
+		e.realMin( eMin );
+		e.realMax( eMax );
+		assertArrayEquals( min, eMin, 0 );
+		assertArrayEquals( max, eMax, 0 );
+	}
 }
