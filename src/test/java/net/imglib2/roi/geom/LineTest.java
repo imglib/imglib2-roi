@@ -244,4 +244,35 @@ public class LineTest
 		assertEquals( ptTwo.length, 4 );
 		assertArrayEquals( ptTwo, new double[] { 1.0625, -0.0325, 10.5, 12.25 }, 0 );
 	}
+
+	@Test
+	public void testBounds()
+	{
+		final Line l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
+		double[] min = new double[] { 1, 0 };
+		double[] max = new double[] { 6, 3 };
+		final double[] lMin = new double[ 2 ];
+		final double[] lMax = new double[ 2 ];
+		l.realMin( lMin );
+		l.realMax( lMax );
+
+		assertArrayEquals( min, lMin, 0 );
+		assertArrayEquals( max, lMax, 0 );
+
+		// Mutate line
+		l.setEndpointOne( new double[] { -1, -3.25 } );
+		min = new double[] { -1, -3.25 };
+		max = new double[] { 6, 0 };
+		l.realMin( lMin );
+		l.realMax( lMax );
+		assertArrayEquals( min, lMin, 0 );
+		assertArrayEquals( max, lMax, 0 );
+
+		l.setEndpointTwo( new double[] { 10, 1 } );
+		max = new double[] { 10, 1 };
+		l.realMin( lMin );
+		l.realMax( lMax );
+		assertArrayEquals( min, lMin, 0 );
+		assertArrayEquals( max, lMax, 0 );
+	}
 }

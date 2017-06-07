@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -76,7 +77,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void testDefaultRealPointCollection()
+	public void testDefaultRPC()
 	{
 		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
@@ -100,7 +101,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void testKDTreeRealPointCollection()
+	public void testKDTreeRPC()
 	{
 		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
 
@@ -124,7 +125,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void testRealPointSampleListRealPointCollection()
+	public void testRealPointSampleListRPC()
 	{
 		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
@@ -148,7 +149,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void DefaultRPCAddPoint()
+	public void testDefaultRPCAddPoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
@@ -159,7 +160,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void DefaultRPCRemovePoint()
+	public void testDefaultRPCRemovePoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
@@ -170,7 +171,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void KDTreeRPCAddPoint()
+	public void testKDTreeRPCAddPoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
 
@@ -179,7 +180,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void KDTreeRPCRemovePoint()
+	public void testKDTreeRPCRemovePoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
 
@@ -188,7 +189,7 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void RealPointSampleListRPCAddPoint()
+	public void testRealPointSampleListRPCAddPoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
@@ -199,11 +200,81 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void RealPointSampleListRPCRemovePoint()
+	public void testRealPointSampleListRPCRemovePoint()
 	{
 		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
 		exception.expect( UnsupportedOperationException.class );
 		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
+	}
+
+	@Test
+	public void testDefaultRPCBounds()
+	{
+		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final double[] max = new double[] { 200, 80 };
+		double[] min = new double[] { -13, -13 };
+		final double[] rpcMin = new double[ 2 ];
+		final double[] rpcMax = new double[ 2 ];
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
+
+		// Mutate RPC
+		rpc.removePoint( new RealPoint( new double[] { -13, -13 } ) );
+		min = new double[] { -12, -0.5 };
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
+
+		rpc.addPoint( new RealPoint( new double[] { 1024.25, -17.125 } ) );
+		max[ 0 ] = 1024.25;
+		min[ 1 ] = -17.125;
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
+	}
+
+	@Test
+	public void testKDTreeRPCBounds()
+	{
+		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
+		final double[] max = new double[] { 200, 80 };
+		final double[] min = new double[] { -13, -13 };
+		final double[] rpcMin = new double[ 2 ];
+		final double[] rpcMax = new double[ 2 ];
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
+	}
+
+	@Test
+	public void testRealPointSampleListRPCBounds()
+	{
+		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final double[] max = new double[] { 200, 80 };
+		final double[] min = new double[] { -13, -13 };
+		final double[] rpcMin = new double[ 2 ];
+		final double[] rpcMax = new double[ 2 ];
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
+
+		// Mutate RPC
+		rpc.addPoint( new RealPoint( new double[] { -16.5, 82 } ) );
+		min[ 0 ] = -16.5;
+		max[ 1 ] = 82;
+		rpc.realMin( rpcMin );
+		rpc.realMax( rpcMax );
+		assertArrayEquals( min, rpcMin, 0 );
+		assertArrayEquals( max, rpcMax, 0 );
 	}
 }

@@ -37,6 +37,7 @@ package net.imglib2.roi.geom.real;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.IterableRealInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.neighborsearch.NearestNeighborSearch;
 import net.imglib2.neighborsearch.NearestNeighborSearchOnIterableRealInterval;
 
@@ -94,6 +95,42 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	{
 		search.search( l );
 		return search.getSquareDistance() <= 0;
+	}
+
+	@Override
+	public double realMin( final int d )
+	{
+		return interval.realMax( d );
+	}
+
+	@Override
+	public void realMin( final double[] min )
+	{
+		interval.realMin( min );
+	}
+
+	@Override
+	public void realMin( final RealPositionable min )
+	{
+		interval.realMin( min );
+	}
+
+	@Override
+	public double realMax( final int d )
+	{
+		return interval.realMax( d );
+	}
+
+	@Override
+	public void realMax( final double[] max )
+	{
+		interval.realMax( max );
+	}
+
+	@Override
+	public void realMax( final RealPositionable max )
+	{
+		interval.realMax( max );
 	}
 
 	@Override

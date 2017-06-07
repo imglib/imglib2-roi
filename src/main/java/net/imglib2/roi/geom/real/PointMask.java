@@ -34,15 +34,14 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} representing a single point in n-d real space.
+ * A {@link MaskRealInterval} representing a single point in n-d real space.
  *
  * @author Alison Walter
  */
-public interface PointMask extends Mask< RealLocalizable >
+public interface PointMask extends MaskRealInterval
 {
 
 	/** Returns the location of this point in n-d real space. */

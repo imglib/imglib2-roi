@@ -340,7 +340,7 @@ public class Polygon2DTest
 		final Polygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
-		p.addVertex( 3, new double[] { } );
+		p.addVertex( 3, new double[] {} );
 	}
 
 	@Test
@@ -368,5 +368,43 @@ public class Polygon2DTest
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.removeVertex( 6 );
+	}
+
+	@Test
+	public void testBounds()
+	{
+		// bounds are the same regardless of boundary type
+		final Polygon2D p = new DefaultPolygon2D( points );
+		final double[] max = new double[] { 25, 20 };
+		final double[] min = new double[] { 15, 10 };
+		final double[] pMin = new double[ 2 ];
+		final double[] pMax = new double[ 2 ];
+		p.realMin( pMin );
+		p.realMax( pMax );
+
+		assertArrayEquals( min, pMin, 0 );
+		assertArrayEquals( max, pMax, 0 );
+
+		// Mutate polygon
+		p.setVertex( 2, new double[] { 30, 15 } );
+		max[ 0 ] = 30;
+		p.realMin( pMin );
+		p.realMax( pMax );
+		assertArrayEquals( min, pMin, 0 );
+		assertArrayEquals( max, pMax, 0 );
+
+		p.removeVertex( 4 );
+		p.realMin( pMin );
+		p.realMax( pMax );
+		assertArrayEquals( min, pMin, 0 );
+		assertArrayEquals( max, pMax, 0 );
+
+		p.addVertex( 1, new double[] { -10, 100 } );
+		min[ 0 ] = -10;
+		max[ 1 ] = 100;
+		p.realMin( pMin );
+		p.realMax( pMax );
+		assertArrayEquals( min, pMin, 0 );
+		assertArrayEquals( max, pMax, 0 );
 	}
 }

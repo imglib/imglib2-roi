@@ -34,15 +34,14 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} which defines a real space 2D polygon.
+ * A {@link MaskRealInterval} which defines a real space 2D polygon.
  *
  * @author Alison Walter
  */
-public interface Polygon2D extends Mask< RealLocalizable >
+public interface Polygon2D extends MaskRealInterval
 {
 	/** Return the vertex at the specified position */
 	double[] vertex( final int pos );

@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -342,5 +343,44 @@ public class SuperEllipsoidTest
 
 		exception.expect( IllegalArgumentException.class );
 		se.setExponent( 0 );
+	}
+
+	@Test
+	public void testBounds()
+	{
+		// Bounds should be the same for open and closed super ellipsoids
+		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		double[] min = new double[] { 4 - 3, 7 - 10, 2 - 1.5 };
+		double[] max = new double[] { 4 + 3, 7 + 10, 2 + 1.5 };
+		final double[] seMin = new double[ 3 ];
+		final double[] seMax = new double[ 3 ];
+		se.realMin( seMin );
+		se.realMax( seMax );
+
+		assertArrayEquals( min, seMin, 0 );
+		assertArrayEquals( max, seMax, 0 );
+
+		// Mutate super ellipsoid
+		se.setExponent( 3 ); // this shouldn't effect bounds
+		se.realMin( seMin );
+		se.realMax( seMax );
+		assertArrayEquals( min, seMin, 0 );
+		assertArrayEquals( max, seMax, 0 );
+
+		se.setSemiAxisLength( 1, 2 );
+		min[ 1 ] = 7 - 2;
+		max[ 1 ] = 7 + 2;
+		se.realMin( seMin );
+		se.realMax( seMax );
+		assertArrayEquals( min, seMin, 0 );
+		assertArrayEquals( max, seMax, 0 );
+
+		se.setCenter( new double[] { 0, 0, 0 } );
+		min = new double[] { -3, -2, -1.5 };
+		max = new double[] { 3, 2, 1.5 };
+		se.realMin( seMin );
+		se.realMax( seMax );
+		assertArrayEquals( min, seMin, 0 );
+		assertArrayEquals( max, seMax, 0 );
 	}
 }

@@ -34,15 +34,14 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 /**
- * A {@link Mask} which defines an n-d superellipsoid.
+ * A {@link MaskRealInterval} which defines an n-d superellipsoid.
  *
  * @author Alison Walter
  */
-public interface SuperEllipsoid extends Mask< RealLocalizable >
+public interface SuperEllipsoid extends MaskRealInterval
 {
 	/** Returns the exponent of this superellipsoid */
 	double exponent();

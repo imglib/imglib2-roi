@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -317,5 +318,38 @@ public class BoxTest
 		assertEquals( c.length, 2 );
 		assertEquals( c[ 0 ], 7.25, 0 );
 		assertEquals( c[ 1 ], 3.125, 0 );
+	}
+
+	@Test
+	public void testBounds()
+	{
+		// Bounds should be the same for open or closed boxes
+		double[] min = new double[] { 10, 6 };
+		double[] max = new double[] { 12.5, 20 };
+		final Box b = new ClosedBox( min, max );
+		final double[] bMax = new double[ 2 ];
+		final double[] bMin = new double[ 2 ];
+		b.realMax( bMax );
+		b.realMin( bMin );
+
+		assertArrayEquals( max, bMax, 0 );
+		assertArrayEquals( min, bMin, 0 );
+
+		// Mutate box
+		b.setSideLength( 0, 2 );
+		b.realMax( bMax );
+		b.realMin( bMin );
+		min[ 0 ] = 10.25;
+		max[ 0 ] = 12.25;
+		assertArrayEquals( max, bMax, 0 );
+		assertArrayEquals( min, bMin, 0 );
+
+		b.setCenter( new double[] { 4, 4 } );
+		b.realMax( bMax );
+		b.realMin( bMin );
+		min = new double[] { 3, -3 };
+		max = new double[] { 5, 11 };
+		assertArrayEquals( max, bMax, 0 );
+		assertArrayEquals( min, bMin, 0 );
 	}
 }

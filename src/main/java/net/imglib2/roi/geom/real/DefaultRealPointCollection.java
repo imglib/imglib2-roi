@@ -3,8 +3,11 @@ package net.imglib2.roi.geom.real;
 import java.util.Collection;
 import java.util.HashMap;
 
-import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractRealInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.Regions;
+import net.imglib2.util.Intervals;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -13,7 +16,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author Alison Walter
  */
-public class DefaultRealPointCollection< L extends RealLocalizable > extends AbstractEuclideanSpace implements RealPointCollection< L >
+public class DefaultRealPointCollection< L extends RealLocalizable > extends AbstractRealInterval implements RealPointCollection< L >
 {
 	private final HashMap< TDoubleArrayList, L > points;
 
@@ -29,7 +32,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	 */
 	public DefaultRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
-		super( points.values().iterator().next().numDimensions() );
+		super( Regions.getBoundsReal( points.values() ) );
 		this.points = points;
 	}
 
@@ -49,15 +52,19 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	@Override
 	public boolean contains( final RealLocalizable l )
 	{
-		double bestDistance = Double.POSITIVE_INFINITY;
-		for ( final L pt : points.values() )
+		if ( Intervals.contains( this, l ) )
 		{
-			final double distance = squareDistance( pt, l );
-			if ( distance < bestDistance )
-				bestDistance = distance;
-		}
+			double bestDistance = Double.POSITIVE_INFINITY;
+			for ( final L pt : points.values() )
+			{
+				final double distance = squareDistance( pt, l );
+				if ( distance < bestDistance )
+					bestDistance = distance;
+			}
 
-		return bestDistance <= 0;
+			return bestDistance <= 0;
+		}
+		return false;
 	}
 
 	@Override
@@ -75,6 +82,8 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 		final double[] l = new double[ point.numDimensions() ];
 		point.localize( l );
 		points.put( new TDoubleArrayList( l ), point );
+
+		updateMinMax();
 	}
 
 	/**
@@ -90,6 +99,8 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 		final double[] l = new double[ point.numDimensions() ];
 		point.localize( l );
 		points.remove( new TDoubleArrayList( l ) );
+
+		updateMinMax();
 	}
 
 	// -- Helper methods --
@@ -113,5 +124,12 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 			map.put( new TDoubleArrayList( l ), p );
 		}
 		return map;
+	}
+
+	private void updateMinMax()
+	{
+		RealInterval interval = Regions.getBoundsReal( points.values() );
+		interval.realMin( min );
+		interval.realMax( max );
 	}
 }
