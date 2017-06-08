@@ -104,7 +104,7 @@ public class DefaultLine extends AbstractRealInterval implements Line
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		if ( Intervals.contains( this, l ) ) { return GeomMaths.lineContains( pointOne, pointTwo, l, n ); }
 		return false;

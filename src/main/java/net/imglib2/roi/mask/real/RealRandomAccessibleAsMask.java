@@ -68,7 +68,7 @@ public class RealRandomAccessibleAsMask< B extends BooleanType< B > > implements
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		try
 		{

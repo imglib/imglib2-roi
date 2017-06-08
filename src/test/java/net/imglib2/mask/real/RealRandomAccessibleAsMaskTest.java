@@ -75,7 +75,7 @@ public class RealRandomAccessibleAsMaskTest
 	}
 
 	@Test
-	public void testContains()
+	public void testTest()
 	{
 		final long seed = -22;
 		final Random rand = new Random( seed );
@@ -86,7 +86,7 @@ public class RealRandomAccessibleAsMaskTest
 			final double y = rand.nextDouble();
 
 			access.setPosition( new double[] { x, y } );
-			assertEquals( access.get().get(), m.contains( new RealPoint( new double[] { x, y } ) ) );
+			assertEquals( access.get().get(), m.test( new RealPoint( new double[] { x, y } ) ) );
 		}
 	}
 

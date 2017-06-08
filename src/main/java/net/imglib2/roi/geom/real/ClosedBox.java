@@ -65,7 +65,7 @@ public class ClosedBox extends AbstractBox
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		boolean isInside = true;
 		for ( int d = 0; d < n && isInside; d++ )

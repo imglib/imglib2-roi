@@ -89,22 +89,22 @@ public class RealPointCollectionBenchmarkTest
 
 	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )
 	@Test
-	public void testDefaultContains()
+	public void testDefaulttest()
 	{
-		drpc.contains( testPoint );
+		drpc.test( testPoint );
 	}
 
 	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )
 	@Test
-	public void testKDTreeContains()
+	public void testKDTreetest()
 	{
-		tree.contains( testPoint );
+		tree.test( testPoint );
 	}
 
 	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )
 	@Test
-	public void testRPSLContains()
+	public void testRPSLtest()
 	{
-		rpsl.contains( testPoint );
+		rpsl.test( testPoint );
 	}
 }

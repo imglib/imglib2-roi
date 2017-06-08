@@ -43,9 +43,9 @@ public interface And< T > extends MaskBinaryOperation< T >
 {
 
 	@Override
-	default boolean contains( final T l )
+	default boolean test( final T l )
 	{
-		return leftOperand().contains( l ) && rightOperand().contains( l );
+		return leftOperand().test( l ) && rightOperand().test( l );
 	}
 
 	@Override

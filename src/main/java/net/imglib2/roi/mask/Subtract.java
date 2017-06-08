@@ -46,9 +46,9 @@ public interface Subtract< L > extends MaskBinaryOperation< L >
 {
 
 	@Override
-	default boolean contains( final L l )
+	default boolean test( final L l )
 	{
-		return leftOperand().contains( l ) && !rightOperand().contains( l );
+		return leftOperand().test( l ) && !rightOperand().test( l );
 	}
 
 	@Override

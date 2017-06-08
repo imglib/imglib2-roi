@@ -65,15 +65,15 @@ public class BinaryOperationTest
 		final Box b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final Mask< RealLocalizable > rm = new DefaultAnd<>( b1, b2 );
 
-		assertTrue( rm.contains( new RealPoint( new double[] { 4, 5 } ) ) );
-		// b1 contains boundary points
-		assertTrue( rm.contains( new RealPoint( new double[] { 7, 10 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 3.1, 9.2 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 4, 5 } ) ) );
+		// b1 test boundary points
+		assertTrue( rm.test( new RealPoint( new double[] { 7, 10 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 3.1, 9.2 } ) ) );
 
 		// b2 doesn't contain boundary points
-		assertFalse( rm.contains( new RealPoint( new double[] { 3, 3 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 100, 1 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 5, 3 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 3, 3 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 100, 1 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 5, 3 } ) ) );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
@@ -85,13 +85,13 @@ public class BinaryOperationTest
 		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
 		final Mask< RealLocalizable > rm = new DefaultBinaryOr<>( b, b2 );
 
-		assertTrue( rm.contains( new RealPoint( new double[] { 4, 8 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 6, 5 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 7.5, 4.3 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 8, 7 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 4, 8 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 6, 5 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 7.5, 4.3 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 8, 7 } ) ) );
 
-		assertFalse( rm.contains( new RealPoint( new double[] { 3, 8 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 10, 10 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 3, 8 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 10, 10 } ) ) );
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 	}
@@ -103,16 +103,16 @@ public class BinaryOperationTest
 		final Box b2 = new OpenBox( new double[] { 2, 3 }, new double[] { 9, 16 } );
 		final Mask< RealLocalizable > rm = new DefaultSubtract<>( b1, b2 );
 
-		assertTrue( rm.contains( new RealPoint( new double[] { 2, 5 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 1.5, 10 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 9.8, 8 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 1.5, 10 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 9.8, 8 } ) ) );
 		// b2 doesn't contain boundary points
-		assertTrue( rm.contains( new RealPoint( new double[] { 9, 4.1 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 9, 4.1 } ) ) );
 
-		assertFalse( rm.contains( new RealPoint( new double[] { 15, 7 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 3, 4 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 6, 7 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 8, 15 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 15, 7 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 3, 4 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 6, 7 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 8, 15 } ) ) );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
@@ -124,12 +124,12 @@ public class BinaryOperationTest
 		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 7 } );
 		final Mask< RealLocalizable > rm = new DefaultXor<>( b1, b2 );
 
-		assertTrue( rm.contains( new RealPoint( new double[] { 3, 8 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 9, 4 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 5, 8 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 3, 8 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 9, 4 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 5, 8 } ) ) );
 
-		assertFalse( rm.contains( new RealPoint( new double[] { 5, 5 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 20, 1 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 5, 5 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 20, 1 } ) ) );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
 	}

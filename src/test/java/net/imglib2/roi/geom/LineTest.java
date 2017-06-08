@@ -60,20 +60,20 @@ public class LineTest
 		assertEquals( l.numDimensions(), 2 );
 
 		// On line segment
-		assertTrue( l.contains( new RealPoint( new double[] { 4.5, 0.9 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 2, 2.4 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 4.5, 0.9 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 2, 2.4 } ) ) );
 
 		// On line, but not within interval
-		assertFalse( l.contains( new RealPoint( new double[] { 0, 3.6 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 9, -1.8 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 0, 3.6 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 9, -1.8 } ) ) );
 
 		// Off line
-		assertFalse( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 4.5, 1 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 4.5, 1 } ) ) );
 
 		// Check if endpoints on line
-		assertTrue( l.contains( new RealPoint( new double[] { 1, 3 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 6, 0 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1, 3 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 6, 0 } ) ) );
 
 		// line characteristics
 		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
@@ -91,11 +91,11 @@ public class LineTest
 		assertEquals( l.numDimensions(), 5 );
 
 		// On line
-		assertTrue( l.contains( new RealPoint( new double[] { 6, 6, 6, 6, 6 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 6, 6, 6, 6, 6 } ) ) );
 
 		// Off line
-		assertFalse( l.contains( new RealPoint( new double[] { 0, 0, 0, 0, 0 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 2, 2, 2.0001, 2, 2 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 0, 0, 0, 0, 0 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 2, 2, 2.0001, 2, 2 } ) ) );
 
 		// line characteristics
 		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
@@ -117,15 +117,15 @@ public class LineTest
 		final Line l = new DefaultLine( new double[] { 1, 1 }, new double[] { 12, 1 }, false );
 
 		// On line
-		assertTrue( l.contains( new RealPoint( new double[] { 6.25, 1 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 6.25, 1 } ) ) );
 
 		// Off line
-		assertFalse( l.contains( new RealPoint( new double[] { 10, 1.01 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 12.5, 1 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 10, 1.01 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 12.5, 1 } ) ) );
 
 		// Endpoints
-		assertTrue( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 12, 1 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 12, 1 } ) ) );
 
 		// line characteristics
 		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
@@ -141,15 +141,15 @@ public class LineTest
 		final Line l = new DefaultLine( new double[] { 1, 1 }, new double[] { 1, 17 }, false );
 
 		// On line
-		assertTrue( l.contains( new RealPoint( new double[] { 1, 14.125 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1, 14.125 } ) ) );
 
 		// Off line
-		assertFalse( l.contains( new RealPoint( new double[] { 1.0625, 4 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 1, 0.99 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 1.0625, 4 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 1, 0.99 } ) ) );
 
 		// Endpoints
-		assertTrue( l.contains( new RealPoint( new double[] { 1, 1 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 1, 17 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1, 17 } ) ) );
 
 		// line characteristics
 		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
@@ -168,30 +168,30 @@ public class LineTest
 		assertEquals( l.endpointOne()[ 1 ], 3, 0 );
 		assertEquals( l.endpointTwo()[ 0 ], 4, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 7, 0 );
-		assertTrue( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
 
 		// change first endpoint
 		l.setEndpointOne( new double[] { 1, 1 } );
 
 		assertEquals( l.endpointOne()[ 0 ], 1, 0 );
 		assertEquals( l.endpointOne()[ 1 ], 1, 0 );
-		assertTrue( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
 
 		// change second endpoint
 		l.setEndpointTwo( new double[] { 7, 7 } );
 
 		assertEquals( l.endpointTwo()[ 0 ], 7, 0 );
 		assertEquals( l.endpointTwo()[ 1 ], 7, 0 );
-		assertFalse( l.contains( new RealPoint( new double[] { 3, 5 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 1.5, 2 } ) ) );
-		assertTrue( l.contains( new RealPoint( new double[] { 4, 4 } ) ) );
-		assertFalse( l.contains( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 3, 5 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 1.5, 2 } ) ) );
+		assertTrue( l.test( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertFalse( l.test( new RealPoint( new double[] { 3.5, 3.55 } ) ) );
 
 	}
 

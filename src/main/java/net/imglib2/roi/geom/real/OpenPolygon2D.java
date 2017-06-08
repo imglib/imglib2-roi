@@ -65,7 +65,7 @@ public class OpenPolygon2D extends DefaultPolygon2D
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable localizable )
+	public boolean test( final RealLocalizable localizable )
 	{
 		if ( Intervals.contains( this, localizable ) )
 		{

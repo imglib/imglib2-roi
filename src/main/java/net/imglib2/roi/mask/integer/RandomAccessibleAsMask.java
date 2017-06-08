@@ -68,7 +68,7 @@ public class RandomAccessibleAsMask< B extends BooleanType< B > > implements Mas
 	}
 
 	@Override
-	public boolean contains( final Localizable l )
+	public boolean test( final Localizable l )
 	{
 		try
 		{

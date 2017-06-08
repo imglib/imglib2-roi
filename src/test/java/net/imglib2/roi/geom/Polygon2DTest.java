@@ -89,28 +89,28 @@ public class Polygon2DTest
 	@Test
 	public void testDefaultPolygon2D()
 	{
-		// contains some edges
+		// test some edges
 		final Polygon2D polygon = new DefaultPolygon2D( points );
 
 		// vertices
-		assertTrue( polygon.contains( points.get( 0 ) ) );
-		assertFalse( polygon.contains( points.get( 1 ) ) );
-		assertFalse( polygon.contains( points.get( 2 ) ) );
-		assertFalse( polygon.contains( points.get( 3 ) ) );
-		assertTrue( polygon.contains( points.get( 4 ) ) );
+		assertTrue( polygon.test( points.get( 0 ) ) );
+		assertFalse( polygon.test( points.get( 1 ) ) );
+		assertFalse( polygon.test( points.get( 2 ) ) );
+		assertFalse( polygon.test( points.get( 3 ) ) );
+		assertTrue( polygon.test( points.get( 4 ) ) );
 
 		// edges
-		assertTrue( polygon.contains( edge.get( 0 ) ) );
-		assertFalse( polygon.contains( edge.get( 1 ) ) );
-		assertFalse( polygon.contains( edge.get( 2 ) ) );
-		assertTrue( polygon.contains( edge.get( 3 ) ) );
-		assertTrue( polygon.contains( edge.get( 4 ) ) );
+		assertTrue( polygon.test( edge.get( 0 ) ) );
+		assertFalse( polygon.test( edge.get( 1 ) ) );
+		assertFalse( polygon.test( edge.get( 2 ) ) );
+		assertTrue( polygon.test( edge.get( 3 ) ) );
+		assertTrue( polygon.test( edge.get( 4 ) ) );
 
 		// inside
-		assertTrue( polygon.contains( inside ) );
+		assertTrue( polygon.test( inside ) );
 
 		// outside
-		assertFalse( polygon.contains( outside ) );
+		assertFalse( polygon.test( outside ) );
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
@@ -126,28 +126,28 @@ public class Polygon2DTest
 	@Test
 	public void testOpenPolygon2D()
 	{
-		// contains no edges
+		// test no edges
 		final Polygon2D polygon = new OpenPolygon2D( points );
 
 		// vertices
-		assertFalse( polygon.contains( points.get( 0 ) ) );
-		assertFalse( polygon.contains( points.get( 1 ) ) );
-		assertFalse( polygon.contains( points.get( 2 ) ) );
-		assertFalse( polygon.contains( points.get( 3 ) ) );
-		assertFalse( polygon.contains( points.get( 4 ) ) );
+		assertFalse( polygon.test( points.get( 0 ) ) );
+		assertFalse( polygon.test( points.get( 1 ) ) );
+		assertFalse( polygon.test( points.get( 2 ) ) );
+		assertFalse( polygon.test( points.get( 3 ) ) );
+		assertFalse( polygon.test( points.get( 4 ) ) );
 
 		// edges
-		assertFalse( polygon.contains( edge.get( 0 ) ) );
-		assertFalse( polygon.contains( edge.get( 1 ) ) );
-		assertFalse( polygon.contains( edge.get( 2 ) ) );
-		assertFalse( polygon.contains( edge.get( 3 ) ) );
-		assertFalse( polygon.contains( edge.get( 4 ) ) );
+		assertFalse( polygon.test( edge.get( 0 ) ) );
+		assertFalse( polygon.test( edge.get( 1 ) ) );
+		assertFalse( polygon.test( edge.get( 2 ) ) );
+		assertFalse( polygon.test( edge.get( 3 ) ) );
+		assertFalse( polygon.test( edge.get( 4 ) ) );
 
 		// inside
-		assertTrue( polygon.contains( inside ) );
+		assertTrue( polygon.test( inside ) );
 
 		// outside
-		assertFalse( polygon.contains( outside ) );
+		assertFalse( polygon.test( outside ) );
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
@@ -163,28 +163,28 @@ public class Polygon2DTest
 	@Test
 	public void testClosedPolygon2D()
 	{
-		// contains all edges
+		// test all edges
 		final Polygon2D polygon = new ClosedPolygon2D( points );
 
 		// vertices
-		assertTrue( polygon.contains( points.get( 0 ) ) );
-		assertTrue( polygon.contains( points.get( 1 ) ) );
-		assertTrue( polygon.contains( points.get( 2 ) ) );
-		assertTrue( polygon.contains( points.get( 3 ) ) );
-		assertTrue( polygon.contains( points.get( 4 ) ) );
+		assertTrue( polygon.test( points.get( 0 ) ) );
+		assertTrue( polygon.test( points.get( 1 ) ) );
+		assertTrue( polygon.test( points.get( 2 ) ) );
+		assertTrue( polygon.test( points.get( 3 ) ) );
+		assertTrue( polygon.test( points.get( 4 ) ) );
 
 		// edges
-		assertTrue( polygon.contains( edge.get( 0 ) ) );
-		assertTrue( polygon.contains( edge.get( 1 ) ) );
-		assertTrue( polygon.contains( edge.get( 2 ) ) );
-		assertTrue( polygon.contains( edge.get( 3 ) ) );
-		assertTrue( polygon.contains( edge.get( 4 ) ) );
+		assertTrue( polygon.test( edge.get( 0 ) ) );
+		assertTrue( polygon.test( edge.get( 1 ) ) );
+		assertTrue( polygon.test( edge.get( 2 ) ) );
+		assertTrue( polygon.test( edge.get( 3 ) ) );
+		assertTrue( polygon.test( edge.get( 4 ) ) );
 
 		// inside
-		assertTrue( polygon.contains( inside ) );
+		assertTrue( polygon.test( inside ) );
 
 		// outside
-		assertFalse( polygon.contains( outside ) );
+		assertFalse( polygon.test( outside ) );
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
@@ -202,13 +202,13 @@ public class Polygon2DTest
 	{
 		final Polygon2D p = new DefaultPolygon2D( points );
 
-		assertFalse( p.contains( new RealPoint( new double[] { 30, 11 } ) ) );
+		assertFalse( p.test( new RealPoint( new double[] { 30, 11 } ) ) );
 
 		p.setVertex( 3, new double[] { 40, 10 } );
 		assertEquals( p.numVertices(), 5, 0 );
 		assertEquals( p.vertex( 3 )[ 0 ], 40, 0 );
 		assertEquals( p.vertex( 3 )[ 1 ], 10, 1 );
-		assertTrue( p.contains( new RealPoint( new double[] { 30, 11 } ) ) );
+		assertTrue( p.test( new RealPoint( new double[] { 30, 11 } ) ) );
 	}
 
 	@Test
@@ -216,13 +216,13 @@ public class Polygon2DTest
 	{
 		final Polygon2D p = new ClosedPolygon2D( points );
 
-		assertFalse( p.contains( new RealPoint( new double[] { 20, 6.5 } ) ) );
+		assertFalse( p.test( new RealPoint( new double[] { 20, 6.5 } ) ) );
 
 		p.addVertex( 4, new double[] { 20, 5 } );
 		assertEquals( p.numVertices(), 6, 0 );
 		assertEquals( p.vertex( 4 )[ 0 ], 20, 0 );
 		assertEquals( p.vertex( 4 )[ 1 ], 5, 0 );
-		assertTrue( p.contains( new RealPoint( new double[] { 20, 6.5 } ) ) );
+		assertTrue( p.test( new RealPoint( new double[] { 20, 6.5 } ) ) );
 	}
 
 	@Test
@@ -230,13 +230,13 @@ public class Polygon2DTest
 	{
 		final Polygon2D p = new OpenPolygon2D( points );
 
-		assertTrue( p.contains( new RealPoint( new double[] { 20.125, 17 } ) ) );
+		assertTrue( p.test( new RealPoint( new double[] { 20.125, 17 } ) ) );
 
 		p.removeVertex( 1 );
 		assertEquals( p.numVertices(), 4, 0 );
 		assertEquals( p.vertex( 1 )[ 0 ], 25, 0 );
 		assertEquals( p.vertex( 1 )[ 1 ], 15, 0 );
-		assertFalse( p.contains( new RealPoint( new double[] { 20.125, 17 } ) ) );
+		assertFalse( p.test( new RealPoint( new double[] { 20.125, 17 } ) ) );
 	}
 
 	@Test

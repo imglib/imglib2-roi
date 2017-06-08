@@ -84,7 +84,7 @@ public class RandomAccessibleAsMaskTest
 	}
 
 	@Test
-	public void testContains()
+	public void testTest()
 	{
 		final long seed = 4;
 		final Random rand = new Random( seed );
@@ -95,7 +95,7 @@ public class RandomAccessibleAsMaskTest
 			final long y = rand.nextLong();
 
 			ra.setPosition( new long[] { x, y } );
-			assertEquals( ra.get().get(), ram.contains( new Point( new long[] { x, y } ) ) );
+			assertEquals( ra.get().get(), ram.test( new Point( new long[] { x, y } ) ) );
 		}
 	}
 

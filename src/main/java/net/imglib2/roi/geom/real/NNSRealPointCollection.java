@@ -91,7 +91,7 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		search.search( l );
 		return search.getSquareDistance() <= 0;

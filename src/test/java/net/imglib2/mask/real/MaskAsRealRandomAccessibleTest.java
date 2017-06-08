@@ -82,7 +82,7 @@ public class MaskAsRealRandomAccessibleTest
 			final double y = rand.nextDouble();
 
 			rra.setPosition( new double[] { x, y } );
-			assertEquals( b.contains( new RealPoint( new double[] { x, y } ) ), rra.get().get() );
+			assertEquals( b.test( new RealPoint( new double[] { x, y } ) ), rra.get().get() );
 		}
 	}
 

@@ -57,7 +57,7 @@ public class ClosedSphere extends AbstractSphere
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
 

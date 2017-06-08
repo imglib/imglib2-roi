@@ -84,7 +84,7 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	}
 
 	@Override
-	public abstract boolean contains( final RealLocalizable l );
+	public abstract boolean test( final RealLocalizable l );
 
 	@Override
 	public double realMin( final int d )

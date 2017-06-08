@@ -82,7 +82,7 @@ public class MaskAsRandomAccessibleTest
 			final long y = rand.nextLong();
 
 			access.setPosition( new long[] { x, y } );
-			assertEquals( m.contains( new Point( new long[] { x, y } ) ), access.get().get() );
+			assertEquals( m.test( new Point( new long[] { x, y } ) ), access.get().get() );
 		}
 	}
 
@@ -111,7 +111,7 @@ public class MaskAsRandomAccessibleTest
 		}
 
 		@Override
-		public boolean contains( final Localizable l )
+		public boolean test( final Localizable l )
 		{
 			return ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false;
 		}

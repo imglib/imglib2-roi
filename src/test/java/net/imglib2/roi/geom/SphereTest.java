@@ -64,16 +64,16 @@ public class SphereTest
 		final Sphere s = new OpenSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
-		assertFalse( s.contains( new RealPoint( new double[] { 2, 10 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { 18, 10 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { 10, 2 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { 10, 18 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 18, 10 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 10, 2 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 10, 18 } ) ) );
 
 		// inside
-		assertTrue( s.contains( new RealPoint( new double[] { 12, 9 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 12, 9 } ) ) );
 
 		// outside
-		assertFalse( s.contains( new RealPoint( new double[] { 20, 1 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 20, 1 } ) ) );
 
 		// sphere characteristics
 		assertEquals( s.exponent(), 2, 0 );
@@ -91,16 +91,16 @@ public class SphereTest
 		final Sphere s = new ClosedSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
-		assertTrue( s.contains( new RealPoint( new double[] { 2, 10 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { 18, 10 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { 10, 2 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { 10, 18 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 18, 10 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 10, 2 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 10, 18 } ) ) );
 
 		// inside
-		assertTrue( s.contains( new RealPoint( new double[] { 12, 9 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 12, 9 } ) ) );
 
 		// outside
-		assertFalse( s.contains( new RealPoint( new double[] { 20, 1 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 20, 1 } ) ) );
 
 		// sphere characteristics
 		assertEquals( s.exponent(), 2, 0 );
@@ -129,27 +129,27 @@ public class SphereTest
 		assertEquals( s.center()[ 0 ], 3, 0 );
 		assertEquals( s.center()[ 1 ], 2, 0 );
 		assertEquals( s.radius(), 5, 0 );
-		assertTrue( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change center
 		s.setCenter( new double[] { -10, 10 } );
 
 		assertEquals( s.center()[ 0 ], -10, 0 );
 		assertEquals( s.center()[ 1 ], 10, 0 );
-		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change radius, via change semi-axis length
 		s.setSemiAxisLength( 1, 8 );
 		assertEquals( s.radius(), 8, 0 );
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
-		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 	}
 
 	@Test
@@ -160,27 +160,27 @@ public class SphereTest
 		assertEquals( s.center()[ 0 ], 3, 0 );
 		assertEquals( s.center()[ 1 ], 2, 0 );
 		assertEquals( s.radius(), 5, 0 );
-		assertTrue( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change center
 		s.setCenter( new double[] { -10, 10 } );
 
 		assertEquals( s.center()[ 0 ], -10, 0 );
 		assertEquals( s.center()[ 1 ], 10, 0 );
-		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertFalse( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change radius, via change semi-axis length
 		s.setSemiAxisLength( 1, 8 );
 		assertEquals( s.radius(), 8, 0 );
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
-		assertFalse( s.contains( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
-		assertTrue( s.contains( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
+		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
+		assertTrue( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 	}
 
 	@Test
