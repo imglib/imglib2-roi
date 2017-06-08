@@ -64,22 +64,22 @@ public class BoxTest
 		final Box b = new OpenBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
-		assertFalse( b.contains( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { -6.8, 3.2625 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 13.2, -3.2375 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 13.2, 3.2625 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -6.8, 3.2625 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 13.2, -3.2375 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 13.2, 3.2625 } ) ) );
 
 		// inside
-		assertTrue( b.contains( new RealPoint( new double[] { 0, 0 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 9, 1.625 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 0, 0 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 9, 1.625 } ) ) );
 
 		// outside
-		assertFalse( b.contains( new RealPoint( new double[] { -6.8, 3.25 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 13.2, 0 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 11, 3.2625 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { -4, -3.2375 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 12, 20 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { -6.81, 0 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -6.8, 3.25 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 13.2, 0 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 11, 3.2625 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -4, -3.2375 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 12, 20 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -6.81, 0 } ) ) );
 
 		// box characteristics
 		assertEquals( b.sideLength( 0 ), 20, 0 );
@@ -95,21 +95,21 @@ public class BoxTest
 		final Box b = new ClosedBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
-		assertTrue( b.contains( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { -6.8, 3.2625 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 13.2, -3.2375 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 13.2, 3.2625 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { -6.8, 3.2625 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 13.2, -3.2375 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 13.2, 3.2625 } ) ) );
 
 		// inside
-		assertTrue( b.contains( new RealPoint( new double[] { -6.8, 3.25 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 13.2, 0 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 11, 3.2625 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { -4, -3.2375 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 0, 0 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { -6.8, 3.25 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 13.2, 0 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 11, 3.2625 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { -4, -3.2375 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 0, 0 } ) ) );
 
 		// outside
-		assertFalse( b.contains( new RealPoint( new double[] { 12, 20 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { -6.81, 0 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 12, 20 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { -6.81, 0 } ) ) );
 
 		// box characteristics
 		assertEquals( b.sideLength( 0 ), 20, 0 );
@@ -125,34 +125,34 @@ public class BoxTest
 		final Box hc = new OpenBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 3, 3, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 3, 7, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 3, 7, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 7, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 7, 3, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 7, 7, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 7, 7, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 3, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 3, 3, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 3, 7, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 3, 7, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 7, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 7, 3, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 7, 7, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 7, 7, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 3, 3, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 3, 7, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 3, 7, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 7, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 7, 3, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 7, 7, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 7, 7, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 3, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 3, 3, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 3, 7, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 3, 7, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 7, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 7, 3, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 7, 7, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 7, 7, 7 } ) ) );
 
 		// should contain:
-		assertTrue( hc.contains( new RealPoint( new double[] { 4, 4, 4, 4 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 5, 6, 4, 5 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 4, 4, 4, 4 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 5, 6, 4, 5 } ) ) );
 
 		// should not contain:
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 3, 5, 4 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 7, 7, 4, 4 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 6, 5, 5 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 6, 6, 5, 7 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 2, 3, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 2, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 3, 5, 4 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 7, 7, 4, 4 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 6, 5, 5 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 6, 6, 5, 7 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 2, 3, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 2, 3, 3 } ) ) );
 
 		// box characteristics
 		assertEquals( hc.sideLength( 0 ), 4, 0 );
@@ -172,34 +172,34 @@ public class BoxTest
 		final Box hc = new ClosedBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 3, 3, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 3, 7, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 3, 7, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 7, 3, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 7, 3, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 7, 7, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 7, 7, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 3, 3, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 3, 3, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 3, 7, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 3, 7, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 7, 3, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 7, 3, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 7, 7, 3 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 7, 7, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 3, 3, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 3, 7, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 3, 7, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 7, 3, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 7, 3, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 7, 7, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 7, 7, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 3, 3, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 3, 3, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 3, 7, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 3, 7, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 7, 3, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 7, 3, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 7, 7, 3 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 7, 7, 7 } ) ) );
 
 		// should contain:
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 3, 5, 4 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 7, 7, 4, 4 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 3, 6, 5, 5 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 6, 6, 5, 7 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 4, 4, 4, 4 } ) ) );
-		assertTrue( hc.contains( new RealPoint( new double[] { 5, 6, 4, 5 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 3, 5, 4 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 7, 7, 4, 4 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 3, 6, 5, 5 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 6, 6, 5, 7 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 4, 4, 4, 4 } ) ) );
+		assertTrue( hc.test( new RealPoint( new double[] { 5, 6, 4, 5 } ) ) );
 
 		// should not contain:
-		assertFalse( hc.contains( new RealPoint( new double[] { 2, 3, 3, 3 } ) ) );
-		assertFalse( hc.contains( new RealPoint( new double[] { 3, 2, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 2, 3, 3, 3 } ) ) );
+		assertFalse( hc.test( new RealPoint( new double[] { 3, 2, 3, 3 } ) ) );
 
 		// box characteristics
 		assertEquals( hc.sideLength( 0 ), 4, 0 );
@@ -220,22 +220,22 @@ public class BoxTest
 
 		assertEquals( b.center()[ 0 ], 3.5, 0 );
 		assertEquals( b.sideLength( 1 ), 3, 0 );
-		assertTrue( b.contains( new RealPoint( new double[] { 3.25, 4 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 3.25, 4 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
 
 		b.setCenter( new double[] { 5, 10 } );
 
 		assertEquals( b.center()[ 0 ], 5, 0 );
 		assertEquals( b.sideLength( 1 ), 3, 0 );
-		assertFalse( b.contains( new RealPoint( new double[] { 3.25, 4 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 3.25, 4 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 4.5, 11.125 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
 
 		b.setSideLength( 0, 6 );
 
 		assertEquals( b.sideLength( 0 ), 6, 0 );
 		assertEquals( b.sideLength( 1 ), 3, 0 );
-		assertTrue( b.contains( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 2.125, 11.25 } ) ) );
 	}
 
 	@Test
@@ -247,8 +247,8 @@ public class BoxTest
 		assertEquals( b.center()[ 1 ], 2.75, 0 );
 		assertEquals( b.sideLength( 0 ), 3.75, 0 );
 		assertEquals( b.sideLength( 1 ), 1.5, 0 );
-		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
 
 		b.setCenter( new double[] { 2, 3 } );
 
@@ -256,9 +256,9 @@ public class BoxTest
 		assertEquals( b.center()[ 1 ], 3, 0 );
 		assertEquals( b.sideLength( 0 ), 3.75, 0 );
 		assertEquals( b.sideLength( 1 ), 1.5, 0 );
-		assertFalse( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
-		assertFalse( b.contains( new RealPoint( new double[] { 0.25, -3 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 0.25, -3 } ) ) );
 
 		b.setSideLength( 1, 15 );
 
@@ -266,9 +266,9 @@ public class BoxTest
 		assertEquals( b.center()[ 1 ], 3, 0 );
 		assertEquals( b.sideLength( 0 ), 3.75, 0 );
 		assertEquals( b.sideLength( 1 ), 15, 0 );
-		assertTrue( b.contains( new RealPoint( new double[] { 3, 2.125 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
-		assertTrue( b.contains( new RealPoint( new double[] { 0.25, -3 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 3, 2.125 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 0.5, 2.75 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 0.25, -3 } ) ) );
 	}
 
 	@Test

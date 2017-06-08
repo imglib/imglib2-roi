@@ -65,11 +65,11 @@ public class UnaryOperationTest
 		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
 		final Mask< RealLocalizable > rm = new DefaultNot<>( b );
 
-		assertTrue( rm.contains( new RealPoint( new double[] { 19, 19 } ) ) );
-		assertTrue( rm.contains( new RealPoint( new double[] { 111, -4 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 19, 19 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 111, -4 } ) ) );
 
-		assertFalse( rm.contains( new RealPoint( new double[] { 1.1, 2 } ) ) );
-		assertFalse( rm.contains( new RealPoint( new double[] { 10, 10 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 1.1, 2 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 10, 10 } ) ) );
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 	}
@@ -84,18 +84,18 @@ public class UnaryOperationTest
 		final Box b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
 		final Mask< RealLocalizable > affine = Masks.affine( b, createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 ) );
 
-		// Check region contains points post rotation
+		// Check region test points post rotation
 		// center
-		assertTrue( b.contains( new RealPoint( new double[] { 4.5, 4.5 } ) ) );
-		assertTrue( affine.contains( new RealPoint( new double[] { 4.5, 4.5 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 4.5, 4.5 } ) ) );
+		assertTrue( affine.test( new RealPoint( new double[] { 4.5, 4.5 } ) ) );
 
 		// Inside original rectangle but not rotated
-		assertTrue( b.contains( new RealPoint( new double[] { 6.45, 7.3 } ) ) );
-		assertFalse( affine.contains( new RealPoint( new double[] { 6.45, 7.3 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 6.45, 7.3 } ) ) );
+		assertFalse( affine.test( new RealPoint( new double[] { 6.45, 7.3 } ) ) );
 
 		// Inside rotated rectangle but not original
-		assertFalse( b.contains( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
-		assertTrue( affine.contains( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
+		assertTrue( affine.test( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}
@@ -111,16 +111,16 @@ public class UnaryOperationTest
 		final Mask< RealLocalizable > affine = Masks.affine( b, createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
 
 		// inside both
-		assertTrue( b.contains( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
-		assertTrue( affine.contains( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
+		assertTrue( affine.test( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
 
 		// inside original only
-		assertTrue( b.contains( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
-		assertFalse( affine.contains( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
+		assertFalse( affine.test( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
 
 		// inside rotated only
-		assertFalse( b.contains( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
-		assertTrue( affine.contains( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
+		assertTrue( affine.test( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}
@@ -135,12 +135,12 @@ public class UnaryOperationTest
 		final Mask< RealLocalizable > affine = Masks.affine( b, transform );
 
 		// inside original only
-		assertTrue( b.contains( new RealPoint( new double[] { 1, 9 } ) ) );
-		assertFalse( affine.contains( new RealPoint( new double[] { 1, 9 } ) ) );
+		assertTrue( b.test( new RealPoint( new double[] { 1, 9 } ) ) );
+		assertFalse( affine.test( new RealPoint( new double[] { 1, 9 } ) ) );
 
 		// inside transformed only
-		assertFalse( b.contains( new RealPoint( new double[] { 22, 9 } ) ) );
-		assertTrue( affine.contains( new RealPoint( new double[] { 22, 9 } ) ) );
+		assertFalse( b.test( new RealPoint( new double[] { 22, 9 } ) ) );
+		assertTrue( affine.test( new RealPoint( new double[] { 22, 9 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
 	}

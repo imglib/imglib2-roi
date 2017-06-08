@@ -82,7 +82,7 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		if ( Intervals.contains( this, l ) )
 		{

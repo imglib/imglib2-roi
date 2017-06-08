@@ -60,7 +60,7 @@ public class NaryOperationTest
 {
 
 	@Test
-	public void testOrContains()
+	public void testOrTest()
 	{
 		final Box bOne = new ClosedBox( new double[] { 0, 0 }, new double[] { 10, 10 } );
 		final Box bTwo = new ClosedBox( new double[] { 5, 5 }, new double[] { 15, 15 } );
@@ -76,15 +76,15 @@ public class NaryOperationTest
 		final RealLocalizable lTwo = new RealPoint( new double[] { 12, 13 } );
 		final RealLocalizable lThree = new RealPoint( new double[] { -2, -5 } );
 
-		assertTrue( bOne.contains( lOne ) );
-		assertTrue( bTwo.contains( lTwo ) );
-		assertTrue( bThree.contains( lThree ) );
+		assertTrue( bOne.test( lOne ) );
+		assertTrue( bTwo.test( lTwo ) );
+		assertTrue( bThree.test( lThree ) );
 
-		assertTrue( or.contains( lOne ) );
-		assertTrue( or.contains( lTwo ) );
-		assertTrue( or.contains( lThree ) );
-		assertTrue( or.contains( new RealPoint( new double[] { 1, 1 } ) ) );
-		assertTrue( or.contains( new RealPoint( new double[] { 6, 6 } ) ) );
+		assertTrue( or.test( lOne ) );
+		assertTrue( or.test( lTwo ) );
+		assertTrue( or.test( lThree ) );
+		assertTrue( or.test( new RealPoint( new double[] { 1, 1 } ) ) );
+		assertTrue( or.test( new RealPoint( new double[] { 6, 6 } ) ) );
 	}
 
 	@Test

@@ -36,7 +36,6 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.mask.Mask;
 
 /**
@@ -65,7 +64,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 	}
 
 	@Override
-	public abstract boolean contains( RealLocalizable l );
+	public abstract boolean test( RealLocalizable l );
 
 	@Override
 	public double sideLength( final int d )

@@ -34,6 +34,8 @@
 
 package net.imglib2.roi.mask;
 
+import java.util.function.Predicate;
+
 import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
@@ -49,7 +51,7 @@ import net.imglib2.RealLocalizable;
  *            location in N-space; typically a {@link RealLocalizable} or
  *            subtype (e.g., {@link Localizable}).
  */
-public interface Mask< L > extends EuclideanSpace
+public interface Mask< L > extends EuclideanSpace, Predicate< L >
 {
 
 	/**
@@ -64,15 +66,6 @@ public interface Mask< L > extends EuclideanSpace
 	{
 		CLOSED, OPEN, UNSPECIFIED
 	}
-
-	/**
-	 * Tests if the mask contains a location in N-space.
-	 *
-	 * @param l
-	 *            location in N-space to test
-	 * @return true, if the mask contains the location
-	 */
-	boolean contains( final L l );
 
 	/** Returns the boundary behavior of this Mask. */
 	default BoundaryType boundaryType()

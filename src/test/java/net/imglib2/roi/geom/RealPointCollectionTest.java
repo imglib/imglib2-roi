@@ -84,13 +84,13 @@ public class RealPointCollectionTest
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
 		{
-			assertTrue( rpc.contains( points.get( i ) ) );
+			assertTrue( rpc.test( points.get( i ) ) );
 		}
 
 		// outside region
-		assertFalse( rpc.contains( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { 112, 0.25 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 112, 0.25 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
 
 		// RealPointCollection characteristics
 		final Iterable< RealPoint > pts = rpc.points();
@@ -108,13 +108,13 @@ public class RealPointCollectionTest
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
 		{
-			assertTrue( rpc.contains( points.get( i ) ) );
+			assertTrue( rpc.test( points.get( i ) ) );
 		}
 
 		// outside region
-		assertFalse( rpc.contains( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { 112, 0.25 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 112, 0.25 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
 
 		// RealPointCollection characteristics
 		final Iterable< RealPoint > pts = rpc.points();
@@ -132,13 +132,13 @@ public class RealPointCollectionTest
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
 		{
-			assertTrue( rpc.contains( points.get( i ) ) );
+			assertTrue( rpc.test( points.get( i ) ) );
 		}
 
 		// outside region
-		assertFalse( rpc.contains( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { 112, 0.25 } ) ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 19 + 10e-14, 12.1 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { 112, 0.25 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { -0.25, 0.5 } ) ) );
 
 		// RealPointCollection characteristics
 		final Iterable< RealPoint > pts = rpc.points();
@@ -153,10 +153,10 @@ public class RealPointCollectionTest
 	{
 		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
-		assertFalse( rpc.contains( testAddPoint ) );
+		assertFalse( rpc.test( testAddPoint ) );
 
 		rpc.addPoint( testAddPoint );
-		assertTrue( rpc.contains( testAddPoint ) );
+		assertTrue( rpc.test( testAddPoint ) );
 	}
 
 	@Test
@@ -164,10 +164,10 @@ public class RealPointCollectionTest
 	{
 		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
-		assertTrue( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
+		assertTrue( rpc.test( new RealPoint( new double[] { -13, -13 } ) ) );
 
 		rpc.removePoint( new RealPoint( new double[] { -13, -13 } ) );
-		assertFalse( rpc.contains( new RealPoint( new double[] { -13, -13 } ) ) );
+		assertFalse( rpc.test( new RealPoint( new double[] { -13, -13 } ) ) );
 	}
 
 	@Test
@@ -193,10 +193,10 @@ public class RealPointCollectionTest
 	{
 		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
-		assertFalse( rpc.contains( testAddPoint ) );
+		assertFalse( rpc.test( testAddPoint ) );
 
 		rpc.addPoint( testAddPoint );
-		assertTrue( rpc.contains( testAddPoint ) );
+		assertTrue( rpc.test( testAddPoint ) );
 	}
 
 	@Test

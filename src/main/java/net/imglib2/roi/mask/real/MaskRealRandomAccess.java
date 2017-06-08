@@ -68,7 +68,7 @@ public class MaskRealRandomAccess< B extends BooleanType< B > > extends RealPoin
 	@Override
 	public B get()
 	{
-		type.set( contains.contains( this ) );
+		type.set( contains.test( this ) );
 		return type;
 	}
 

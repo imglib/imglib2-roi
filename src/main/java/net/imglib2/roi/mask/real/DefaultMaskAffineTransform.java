@@ -69,11 +69,11 @@ public class DefaultMaskAffineTransform extends AbstractUnaryOperation< Mask< Re
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		final RealPoint pt = point.get();
 		affine.apply( l, pt );
-		return operand().contains( pt );
+		return operand().test( pt );
 	}
 
 	@Override

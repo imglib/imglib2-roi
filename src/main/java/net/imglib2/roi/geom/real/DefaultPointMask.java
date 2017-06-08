@@ -79,7 +79,7 @@ public class DefaultPointMask extends AbstractEuclideanSpace implements PointMas
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		for ( int i = 0; i < n; i++ )
 		{

@@ -64,18 +64,18 @@ public class SuperEllipsoidTest
 		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
-		assertFalse( se.contains( new RealPoint( new double[] { 10, 2 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 10, 18 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 2, 10 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 18, 10 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 10, 18 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2, 10 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 18, 10 } ) ) );
 
 		// Inside ellipse
-		assertTrue( se.contains( new RealPoint( new double[] { 10, 10 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 3, 10 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 10, 10 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 3, 10 } ) ) );
 
 		// Outside ellipse
-		assertFalse( se.contains( new RealPoint( new double[] { 6, 10.7 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 20, 11 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 6, 10.7 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 20, 11 } ) ) );
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 0.5, 0 );
@@ -92,18 +92,18 @@ public class SuperEllipsoidTest
 		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
-		assertTrue( se.contains( new RealPoint( new double[] { 10, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 10, 18 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 2, 10 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 18, 10 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 10, 18 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 2, 10 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 18, 10 } ) ) );
 
 		// Inside ellipse
-		assertTrue( se.contains( new RealPoint( new double[] { 10, 10 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 6, 10.6 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 10, 10 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 6, 10.6 } ) ) );
 
 		// Outside ellipse
-		assertFalse( se.contains( new RealPoint( new double[] { 20, 11 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 11, 15 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 20, 11 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 11, 15 } ) ) );
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 0.5, 0 );
@@ -120,19 +120,19 @@ public class SuperEllipsoidTest
 		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
-		assertFalse( se.contains( new RealPoint( new double[] { 1, 7, 2 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 7, 2 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 4, -3, 2 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 4, 17, 2 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 4, 7, 0.5 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 4, 7, 3.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 7, 2 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 4, -3, 2 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 4, 17, 2 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 4, 7, 0.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 4, 7, 3.5 } ) ) );
 
 		// Inside ellipse
-		assertTrue( se.contains( new RealPoint( new double[] { 4, 7, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, 7, 2 } ) ) );
 
 		// Outside ellipse
-		assertFalse( se.contains( new RealPoint( new double[] { 12, 0, 3 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 3, 13, 3.488 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 12, 0, 3 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 3, 13, 3.488 } ) ) );
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 6, 0 );
@@ -151,19 +151,19 @@ public class SuperEllipsoidTest
 		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
-		assertTrue( se.contains( new RealPoint( new double[] { 1, 7, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7, 7, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 4, -3, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 4, 17, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 4, 7, 0.5 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 4, 7, 3.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7, 7, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, -3, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, 17, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, 7, 0.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, 7, 3.5 } ) ) );
 
 		// Inside ellipse
-		assertTrue( se.contains( new RealPoint( new double[] { 4, 7, 2 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 3, 13, 3.487 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 4, 7, 2 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 3, 13, 3.487 } ) ) );
 
 		// Outside ellipse
-		assertFalse( se.contains( new RealPoint( new double[] { 12, 0, 3 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 12, 0, 3 } ) ) );
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 6, 0 );
@@ -186,39 +186,39 @@ public class SuperEllipsoidTest
 		assertEquals( se.center()[ 1 ], 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
-		assertTrue( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change center
 		se.setCenter( new double[] { 5.5, 6 } );
 
 		assertEquals( se.center()[ 0 ], 5.5, 0 );
 		assertEquals( se.center()[ 1 ], 6, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change semi-axis length
 		se.setSemiAxisLength( 0, 3 );
 
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
 
 		// change exponent
 		se.setExponent( 8.25 );
 
 		assertEquals( se.exponent(), 8.25, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
 	}
 
 	@Test
@@ -231,39 +231,39 @@ public class SuperEllipsoidTest
 		assertEquals( se.center()[ 1 ], 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
-		assertTrue( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change center
 		se.setCenter( new double[] { 5.5, 6 } );
 
 		assertEquals( se.center()[ 0 ], 5.5, 0 );
 		assertEquals( se.center()[ 1 ], 6, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change semi-axis length
 		se.setSemiAxisLength( 0, 3 );
 
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertFalse( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
 
 		// change exponent
 		se.setExponent( 8.25 );
 
 		assertEquals( se.exponent(), 8.25, 0 );
-		assertFalse( se.contains( new RealPoint( new double[] { 2.125, 3 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7, 6 } ) ) );
-		assertTrue( se.contains( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
+		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
+		assertTrue( se.test( new RealPoint( new double[] { 7.5, 7.5 } ) ) );
 	}
 
 	@Test

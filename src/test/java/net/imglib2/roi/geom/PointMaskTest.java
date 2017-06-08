@@ -24,8 +24,8 @@ public class PointMaskTest
 	{
 		final PointMask pt = new DefaultPointMask( new double[] { 10.25, -3, 6, 0.01 } );
 
-		assertTrue( pt.contains( new RealPoint( new double[] { 10.25, -3, 6, 0.01 } ) ) );
-		assertFalse( pt.contains( new RealPoint( new double[] { 10.15, -3, 6, 0.02 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 10.25, -3, 6, 0.01 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { 10.15, -3, 6, 0.02 } ) ) );
 		assertArrayEquals( pt.location(), new double[] { 10.25, -3, 6, 0.01 }, 0 );
 
 		assertEquals( pt.boundaryType(), BoundaryType.CLOSED );
@@ -36,8 +36,8 @@ public class PointMaskTest
 	{
 		final PointMask pt = new DefaultPointMask( new RealPoint( new double[] { -12.125, 6, 0 } ) );
 
-		assertTrue( pt.contains( new RealPoint( new double[] { -12.125, 6, 0 } ) ) );
-		assertFalse( pt.contains( new RealPoint( new double[] { -12.125, 6.001, 0 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { -12.125, 6, 0 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { -12.125, 6.001, 0 } ) ) );
 		assertArrayEquals( pt.location(), new double[] { -12.125, 6, 0 }, 0 );
 
 		assertEquals( pt.boundaryType(), BoundaryType.CLOSED );
@@ -48,13 +48,13 @@ public class PointMaskTest
 	{
 		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
-		assertTrue( pt.contains( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
-		assertFalse( pt.contains( new RealPoint( new double[] { 12, 64 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
 
 		pt.setLocation( new double[] { 12, 64 } );
 
-		assertFalse( pt.contains( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
-		assertTrue( pt.contains( new RealPoint( new double[] { 12, 64 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
 	}
 
 	@Test
@@ -62,14 +62,14 @@ public class PointMaskTest
 	{
 		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
-		assertTrue( pt.contains( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
-		assertFalse( pt.contains( new RealPoint( new double[] { 12, 64 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
 
 		pt.setLocation( new double[] { 12, 64, 11 } );
 
 		assertArrayEquals( pt.location(), new double[] { 12, 64 }, 0 );
-		assertFalse( pt.contains( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
-		assertTrue( pt.contains( new RealPoint( new double[] { 12, 64 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class PointMaskTest
 	{
 		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
-		assertTrue( pt.contains( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
-		assertFalse( pt.contains( new RealPoint( new double[] { -3, 9 } ) ) );
+		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
+		assertFalse( pt.test( new RealPoint( new double[] { -3, 9 } ) ) );
 
 		exception.expect( IllegalArgumentException.class );
 		pt.setLocation( new double[] { -3 } );

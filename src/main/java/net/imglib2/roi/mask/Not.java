@@ -43,9 +43,9 @@ public interface Not< L > extends MaskUnaryOperation< L >
 {
 
 	@Override
-	default boolean contains( final L l )
+	default boolean test( final L l )
 	{
-		return !operand().contains( l );
+		return !operand().test( l );
 	}
 
 	@Override

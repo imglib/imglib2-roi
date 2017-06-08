@@ -68,7 +68,7 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	}
 
 	@Override
-	public abstract boolean contains( RealLocalizable l );
+	public abstract boolean test( RealLocalizable l );
 
 	@Override
 	public double realMin( final int d )

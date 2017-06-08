@@ -45,13 +45,13 @@ public interface NaryOr< L > extends MaskOperation< L >
 {
 
 	@Override
-	default boolean contains( final L l )
+	default boolean test( final L l )
 	{
 		final List< Mask< L > > operands = operands();
 		boolean contain = false;
 		for ( final Mask< L > operand : operands )
 		{
-			contain |= operand.contains( l );
+			contain |= operand.test( l );
 		}
 		return contain;
 	}

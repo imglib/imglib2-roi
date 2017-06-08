@@ -101,17 +101,17 @@ public class PolylineTest
 
 		// check all vertices
 		for ( int i = 0; i < simple.size(); i++ )
-			assertTrue( pl.contains( simple.get( i ) ) );
+			assertTrue( pl.test( simple.get( i ) ) );
 
 		// on polyline
-		assertTrue( pl.contains( new RealPoint( new double[] { 7, 7 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 23, 3 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 17, 3 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 7, 7 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 23, 3 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 17, 3 } ) ) );
 
 		// off polyline
-		assertFalse( pl.contains( new RealPoint( new double[] { 31, 11 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { -0.01, -0.01 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 12, 11 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 31, 11 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { -0.01, -0.01 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 12, 11 } ) ) );
 
 		// polyline characteristics
 		assertEquals( simple.size(), pl.numVertices() );
@@ -132,14 +132,14 @@ public class PolylineTest
 
 		// check all vertices
 		for ( int i = 0; i < fourD.size(); i++ )
-			assertTrue( pl.contains( fourD.get( i ) ) );
+			assertTrue( pl.test( fourD.get( i ) ) );
 
 		// on polyline
-		assertTrue( pl.contains( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 3.5, 4, 4, 3.5 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 3.5, 4, 4, 3.5 } ) ) );
 
 		// off polyline
-		assertFalse( pl.contains( new RealPoint( new double[] { 6, 7, 8, 9 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 6, 7, 8, 9 } ) ) );
 
 		// polyline characteristics
 		assertEquals( fourD.size(), pl.numVertices() );
@@ -162,19 +162,19 @@ public class PolylineTest
 
 		// check all vertices
 		for ( int i = 0; i < intersect.size(); i++ )
-			assertTrue( pl.contains( intersect.get( i ) ) );
+			assertTrue( pl.test( intersect.get( i ) ) );
 
 		// on polyline
-		assertTrue( pl.contains( new RealPoint( new double[] { 9, 9 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 4, 4 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 7, 17 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 15, 3 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 21, 2 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 9, 9 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 4, 4 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 7, 17 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 15, 3 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 21, 2 } ) ) );
 
 		// off polyline
-		assertFalse( pl.contains( new RealPoint( new double[] { 40, 3 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 18, 18 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 7, 17.1 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 40, 3 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 18, 18 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 7, 17.1 } ) ) );
 
 		// polyline characteristics
 		assertEquals( intersect.size(), pl.numVertices() );
@@ -195,16 +195,16 @@ public class PolylineTest
 
 		// check all vertices
 		for ( int i = 0; i < doubleVertices.length; i++ )
-			assertTrue( pl.contains( new RealPoint( doubleVertices[ i ] ) ) );
+			assertTrue( pl.test( new RealPoint( doubleVertices[ i ] ) ) );
 
 		// on polyline
-		assertTrue( pl.contains( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 15, -10.84199 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 15, -10.84199 } ) ) );
 
 		// off polyline
-		assertFalse( pl.contains( new RealPoint( new double[] { 1, -3.4 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 2, 4 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 0.18, -12.73 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 1, -3.4 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 2, 4 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 0.18, -12.73 } ) ) );
 
 		// polyline characteristics
 		assertEquals( doubleVertices.length, pl.numVertices() );
@@ -219,14 +219,14 @@ public class PolylineTest
 		final Polyline pl = new DefaultPolyline( doubleVertices );
 
 		assertArrayEquals( pl.vertex( 1 ), doubleVertices[ 1 ], 0 );
-		assertTrue( pl.contains( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
-		assertFalse( pl.contains( new RealPoint( new double[] { 5, 9 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 5, 9 } ) ) );
 
 		pl.setVertex( 1, new double[] { 10, 19 } );
 
 		assertArrayEquals( pl.vertex( 1 ), new double[] { 10, 19 }, 0 );
-		assertFalse( pl.contains( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
-		assertTrue( pl.contains( new RealPoint( new double[] { 5, 9 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 5, 9 } ) ) );
 	}
 
 	@Test
@@ -235,13 +235,13 @@ public class PolylineTest
 		final Polyline pl = new DefaultPolyline( doubleVertices );
 
 		assertEquals( pl.numVertices(), 3 );
-		assertFalse( pl.contains( new RealPoint( new double[] { 207, 2.45 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 207, 2.45 } ) ) );
 
 		pl.addVertex( 3, new double[] { 212.5, 0.25 } );
 
 		assertEquals( pl.numVertices(), 4 );
 		assertArrayEquals( pl.vertex( 3 ), new double[] { 212.5, 0.25 }, 0 );
-		assertTrue( pl.contains( new RealPoint( new double[] { 207, 2.45 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 207, 2.45 } ) ) );
 	}
 
 	@Test
@@ -251,13 +251,13 @@ public class PolylineTest
 
 		assertEquals( pl.numVertices(), 3 );
 		assertArrayEquals( pl.vertex( 1 ), doubleVertices[ 1 ], 0 );
-		assertFalse( pl.contains( new RealPoint( new double[] { 13, 3.125 } ) ) );
+		assertFalse( pl.test( new RealPoint( new double[] { 13, 3.125 } ) ) );
 
 		pl.removeVertex( 1 );
 
 		assertEquals( pl.numVertices(), 2 );
 		assertArrayEquals( pl.vertex( 1 ), doubleVertices[ 2 ], 0 );
-		assertTrue( pl.contains( new RealPoint( new double[] { 13, 3.125 } ) ) );
+		assertTrue( pl.test( new RealPoint( new double[] { 13, 3.125 } ) ) );
 	}
 
 	@Test

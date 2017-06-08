@@ -50,7 +50,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	}
 
 	@Override
-	public boolean contains( final RealLocalizable l )
+	public boolean test( final RealLocalizable l )
 	{
 		if ( Intervals.contains( this, l ) )
 		{

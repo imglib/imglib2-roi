@@ -64,16 +64,16 @@ public class EllipsoidTest
 		final Ellipsoid e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
-		assertFalse( e.contains( new RealPoint( new double[] { 16, 23 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 8, 23 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 12, 32 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 12, 14 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 8, 23 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 12, 32 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 12, 14 } ) ) );
 
 		// inside
-		assertTrue( e.contains( new RealPoint( new double[] { 11, 20 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 11, 20 } ) ) );
 
 		// outside
-		assertFalse( e.contains( new RealPoint( new double[] { 15, 30 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 15, 30 } ) ) );
 
 		// ellipsoid characteristics
 		assertEquals( e.exponent(), 2, 0 );
@@ -90,16 +90,16 @@ public class EllipsoidTest
 		final Ellipsoid e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
-		assertTrue( e.contains( new RealPoint( new double[] { 16, 23 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 8, 23 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 12, 32 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 12, 14 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 8, 23 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 12, 32 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 12, 14 } ) ) );
 
 		// inside
-		assertTrue( e.contains( new RealPoint( new double[] { 11, 20 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 11, 20 } ) ) );
 
 		// outside
-		assertFalse( e.contains( new RealPoint( new double[] { 15, 30 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 15, 30 } ) ) );
 
 		// ellipsoid characteristics
 		assertEquals( e.exponent(), 2, 0 );
@@ -128,27 +128,27 @@ public class EllipsoidTest
 		assertEquals( e.center()[ 1 ], 6.25, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
-		assertTrue( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change center
 		e.setCenter( new double[] { 10, 15 } );
 
 		assertEquals( e.center()[ 0 ], 10, 0 );
 		assertEquals( e.center()[ 1 ], 15, 0 );
-		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change semi-axis length
 		e.setSemiAxisLength( 0, 4 );
 
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
-		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 	}
 
 	@Test
@@ -160,27 +160,27 @@ public class EllipsoidTest
 		assertEquals( e.center()[ 1 ], 6.25, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
-		assertTrue( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change center
 		e.setCenter( new double[] { 10, 15 } );
 
 		assertEquals( e.center()[ 0 ], 10, 0 );
 		assertEquals( e.center()[ 1 ], 15, 0 );
-		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertFalse( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change semi-axis length
 		e.setSemiAxisLength( 0, 4 );
 
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
-		assertFalse( e.contains( new RealPoint( new double[] { 0.5, 7 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 9.25, 16 } ) ) );
-		assertTrue( e.contains( new RealPoint( new double[] { 13.5, 16 } ) ) );
+		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
+		assertTrue( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 	}
 
 	@Test

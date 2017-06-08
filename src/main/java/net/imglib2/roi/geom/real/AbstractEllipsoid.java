@@ -60,7 +60,7 @@ public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implement
 	}
 
 	@Override
-	public abstract boolean contains( RealLocalizable l );
+	public abstract boolean test( RealLocalizable l );
 
 	/**
 	 * Ellipsoids have exponents of 2.
