@@ -33,35 +33,52 @@
  */
 package net.imglib2.roi.labeling;
 
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Interval;
-import net.imglib2.converter.AbstractConvertedRandomAccess;
+import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
 import net.imglib2.type.logic.BoolType;
 
-public class LabelRegionRandomAccess< T > extends AbstractConvertedRandomAccess< LabelingType< T >, BoolType >
+public class LabelRegionRandomAccess< T >  extends AbstractEuclideanSpace implements RandomAccess< BoolType >
 {
 	private final T label;
 
 	private final BoolType type;
 
-	public LabelRegionRandomAccess( final LabelRegion< T > region )
+	private final RandomAccess< LabelingType< T > > source;
+
+	private final long[] offset;
+
+	private final long[] tmp;
+
+	public LabelRegionRandomAccess( final LabelRegion< T > region, final long[] offset )
 	{
-		super( region.regions.labeling.randomAccess( region ) );
+		super( region.numDimensions() );
+		source = region.regions.labeling.randomAccess( region );
 		label = region.getLabel();
 		type = new BoolType();
+		this.offset = offset;
+		tmp = new long[ n ];
 	}
 
-	public LabelRegionRandomAccess( final LabelRegion< T > region, final Interval interval )
+	public LabelRegionRandomAccess( final LabelRegion< T > region, final Interval interval, final long[] offset )
 	{
-		super( region.regions.labeling.randomAccess( interval ) );
+		super( region.numDimensions() );
+		source = region.regions.labeling.randomAccess( interval );
 		label = region.getLabel();
 		type = new BoolType();
+		this.offset = offset;
+		tmp = new long[ n ];
 	}
 
 	protected LabelRegionRandomAccess( final LabelRegionRandomAccess< T > a )
 	{
-		super( a.source.copyRandomAccess() );
+		super( a.numDimensions() );
+		source = a.source.copyRandomAccess();
 		type = a.type.copy();
 		label = a.label;
+		offset = a.offset;
+		tmp = new long[ n ];
 	}
 
 	@Override
@@ -74,12 +91,156 @@ public class LabelRegionRandomAccess< T > extends AbstractConvertedRandomAccess<
 	@Override
 	public LabelRegionRandomAccess< T > copy()
 	{
-		return new LabelRegionRandomAccess< T >( this );
+		return new LabelRegionRandomAccess<>( this );
 	}
 
 	@Override
 	public LabelRegionRandomAccess< T > copyRandomAccess()
 	{
 		return copy();
+	}
+
+	@Override
+	public void localize( final int[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			position[ d ] = source.getIntPosition( d ) + ( int ) offset[ d ];
+	}
+
+	@Override
+	public void localize( final long[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			position[ d ] = source.getLongPosition( d ) + ( int ) offset[ d ];
+	}
+
+	@Override
+	public int getIntPosition( final int d )
+	{
+		assert d <= n;
+		return source.getIntPosition( d ) + ( int ) offset[ d ];
+	}
+
+	@Override
+	public long getLongPosition( final int d )
+	{
+		assert d <= n;
+		return source.getLongPosition( d ) + ( int ) offset[ d ];
+	}
+
+	@Override
+	public void localize( final float[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			position[ d ] = source.getFloatPosition( d ) + offset[ d ];
+	}
+
+	@Override
+	public void localize( final double[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			position[ d ] = source.getDoublePosition( d ) + offset[ d ];
+	}
+
+	@Override
+	public float getFloatPosition( final int d )
+	{
+		assert d <= n;
+		return source.getFloatPosition( d ) + offset[ d ];
+	}
+
+	@Override
+	public double getDoublePosition( final int d )
+	{
+		assert d <= n;
+		return source.getDoublePosition( d ) + offset[ d ];
+	}
+
+	@Override
+	public void fwd( final int d )
+	{
+		source.fwd( d );
+	}
+
+	@Override
+	public void bck( final int d )
+	{
+		source.bck( d );
+	}
+
+	@Override
+	public void move( final int distance, final int d )
+	{
+		source.move( distance, d );
+	}
+
+	@Override
+	public void move( final long distance, final int d )
+	{
+		source.move( distance, d );
+	}
+
+	@Override
+	public void move( final Localizable localizable )
+	{
+		source.move( localizable );
+	}
+
+	@Override
+	public void move( final int[] distance )
+	{
+		source.move( distance );
+	}
+
+	@Override
+	public void move( final long[] distance )
+	{
+		source.move( distance );
+	}
+
+	@Override
+	public void setPosition( final Localizable localizable )
+	{
+		assert localizable.numDimensions() == n;
+		localizable.localize( tmp );
+		for ( int d = 0; d < n; ++d )
+			tmp[ d ] -= offset[ d ];
+		source.setPosition( tmp );
+	}
+
+	@Override
+	public void setPosition( final int[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			tmp[ d ] = position[ d ] - offset[ d ];
+		source.setPosition( tmp );
+	}
+
+	@Override
+	public void setPosition( final long[] position )
+	{
+		assert position.length >= n;
+		for ( int d = 0; d < n; ++d )
+			tmp[ d ] = position[ d ] - offset[ d ];
+		source.setPosition( tmp );
+	}
+
+	@Override
+	public void setPosition( final int position, final int d )
+	{
+		assert d <= n;
+		source.setPosition( position - offset[ d ], d );
+	}
+
+	@Override
+	public void setPosition( final long position, final int d )
+	{
+		assert d <= n;
+		source.setPosition( position - offset[ d ], d );
 	}
 }

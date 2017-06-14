@@ -33,10 +33,9 @@
  */
 package net.imglib2.roi.labeling;
 
-import gnu.trove.list.array.TIntArrayList;
-
 import java.util.ArrayList;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.AbstractLocalizable;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
@@ -170,7 +169,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	public LabelRegionRandomAccess< T > randomAccess()
 	{
 		update();
-		return new LabelRegionRandomAccess< T >( this );
+		return new LabelRegionRandomAccess< T >( this, currentOffset );
 	}
 
 	@Override
