@@ -43,7 +43,6 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
-import net.imglib2.labeling.Labeling;
 import net.imglib2.outofbounds.OutOfBounds;
 import net.imglib2.outofbounds.OutOfBoundsConstantValue;
 import net.imglib2.roi.Origin;
@@ -102,6 +101,7 @@ public class LabelRegion< T > extends AbstractPositionableInterval implements Po
 	 *
 	 * @return an independent copy of this {@link LabelRegion}.
 	 */
+	@Override
 	public LabelRegion< T > copy()
 	{
 		final LabelRegion< T > r = new LabelRegion<>( regions, regionProperties, label );
