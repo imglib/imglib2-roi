@@ -38,12 +38,26 @@ import java.util.List;
 
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessible;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccess;
+import net.imglib2.RealRandomAccessible;
+import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.realtransform.AffineGet;
+import net.imglib2.roi.mask.integer.MaskAsRandomAccessible;
+import net.imglib2.roi.mask.integer.MaskAsRandomAccessibleInterval;
 import net.imglib2.roi.mask.integer.MaskInterval;
+import net.imglib2.roi.mask.integer.RandomAccessibleAsMask;
+import net.imglib2.roi.mask.integer.RandomAccessibleIntervalAsMask;
+import net.imglib2.roi.mask.real.MaskAsRealRandomAccessible;
+import net.imglib2.roi.mask.real.MaskAsRealRandomAccessibleRealInterval;
 import net.imglib2.roi.mask.real.MaskRealInterval;
+import net.imglib2.roi.mask.real.RealRandomAccessibleAsMask;
+import net.imglib2.roi.mask.real.RealRandomAccessibleRealIntervalAsMask;
+import net.imglib2.type.BooleanType;
 
 /**
  * Utility class for working with {@link Mask}s.
@@ -347,6 +361,154 @@ public final class Masks
 		if ( leftOperand instanceof MaskRealInterval && rightOperand instanceof MaskRealInterval )
 			return BinaryOperations.realIntervalSubtract().apply( ( MaskRealInterval ) leftOperand, ( MaskRealInterval ) rightOperand );
 		return BinaryOperations.realSubtract().apply( leftOperand, rightOperand );
+	}
+
+	// -- TO MASK ADAPTOR --
+
+	/**
+	 * Wraps a {@link RandomAccessible} of {@link BooleanType} as a discrete
+	 * space {@link Mask}. If {@code ra} is a {@link RandomAccessibleInterval},
+	 * the interval bounds will be persevered and a {@link MaskInterval} will be
+	 * returned.
+	 *
+	 * @param ra
+	 *            RandomAccessible which will be wrapped as a Mask
+	 * @return A Mask which contains the same locations as the original
+	 *         RandomAccessible
+	 */
+	public static < B extends BooleanType< B > > Mask< Localizable > toMask( final RandomAccessible< B > ra )
+	{
+		if ( ra instanceof RandomAccessibleInterval )
+			return toMaskInterval( ( RandomAccessibleInterval< B > ) ra );
+		return new RandomAccessibleAsMask<>( ra );
+	}
+
+	/**
+	 * Wraps a {@link RandomAccessibleInterval} of {@link BooleanType} as a
+	 * {@link MaskInterval}.
+	 *
+	 * @param rai
+	 *            RandomAccessibleInterval to be wrapped as a MaskInterval
+	 * @return A {@link MaskInterval} which contains the same locations as the
+	 *         {@link RandomAccessibleInterval}
+	 */
+	public static < B extends BooleanType< B > > MaskInterval toMaskInterval( final RandomAccessibleInterval< B > rai )
+	{
+		return new RandomAccessibleIntervalAsMask<>( rai );
+	}
+
+	/**
+	 * Wraps a {@link RealRandomAccessible} of {@link BooleanType} as a real
+	 * space {@link Mask}. If {@code rra} is a
+	 * {@link RealRandomAccessibleRealInterval}, the interval bounds will be
+	 * persevered and a {@link MaskRealInterval} will be returned.
+	 *
+	 * @param rra
+	 *            RealRandomAccessible which will be wrapped as a Mask
+	 * @return A Mask which contains the same locations as the original
+	 *         RealRandomAccessible
+	 */
+	public static < B extends BooleanType< B > > Mask< RealLocalizable > toMask( final RealRandomAccessible< B > rra )
+	{
+		if ( rra instanceof RealRandomAccessibleRealInterval )
+			return toMaskRealInterval( ( RealRandomAccessibleRealInterval< B > ) rra );
+		return new RealRandomAccessibleAsMask<>( rra );
+	}
+
+	/**
+	 * Wraps a {@link RealRandomAccessibleRealInterval} of {@link BooleanType}
+	 * as a {@link MaskRealInterval}.
+	 *
+	 * @param rrari
+	 *            RealRandomAccessibleRealInterval to be wrapped as a
+	 *            MaskRealInterval
+	 * @return A {@link MaskRealInterval} which contains the same locations as
+	 *         the {@link RealRandomAccessibleRealInterval}
+	 */
+	public static < B extends BooleanType< B > > MaskRealInterval toMaskRealInterval( final RealRandomAccessibleRealInterval< B > rrari )
+	{
+		return new RealRandomAccessibleRealIntervalAsMask<>( rrari );
+	}
+
+	// -- TO (REAL)RANDOMACCESSIBLE ADAPTOR --
+
+	/**
+	 * Wraps a discrete space {@link Mask} as a {@link RandomAccessible} of the
+	 * provided type. If the provide mask is a {@link MaskInterval}, as
+	 * {@link RandomAccessibleInterval} with the same bounds is returned.
+	 *
+	 * @param m
+	 *            a discrete space Mask
+	 * @param type
+	 *            determines the type of the returned RandomAccessible, a copy
+	 *            of this will be used by the {@link RandomAccess}.
+	 * @return A {@link RandomAccessible} of type {@code type} which evaluates
+	 *         to {@code true} at the same locations as the original Mask
+	 */
+	public static < B extends BooleanType< B > > RandomAccessible< B > toRA( final Mask< Localizable > m, final B type )
+	{
+		if ( m instanceof MaskInterval )
+			return toRAI( ( MaskInterval ) m, type );
+		return new MaskAsRandomAccessible<>( m, type );
+	}
+
+	/**
+	 * Wraps a {@link MaskInterval} as a {@link RandomAccessibleInterval} of the
+	 * provided type.
+	 *
+	 * @param mi
+	 *            a MaskInterval
+	 * @param type
+	 *            determines the type of the returned RandomAccessibleInterval,
+	 *            a copy of this will be used by the {@link RandomAccess}.
+	 * @return A {@link RandomAccessibleInterval} of type {@code type} which
+	 *         evaluates to {@code true} at the same locations and has the same
+	 *         bounds as the original MaskInterval
+	 */
+	public static < B extends BooleanType< B > > RandomAccessibleInterval< B > toRAI( final MaskInterval mi, final B type )
+	{
+		return new MaskAsRandomAccessibleInterval<>( mi, type );
+	}
+
+	/**
+	 * Wraps a real space {@link Mask} as a {@link RealRandomAccessible} of the
+	 * provided type. If the provide mask is a {@link MaskRealInterval}, as
+	 * {@link RealRandomAccessibleRealInterval} with the same bounds is
+	 * returned.
+	 *
+	 * @param m
+	 *            a real space Mask
+	 * @param type
+	 *            determines the type of the returned RealRandomAccessible, a
+	 *            copy of this will be used by the {@link RealRandomAccess}.
+	 * @return A {@link RealRandomAccessible} of type {@code type} which
+	 *         evaluates to {@code true} at the same locations as the original
+	 *         Mask
+	 */
+	public static < B extends BooleanType< B > > RealRandomAccessible< B > toRRA( final Mask< RealLocalizable > m, final B type )
+	{
+		if ( m instanceof MaskRealInterval )
+			return toRRARI( ( MaskRealInterval ) m, type );
+		return new MaskAsRealRandomAccessible<>( m, type );
+	}
+
+	/**
+	 * A wraps a {@link MaskRealInterval} as a
+	 * {@link RealRandomAccessibleRealInterval} of the provided type.
+	 *
+	 * @param mri
+	 *            a MaskRealInterval
+	 * @param type
+	 *            determines the type of the returned
+	 *            RealRandomAccessibleRealInterval, a copy of this will be used
+	 *            by the {@link RealRandomAccess}.
+	 * @return A {@link RealRandomAccessibleRealInterval} of type {@code type}
+	 *         which evaluates to {@code true} at the same locations and has the
+	 *         same bounds as the original MaskRealInterval
+	 */
+	public static < B extends BooleanType< B > > RealRandomAccessibleRealInterval< B > toRRARI( final MaskRealInterval mri, final B type )
+	{
+		return new MaskAsRealRandomAccessibleRealInterval<>( mri, type );
 	}
 
 	// -- XOR --
