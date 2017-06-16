@@ -41,18 +41,17 @@ import java.util.List;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.roi.Operation;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
 import net.imglib2.roi.geom.real.OpenBox;
-import net.imglib2.roi.mask.DefaultNaryOr;
 import net.imglib2.roi.mask.Mask;
-import net.imglib2.roi.mask.NaryOr;
+import net.imglib2.roi.mask.NaryOperations;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 import org.junit.Test;
 
 /**
- * Tests {@link Operation}s.
+ * Tests {@link NaryOperations}.
  *
  * @author Alison Walter
  */
@@ -70,7 +69,7 @@ public class NaryOperationTest
 		boxes.add( bOne );
 		boxes.add( bTwo );
 		boxes.add( bThree );
-		final NaryOr< RealLocalizable > or = new DefaultNaryOr<>( boxes );
+		final Mask< RealLocalizable > or = NaryOperations.realOr().apply( boxes );
 
 		final RealLocalizable lOne = new RealPoint( new double[] { 7, 1 } );
 		final RealLocalizable lTwo = new RealPoint( new double[] { 12, 13 } );
@@ -98,9 +97,9 @@ public class NaryOperationTest
 		boxes.add( bOne );
 		boxes.add( bTwo );
 		boxes.add( bThree );
-		final NaryOr< RealLocalizable > or = new DefaultNaryOr<>( boxes );
+		final Mask< RealLocalizable > or = NaryOperations.realOr().apply( boxes );
 
-		assertEquals(or.boundaryType(), Mask.BoundaryType.OPEN);
+		assertEquals( or.boundaryType(), Mask.BoundaryType.OPEN );
 	}
 
 	@Test
@@ -114,8 +113,38 @@ public class NaryOperationTest
 		boxes.add( bOne );
 		boxes.add( bTwo );
 		boxes.add( bThree );
-		final NaryOr< RealLocalizable > or = new DefaultNaryOr<>( boxes );
+		final Mask< RealLocalizable > or = NaryOperations.realOr().apply( boxes );
 
-		assertEquals(or.boundaryType(), Mask.BoundaryType.UNSPECIFIED);
+		assertEquals( or.boundaryType(), Mask.BoundaryType.UNSPECIFIED );
+	}
+
+	@Test
+	public void testRealIntervalOrTest()
+	{
+		final Box bOne = new ClosedBox( new double[] { 0, 0 }, new double[] { 10, 10 } );
+		final Box bTwo = new ClosedBox( new double[] { 5, 5 }, new double[] { 15, 15 } );
+		final Box bThree = new ClosedBox( new double[] { -5, -5 }, new double[] { 5, 5 } );
+
+		final List< MaskRealInterval > boxes = new ArrayList<>( 3 );
+		boxes.add( bOne );
+		boxes.add( bTwo );
+		boxes.add( bThree );
+		final MaskRealInterval or = NaryOperations.realIntervalOr().apply( boxes );
+
+		final RealLocalizable lOne = new RealPoint( new double[] { 7, 1 } );
+		final RealLocalizable lTwo = new RealPoint( new double[] { 12, 13 } );
+		final RealLocalizable lThree = new RealPoint( new double[] { -2, -5 } );
+
+		assertTrue( or.test( lOne ) );
+		assertTrue( or.test( lTwo ) );
+		assertTrue( or.test( lThree ) );
+
+		assertEquals( or.boundaryType(), Mask.BoundaryType.CLOSED );
+
+		// Bounds
+		assertEquals( -5, or.realMin( 0 ), 0 );
+		assertEquals( -5, or.realMin( 1 ), 0 );
+		assertEquals( 15, or.realMax( 0 ), 0 );
+		assertEquals( 15, or.realMax( 1 ), 0 );
 	}
 }
