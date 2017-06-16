@@ -42,11 +42,15 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessible;
+import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.geom.real.Ellipsoid;
 import net.imglib2.roi.geom.real.OpenEllipsoid;
 import net.imglib2.roi.mask.Mask;
 import net.imglib2.roi.mask.real.MaskAsRealRandomAccessible;
+import net.imglib2.roi.mask.real.MaskAsRealRandomAccessibleRealInterval;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 import net.imglib2.roi.mask.real.RealRandomAccessibleAsMask;
+import net.imglib2.roi.mask.real.RealRandomAccessibleRealIntervalAsMask;
 import net.imglib2.type.logic.BoolType;
 
 import org.junit.BeforeClass;
@@ -65,6 +69,12 @@ public class RealRandomAccessibleAsMaskTest
 
 	private static Mask< RealLocalizable > m;
 
+	private static RealRandomAccessibleRealInterval< BoolType > rrari;
+
+	private static RealRandomAccess< BoolType > accessInterval;
+
+	private static MaskRealInterval mri;
+
 	@BeforeClass
 	public static void setup()
 	{
@@ -72,6 +82,10 @@ public class RealRandomAccessibleAsMaskTest
 		rra = new MaskAsRealRandomAccessible<>( e, new BoolType() );
 		access = rra.realRandomAccess();
 		m = new RealRandomAccessibleAsMask<>( rra );
+
+		rrari = new MaskAsRealRandomAccessibleRealInterval<>( e, new BoolType() );
+		accessInterval = rrari.realRandomAccess();
+		mri = new RealRandomAccessibleRealIntervalAsMask<>( rrari );
 	}
 
 	@Test
@@ -100,5 +114,44 @@ public class RealRandomAccessibleAsMaskTest
 	public void testsource()
 	{
 		assertTrue( MaskAsRealRandomAccessible.class.isInstance( ( ( RealRandomAccessibleAsMask< BoolType > ) m ).source() ) );
+	}
+
+	@Test
+	public void testRealRandomAccessibleRealIntervalAsMaskTest()
+	{
+		final long seed = 24;
+		final Random rand = new Random( seed );
+
+		for ( int i = 0; i < 200; i++ )
+		{
+			final double x = rand.nextDouble();
+			final double y = rand.nextDouble();
+
+			accessInterval.setPosition( new double[] { x, y } );
+			assertEquals( accessInterval.get().get(), mri.test( new RealPoint( new double[] { x, y } ) ) );
+		}
+	}
+
+	@Test
+	public void testRealRandomAccessibleRealIntervalAsMaskNumDimensions()
+	{
+		assertEquals( accessInterval.numDimensions(), mri.numDimensions() );
+	}
+
+	@Test
+	@SuppressWarnings( "unchecked" )
+	public void testRealRandomAccessibleRealIntervalAsMaskSource()
+	{
+		assertTrue( RealRandomAccessibleRealInterval.class.isInstance( ( ( RealRandomAccessibleRealIntervalAsMask< BoolType > ) mri ).source() ) );
+	}
+
+	@Test
+	public void testRealRandomAccessibleRealIntervalAsMaskBounds()
+	{
+		assertEquals( rrari.realMax( 0 ), mri.realMax( 0 ), 0 );
+		assertEquals( rrari.realMax( 1 ), mri.realMax( 1 ), 0 );
+
+		assertEquals( rrari.realMin( 0 ), mri.realMin( 0 ), 0 );
+		assertEquals( rrari.realMin( 1 ), mri.realMin( 1 ), 0 );
 	}
 }
