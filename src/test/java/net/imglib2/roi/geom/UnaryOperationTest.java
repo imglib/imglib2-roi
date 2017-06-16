@@ -33,6 +33,7 @@
  */
 package net.imglib2.roi.geom;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -41,29 +42,29 @@ import net.imglib2.RealPoint;
 import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.AffineTransform;
 import net.imglib2.realtransform.AffineTransform2D;
-import net.imglib2.roi.UnaryOperation;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
 import net.imglib2.roi.geom.real.OpenBox;
-import net.imglib2.roi.mask.DefaultNot;
 import net.imglib2.roi.mask.Mask;
-import net.imglib2.roi.mask.Masks;
 import net.imglib2.roi.mask.Mask.BoundaryType;
+import net.imglib2.roi.mask.Masks;
+import net.imglib2.roi.mask.UnaryOperations;
+import net.imglib2.roi.mask.real.MaskRealInterval;
 
 import org.junit.Test;
 
 /**
- * Tests {@link UnaryOperation}s.
+ * Tests {@link UnaryOperations}.
  *
  * @author Alison Walter
  */
 public class UnaryOperationTest
 {
 	@Test
-	public void testDefaultNot()
+	public void testRealNot()
 	{
 		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
-		final Mask< RealLocalizable > rm = new DefaultNot<>( b );
+		final Mask< RealLocalizable > rm = UnaryOperations.realNot().apply( b );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 19, 19 } ) ) );
 		assertTrue( rm.test( new RealPoint( new double[] { 111, -4 } ) ) );
@@ -82,7 +83,7 @@ public class UnaryOperationTest
 		final double[][] rotationMatrix = { { Math.cos( angle ), -Math.sin( angle ) }, { Math.sin( angle ), Math.cos( angle ) } };
 
 		final Box b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
-		final Mask< RealLocalizable > affine = Masks.affine( b, createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 ) );
+		final Mask< RealLocalizable > affine = Masks.affineTransform( b, createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 ) );
 
 		// Check region test points post rotation
 		// center
@@ -98,6 +99,14 @@ public class UnaryOperationTest
 		assertTrue( affine.test( new RealPoint( new double[] { 7.3, 6.45 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
+
+		// Test Interval
+		assertTrue( affine instanceof MaskRealInterval );
+		final MaskRealInterval in = ( MaskRealInterval ) affine;
+		assertEquals( in.realMin( 0 ), 1.5, 1e-15 );
+		assertEquals( in.realMin( 1 ), 2.5, 1e-14 );
+		assertEquals( in.realMax( 0 ), 7.5, 0 );
+		assertEquals( in.realMax( 1 ), 6.5, 0 );
 	}
 
 	@Test
@@ -108,7 +117,7 @@ public class UnaryOperationTest
 		final double[][] rotationMatrix = { { Math.cos( angle ), 0, Math.sin( angle ) }, { 0, 1, 0 }, { -Math.sin( angle ), 0, Math.cos( angle ) } };
 
 		final Box b = new ClosedBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
-		final Mask< RealLocalizable > affine = Masks.affine( b, createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
+		final Mask< RealLocalizable > affine = Masks.affineTransform( b, createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
 
 		// inside both
 		assertTrue( b.test( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
@@ -123,6 +132,16 @@ public class UnaryOperationTest
 		assertTrue( affine.test( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
+
+		// Test Interval
+		assertTrue( affine instanceof MaskRealInterval );
+		final MaskRealInterval in = ( MaskRealInterval ) affine;
+		assertEquals( in.realMin( 0 ), ( 1 - 3 ) * Math.cos( angle ) + ( -4 - 1 ) * Math.sin( angle ) + 3, 1e-15 );
+		assertEquals( in.realMin( 1 ), 5.75, 0 );
+		assertEquals( in.realMin( 2 ), ( 5 - 3 ) * -Math.sin( angle ) + ( -4 - 1 ) * Math.cos( angle ) + 1, 1e-15 );
+		assertEquals( in.realMax( 0 ), ( 5 - 3 ) * Math.cos( angle ) + ( 6 - 1 ) * Math.sin( angle ) + 3, 1e-15 );
+		assertEquals( in.realMax( 1 ), 8.25, 0 );
+		assertEquals( in.realMax( 2 ), ( 1 - 3 ) * -Math.sin( angle ) + ( 6 - 1 ) * Math.cos( angle ) + 1, 1e-15 );
 	}
 
 	@Test
@@ -132,7 +151,7 @@ public class UnaryOperationTest
 		final AffineTransform2D transform = new AffineTransform2D();
 		transform.set( 1, 2, 0, 0, 1, 0 );
 
-		final Mask< RealLocalizable > affine = Masks.affine( b, transform );
+		final Mask< RealLocalizable > affine = Masks.affineTransform( b, transform );
 
 		// inside original only
 		assertTrue( b.test( new RealPoint( new double[] { 1, 9 } ) ) );
@@ -143,6 +162,14 @@ public class UnaryOperationTest
 		assertTrue( affine.test( new RealPoint( new double[] { 22, 9 } ) ) );
 
 		assertTrue( affine.boundaryType() == BoundaryType.CLOSED );
+
+		// Test Interval
+		assertTrue( affine instanceof MaskRealInterval );
+		final MaskRealInterval in = ( MaskRealInterval ) affine;
+		assertEquals( in.realMin( 0 ), 7, 0 );
+		assertEquals( in.realMin( 1 ), 3, 0 );
+		assertEquals( in.realMax( 0 ), 22, 0 );
+		assertEquals( in.realMax( 1 ), 9, 0 );
 	}
 
 	// -- Helper methods --
