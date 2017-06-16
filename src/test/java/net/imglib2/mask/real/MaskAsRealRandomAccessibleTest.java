@@ -41,9 +41,12 @@ import java.util.Random;
 import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessible;
+import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.OpenBox;
 import net.imglib2.roi.mask.real.MaskAsRealRandomAccessible;
+import net.imglib2.roi.mask.real.MaskAsRealRandomAccessibleRealInterval;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.logic.BoolType;
 
 import org.junit.BeforeClass;
@@ -62,12 +65,19 @@ public class MaskAsRealRandomAccessibleTest
 
 	private static RealRandomAccess< BoolType > rra;
 
+	private static RealRandomAccessibleRealInterval< BitType > mrrari;
+
+	private static RealRandomAccess< BitType > rraInterval;
+
 	@BeforeClass
 	public static void setup()
 	{
 		b = new OpenBox( new double[] { 0, 0 }, new double[] { 6, 6 } );
 		mrra = new MaskAsRealRandomAccessible<>( b, new BoolType() );
 		rra = mrra.realRandomAccess();
+
+		mrrari = new MaskAsRealRandomAccessibleRealInterval<>( b, new BitType() );
+		rraInterval = mrrari.realRandomAccess();
 	}
 
 	@Test
@@ -96,5 +106,43 @@ public class MaskAsRealRandomAccessibleTest
 	public void testsource()
 	{
 		assertTrue( Box.class.isInstance( ( ( MaskAsRealRandomAccessible< BoolType > ) mrra ).source() ) );
+	}
+
+	@Test
+	public void testMaskAsRealRandomAccessibleRealIntervalRealRandomAccess()
+	{
+		final long seed = 39567;
+		final Random rand = new Random( seed );
+
+		for ( int i = 0; i < 200; i++ )
+		{
+			final double x = rand.nextDouble();
+			final double y = rand.nextDouble();
+
+			rraInterval.setPosition( new double[] { x, y } );
+			assertEquals( b.test( new RealPoint( new double[] { x, y } ) ), rraInterval.get().get() );
+		}
+	}
+
+	@Test
+	public void testMaskAsRealRandomAccessibleRealIntervalNumDimensions()
+	{
+		assertEquals( b.numDimensions(), rraInterval.numDimensions() );
+	}
+
+	@Test
+	public void testMaskAsRealRandomAccessibleRealIntervalSource()
+	{
+		assertTrue( Box.class.isInstance( ( ( MaskAsRealRandomAccessibleRealInterval< BitType > ) mrrari ).source() ) );
+	}
+
+	@Test
+	public void testMaskAsRealRandomAccessibleRealIntervalBounds()
+	{
+		assertEquals( b.realMax( 0 ), mrrari.realMax( 0 ), 0 );
+		assertEquals( b.realMax( 1 ), mrrari.realMax( 1 ), 0 );
+
+		assertEquals( b.realMin( 0 ), mrrari.realMin( 0 ), 0 );
+		assertEquals( b.realMin( 1 ), mrrari.realMin( 1 ), 0 );
 	}
 }

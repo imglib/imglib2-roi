@@ -46,7 +46,9 @@ import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.roi.mask.Mask;
+import net.imglib2.roi.mask.integer.MaskInterval;
 import net.imglib2.roi.mask.integer.RandomAccessibleAsMask;
+import net.imglib2.roi.mask.integer.RandomAccessibleIntervalAsMask;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.view.Views;
 
@@ -66,6 +68,8 @@ public class RandomAccessibleAsMaskTest
 
 	private static Mask< Localizable > ram;
 
+	private static MaskInterval mi;
+
 	@BeforeClass
 	public static void setup()
 	{
@@ -81,6 +85,7 @@ public class RandomAccessibleAsMaskTest
 
 		ra = Views.extendZero( img ).randomAccess();
 		ram = new RandomAccessibleAsMask<>( img );
+		mi = new RandomAccessibleIntervalAsMask<>( img );
 	}
 
 	@Test
@@ -109,5 +114,47 @@ public class RandomAccessibleAsMaskTest
 	public void testsource()
 	{
 		assertTrue( Img.class.isInstance( ( ( RandomAccessibleAsMask< BitType > ) ram ).source() ) );
+	}
+
+	@Test
+	public void testRandomAccessibleIntervalAsMaskTest()
+	{
+		final long seed = 796;
+		final Random rand = new Random( seed );
+
+		for ( int i = 0; i < 200; i++ )
+		{
+			final long x = rand.nextLong();
+			final long y = rand.nextLong();
+
+			ra.setPosition( new long[] { x, y } );
+			assertEquals( ra.get().get(), mi.test( new Point( new long[] { x, y } ) ) );
+		}
+	}
+
+	@Test
+	public void testRandomAccessibleIntervalAsMaskNumDimensions()
+	{
+		assertEquals( ra.numDimensions(), mi.numDimensions() );
+	}
+
+	@Test
+	@SuppressWarnings( "unchecked" )
+	public void testRandomAccessibleIntervalAsMaskSource()
+	{
+		assertTrue( Img.class.isInstance( ( ( RandomAccessibleIntervalAsMask< BitType > ) mi ).source() ) );
+	}
+
+	@Test
+	public void testRandomAccessibleIntervalAsMaskBounds()
+	{
+		assertEquals( img.dimension( 0 ), mi.dimension( 0 ) );
+		assertEquals( img.dimension( 1 ), mi.dimension( 1 ) );
+
+		assertEquals( img.max( 0 ), mi.max( 0 ) );
+		assertEquals( img.max( 1 ), mi.max( 1 ) );
+
+		assertEquals( img.min( 0 ), mi.min( 0 ) );
+		assertEquals( img.min( 1 ), mi.min( 1 ) );
 	}
 }

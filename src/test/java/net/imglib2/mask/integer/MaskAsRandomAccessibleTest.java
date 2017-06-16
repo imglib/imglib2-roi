@@ -40,11 +40,18 @@ import java.util.Random;
 
 import net.imglib2.Localizable;
 import net.imglib2.Point;
+import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealPositionable;
 import net.imglib2.roi.mask.Mask;
 import net.imglib2.roi.mask.integer.MaskAsRandomAccessible;
+import net.imglib2.roi.mask.integer.MaskAsRandomAccessibleInterval;
+import net.imglib2.roi.mask.integer.MaskInterval;
+import net.imglib2.type.logic.BitType;
 import net.imglib2.type.logic.BoolType;
+import net.imglib2.util.Intervals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,12 +69,22 @@ public class MaskAsRandomAccessibleTest
 
 	private static RandomAccess< BoolType > access;
 
+	private static MaskInterval mi;
+
+	private static RandomAccessibleInterval< BitType > rai;
+
+	private static RandomAccess< BitType > accessInterval;
+
 	@BeforeClass
 	public static void setup()
 	{
 		m = new TestMask();
 		ra = new MaskAsRandomAccessible<>( m, new BoolType() );
 		access = ra.randomAccess();
+
+		mi = new TestMaskInterval();
+		rai = new MaskAsRandomAccessibleInterval<>( mi, new BitType() );
+		accessInterval = rai.randomAccess();
 	}
 
 	@Test
@@ -98,6 +115,49 @@ public class MaskAsRandomAccessibleTest
 		assertTrue( Mask.class.isInstance( ( ( MaskAsRandomAccessible< BoolType > ) ra ).source() ) );
 	}
 
+	@Test
+	public void testMaskAsRandomAccessibleIntervalRandomAccess()
+	{
+		final long seed = -12;
+		final Random rand = new Random( seed );
+
+		for ( int i = 0; i < 200; i++ )
+		{
+			final long x = rand.nextLong();
+			final long y = rand.nextLong();
+
+			accessInterval.setPosition( new long[] { x, y } );
+			assertEquals( mi.test( new Point( new long[] { x, y } ) ), accessInterval.get().get() );
+		}
+	}
+
+	@Test
+	public void testMaskAsRandomAccessibleIntervalBounds()
+	{
+		assertEquals( mi.dimension( 0 ), rai.dimension( 0 ) );
+		assertEquals( mi.dimension( 1 ), rai.dimension( 1 ) );
+
+		assertEquals( mi.max( 0 ), rai.max( 0 ) );
+		assertEquals( mi.max( 1 ), rai.max( 1 ) );
+
+		assertEquals( mi.min( 0 ), rai.min( 0 ) );
+		assertEquals( mi.min( 1 ), rai.min( 1 ) );
+	}
+
+	@Test
+	public void testMaskAsRandomAccessibleIntervalNumDimensions()
+	{
+		assertEquals( mi.numDimensions(), accessInterval.numDimensions() );
+	}
+
+	@Test
+	public void testMaskAsRandomAccessibleIntervalSource()
+	{
+		assertTrue( MaskInterval.class.isInstance( ( ( MaskAsRandomAccessibleInterval< BitType > ) rai ).source() ) );
+	}
+
+	// -- Test classes --
+
 	private static class TestMask implements Mask< Localizable >
 	{
 
@@ -114,6 +174,121 @@ public class MaskAsRandomAccessibleTest
 		public boolean test( final Localizable l )
 		{
 			return ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false;
+		}
+
+	}
+
+	private static class TestMaskInterval implements MaskInterval
+	{
+
+		public TestMaskInterval()
+		{}
+
+		@Override
+		public int numDimensions()
+		{
+			return 2;
+		}
+
+		@Override
+		public boolean test( final Localizable l )
+		{
+			if ( Intervals.contains( this, l ) )
+				return ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false;
+			return false;
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			return 0;
+		}
+
+		@Override
+		public void min( final long[] min )
+		{
+			min[ 0 ] = 0;
+			min[ 1 ] = 0;
+		}
+
+		@Override
+		public void min( final Positionable min )
+		{
+			min.setPosition( 0, 0 );
+			min.setPosition( 0, 1 );
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			return 10;
+		}
+
+		@Override
+		public void max( final long[] max )
+		{
+			max[ 0 ] = 10;
+			max[ 1 ] = 10;
+		}
+
+		@Override
+		public void max( final Positionable max )
+		{
+			max.setPosition( 10, 0 );
+			max.setPosition( 10, 1 );
+		}
+
+		@Override
+		public double realMin( final int d )
+		{
+			return min( d );
+		}
+
+		@Override
+		public void realMin( final double[] min )
+		{
+			min[ 0 ] = 0;
+			min[ 1 ] = 0;
+		}
+
+		@Override
+		public void realMin( final RealPositionable min )
+		{
+			min.setPosition( 0, 0 );
+			min.setPosition( 0, 1 );
+		}
+
+		@Override
+		public double realMax( final int d )
+		{
+			return max( d );
+		}
+
+		@Override
+		public void realMax( final double[] max )
+		{
+			max[ 0 ] = 10;
+			max[ 1 ] = 10;
+		}
+
+		@Override
+		public void realMax( final RealPositionable max )
+		{
+			max.setPosition( 10, 0 );
+			max.setPosition( 10, 1 );
+		}
+
+		@Override
+		public void dimensions( final long[] dimensions )
+		{
+			dimensions[ 0 ] = 10;
+			dimensions[ 1 ] = 10;
+		}
+
+		@Override
+		public long dimension( final int d )
+		{
+			return 10;
 		}
 
 	}
