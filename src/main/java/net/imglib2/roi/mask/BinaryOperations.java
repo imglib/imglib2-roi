@@ -38,7 +38,9 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+import net.imglib2.EuclideanSpace;
 import net.imglib2.FinalInterval;
 import net.imglib2.FinalRealInterval;
 import net.imglib2.Interval;
@@ -60,10 +62,24 @@ import net.imglib2.roi.mask.real.MaskRealIntervalOperationResult;
  * {@link Mask}s.
  *
  * @author Alison Walter
- *
  */
 public final class BinaryOperations
 {
+	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > AND = ( left, right ) -> right.and( left );
+
+	private final static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > REAL_AND = ( left, right ) -> right.and( left );
+
+	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > OR = ( left, right ) -> right.or( left );
+
+	private final static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > REAL_OR = ( left, right ) -> right.or( left );
+
+	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > SUBTRACT = ( left, right ) -> ( l ) -> left.test( l ) && !right.test( l );
+
+	private final static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > REAL_SUBTRACT = ( left, right ) -> ( l ) -> left.test( l ) && !right.test( l );
+
+	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > XOR = ( left, right ) -> ( l ) -> left.test( l ) ^ right.test( l );
+
+	private final static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > REAL_XOR = ( left, right ) -> ( l ) -> left.test( l ) ^ right.test( l );
 
 	private BinaryOperations()
 	{
@@ -82,19 +98,7 @@ public final class BinaryOperations
 	 */
 	public static BiFunction< Mask< RealLocalizable >, AffineGet, Mask< RealLocalizable > > transform( final int numDimensions )
 	{
-		final ThreadLocal< RealPoint > pt = new ThreadLocal< RealPoint >()
-		{
-			@Override
-			protected RealPoint initialValue()
-			{
-				return new RealPoint( numDimensions );
-			}
-		};
-		return ( left, right ) -> new DefaultMaskOperationResult<>( t -> {
-			final RealPoint rp = pt.get();
-			right.apply( t, rp );
-			return left.test( rp );
-		}, left.boundaryType(), Arrays.asList( left, right ), Operation.TRANSFORM );
+		return binOp( createAffinePredicate( numDimensions ), Operation.TRANSFORM );
 	}
 
 	/**
@@ -110,27 +114,15 @@ public final class BinaryOperations
 	 */
 	public static BiFunction< MaskRealInterval, AffineGet, MaskRealInterval > intervalTransform( final int numDimensions )
 	{
-		final ThreadLocal< RealPoint > pt = new ThreadLocal< RealPoint >()
-		{
-			@Override
-			protected RealPoint initialValue()
-			{
-				return new RealPoint( numDimensions );
-			}
-		};
-		return ( left, right ) -> new MaskRealIntervalOperationResult<>( t -> {
-			final RealPoint rp = pt.get();
-			right.apply( t, rp );
-			return left.test( rp );
-		}, left.boundaryType(), Arrays.asList( left, right ), Operation.TRANSFORM, createTransformMinMax( left, right ) );
+		return ( left, right ) -> new MaskRealIntervalOperationResult<>( createAffinePredicate( numDimensions ).apply( left, right ), left.boundaryType(), Arrays.asList( left, right ), Operation.TRANSFORM, realInterval( left, right ) );
 	}
 
 	// -- AND --
 
 	/** The intersection of two discrete space Masks. */
-	public static BinaryOperator< Mask< Localizable > > and()
+	public static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > and()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( right.and( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.AND );
+		return binOp( AND, Operation.AND );
 	}
 
 	/**
@@ -139,13 +131,13 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskInterval > intervalAnd()
 	{
-		return ( left, right ) -> new MaskIntervalOperationResult<>( right.and( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.AND, createAndMinMax( left, right ) );
+		return intervalBinOp( AND, Operation.AND );
 	}
 
 	/** The intersection of two real space Masks. */
-	public static BinaryOperator< Mask< RealLocalizable > > realAnd()
+	public static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Mask< RealLocalizable > > realAnd()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( right.and( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.AND );
+		return binOp( REAL_AND, Operation.AND );
 	}
 
 	/**
@@ -154,18 +146,15 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskRealInterval > realIntervalAnd()
 	{
-		final BinaryOperator< MaskRealInterval > and = ( left, right ) -> {
-			return new MaskRealIntervalOperationResult<>( right.and( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.AND, createAndMinMax( left, right ) );
-		};
-		return and;
+		return realIntervalBinOp( REAL_AND, Operation.AND );
 	}
 
 	// -- OR --
 
 	/** The union of two discrete space Masks. */
-	public static BinaryOperator< Mask< Localizable > > or()
+	public static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > or()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( right.or( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.OR );
+		return binOp( OR, Operation.OR );
 	}
 
 	/**
@@ -174,13 +163,13 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskInterval > intervalOr()
 	{
-		return ( left, right ) -> new MaskIntervalOperationResult<>( right.or( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.OR, createOrMinMax( left, right ) );
+		return intervalBinOp( OR, Operation.OR );
 	}
 
 	/** The union of two real space Masks. */
-	public static BinaryOperator< Mask< RealLocalizable > > realOr()
+	public static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Mask< RealLocalizable > > realOr()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( right.or( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.OR );
+		return binOp( REAL_OR, Operation.OR );
 	}
 
 	/**
@@ -189,7 +178,7 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskRealInterval > realIntervalOr()
 	{
-		return ( left, right ) -> new MaskRealIntervalOperationResult<>( right.or( left ), andOrBoundaryType( left, right ), Arrays.asList( left, right ), Operation.OR, createOrMinMax( left, right ) );
+		return realIntervalBinOp( REAL_OR, Operation.OR );
 	}
 
 	// -- SUBTRACT --
@@ -198,9 +187,9 @@ public final class BinaryOperations
 	 * The subtraction of two masks in discrete space. Subtraction is defined as
 	 * inside the left operand AND NOT inside the right operand.
 	 */
-	public static BinaryOperator< Mask< Localizable > > subtract()
+	public static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > subtract()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( ( l ) -> left.test( l ) && !right.test( l ), subtractBoundaryType( left, right ), Arrays.asList( left, right ), Operation.SUBTRACT );
+		return binOp( SUBTRACT, Operation.SUBTRACT );
 	}
 
 	/**
@@ -211,16 +200,16 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskInterval > intervalSubtract()
 	{
-		return ( left, right ) -> new MaskIntervalOperationResult<>( ( l ) -> left.test( l ) && !right.test( l ), subtractBoundaryType( left, right ), Arrays.asList( left, right ), Operation.SUBTRACT, createSubtractMinMax( left ) );
+		return intervalBinOp( SUBTRACT, Operation.SUBTRACT );
 	}
 
 	/**
 	 * The subtraction of two masks in real space. Subtraction is defined as
 	 * inside the left operand AND NOT inside the right operand.
 	 */
-	public static BinaryOperator< Mask< RealLocalizable > > realSubtract()
+	public static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Mask< RealLocalizable > > realSubtract()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( ( l ) -> left.test( l ) && !right.test( l ), subtractBoundaryType( left, right ), Arrays.asList( left, right ), Operation.SUBTRACT );
+		return binOp( REAL_SUBTRACT, Operation.SUBTRACT );
 	}
 
 	/**
@@ -231,15 +220,15 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskRealInterval > realIntervalSubtract()
 	{
-		return ( left, right ) -> new MaskRealIntervalOperationResult<>( ( l ) -> left.test( l ) && !right.test( l ), subtractBoundaryType( left, right ), Arrays.asList( left, right ), Operation.SUBTRACT, createSubtractMinMax( left ) );
+		return realIntervalBinOp( REAL_SUBTRACT, Operation.SUBTRACT );
 	}
 
 	// -- XOR --
 
 	/** An exclusive or between two discrete space masks. */
-	public static BinaryOperator< Mask< Localizable > > xor()
+	public static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > xor()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( ( l ) -> left.test( l ) ^ right.test( l ), BoundaryType.UNSPECIFIED, Arrays.asList( left, right ), Operation.XOR );
+		return binOp( XOR, Operation.XOR );
 	}
 
 	/**
@@ -248,13 +237,13 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskInterval > intervalXor()
 	{
-		return ( left, right ) -> new MaskIntervalOperationResult<>( ( l ) -> left.test( l ) ^ right.test( l ), BoundaryType.UNSPECIFIED, Arrays.asList( left, right ), Operation.XOR, createOrMinMax( left, right ) );
+		return intervalBinOp( XOR, Operation.XOR );
 	}
 
 	/** An exclusive or between two real space masks. */
-	public static BinaryOperator< Mask< RealLocalizable > > realXor()
+	public static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Mask< RealLocalizable > > realXor()
 	{
-		return ( left, right ) -> new DefaultMaskOperationResult<>( ( l ) -> left.test( l ) ^ right.test( l ), BoundaryType.UNSPECIFIED, Arrays.asList( left, right ), Operation.XOR );
+		return binOp( REAL_XOR, Operation.XOR );
 	}
 
 	/**
@@ -263,165 +252,175 @@ public final class BinaryOperations
 	 */
 	public static BinaryOperator< MaskRealInterval > realIntervalXor()
 	{
-		return ( left, right ) -> new MaskRealIntervalOperationResult<>( ( l ) -> left.test( l ) ^ right.test( l ), BoundaryType.UNSPECIFIED, Arrays.asList( left, right ), Operation.XOR, createOrMinMax( left, right ) );
+		return realIntervalBinOp( REAL_XOR, Operation.XOR );
 	}
 
 	// -- Helper methods --
 
 	/**
-	 * Computes the boundary behavior for AND and OR of Masks.
+	 * Create a {@link BiFunction} which performs the given operation {@code op}
+	 * on two masks and results in a mask.
 	 *
-	 * @param left
-	 *            left operand
-	 * @param right
-	 *            right operand
-	 * @return if the two masks have the same boundary behavior then that is
-	 *         returned, otherwise the boundary behavior is unspecified
+	 * @param func
+	 *            a {@link BiFunction} which takes two Masks and produces a
+	 *            predicate with the desired behavior (i.e. performs and, or,
+	 *            etc.)
+	 * @param op
+	 *            the operation to be performed
+	 * @return a function which performs the operation and produces a Mask
 	 */
-	private static < L > BoundaryType andOrBoundaryType( final Mask< L > left, final Mask< L > right )
+	@SuppressWarnings( "unchecked" )
+	private static < L, T extends EuclideanSpace > BiFunction< Mask< L >, T, Mask< L > > binOp( final BiFunction< Mask< L >, T, Predicate< L > > func, final Operation op )
 	{
-		return right.boundaryType() == left.boundaryType() ? right.boundaryType() : BoundaryType.UNSPECIFIED;
+		return ( left, right ) -> {
+			BoundaryType bt;
+			if ( op == Operation.TRANSFORM )
+				bt = left.boundaryType();
+			else
+				bt = boundaryType( left, ( Mask< L > ) right, op );
+			return new DefaultMaskOperationResult<>( func.apply( left, right ), bt, Arrays.asList( left, right ), op );
+		};
 	}
 
 	/**
-	 * Computes the boundary behavior for subtraction of two Masks.
+	 * Create a {@link BinaryOperator} which performs the given operation
+	 * {@code op} on two {@link MaskInterval}s and results in a
+	 * {@link MaskInterval}.
 	 *
-	 * @param left
-	 *            left operand
-	 * @param right
-	 *            right operand
-	 * @return the boundary type of the resulting mask
+	 * @param func
+	 *            a {@link BiFunction} which takes two Masks and produces a
+	 *            predicate with the desired behavior (i.e. performs and, or,
+	 *            etc.)
+	 * @param op
+	 *            the operation to be performed
+	 * @return a function which performs the operation and produces a
+	 *         MaskInterval
 	 */
-	private static < L > BoundaryType subtractBoundaryType( final Mask< L > left, final Mask< L > right )
+	private static BinaryOperator< MaskInterval > intervalBinOp( final BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > func, final Operation op )
 	{
-		BoundaryType b = BoundaryType.UNSPECIFIED;
-		if ( left.boundaryType() != right.boundaryType() && left.boundaryType() != BoundaryType.UNSPECIFIED && right.boundaryType() != BoundaryType.UNSPECIFIED )
-			b = left.boundaryType();
-		return b;
+		if ( op == Operation.TRANSFORM )
+			throw new IllegalArgumentException( "Cannot transform integer space Masks" );
+		return ( left, right ) -> {
+			return new MaskIntervalOperationResult<>( func.apply( left, right ), boundaryType( left, right, op ), Arrays.asList( left, right ), op, interval( left, right, op ) );
+		};
 	}
 
 	/**
-	 * Computes the interval which results from the intersection of two
-	 * {@link MaskInterval}s.
+	 * Create a {@link BinaryOperator} which performs the given operation
+	 * {@code op} on two {@link MaskRealInterval}s and results in a
+	 * {@link MaskRealInterval}.
+	 *
+	 * @param func
+	 *            a {@link BiFunction} which takes two Masks and produces a
+	 *            predicate with the desired behavior (i.e. performs and, or,
+	 *            etc.)
+	 * @param op
+	 *            the operation to be performed
+	 * @return a function which performs the operation and produces a
+	 *         MaskRealInterval
+	 */
+	private static BinaryOperator< MaskRealInterval > realIntervalBinOp( final BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > func, final Operation op )
+	{
+		return ( left, right ) -> {
+			return new MaskRealIntervalOperationResult<>( func.apply( left, right ), boundaryType( left, right, op ), Arrays.asList( left, right ), op, realInterval( left, right, op ) );
+		};
+	}
+
+	/**
+	 * Creates a {@link BiFunction} which returns the {@link Predicate} for a
+	 * {@code Mask<RealLocalizable>} transformed by an {@link AffineGet}.
+	 *
+	 * @param numDimensions
+	 *            number of dimensions of the Mask which this will operate on
+	 * @return a BiFunction which produces the affine transform predicate
+	 */
+	private static BiFunction< Mask< RealLocalizable >, AffineGet, Predicate< RealLocalizable > > createAffinePredicate( final int numDimensions )
+	{
+		final ThreadLocal< RealPoint > pt = new ThreadLocal< RealPoint >()
+		{
+			@Override
+			protected RealPoint initialValue()
+			{
+				return new RealPoint( numDimensions );
+			}
+		};
+		return ( left, right ) -> ( l ) -> {
+			final RealPoint rp = pt.get();
+			right.apply( l, rp );
+			return left.test( rp );
+		};
+	}
+
+	/**
+	 * Determines the boundary type of the Mask resulting from the operation.
 	 *
 	 * @param left
-	 *            left operand
+	 *            a Mask which is the left operand
 	 * @param right
-	 *            right operand
-	 * @return an {@link Interval} which encompasses the resulting Mask
+	 *            a Mask which is the right operand
+	 * @param op
+	 *            the operation being performed
+	 * @return the boundary type of the resulting Mask
 	 */
-	private static Interval createAndMinMax( final MaskInterval left, final MaskInterval right )
+	private static < L > BoundaryType boundaryType( final Mask< L > left, final Mask< L > right, final Operation op )
+	{
+		if ( op == Operation.AND || op == Operation.OR )
+			return right.boundaryType() == left.boundaryType() ? left.boundaryType() : BoundaryType.UNSPECIFIED;
+		else if ( op == Operation.SUBTRACT )
+		{
+			BoundaryType b = BoundaryType.UNSPECIFIED;
+			if ( left.boundaryType() != right.boundaryType() && left.boundaryType() != BoundaryType.UNSPECIFIED && right.boundaryType() != BoundaryType.UNSPECIFIED )
+				b = left.boundaryType();
+			return b;
+		}
+		else if ( op == Operation.XOR )
+			return BoundaryType.UNSPECIFIED;
+		else
+			throw new IllegalArgumentException( "No such operation " + op );
+	}
+
+	/**
+	 * Determines the interval of the {@link MaskInterval} which results from
+	 * the operation {@code op}.
+	 *
+	 * @param left
+	 *            MaskInterval left operand
+	 * @param right
+	 *            MaskInterval right operand
+	 * @param op
+	 *            operation being performed on {@code left} and {@code right}
+	 * @return an {@link Interval} which covers the entire result, this is
+	 *         <strong>not</strong> guaranteed to be the minimal interval
+	 */
+	private static Interval interval( final MaskInterval left, final MaskInterval right, final Operation op )
 	{
 		final long[] min = new long[ left.numDimensions() ];
 		final long[] max = new long[ left.numDimensions() ];
-		for ( int d = 0; d < min.length; d++ )
+
+		if ( op == Operation.OR || op == Operation.XOR )
 		{
-			min[ d ] = left.min( d ) > right.min( d ) ? left.min( d ) : right.min( d );
-			max[ d ] = left.max( d ) < right.max( d ) ? left.max( d ) : right.max( d );
+			for ( int d = 0; d < min.length; d++ )
+			{
+				min[ d ] = left.min( d ) < right.min( d ) ? left.min( d ) : right.min( d );
+				max[ d ] = left.max( d ) > right.max( d ) ? left.max( d ) : right.max( d );
+			}
 		}
+		else if ( op == Operation.AND )
+		{
+			for ( int d = 0; d < min.length; d++ )
+			{
+				min[ d ] = left.min( d ) > right.min( d ) ? left.min( d ) : right.min( d );
+				max[ d ] = left.max( d ) < right.max( d ) ? left.max( d ) : right.max( d );
+			}
+		}
+		else if ( op == Operation.SUBTRACT )
+		{
+			left.min( min );
+			left.max( max );
+		}
+		else
+			throw new IllegalArgumentException( "No such operation " + op );
 		return new FinalInterval( min, max );
-	}
-
-	/**
-	 * Computes the interval which results from the intersection of two
-	 * {@link MaskRealInterval}s.
-	 *
-	 * @param left
-	 *            left operand
-	 * @param right
-	 *            right operand
-	 * @return a {@link RealInterval} which encompasses the resulting Mask
-	 */
-	private static RealInterval createAndMinMax( final MaskRealInterval left, final MaskRealInterval right )
-	{
-		final double[] min = new double[ left.numDimensions() ];
-		final double[] max = new double[ left.numDimensions() ];
-		for ( int d = 0; d < min.length; d++ )
-		{
-			min[ d ] = left.realMin( d ) > right.realMin( d ) ? left.realMin( d ) : right.realMin( d );
-			max[ d ] = left.realMax( d ) < right.realMax( d ) ? left.realMax( d ) : right.realMax( d );
-		}
-		return new FinalRealInterval( min, max );
-	}
-
-	/**
-	 * Computes the interval which results from the union and exclusive or of
-	 * two {@link MaskRealInterval}s.
-	 *
-	 * @param left
-	 *            left operand
-	 * @param right
-	 *            right operand
-	 * @return a {@link RealInterval} which encompasses the resulting Mask
-	 */
-	private static Interval createOrMinMax( final MaskInterval left, final MaskInterval right )
-	{
-		final long[] min = new long[ left.numDimensions() ];
-		final long[] max = new long[ left.numDimensions() ];
-		for ( int d = 0; d < min.length; d++ )
-		{
-			min[ d ] = left.min( d ) < right.min( d ) ? left.min( d ) : right.min( d );
-			max[ d ] = left.max( d ) > right.max( d ) ? left.max( d ) : right.max( d );
-		}
-		return new FinalInterval( min, max );
-	}
-
-	/**
-	 * Computes the interval which results from the union and exclusive or of
-	 * two {@link MaskInterval}s.
-	 *
-	 * @param left
-	 *            left operand
-	 * @param right
-	 *            right operand
-	 * @return an {@link Interval} which encompasses the resulting Mask
-	 */
-	private static RealInterval createOrMinMax( final MaskRealInterval left, final MaskRealInterval right )
-	{
-		final double[] min = new double[ left.numDimensions() ];
-		final double[] max = new double[ left.numDimensions() ];
-		for ( int d = 0; d < min.length; d++ )
-		{
-			min[ d ] = left.realMin( d ) < right.realMin( d ) ? left.realMin( d ) : right.realMin( d );
-			max[ d ] = left.realMax( d ) > right.realMax( d ) ? left.realMax( d ) : right.realMax( d );
-		}
-		return new FinalRealInterval( min, max );
-	}
-
-	/**
-	 * Returns the given operands interval. In this case of subtraction, this
-	 * returns an interval which will contain the entire result. However, it may
-	 * not be the minimal interval.
-	 *
-	 * @param left
-	 *            the left operand in the subtraction
-	 * @return the left operands interval
-	 */
-	private static Interval createSubtractMinMax( final MaskInterval left )
-	{
-		final long[] min = new long[ left.numDimensions() ];
-		final long[] max = new long[ left.numDimensions() ];
-		left.min( min );
-		left.max( max );
-		return new FinalInterval( min, max );
-	}
-
-	/**
-	 * Returns the given operands interval. In this case of subtraction, this
-	 * returns an interval which will contain the entire result. However, it may
-	 * not be the minimal interval.
-	 *
-	 * @param left
-	 *            the left operand in the subtraction
-	 * @return the left operands interval
-	 */
-	private static RealInterval createSubtractMinMax( final MaskRealInterval left )
-	{
-		final double[] min = new double[ left.numDimensions() ];
-		final double[] max = new double[ left.numDimensions() ];
-		left.realMin( min );
-		left.realMax( max );
-		return new FinalRealInterval( min, max );
 	}
 
 	/**
@@ -434,7 +433,7 @@ public final class BinaryOperations
 	 *            {@link AffineGet} being applied to the mask
 	 * @return transformed interval
 	 */
-	private static RealInterval createTransformMinMax( final MaskRealInterval m, final AffineGet a )
+	private static RealInterval realInterval( final MaskRealInterval m, final AffineGet a )
 	{
 		// create corners
 		final double[][] corners = new double[ ( int ) Math.pow( 2, m.numDimensions() ) ][ m.numDimensions() ];
@@ -460,5 +459,48 @@ public final class BinaryOperations
 			a.inverse().apply( corners[ i ], corners[ i ] );
 
 		return Regions.getBoundsReal( corners );
+	}
+
+	/**
+	 * Determines the interval of the {@link MaskRealInterval} which results
+	 * from the operation {@code op}.
+	 *
+	 * @param left
+	 *            MaskRealInterval left operand
+	 * @param right
+	 *            MaskRealInterval right operand
+	 * @param op
+	 *            operation being performed on {@code left} and {@code right}
+	 * @return a {@link RealInterval} which covers the entire result, this is
+	 *         <strong>not</strong> guaranteed to be the minimal interval
+	 */
+	private static RealInterval realInterval( final MaskRealInterval left, final MaskRealInterval right, final Operation op )
+	{
+		final double[] min = new double[ left.numDimensions() ];
+		final double[] max = new double[ left.numDimensions() ];
+		if ( op == Operation.OR || op == Operation.XOR )
+		{
+			for ( int d = 0; d < min.length; d++ )
+			{
+				min[ d ] = left.realMin( d ) < right.realMin( d ) ? left.realMin( d ) : right.realMin( d );
+				max[ d ] = left.realMax( d ) > right.realMax( d ) ? left.realMax( d ) : right.realMax( d );
+			}
+		}
+		else if ( op == Operation.AND )
+		{
+			for ( int d = 0; d < min.length; d++ )
+			{
+				min[ d ] = left.realMin( d ) > right.realMin( d ) ? left.realMin( d ) : right.realMin( d );
+				max[ d ] = left.realMax( d ) < right.realMax( d ) ? left.realMax( d ) : right.realMax( d );
+			}
+		}
+		else if ( op == Operation.SUBTRACT )
+		{
+			left.realMin( min );
+			left.realMax( max );
+		}
+		else
+			throw new IllegalArgumentException( "No such operation " + op );
+		return new FinalRealInterval( min, max );
 	}
 }
