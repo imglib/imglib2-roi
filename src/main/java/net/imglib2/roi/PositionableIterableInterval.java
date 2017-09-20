@@ -22,7 +22,8 @@ public interface PositionableIterableInterval< T, I extends PositionableIterable
 		extends IterableInterval< T >, Localizable, Positionable
 {
 	/**
-	 * Get the {@link Positionable}, {@link Localizable}  Interval.
+	 * Get the {@link Positionable}, {@link Localizable} origin of this
+	 * interval.
 	 *
 	 * <p>
 	 * The origin is basically a negative offset to the position. For example if
