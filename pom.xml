@@ -172,6 +172,7 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 		<dependency>
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2</artifactId>
+			<version>4.4.0</version>
 		</dependency>
 
 		<!-- Other dependencies -->
