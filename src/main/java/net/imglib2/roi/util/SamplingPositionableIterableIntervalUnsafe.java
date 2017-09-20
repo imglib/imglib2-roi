@@ -33,13 +33,12 @@
  */
 package net.imglib2.roi.util;
 
-import static net.imglib2.util.IntervalsTemp.expand;
-
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.roi.PositionableIterableInterval;
+import net.imglib2.util.Intervals;
 
 /**
  * Binds a {@link Void} {@link PositionableIterableInterval} (i.e., a region) to
@@ -101,7 +100,7 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 	{
 		// TODO Remove workaround
 		if ( target instanceof Interval )
-			return target.randomAccess( expand( ( Interval ) target, sourceInterval ) );
+			return target.randomAccess( Intervals.expand( ( Interval ) target, sourceInterval ) );
 		else
 			return target.randomAccess( sourceInterval );
 	}

@@ -33,8 +33,6 @@
  */
 package net.imglib2.roi.util;
 
-import static net.imglib2.util.IntervalsTemp.expand;
-
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
@@ -43,6 +41,7 @@ import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.Sampler;
+import net.imglib2.util.Intervals;
 
 /**
  * Provides to sample a source of type {@code T} at random positions. The sampled
@@ -125,7 +124,7 @@ public class PositionableIntervalRandomAccessible< T, P extends Localizable & Po
 			// TODO Remove workaround
 			final RandomAccess< T > targetRA;
 			if ( target instanceof Interval )
-				targetRA = target.randomAccess( expand( ( Interval ) target, delegate ) );
+				targetRA = target.randomAccess( Intervals.expand( ( Interval ) target, delegate ) );
 			else
 				targetRA = target.randomAccess();
 
