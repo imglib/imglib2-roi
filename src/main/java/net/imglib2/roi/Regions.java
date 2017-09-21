@@ -47,7 +47,6 @@ import net.imglib2.type.BooleanType;
 
 public class Regions
 {
-	// TODO: make Positionable and Localizable
 	// TODO: bind to (respectively sample from) RandomAccessible
 	// TODO: out-of-bounds / clipping
 
