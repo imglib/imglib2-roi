@@ -65,7 +65,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Tobias Pietzsch
  */
-public class LabelRegion< T > extends AbstractPositionableInterval implements PositionableIterableRegion< BoolType, LabelRegion< T > >
+public class LabelRegion< T > extends AbstractPositionableInterval implements PositionableIterableRegion< BoolType >
 {
 	final LabelRegions< T > regions;
 

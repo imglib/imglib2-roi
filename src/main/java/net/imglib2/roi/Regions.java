@@ -62,7 +62,7 @@ public class Regions
 		return SamplingIterableInterval.create( region, img );
 	}
 
-	public static < T > PositionableIterableInterval< T, ? > sample( final PositionableIterableInterval< Void, ? > region, final RandomAccessible< T > img )
+	public static < T > PositionableIterableInterval< T > sample( final PositionableIterableInterval< Void > region, final RandomAccessible< T > img )
 	{
 		return sample( region, img, false );
 	}
@@ -90,13 +90,13 @@ public class Regions
 	 * @param unsafe
 	 * @return
 	 */
-	public static < T > PositionableIterableInterval< T, ? > sample( final PositionableIterableInterval< Void, ? > region, final RandomAccessible< T > img, final boolean unsafe )
+	public static < T > PositionableIterableInterval< T > sample( final PositionableIterableInterval< Void > region, final RandomAccessible< T > img, final boolean unsafe )
 	{
 		/*
 		 * TODO: this can be made faster in certain cases. For example a
 		 * LabelRegion, instead of creating a LabelRegionCursor and then
 		 * connecting that to a RA<T> with a SamplingCursor, we could simply
-		 * build a Cursor that let's the InterationCode run directly on the
+		 * build a Cursor that lets the InterationCode run directly on the
 		 * RA<T>. Find out how to do it.
 		 */
 		return unsafe
@@ -123,10 +123,10 @@ public class Regions
 	 * Returns a copy with shifted origin.
 	 */
 
-	public static < B extends BooleanType< B > > PositionableIterableRegion< B, ? > positionable( final RandomAccessibleInterval< B > region )
+	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof PositionableIterableRegion )
-			return ( PositionableIterableRegion< B, ? > ) region;
+			return ( PositionableIterableRegion< B > ) region;
 		else
 			return new PositionableIterableRegionImp<>( Regions.iterable( region ) );
 	}

@@ -52,7 +52,9 @@ import net.imglib2.type.BooleanType;
  * @author Tobias Pietzsch
  */
 public interface PositionableIterableRegion<
-		T extends BooleanType< T >,
-		I extends PositionableIterableRegion< T, I > >
-	extends IterableRegion< T >, PositionableIterableInterval< Void, I >
-{}
+		T extends BooleanType< T > >
+	extends IterableRegion< T >, PositionableIterableInterval< Void >
+{
+	@Override
+	public PositionableIterableRegion< T > copy();
+}

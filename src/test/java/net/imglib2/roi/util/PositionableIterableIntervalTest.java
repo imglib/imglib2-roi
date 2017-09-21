@@ -41,17 +41,15 @@ import org.junit.Test;
 
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
-import net.imglib2.Localizable;
-import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImg;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.basictypeaccess.array.FloatArray;
-import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.PositionableIterableInterval;
+import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.Regions;
-import net.imglib2.roi.util.PositionableIntervalRandomAccessible.PositionableIntervalFactory;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.IntervalView;
@@ -61,13 +59,11 @@ public class PositionableIterableIntervalTest
 {
 	private static final long SEED = 42l;
 
-	private PositionableIntervalFactory< PositionableIterationCode > code;
-
-	private PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > > iterable;
+	private PositionableIterableInterval< Void > code;
 
 	private IntervalView< FloatType > target;
 
-	private PositionableIntervalFactory< PositionableIterableRegionImp< BitType > > region;
+	private PositionableIterableRegion< BitType > region;
 
 	@Before
 	public void testPositionables()
@@ -80,52 +76,8 @@ public class PositionableIterableIntervalTest
 			bit.set( r.nextBoolean() );
 		}
 
-		iterable = new PositionableIntervalFactory< PositionableIterableIntervalImp< Void, IterableRegion< BitType > > >()
-		{
-
-			@Override
-			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > create()
-			{
-				return new PositionableIterableIntervalImp<>( Regions.iterable( bits ) );
-			}
-
-			@Override
-			public PositionableIterableIntervalImp< Void, IterableRegion< BitType > > copy( final PositionableIterableIntervalImp< Void, IterableRegion< BitType > > source )
-			{
-				return source.copy();
-			}
-		};
-
-		region = new PositionableIntervalFactory< PositionableIterableRegionImp< BitType > >()
-		{
-
-			@Override
-			public PositionableIterableRegionImp< BitType > create()
-			{
-				return new PositionableIterableRegionImp<>( Regions.iterable( bits ) );
-			}
-
-			@Override
-			public PositionableIterableRegionImp< BitType > copy( final PositionableIterableRegionImp< BitType > source )
-			{
-				return source.copy();
-			}
-		};
-		code = new PositionableIntervalFactory< PositionableIterationCode >()
-		{
-
-			@Override
-			public PositionableIterationCode create()
-			{
-				return new PositionableIterationCode( ROIUtils.iterationCode( bits ) );
-			}
-
-			@Override
-			public PositionableIterationCode copy( final PositionableIterationCode source )
-			{
-				return source.copy();
-			}
-		};
+		region = Regions.positionable( bits );
+		code = new PositionableIterationCode( ROIUtils.iterationCode( bits ) );
 
 		final Img< FloatType > rnd = creatRandomImg( 10, 10 );
 		target = Views.interval( Views.extendBorder( rnd ), rnd );
@@ -134,15 +86,15 @@ public class PositionableIterableIntervalTest
 	@Test
 	public void testSafety()
 	{
+//		final RandomAccess< IterableInterval< FloatType > > ra = create( region, target, true ).randomAccess();
 		final RandomAccess< IterableInterval< FloatType > > ra = create( code, target, true ).randomAccess();
 		ra.setPosition( new long[] { 5, 5 } );
 		final Cursor< FloatType > first = ra.get().cursor();
 		first.fwd();
 		final float curr = first.next().get();
 
-		ra.setPosition( new long[] { 42, 42 } );
 		final Cursor< FloatType > second = ra.get().cursor();
-		second.jumpFwd( 3 );
+		second.reset();
 
 		assert ( curr == first.get().get() );
 	}
@@ -152,7 +104,7 @@ public class PositionableIterableIntervalTest
 	{
 
 		final RandomAccess< IterableInterval< FloatType > > codeRA = create( code, target, true ).randomAccess();
-		final RandomAccess< IterableInterval< FloatType > > regionRA = create( iterable, target, true ).randomAccess();
+		final RandomAccess< IterableInterval< FloatType > > regionRA = create( region, target, true ).randomAccess();
 
 		codeRA.setPosition( new long[] { 52, 52 } );
 		regionRA.setPosition( codeRA );
@@ -191,7 +143,7 @@ public class PositionableIterableIntervalTest
 	public void cursorConsistencyTest()
 	{
 		final Cursor< IterableInterval< FloatType > > cc = create( code, target, true ).cursor();
-		final Cursor< IterableInterval< FloatType > > rc = create( iterable, target, true ).cursor();
+		final Cursor< IterableInterval< FloatType > > rc = create( region, target, true ).cursor();
 
 		while ( cc.hasNext() && rc.hasNext() )
 		{
@@ -229,9 +181,14 @@ public class PositionableIterableIntervalTest
 		return floats;
 	}
 
-	private < P extends Localizable & Positionable & IterableInterval< Void > > IntervalView< IterableInterval< FloatType > > create( final PositionableIntervalFactory< P > fac, final RandomAccessibleInterval< FloatType > source, final boolean isSafe )
+	private // < P extends Localizable & Positionable & IterableInterval< Void > >
+	IntervalView< IterableInterval< FloatType > > create(
+			final PositionableIterableInterval< Void > region,
+			final RandomAccessibleInterval< FloatType > source,
+			final boolean isSafe )
 	{
-		return Views.interval( new PositionableIntervalRandomAccessible<>( fac, source, isSafe ), source );
+		final PositionableIterableInterval< FloatType > sample = Regions.sample( region, source, !isSafe );
+		final TemplateRandomAccessible< FloatType > ra = new TemplateRandomAccessible<>( sample );
+		return Views.interval( ra, source );
 	}
-
 }

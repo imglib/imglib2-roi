@@ -69,7 +69,7 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 
 	private SamplingCursor< T > localizingCursor;
 
-	public SamplingPositionableIterableIntervalUnsafe( final PositionableIterableInterval< Void, ? > region, final RandomAccessible< T > target )
+	public SamplingPositionableIterableIntervalUnsafe( final PositionableIterableInterval< Void > region, final RandomAccessible< T > target )
 	{
 		super( region, target );
 	}

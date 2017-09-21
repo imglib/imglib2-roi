@@ -33,69 +33,74 @@
  */
 package net.imglib2.roi.util;
 
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Interval;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
-import net.imglib2.roi.IterableRegion;
-import net.imglib2.roi.PositionableIterableRegion;
-import net.imglib2.type.BooleanType;
+import net.imglib2.RandomAccessible;
+import net.imglib2.roi.PositionableIterableInterval;
 
 /**
- * Makes a generic {@link IterableRegion} {@code Positionable} by wrapping its
- * accessors with an offset.
  *
  * @param <T>
+ * @param <P>
+ *
+ * @author Tobias Pietzsch
+ * @author Christian Dietz
  */
-// TODO: rename
-public class PositionableIterableRegionImp< T extends BooleanType< T > >
-		extends AbstractPositionableIterableInterval< Void, IterableRegion< T > >
-		implements PositionableIterableRegion< T >
+// TODO: rename!
+public class TemplateRandomAccessible< T >
+		extends AbstractEuclideanSpace
+		implements RandomAccessible< IterableInterval< T > >
 {
-	public PositionableIterableRegionImp( final IterableRegion< T > source )
+	private final PositionableIterableInterval< T > template;
+
+	public TemplateRandomAccessible( final PositionableIterableInterval< T > template )
 	{
-		super( source );
+		super( template.numDimensions() );
+		this.template = template;
 	}
 
 	@Override
-	public RandomAccess< T > randomAccess()
-	{
-		return new RA( source.randomAccess(), currentOffset );
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
+	public RandomAccess< IterableInterval< T > > randomAccess( final Interval interval )
 	{
 		return randomAccess();
 	}
 
-	class RA extends OffsetPositionableLocalizable< RandomAccess< T > > implements RandomAccess< T >
+	@Override
+	public RandomAccess< IterableInterval< T > > randomAccess()
 	{
-		public RA( final RandomAccess< T > source, final long[] offset )
+		return new RA();
+	}
+
+	class RA extends DelegatingPositionableLocalizable< PositionableIterableInterval< T > > implements RandomAccess< IterableInterval< T > >
+	{
+		RA()
 		{
-			super( source, offset );
+			super( template.copy() );
+		}
+
+		private RA( final RA other )
+		{
+			super( other.delegate.copy() );
 		}
 
 		@Override
-		public T get()
+		public IterableInterval< T > get()
 		{
-			return source.get();
+			return delegate;
 		}
 
 		@Override
-		public RA copy()
+		public RandomAccess< IterableInterval< T > > copy()
 		{
-			return new RA( source.copyRandomAccess(), offset );
+			return new RA( this );
 		}
 
 		@Override
-		public RA copyRandomAccess()
+		public RandomAccess< IterableInterval< T > > copyRandomAccess()
 		{
 			return copy();
 		}
-	}
-
-	@Override
-	public PositionableIterableRegionImp< T > copy()
-	{
-		return new PositionableIterableRegionImp<>( this );
 	}
 }

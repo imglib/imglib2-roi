@@ -46,7 +46,7 @@ import net.imglib2.Positionable;
  * @author Tobias Pietzsch
  */
 // TODO: move to imglib2-core?!
-public class AbstractWrappedPositionableInterval< P extends Positionable & Localizable & Interval >
+public abstract class AbstractWrappedPositionableInterval< P extends Positionable & Localizable & Interval >
 	extends AbstractWrappedInterval< P >
 	implements Positionable, Localizable
 {

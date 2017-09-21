@@ -18,7 +18,7 @@ import net.imglib2.type.logic.BitType;
  *
  * @author Tobias Pietzsch
  */
-public interface PositionableIterableInterval< T, I extends PositionableIterableInterval< T, I > >
+public interface PositionableIterableInterval< T >
 		extends IterableInterval< T >, Localizable, Positionable
 {
 	/**
@@ -40,5 +40,5 @@ public interface PositionableIterableInterval< T, I extends PositionableIterable
 	 *
 	 * @return a copy with an independent position
 	 */
-	public I copy();
+	public PositionableIterableInterval< T > copy();
 }

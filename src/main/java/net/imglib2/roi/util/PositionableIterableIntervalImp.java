@@ -47,8 +47,8 @@ import net.imglib2.roi.PositionableIterableInterval;
  */
 //TODO: rename
 public class PositionableIterableIntervalImp< T, I extends IterableInterval< T > >
-		extends AbstractPositionableIterableInterval< T, I, PositionableIterableIntervalImp< T, I > >
-		implements PositionableIterableInterval< T, PositionableIterableIntervalImp< T, I > >
+		extends AbstractPositionableIterableInterval< T, I >
+		implements PositionableIterableInterval< T >
 {
 	public PositionableIterableIntervalImp( final I source )
 	{

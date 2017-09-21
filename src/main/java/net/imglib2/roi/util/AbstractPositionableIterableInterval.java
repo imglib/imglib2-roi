@@ -48,12 +48,9 @@ import net.imglib2.roi.PositionableIterableInterval;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractPositionableIterableInterval<
-			T,
-			S extends IterableInterval< T >,
-			I extends AbstractPositionableIterableInterval< T, S, I > >
+public abstract class AbstractPositionableIterableInterval< T, S extends IterableInterval< T > >
 		extends AbstractPositionableInterval
-		implements PositionableIterableInterval< T, I >
+		implements PositionableIterableInterval< T >
 {
 	protected final S source;
 
@@ -63,7 +60,7 @@ public abstract class AbstractPositionableIterableInterval<
 		this.source = source;
 	}
 
-	protected AbstractPositionableIterableInterval( final AbstractPositionableIterableInterval< T, S, I > other )
+	protected AbstractPositionableIterableInterval( final AbstractPositionableIterableInterval< T, S > other )
 	{
 		super( other );
 		this.source = other.source;
