@@ -118,6 +118,9 @@ public class Regions
 	 * inconvenient, because it is cumbersome to implement. I would prefer to
 	 * add a Regions method to do it. Or a new interface?
 	 * PositionableIterableRegionWithOrigin?
+	 *
+	 * Possible solution: Don't expose Origin. Always use Regions.shiftOrigin().
+	 * Returns a copy with shifted origin.
 	 */
 
 	public static < B extends BooleanType< B > > PositionableIterableRegion< B, ? > positionable( final RandomAccessibleInterval< B > region )
