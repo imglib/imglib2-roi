@@ -42,15 +42,18 @@ import net.imglib2.Positionable;
  * A {@link Positionable} {@link Localizable} {@link Interval} delegating all
  * calls to a source.
  *
+ * @param <I>
+ *            type of wrapped interval
+ *
  * @author Christian Dietz
  * @author Tobias Pietzsch
  */
 // TODO: move to imglib2-core?!
-public abstract class AbstractWrappedPositionableInterval< P extends Positionable & Localizable & Interval >
-	extends AbstractWrappedInterval< P >
+public abstract class AbstractWrappedPositionableInterval< I extends Positionable & Localizable & Interval >
+	extends AbstractWrappedInterval< I >
 	implements Positionable, Localizable
 {
-	public AbstractWrappedPositionableInterval( final P delegate )
+	public AbstractWrappedPositionableInterval( final I delegate )
 	{
 		super( delegate );
 	}

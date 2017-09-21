@@ -48,7 +48,7 @@ import net.imglib2.outofbounds.OutOfBoundsConstantValue;
 import net.imglib2.roi.Origin;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
-import net.imglib2.roi.util.AbstractPositionableInterval;
+import net.imglib2.roi.util.PositionableInterval;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
@@ -65,7 +65,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Tobias Pietzsch
  */
-public class LabelRegion< T > extends AbstractPositionableInterval implements PositionableIterableRegion< BoolType >
+public class LabelRegion< T > extends PositionableInterval implements PositionableIterableRegion< BoolType >
 {
 	final LabelRegions< T > regions;
 

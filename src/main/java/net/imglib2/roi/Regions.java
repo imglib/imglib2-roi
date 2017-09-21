@@ -39,7 +39,7 @@ import net.imglib2.Positionable;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.PositionableIterableRegionImp;
+import net.imglib2.roi.util.PositionableWrappedIterableRegion;
 import net.imglib2.roi.util.SamplingIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableIntervalUnsafe;
@@ -128,7 +128,7 @@ public class Regions
 		if ( region instanceof PositionableIterableRegion )
 			return ( PositionableIterableRegion< B > ) region;
 		else
-			return new PositionableIterableRegionImp<>( Regions.iterable( region ) );
+			return new PositionableWrappedIterableRegion<>( Regions.iterable( region ) );
 	}
 
 }

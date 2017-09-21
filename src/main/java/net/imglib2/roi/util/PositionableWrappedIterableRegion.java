@@ -40,17 +40,17 @@ import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.type.BooleanType;
 
 /**
- * Makes a generic {@link IterableRegion} {@code Positionable} by wrapping its
- * accessors with an offset.
+ * Makes a {@link IterableRegion} {@code Positionable} by wrapping its accessors
+ * with an offset.
  *
  * @param <T>
+ *            pixel type of source
  */
-// TODO: rename
-public class PositionableIterableRegionImp< T extends BooleanType< T > >
-		extends AbstractPositionableIterableInterval< Void, IterableRegion< T > >
+public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
+		extends PositionableWrappedIterableInterval< Void, IterableRegion< T > >
 		implements PositionableIterableRegion< T >
 {
-	public PositionableIterableRegionImp( final IterableRegion< T > source )
+	public PositionableWrappedIterableRegion( final IterableRegion< T > source )
 	{
 		super( source );
 	}
@@ -94,8 +94,8 @@ public class PositionableIterableRegionImp< T extends BooleanType< T > >
 	}
 
 	@Override
-	public PositionableIterableRegionImp< T > copy()
+	public PositionableWrappedIterableRegion< T > copy()
 	{
-		return new PositionableIterableRegionImp<>( this );
+		return new PositionableWrappedIterableRegion<>( this );
 	}
 }

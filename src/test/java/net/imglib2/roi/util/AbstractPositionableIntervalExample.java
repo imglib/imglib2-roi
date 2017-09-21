@@ -8,7 +8,7 @@ public class AbstractPositionableIntervalExample
 	public static void main( final String[] args )
 	{
 		final FinalInterval source = Intervals.createMinMax( 10, 10, 20, 20 );
-		AbstractPositionableInterval interval = new AbstractPositionableInterval( source );
+		PositionableInterval interval = new PositionableInterval( source );
 
 		System.out.println( interval );
 		System.out.println( "min0 = " + interval.min( 0 ) );
@@ -34,7 +34,7 @@ public class AbstractPositionableIntervalExample
 
 		System.out.println( " -------------------- ");
 		System.out.println();
-		interval = new AbstractPositionableInterval( source );
+		interval = new PositionableInterval( source );
 
 		System.out.println( interval );
 		System.out.println( "min0 = " + interval.min( 0 ) );

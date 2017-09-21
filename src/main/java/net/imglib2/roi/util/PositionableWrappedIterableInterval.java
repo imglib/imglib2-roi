@@ -40,27 +40,30 @@ import net.imglib2.IterableInterval;
 import net.imglib2.roi.PositionableIterableInterval;
 
 /**
- * {@link IterableInterval} which can be positioned at arbitrary positions.
+ * Makes a {@link IterableInterval} {@code Positionable} by wrapping its
+ * cursors with an offset.
+ *
+ * @param <T>
+ *            pixel type of source
+ * @param <S>
+ *            source type
  *
  * @author Tobias Pietzsch
  * @author Christian Dietz
- *
- * @param <T>
- * @param <S>
  */
-public abstract class AbstractPositionableIterableInterval< T, S extends IterableInterval< T > >
-		extends AbstractPositionableInterval
+public class PositionableWrappedIterableInterval< T, S extends IterableInterval< T > >
+		extends PositionableInterval
 		implements PositionableIterableInterval< T >
 {
 	protected final S source;
 
-	public AbstractPositionableIterableInterval( final S source )
+	public PositionableWrappedIterableInterval( final S source )
 	{
 		super( source );
 		this.source = source;
 	}
 
-	protected AbstractPositionableIterableInterval( final AbstractPositionableIterableInterval< T, S > other )
+	protected PositionableWrappedIterableInterval( final PositionableWrappedIterableInterval< T, S > other )
 	{
 		super( other );
 		this.source = other.source;
@@ -156,5 +159,11 @@ public abstract class AbstractPositionableIterableInterval< T, S extends Iterabl
 		{
 			return copy();
 		}
+	}
+
+	@Override
+	public PositionableWrappedIterableInterval< T, S > copy()
+	{
+		return new PositionableWrappedIterableInterval<>( this );
 	}
 }

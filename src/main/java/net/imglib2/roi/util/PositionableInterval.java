@@ -56,8 +56,7 @@ import net.imglib2.util.Util;
  *
  * @author Tobias Pietzsch
  */
-// TODO: rename? PositionableInterval?
-public class AbstractPositionableInterval extends AbstractLocalizable implements Positionable, Interval
+public class PositionableInterval extends AbstractLocalizable implements Positionable, Interval
 {
 	protected final long[] currentOffset;
 
@@ -67,7 +66,7 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 
 	private final Origin origin;
 
-	public AbstractPositionableInterval( final Interval initial )
+	public PositionableInterval( final Interval initial )
 	{
 		super( initial.numDimensions() );
 		currentOffset = new long[ n ];
@@ -78,7 +77,7 @@ public class AbstractPositionableInterval extends AbstractLocalizable implements
 		origin = new TheOrigin();
 	}
 
-	protected AbstractPositionableInterval( final AbstractPositionableInterval other )
+	protected PositionableInterval( final PositionableInterval other )
 	{
 		super( other.numDimensions() );
 		currentOffset = other.currentOffset.clone();
