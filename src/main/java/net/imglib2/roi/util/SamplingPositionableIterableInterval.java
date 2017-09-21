@@ -58,7 +58,7 @@ import net.imglib2.roi.PositionableIterableInterval;
  * @author Tobias Pietzsch
  */
 public class SamplingPositionableIterableInterval< T >
-	extends AbstractWrappedPositionableInterval< PositionableIterableInterval< Void > >
+	extends DelegatingPositionableInterval< PositionableIterableInterval< Void > >
 	implements PositionableIterableInterval< T >
 {
 	final RandomAccessible< T > target;

@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,7 +45,7 @@ import net.imglib2.Positionable;
  * @param <P>
  */
 // TODO: move to imglib2-core?!
-public class DelegatingPositionableLocalizable< P extends Positionable & Localizable > implements Positionable, Localizable
+public abstract class DelegatingPositionableLocalizable< P extends Positionable & Localizable > implements Positionable, Localizable
 {
 	protected P delegate;
 
@@ -55,49 +55,49 @@ public class DelegatingPositionableLocalizable< P extends Positionable & Localiz
 	}
 
 	@Override
-	public void localize( int[] position )
+	public void localize( final int[] position )
 	{
 		delegate.localize( position );
 	}
 
 	@Override
-	public void localize( long[] position )
+	public void localize( final long[] position )
 	{
 		delegate.localize( position );
 	}
 
 	@Override
-	public int getIntPosition( int d )
+	public int getIntPosition( final int d )
 	{
 		return delegate.getIntPosition( d );
 	}
 
 	@Override
-	public long getLongPosition( int d )
+	public long getLongPosition( final int d )
 	{
 		return delegate.getLongPosition( d );
 	}
 
 	@Override
-	public void localize( float[] position )
+	public void localize( final float[] position )
 	{
 		delegate.localize( position );
 	}
 
 	@Override
-	public void localize( double[] position )
+	public void localize( final double[] position )
 	{
 		delegate.localize( position );
 	}
 
 	@Override
-	public float getFloatPosition( int d )
+	public float getFloatPosition( final int d )
 	{
 		return delegate.getFloatPosition( d );
 	}
 
 	@Override
-	public double getDoublePosition( int d )
+	public double getDoublePosition( final int d )
 	{
 		return delegate.getDoublePosition( d );
 	}
@@ -109,73 +109,73 @@ public class DelegatingPositionableLocalizable< P extends Positionable & Localiz
 	}
 
 	@Override
-	public void fwd( int d )
+	public void fwd( final int d )
 	{
 		delegate.fwd( d );
 	}
 
 	@Override
-	public void bck( int d )
+	public void bck( final int d )
 	{
 		delegate.bck( d );
 	}
 
 	@Override
-	public void move( int distance, int d )
+	public void move( final int distance, final int d )
 	{
 		delegate.move( distance, d );
 	}
 
 	@Override
-	public void move( long distance, int d )
+	public void move( final long distance, final int d )
 	{
 		delegate.move( distance, d );
 	}
 
 	@Override
-	public void move( Localizable localizable )
+	public void move( final Localizable localizable )
 	{
 		delegate.move( localizable );
 	}
 
 	@Override
-	public void move( int[] distance )
+	public void move( final int[] distance )
 	{
 		delegate.move( distance );
 	}
 
 	@Override
-	public void move( long[] distance )
+	public void move( final long[] distance )
 	{
 		delegate.move( distance );
 	}
 
 	@Override
-	public void setPosition( Localizable localizable )
+	public void setPosition( final Localizable localizable )
 	{
 		delegate.setPosition( localizable );
 	}
 
 	@Override
-	public void setPosition( int[] position )
+	public void setPosition( final int[] position )
 	{
 		delegate.setPosition( position );
 	}
 
 	@Override
-	public void setPosition( long[] position )
+	public void setPosition( final long[] position )
 	{
 		delegate.setPosition( position );
 	}
 
 	@Override
-	public void setPosition( int position, int d )
+	public void setPosition( final int position, final int d )
 	{
 		delegate.setPosition( position, d );
 	}
 
 	@Override
-	public void setPosition( long position, int d )
+	public void setPosition( final long position, final int d )
 	{
 		delegate.setPosition( position, d );
 	}
