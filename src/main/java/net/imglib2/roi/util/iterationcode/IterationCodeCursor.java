@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,38 +31,86 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.labeling;
+package net.imglib2.roi.util.iterationcode;
 
 import gnu.trove.list.array.TIntArrayList;
-
-import java.util.ArrayList;
-
 import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.Point;
-import net.imglib2.roi.util.iterationcode.IterationCodeListCursor;
-import net.imglib2.roi.util.iterationcode.IterationCodeListIterator;
 
-public class LabelRegionCursor extends IterationCodeListCursor
+/**
+ * A {@code Cursor<Void>} that visits all positions in the bitmask encoded by a given {@link IterationCode}.
+ * <p>
+ * It is constructed with a {@code long[]} offset which is not copied, so it can be used to shift the bitmask and reuse this cursor.
+ *
+ * @author Tobias Pietzsch
+ */
+public class IterationCodeCursor extends AbstractLocalizable implements Cursor< Void >
 {
-	public LabelRegionCursor( final ArrayList< TIntArrayList > itcodesList, final long[] offset )
+	private final IterationCodeIterator< Point > iter;
+
+	public IterationCodeCursor( final IterationCode iterationCode, final long[] offset )
 	{
-		super( itcodesList, offset );
+		this( iterationCode.getItcode(), offset );
 	}
 
-	protected LabelRegionCursor( final LabelRegionCursor c )
+	public IterationCodeCursor( final TIntArrayList itcode, final long[] offset )
 	{
-		super( c );
+		super( offset.length );
+		iter = new IterationCodeIterator<>( itcode, offset, Point.wrap( position ) );
+	}
+
+	protected IterationCodeCursor( final IterationCodeCursor c )
+	{
+		super( c.position );
+		iter = new IterationCodeIterator<>( c.iter, Point.wrap( position ) );
 	}
 
 	@Override
-	public LabelRegionCursor copy()
+	public Void get()
 	{
-		return new LabelRegionCursor( this );
+		return null;
 	}
 
 	@Override
-	public LabelRegionCursor copyCursor()
+	public void jumpFwd( final long steps )
+	{
+		iter.jumpFwd( steps );
+	}
+
+	@Override
+	public void fwd()
+	{
+		iter.fwd();
+	}
+
+	@Override
+	public void reset()
+	{
+		iter.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return iter.hasNext();
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return null;
+	}
+
+	@Override
+	public IterationCodeCursor copy()
+	{
+		return new IterationCodeCursor( this );
+	}
+
+	@Override
+	public IterationCodeCursor copyCursor()
 	{
 		return copy();
 	}

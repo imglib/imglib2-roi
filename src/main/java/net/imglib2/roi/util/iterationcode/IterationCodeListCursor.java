@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,38 +31,75 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.labeling;
+package net.imglib2.roi.util.iterationcode;
 
 import gnu.trove.list.array.TIntArrayList;
-
 import java.util.ArrayList;
-
 import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.Point;
-import net.imglib2.roi.util.iterationcode.IterationCodeListCursor;
-import net.imglib2.roi.util.iterationcode.IterationCodeListIterator;
 
-public class LabelRegionCursor extends IterationCodeListCursor
+public class IterationCodeListCursor extends AbstractLocalizable implements Cursor< Void >
 {
-	public LabelRegionCursor( final ArrayList< TIntArrayList > itcodesList, final long[] offset )
+	private final IterationCodeListIterator< Point > iter;
+
+	public IterationCodeListCursor( final ArrayList< TIntArrayList > itcodesList, final long[] offset )
 	{
-		super( itcodesList, offset );
+		super( offset.length );
+		iter = new IterationCodeListIterator< Point >( itcodesList, offset, Point.wrap( position ) );
 	}
 
-	protected LabelRegionCursor( final LabelRegionCursor c )
+	protected IterationCodeListCursor( final IterationCodeListCursor c )
 	{
-		super( c );
+		super( c.position );
+		iter = new IterationCodeListIterator< Point >( c.iter, Point.wrap( position ) );
 	}
 
 	@Override
-	public LabelRegionCursor copy()
+	public Void get()
 	{
-		return new LabelRegionCursor( this );
+		return null;
 	}
 
 	@Override
-	public LabelRegionCursor copyCursor()
+	public void jumpFwd( final long steps )
+	{
+		iter.jumpFwd( steps );
+	}
+
+	@Override
+	public void fwd()
+	{
+		iter.fwd();
+	}
+
+	@Override
+	public void reset()
+	{
+		iter.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return iter.hasNext();
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return null;
+	}
+
+	@Override
+	public IterationCodeListCursor copy()
+	{
+		return new IterationCodeListCursor( this );
+	}
+
+	@Override
+	public IterationCodeListCursor copyCursor()
 	{
 		return copy();
 	}
