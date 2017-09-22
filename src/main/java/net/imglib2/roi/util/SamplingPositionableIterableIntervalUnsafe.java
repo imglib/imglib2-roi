@@ -85,6 +85,8 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 	{
 		if ( cursor == null )
 			cursor = new SamplingCursor<>( sourceInterval.cursor(), targetRA() );
+		else
+			cursor.reset();
 		return cursor;
 	}
 
@@ -93,6 +95,8 @@ public class SamplingPositionableIterableIntervalUnsafe< T >
 	{
 		if ( localizingCursor == null )
 			localizingCursor = new SamplingCursor<>( sourceInterval.localizingCursor(), targetRA() );
+		else
+			localizingCursor.reset();
 		return localizingCursor;
 	}
 
