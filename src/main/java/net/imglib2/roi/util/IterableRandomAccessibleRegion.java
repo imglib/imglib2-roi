@@ -34,7 +34,6 @@
 package net.imglib2.roi.util;
 
 import java.util.Iterator;
-
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
@@ -50,8 +49,7 @@ import net.imglib2.view.Views;
  * {@link IterableInterval} contains all samples of the source interval that
  * evaluate to {@code true}.
  *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
+ * {@link Cursor Cursors} are realized by wrapping source cursors (using {@link TrueCursor}).
  *
  * @author Tobias Pietzsch
  */
@@ -59,6 +57,8 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
 {
 	private final long size;
+
+	private final IterableInterval< T > iterable;
 
 	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval )
 	{
@@ -69,6 +69,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	{
 		super( interval );
 		this.size = size;
+		iterable = Views.iterable( interval );
 	}
 
 	@Override
@@ -98,13 +99,13 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	@Override
 	public Cursor< Void > cursor()
 	{
-		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
+		return new TrueCursor< T >( iterable.cursor(), size );
 	}
 
 	@Override
 	public Cursor< Void > localizingCursor()
 	{
-		return cursor();
+		return new TrueCursor< T >( iterable.localizingCursor(), size );
 	}
 
 	@Override
