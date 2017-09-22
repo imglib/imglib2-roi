@@ -33,26 +33,86 @@
  */
 package net.imglib2.roi.util;
 
+import java.util.Iterator;
+import net.imglib2.AbstractWrappedInterval;
+import net.imglib2.Cursor;
 import net.imglib2.Interval;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.PositionableIterableRegion;
+import net.imglib2.roi.util.iterationcode.IterationCode;
+import net.imglib2.roi.util.iterationcode.IterationCodeCursor;
 import net.imglib2.type.BooleanType;
+import net.imglib2.view.Views;
 
 /**
- * Makes a {@link IterableRegion} {@code Positionable} by wrapping its accessors
- * with an offset.
+ * Wrap a boolean {@link RandomAccessibleInterval} as a {@link PositionableIterableRegion}.
+ * Cursors on the result only iterate {@code true} samples of the source interval.
  *
- * @param <T>
- *            pixel type of source
+ * {@link Cursor Cursors} are realized by {@link IterationCode}.
+ * The {@code IterationCode} when this wrapper is constructed.
+ *
+ * @author Tobias Pietzsch
  */
-public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
-		extends PositionableWrappedIterableInterval< Void, IterableRegion< T > >
+public class IterationCodeRegionWrappedRandomAccessibleInterval< T extends BooleanType< T > >
+		extends PositionableInterval
 		implements PositionableIterableRegion< T >
 {
-	public PositionableWrappedIterableRegion( final IterableRegion< T > source )
+	private final RandomAccessibleInterval< T > source;
+
+	private final IterationCode itcode;
+
+	public IterationCodeRegionWrappedRandomAccessibleInterval( final RandomAccessibleInterval< T > interval )
 	{
-		super( source );
+		super( interval );
+		source = interval;
+		itcode = ROIUtils.iterationCode( interval );
+	}
+
+	protected IterationCodeRegionWrappedRandomAccessibleInterval( final IterationCodeRegionWrappedRandomAccessibleInterval< T > other )
+	{
+		super( other );
+		source = other.source;
+		itcode = other.itcode;
+	}
+
+	@Override
+	public long size()
+	{
+		return itcode.getSize();
+	}
+
+	@Override
+	public Void firstElement()
+	{
+		return cursor().next();
+	}
+
+	@Override
+	public Object iterationOrder()
+	{
+		return this;
+	}
+
+	@Override
+	public Iterator< Void > iterator()
+	{
+		return cursor();
+	}
+
+	@Override
+	public Cursor< Void > cursor()
+	{
+		return new IterationCodeCursor( itcode, currentOffset );
+	}
+
+	@Override
+	public Cursor< Void > localizingCursor()
+	{
+		return cursor();
 	}
 
 	@Override
@@ -95,8 +155,8 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 	}
 
 	@Override
-	public PositionableWrappedIterableRegion< T > copy()
+	public IterationCodeRegionWrappedRandomAccessibleInterval< T > copy()
 	{
-		return new PositionableWrappedIterableRegion<>( this );
+		return new IterationCodeRegionWrappedRandomAccessibleInterval<>( this );
 	}
 }

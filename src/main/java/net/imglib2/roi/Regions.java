@@ -38,6 +38,7 @@ import net.imglib2.IterableInterval;
 import net.imglib2.Positionable;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.roi.util.IterationCodeRegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.RegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.PositionableWrappedIterableRegion;
 import net.imglib2.roi.util.SamplingIterableInterval;
@@ -131,4 +132,11 @@ public class Regions
 			return new PositionableWrappedIterableRegion<>( Regions.iterable( region ) );
 	}
 
+	public static < B extends BooleanType< B > > PositionableIterableRegion< B > itcodepositionable( final RandomAccessibleInterval< B > region )
+	{
+		if ( region instanceof IterationCodeRegionWrappedRandomAccessibleInterval )
+			return ( PositionableIterableRegion< B > ) region;
+		else
+			return new IterationCodeRegionWrappedRandomAccessibleInterval<>( region );
+	}
 }
