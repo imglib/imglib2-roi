@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,7 +42,7 @@ import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.util.Contains;
 import net.imglib2.roi.util.ContainsRealRandomAccess;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.roi.util.RegionWrappedRandomAccessible;
 import net.imglib2.roi.util.ROIUtils;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
@@ -113,7 +113,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 
 	/**
 	 * Get vertices defining the {@link Polygon}
-	 * 
+	 *
 	 * @return {@link List} of {@link RealLocalizable}
 	 */
 	public List< ? extends RealLocalizable > getVertices()
@@ -121,13 +121,13 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 		return vertices;
 	}
 
-	public IterableRandomAccessibleRegion< BoolType > rasterize()
+	public RegionWrappedRandomAccessible< BoolType > rasterize()
 	{
 		return new RasterizedPolygon( this );
 	}
 
 	@Override
-	public Polygon copyContains() 
+	public Polygon copyContains()
 	{
 		return this;
 	}

@@ -45,31 +45,31 @@ import net.imglib2.type.BooleanType;
 import net.imglib2.view.Views;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
+ * Wrap a boolean {@link RandomAccessibleInterval} as a {@link IterableRegion}.
+ * Cursors on the result only iterate {@code true} samples of the source interval.
  *
  * {@link Cursor Cursors} are realized by wrapping source cursors (using {@link TrueCursor}).
  *
  * @author Tobias Pietzsch
  */
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class RegionWrappedRandomAccessible< T extends BooleanType< T > >
+		extends AbstractWrappedInterval< RandomAccessibleInterval< T > >
+		implements IterableRegion< T >
 {
 	private final long size;
 
-	private final IterableInterval< T > iterable;
+	private final IterableInterval< T > sourceIterable;
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval )
+	public RegionWrappedRandomAccessible( final RandomAccessibleInterval< T > interval )
 	{
 		this( interval, ROIUtils.countTrue( Views.iterable( interval ) ) );
 	}
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
+	public RegionWrappedRandomAccessible( final RandomAccessibleInterval< T > interval, final long size )
 	{
 		super( interval );
 		this.size = size;
-		iterable = Views.iterable( interval );
+		sourceIterable = Views.iterable( interval );
 	}
 
 	@Override
@@ -99,13 +99,13 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	@Override
 	public Cursor< Void > cursor()
 	{
-		return new TrueCursor< T >( iterable.cursor(), size );
+		return new TrueCursor< T >( sourceIterable.cursor(), size );
 	}
 
 	@Override
 	public Cursor< Void > localizingCursor()
 	{
-		return new TrueCursor< T >( iterable.localizingCursor(), size );
+		return new TrueCursor< T >( sourceIterable.localizingCursor(), size );
 	}
 
 	@Override
