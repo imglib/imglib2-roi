@@ -48,7 +48,6 @@ import net.imglib2.type.BooleanType;
 
 public class Regions
 {
-	// TODO: bind to (respectively sample from) RandomAccessible
 	// TODO: out-of-bounds / clipping
 
 	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
@@ -113,16 +112,22 @@ public class Regions
 			return new RegionWrappedRandomAccessibleInterval<>( region );
 	}
 
-	/*
-	 * TODO: It should be somehow possible to shift the origin of every
-	 * PositionableIterableRegion. Adding it to the interface is a bit
-	 * inconvenient, because it is cumbersome to implement. I would prefer to
-	 * add a Regions method to do it. Or a new interface?
-	 * PositionableIterableRegionWithOrigin?
-	 *
-	 * Possible solution: Don't expose Origin. Always use Regions.shiftOrigin().
-	 * Returns a copy with shifted origin.
-	 */
+	public static < B extends BooleanType< B > > IterableRegion< B >  shiftOrigin( IterableRegion< B > region, long ... offset )
+	{
+		if ( region instanceof PositionableIterableRegion )
+			return shiftOrigin( ( PositionableIterableRegion< B > ) region );
+
+		PositionableIterableRegion< B > copy = new PositionableWrappedIterableRegion<>( region );
+		copy.origin().move( offset );
+		return copy;
+	}
+
+	public static < B extends BooleanType< B > > PositionableIterableRegion< B >  shiftOrigin( PositionableIterableRegion< B > region, long ... offset )
+	{
+		PositionableIterableRegion< B > copy = region.copy();
+		copy.origin().move( offset );
+		return copy;
+	}
 
 	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
 	{
