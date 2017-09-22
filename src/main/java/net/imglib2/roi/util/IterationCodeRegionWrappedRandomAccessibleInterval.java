@@ -59,7 +59,7 @@ import net.imglib2.view.Views;
  */
 public class IterationCodeRegionWrappedRandomAccessibleInterval< T extends BooleanType< T > >
 		extends PositionableInterval
-		implements PositionableIterableRegion< T >
+		implements PositionableIterableRegion< T >, ProvidesSamplingCursor
 {
 	private final RandomAccessibleInterval< T > source;
 
@@ -159,4 +159,14 @@ public class IterationCodeRegionWrappedRandomAccessibleInterval< T extends Boole
 	{
 		return new IterationCodeRegionWrappedRandomAccessibleInterval<>( this );
 	}
+
+
+
+	@Override
+	public < T > Cursor< T > samplingCursor( final RandomAccess< T > RandomAccess )
+	{
+		return null;
+	}
+
+
 }
