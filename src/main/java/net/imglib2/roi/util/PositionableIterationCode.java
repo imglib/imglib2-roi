@@ -34,15 +34,11 @@
 package net.imglib2.roi.util;
 
 import java.util.Iterator;
-
-import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
-import net.imglib2.Point;
-import net.imglib2.Sampler;
 import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.util.iterationcode.IterationCode;
-import net.imglib2.roi.util.iterationcode.IterationCodeIterator;
+import net.imglib2.roi.util.iterationcode.IterationCodeCursor;
 
 /**
  * {@link IterationCode} which can start at arbitrary positions.
@@ -103,78 +99,12 @@ public class PositionableIterationCode
 	@Override
 	public Cursor< Void > cursor()
 	{
-		return new PositionableIterableIntervalCursor();
+		return new IterationCodeCursor( code, currentOffset );
 	}
 
 	@Override
 	public Cursor< Void > localizingCursor()
 	{
 		return cursor();
-	}
-
-	class PositionableIterableIntervalCursor extends AbstractLocalizable implements Cursor< Void >
-	{
-		private final IterationCodeIterator< Point > iterator;
-
-		public PositionableIterableIntervalCursor()
-		{
-			super(code.numDimensions());
-			this.iterator = new IterationCodeIterator<>( code, currentOffset, Point.wrap( position ) );
-		}
-
-		private PositionableIterableIntervalCursor( final PositionableIterableIntervalCursor other )
-		{
-			super( other.position );
-			this.iterator = new IterationCodeIterator<>( other.iterator, Point.wrap( position ) );
-		}
-
-		@Override
-		public Void get()
-		{
-			return null;
-		}
-
-		@Override
-		public Sampler< Void > copy()
-		{
-			return copyCursor();
-		}
-
-		@Override
-		public void jumpFwd( final long steps )
-		{
-			iterator.jumpFwd( steps );
-		}
-
-		@Override
-		public void fwd()
-		{
-			iterator.fwd();
-		}
-
-		@Override
-		public void reset()
-		{
-			iterator.reset();
-		}
-
-		@Override
-		public boolean hasNext()
-		{
-			return iterator.hasNext();
-		}
-
-		@Override
-		public Void next()
-		{
-			iterator.fwd();
-			return null;
-		}
-
-		@Override
-		public Cursor< Void > copyCursor()
-		{
-			return new PositionableIterableIntervalCursor( this );
-		}
 	}
 }
