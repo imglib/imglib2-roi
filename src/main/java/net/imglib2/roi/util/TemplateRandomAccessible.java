@@ -41,14 +41,14 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.roi.PositionableIterableInterval;
 
 /**
+ * A {@code RandomAccessible} of type {@code IterableInterval<T>}. Implemented by wrapping {@link PositionableIterableInterval} as {@code RandomAccess}.
  *
  * @param <T>
- * @param <P>
+ * 		nested pixel type
  *
  * @author Tobias Pietzsch
  * @author Christian Dietz
  */
-// TODO: rename!
 public class TemplateRandomAccessible< T >
 		extends AbstractEuclideanSpace
 		implements RandomAccessible< IterableInterval< T > >
