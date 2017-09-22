@@ -34,93 +34,76 @@
 package net.imglib2.roi.util;
 
 import net.imglib2.Localizable;
-import net.imglib2.Positionable;
 
 /**
- * A {@link Positionable} {@link Localizable} delegating all calls to a
- * {@code P} delegate
+ * A {@link Localizable} delegating all calls to a {@code <L>} delegate
  *
- * @param <P>
+ * @param <L>
  *     delegate type
  *
  * @author Christian Dietz
+ * @author Tobias Pietzsch
  */
-public abstract class DelegatingPositionableLocalizable< P extends Positionable & Localizable > extends DelegatingLocalizable< P > implements Positionable
+public abstract class DelegatingLocalizable< L extends Localizable > implements Localizable
 {
-	public DelegatingPositionableLocalizable( final P delegate )
+	protected L delegate;
+
+	public DelegatingLocalizable( final L delegate )
 	{
-		super( delegate );
+		this.delegate = delegate;
 	}
 
 	@Override
-	public void fwd( final int d )
+	public void localize( final int[] position )
 	{
-		delegate.fwd( d );
+		delegate.localize( position );
 	}
 
 	@Override
-	public void bck( final int d )
+	public void localize( final long[] position )
 	{
-		delegate.bck( d );
+		delegate.localize( position );
 	}
 
 	@Override
-	public void move( final int distance, final int d )
+	public int getIntPosition( final int d )
 	{
-		delegate.move( distance, d );
+		return delegate.getIntPosition( d );
 	}
 
 	@Override
-	public void move( final long distance, final int d )
+	public long getLongPosition( final int d )
 	{
-		delegate.move( distance, d );
+		return delegate.getLongPosition( d );
 	}
 
 	@Override
-	public void move( final Localizable localizable )
+	public void localize( final float[] position )
 	{
-		delegate.move( localizable );
+		delegate.localize( position );
 	}
 
 	@Override
-	public void move( final int[] distance )
+	public void localize( final double[] position )
 	{
-		delegate.move( distance );
+		delegate.localize( position );
 	}
 
 	@Override
-	public void move( final long[] distance )
+	public float getFloatPosition( final int d )
 	{
-		delegate.move( distance );
+		return delegate.getFloatPosition( d );
 	}
 
 	@Override
-	public void setPosition( final Localizable localizable )
+	public double getDoublePosition( final int d )
 	{
-		delegate.setPosition( localizable );
+		return delegate.getDoublePosition( d );
 	}
 
 	@Override
-	public void setPosition( final int[] position )
+	public int numDimensions()
 	{
-		delegate.setPosition( position );
-	}
-
-	@Override
-	public void setPosition( final long[] position )
-	{
-		delegate.setPosition( position );
-	}
-
-	@Override
-	public void setPosition( final int position, final int d )
-	{
-		delegate.setPosition( position, d );
-	}
-
-	@Override
-	public void setPosition( final long position, final int d )
-	{
-		delegate.setPosition( position, d );
+		return delegate.numDimensions();
 	}
 }
