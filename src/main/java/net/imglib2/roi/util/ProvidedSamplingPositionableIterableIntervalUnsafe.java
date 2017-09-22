@@ -34,11 +34,8 @@
 package net.imglib2.roi.util;
 
 import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.roi.PositionableIterableInterval;
-import net.imglib2.util.Intervals;
 
 /**
  * Binds a {@link Void} {@link PositionableIterableInterval} (i.e., a region) to
@@ -62,20 +59,15 @@ import net.imglib2.util.Intervals;
  * @author Christian Dietz
  * @author Tobias Pietzsch
  */
-public class SamplingPositionableIterableIntervalUnsafe< T, S extends PositionableIterableInterval< Void > >
-	extends SamplingPositionableIterableInterval< T, S >
+public class ProvidedSamplingPositionableIterableIntervalUnsafe< T, S extends PositionableIterableInterval< Void > & ProvidesSamplingCursor >
+	extends SamplingPositionableIterableIntervalUnsafe< T, S >
 {
-	protected Cursor< T > cursor;
-
-	protected Cursor< T > localizingCursor;
-
-	public SamplingPositionableIterableIntervalUnsafe( final S region, final RandomAccessible< T > target )
+	public ProvidedSamplingPositionableIterableIntervalUnsafe( final S region, final RandomAccessible< T > target )
 	{
 		super( region, target );
 	}
 
-	protected SamplingPositionableIterableIntervalUnsafe(
-			final SamplingPositionableIterableIntervalUnsafe< T, S > other )
+	protected ProvidedSamplingPositionableIterableIntervalUnsafe( final ProvidedSamplingPositionableIterableIntervalUnsafe< T, S > other )
 	{
 		super( other );
 	}
@@ -84,7 +76,7 @@ public class SamplingPositionableIterableIntervalUnsafe< T, S extends Positionab
 	public Cursor< T > cursor()
 	{
 		if ( cursor == null )
-			cursor = new SamplingCursor<>( sourceInterval.cursor(), targetRA() );
+			cursor = sourceInterval.samplingCursor( targetRA() );
 		else
 			cursor.reset();
 		return cursor;
@@ -94,24 +86,15 @@ public class SamplingPositionableIterableIntervalUnsafe< T, S extends Positionab
 	public Cursor< T > localizingCursor()
 	{
 		if ( localizingCursor == null )
-			localizingCursor = new SamplingCursor<>( sourceInterval.localizingCursor(), targetRA() );
+			localizingCursor = sourceInterval.samplingLocalizingCursor( targetRA() );
 		else
 			localizingCursor.reset();
 		return localizingCursor;
 	}
 
-	protected RandomAccess< T > targetRA()
-	{
-		// TODO Remove workaround
-		if ( target instanceof Interval )
-			return target.randomAccess( Intervals.expand( ( Interval ) target, sourceInterval ) );
-		else
-			return target.randomAccess( sourceInterval );
-	}
-
 	@Override
-	public SamplingPositionableIterableIntervalUnsafe< T, S > copy()
+	public ProvidedSamplingPositionableIterableIntervalUnsafe< T, S > copy()
 	{
-		return new SamplingPositionableIterableIntervalUnsafe<>( this );
+		return new ProvidedSamplingPositionableIterableIntervalUnsafe<>( this );
 	}
 }

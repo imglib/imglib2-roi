@@ -45,6 +45,7 @@ import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.util.iterationcode.IterationCode;
 import net.imglib2.roi.util.iterationcode.IterationCodeCursor;
+import net.imglib2.roi.util.iterationcode.IterationCodeSamplingCursor;
 import net.imglib2.type.BooleanType;
 import net.imglib2.view.Views;
 
@@ -160,13 +161,15 @@ public class IterationCodeRegionWrappedRandomAccessibleInterval< T extends Boole
 		return new IterationCodeRegionWrappedRandomAccessibleInterval<>( this );
 	}
 
-
-
 	@Override
-	public < T > Cursor< T > samplingCursor( final RandomAccess< T > RandomAccess )
+	public < T > Cursor< T > samplingCursor( final RandomAccess< T > target )
 	{
-		return null;
+		return new IterationCodeSamplingCursor< T >( itcode, currentOffset, target );
 	}
 
-
+	@Override
+	public < T > Cursor< T > samplingLocalizingCursor( final RandomAccess< T > target )
+	{
+		return new IterationCodeSamplingCursor< T >( itcode, currentOffset, target );
+	}
 }

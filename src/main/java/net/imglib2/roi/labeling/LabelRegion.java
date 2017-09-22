@@ -36,6 +36,7 @@ package net.imglib2.roi.labeling;
 import java.util.ArrayList;
 
 import gnu.trove.list.array.TIntArrayList;
+import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
@@ -49,6 +50,9 @@ import net.imglib2.roi.Origin;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
 import net.imglib2.roi.util.PositionableInterval;
+import net.imglib2.roi.util.ProvidesSamplingCursor;
+import net.imglib2.roi.util.iterationcode.IterationCodeListSamplingCursor;
+import net.imglib2.roi.util.iterationcode.IterationCodeSamplingCursor;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
@@ -65,7 +69,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Tobias Pietzsch
  */
-public class LabelRegion< T > extends PositionableInterval implements PositionableIterableRegion< BoolType >
+public class LabelRegion< T > extends PositionableInterval implements PositionableIterableRegion< BoolType >, ProvidesSamplingCursor
 {
 	final LabelRegions< T > regions;
 
@@ -163,6 +167,20 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 			return randomAccess();
 		else
 			return new OutOfBoundsConstantValue<>( this, new BoolType( false ) );
+	}
+
+	@Override
+	public < T > Cursor< T > samplingCursor( final RandomAccess< T > target )
+	{
+		update();
+		return new IterationCodeListSamplingCursor<>( itcodes, currentOffset, target );
+	}
+
+	@Override
+	public < T > Cursor< T > samplingLocalizingCursor( final RandomAccess< T > target )
+	{
+		update();
+		return new IterationCodeListSamplingCursor<>( itcodes, currentOffset, target );
 	}
 
 	@Override

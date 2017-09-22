@@ -8,5 +8,7 @@ import net.imglib2.RandomAccess;
  */
 public interface ProvidesSamplingCursor
 {
-	public < T > Cursor< T > samplingCursor( final RandomAccess< T > RandomAccess );
+	public < T > Cursor< T > samplingCursor( final RandomAccess< T > target );
+
+	public < T > Cursor< T > samplingLocalizingCursor( final RandomAccess< T > target );
 }

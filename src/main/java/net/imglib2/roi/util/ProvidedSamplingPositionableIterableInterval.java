@@ -50,11 +50,6 @@ import net.imglib2.util.Intervals;
  * <em>Note that modifying the position of the
  * {@link SamplingPositionableIterableInterval} invalidates all cursors that
  * were obtained at an older position.</em>
- * <p>
- * This is a <em>unsafe</em> version of {@link SamplingIterableInterval}: Every
- * time, a {@link Cursor} is requested (using {@link #cursor()} etc)
- * the same {@link Cursor} instance is re-used. If you require to have more than
- * one {@link Cursor} at a given time you can {@link Cursor#copy() copy} the cursor.
  *
  * @param <T>
  *            target image type
@@ -62,20 +57,15 @@ import net.imglib2.util.Intervals;
  * @author Christian Dietz
  * @author Tobias Pietzsch
  */
-public class SamplingPositionableIterableIntervalUnsafe< T, S extends PositionableIterableInterval< Void > >
+public class ProvidedSamplingPositionableIterableInterval< T, S extends PositionableIterableInterval< Void > & ProvidesSamplingCursor >
 	extends SamplingPositionableIterableInterval< T, S >
 {
-	protected Cursor< T > cursor;
-
-	protected Cursor< T > localizingCursor;
-
-	public SamplingPositionableIterableIntervalUnsafe( final S region, final RandomAccessible< T > target )
+	public ProvidedSamplingPositionableIterableInterval( final S region, final RandomAccessible< T > target )
 	{
 		super( region, target );
 	}
 
-	protected SamplingPositionableIterableIntervalUnsafe(
-			final SamplingPositionableIterableIntervalUnsafe< T, S > other )
+	protected ProvidedSamplingPositionableIterableInterval( final ProvidedSamplingPositionableIterableInterval< T, S > other )
 	{
 		super( other );
 	}
@@ -83,35 +73,18 @@ public class SamplingPositionableIterableIntervalUnsafe< T, S extends Positionab
 	@Override
 	public Cursor< T > cursor()
 	{
-		if ( cursor == null )
-			cursor = new SamplingCursor<>( sourceInterval.cursor(), targetRA() );
-		else
-			cursor.reset();
-		return cursor;
+		return sourceInterval.samplingCursor( target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
 	public Cursor< T > localizingCursor()
 	{
-		if ( localizingCursor == null )
-			localizingCursor = new SamplingCursor<>( sourceInterval.localizingCursor(), targetRA() );
-		else
-			localizingCursor.reset();
-		return localizingCursor;
-	}
-
-	protected RandomAccess< T > targetRA()
-	{
-		// TODO Remove workaround
-		if ( target instanceof Interval )
-			return target.randomAccess( Intervals.expand( ( Interval ) target, sourceInterval ) );
-		else
-			return target.randomAccess( sourceInterval );
+		return sourceInterval.samplingLocalizingCursor( target.randomAccess( sourceInterval ) );
 	}
 
 	@Override
-	public SamplingPositionableIterableIntervalUnsafe< T, S > copy()
+	public ProvidedSamplingPositionableIterableInterval< T, S > copy()
 	{
-		return new SamplingPositionableIterableIntervalUnsafe<>( this );
+		return new ProvidedSamplingPositionableIterableInterval<>( this );
 	}
 }

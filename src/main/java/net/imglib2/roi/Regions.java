@@ -39,8 +39,11 @@ import net.imglib2.Positionable;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.util.IterationCodeRegionWrappedRandomAccessibleInterval;
-import net.imglib2.roi.util.RegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.PositionableWrappedIterableRegion;
+import net.imglib2.roi.util.ProvidedSamplingPositionableIterableInterval;
+import net.imglib2.roi.util.ProvidedSamplingPositionableIterableIntervalUnsafe;
+import net.imglib2.roi.util.ProvidesSamplingCursor;
+import net.imglib2.roi.util.RegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.SamplingIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableIntervalUnsafe;
@@ -92,16 +95,18 @@ public class Regions
 	 */
 	public static < T > PositionableIterableInterval< T > sample( final PositionableIterableInterval< Void > region, final RandomAccessible< T > img, final boolean unsafe )
 	{
-		/*
-		 * TODO: this can be made faster in certain cases. For example a
-		 * LabelRegion, instead of creating a LabelRegionCursor and then
-		 * connecting that to a RA<T> with a SamplingCursor, we could simply
-		 * build a Cursor that lets the InterationCode run directly on the
-		 * RA<T>. Find out how to do it.
-		 */
-		return unsafe
-				? new SamplingPositionableIterableIntervalUnsafe<>( region, img )
-				: new SamplingPositionableIterableInterval<>( region, img );
+		if ( region instanceof ProvidesSamplingCursor )
+		{
+			return unsafe
+					? new ProvidedSamplingPositionableIterableIntervalUnsafe<>( ( PositionableIterableInterval< Void > & ProvidesSamplingCursor ) region, img )
+					: new ProvidedSamplingPositionableIterableInterval<>( ( PositionableIterableInterval< Void > & ProvidesSamplingCursor ) region, img );
+		}
+		else
+		{
+			return unsafe
+					? new SamplingPositionableIterableIntervalUnsafe<>( region, img )
+					: new SamplingPositionableIterableInterval<>( region, img );
+		}
 	}
 
 	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )

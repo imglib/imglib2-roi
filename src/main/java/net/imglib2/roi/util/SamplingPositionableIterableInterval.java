@@ -34,7 +34,6 @@
 package net.imglib2.roi.util;
 
 import java.util.Iterator;
-
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessible;
 import net.imglib2.roi.Origin;
@@ -57,14 +56,14 @@ import net.imglib2.roi.PositionableIterableInterval;
  * @author Christian Dietz
  * @author Tobias Pietzsch
  */
-public class SamplingPositionableIterableInterval< T >
-	extends DelegatingPositionableInterval< PositionableIterableInterval< Void > >
+public class SamplingPositionableIterableInterval< T, S extends PositionableIterableInterval< Void > >
+	extends DelegatingPositionableInterval< S >
 	implements PositionableIterableInterval< T >
 {
 	final RandomAccessible< T > target;
 
 	public SamplingPositionableIterableInterval(
-			final PositionableIterableInterval< Void > region,
+			final S region,
 			final RandomAccessible< T > target )
 	{
 		super( region );
@@ -72,9 +71,9 @@ public class SamplingPositionableIterableInterval< T >
 	}
 
 	protected SamplingPositionableIterableInterval(
-			final SamplingPositionableIterableInterval< T > other )
+			final SamplingPositionableIterableInterval< T, S > other )
 	{
-		super( other.sourceInterval.copy() );
+		super( ( S ) other.sourceInterval.copy() );
 		this.target = other.target;
 	}
 
@@ -121,7 +120,7 @@ public class SamplingPositionableIterableInterval< T >
 	}
 
 	@Override
-	public SamplingPositionableIterableInterval< T > copy()
+	public SamplingPositionableIterableInterval< T, S > copy()
 	{
 		return new SamplingPositionableIterableInterval<>( this );
 	}
