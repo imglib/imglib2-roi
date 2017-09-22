@@ -379,17 +379,17 @@ public class PositionableInterval extends AbstractLocalizable implements Positio
 		@Override
 		public void fwd( final int d )
 		{
-			currentOffset[ d ]++;
-			currentMin[ d ]++;
-			currentMax[ d ]++;
+			currentOffset[ d ]--;
+			currentMin[ d ]--;
+			currentMax[ d ]--;
 		}
 
 		@Override
 		public void bck( final int d )
 		{
-			currentOffset[ d ]--;
-			currentMin[ d ]--;
-			currentMax[ d ]--;
+			currentOffset[ d ]++;
+			currentMin[ d ]++;
+			currentMax[ d ]++;
 		}
 
 		@Override
@@ -401,9 +401,9 @@ public class PositionableInterval extends AbstractLocalizable implements Positio
 		@Override
 		public void move( final long distance, final int d )
 		{
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
+			currentOffset[ d ] -= distance;
+			currentMin[ d ] -= distance;
+			currentMax[ d ] -= distance;
 		}
 
 		@Override
@@ -457,7 +457,7 @@ public class PositionableInterval extends AbstractLocalizable implements Positio
 		@Override
 		public void setPosition( final long pos, final int d )
 		{
-			final long distance = position[ d ] - currentOffset[ d ] - pos;
+			final long distance = pos - position[ d ] + currentOffset[ d ];
 			move( distance, d );
 		}
 	}
