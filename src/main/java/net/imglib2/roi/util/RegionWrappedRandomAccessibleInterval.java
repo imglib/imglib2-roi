@@ -52,7 +52,7 @@ import net.imglib2.view.Views;
  *
  * @author Tobias Pietzsch
  */
-public class RegionWrappedRandomAccessible< T extends BooleanType< T > >
+public class RegionWrappedRandomAccessibleInterval< T extends BooleanType< T > >
 		extends AbstractWrappedInterval< RandomAccessibleInterval< T > >
 		implements IterableRegion< T >
 {
@@ -60,12 +60,12 @@ public class RegionWrappedRandomAccessible< T extends BooleanType< T > >
 
 	private final IterableInterval< T > sourceIterable;
 
-	public RegionWrappedRandomAccessible( final RandomAccessibleInterval< T > interval )
+	public RegionWrappedRandomAccessibleInterval( final RandomAccessibleInterval< T > interval )
 	{
 		this( interval, ROIUtils.countTrue( Views.iterable( interval ) ) );
 	}
 
-	public RegionWrappedRandomAccessible( final RandomAccessibleInterval< T > interval, final long size )
+	public RegionWrappedRandomAccessibleInterval( final RandomAccessibleInterval< T > interval, final long size )
 	{
 		super( interval );
 		this.size = size;

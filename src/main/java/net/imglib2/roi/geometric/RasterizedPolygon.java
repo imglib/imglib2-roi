@@ -35,7 +35,7 @@ package net.imglib2.roi.geometric;
 
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
-import net.imglib2.roi.util.RegionWrappedRandomAccessible;
+import net.imglib2.roi.util.RegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.ROIUtils;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
@@ -49,7 +49,7 @@ import net.imglib2.view.Views;
  * @author Daniel Seebacher, University of Konstanz
  *
  */
-public class RasterizedPolygon extends RegionWrappedRandomAccessible< BoolType > implements IterableRegion< BoolType >
+public class RasterizedPolygon extends RegionWrappedRandomAccessibleInterval< BoolType > implements IterableRegion< BoolType >
 {
 	public RasterizedPolygon( final Polygon polygon )
 	{
