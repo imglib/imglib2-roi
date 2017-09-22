@@ -31,33 +31,88 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.geometric;
+package net.imglib2.roi.util;
 
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.IterableRegion;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.ROIUtils;
-import net.imglib2.type.logic.BoolType;
-import net.imglib2.util.Intervals;
-import net.imglib2.view.Views;
+import net.imglib2.Cursor;
+import net.imglib2.type.BooleanType;
 
 /**
- * Rasterized {@link Polygon}.
+ * A {@code Cursor<Void>} that iterates only the {@code true} pixels of a source {@code Cursor<BooleanType>}.
  *
  * @author Tobias Pietzsch
- * @author Christian Dietz, University of Konstanz
- * @author Daniel Seebacher, University of Konstanz
- *
  */
-public class RasterizedPolygon extends IterableRandomAccessibleRegion< BoolType > implements IterableRegion< BoolType >
+public class TrueCursor< T extends BooleanType< T > >
+		extends DelegatingLocalizable< Cursor< T > >
+		implements Cursor< Void >
 {
-	public RasterizedPolygon( final Polygon polygon )
+	private long index;
+
+	private final long maxIndex;
+
+	public TrueCursor( final Cursor< T > cursor, final long size )
 	{
-		this( Views.interval( Views.raster( polygon ), Intervals.smallestContainingInterval( polygon ) ) );
+		super( cursor );
+		maxIndex = size;
+		reset();
 	}
 
-	public RasterizedPolygon( final RandomAccessibleInterval< BoolType > region )
+	protected TrueCursor( final TrueCursor< T > other )
 	{
-		super( region, ROIUtils.countTrue( Views.iterable( region ) ) );
+		super( other.delegate.copyCursor() );
+		index = other.index;
+		maxIndex = other.maxIndex;
+	}
+
+	@Override
+	public Void get()
+	{
+		return null;
+	}
+
+	@Override
+	public void jumpFwd( final long steps )
+	{
+		for ( long i = 0; i < steps; ++i )
+			fwd();
+	}
+
+	@Override
+	public void fwd()
+	{
+		while ( !delegate.next().get() )
+			;
+		++index;
+	}
+
+	@Override
+	public void reset()
+	{
+		index = 0;
+		delegate.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return index < maxIndex;
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return get();
+	}
+
+	@Override
+	public TrueCursor< T > copy()
+	{
+		return new TrueCursor<>( this );
+	}
+
+	@Override
+	public TrueCursor< T > copyCursor()
+	{
+		return copy();
 	}
 }

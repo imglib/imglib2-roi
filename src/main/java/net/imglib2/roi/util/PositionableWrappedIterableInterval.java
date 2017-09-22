@@ -115,7 +115,7 @@ public class PositionableWrappedIterableInterval< T, S extends IterableInterval<
 		@Override
 		public T get()
 		{
-			return null;
+			return source.get();
 		}
 
 		@Override

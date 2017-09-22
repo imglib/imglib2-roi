@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,6 +35,8 @@ package net.imglib2.roi.util;
 
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
+import net.imglib2.FinalInterval;
+import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.BooleanType;
@@ -46,10 +48,12 @@ import net.imglib2.type.BooleanType;
  *
  * @author Tobias Pietzsch
  */
+@Deprecated
 public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
-		extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements Cursor< Void >
+		extends DelegatingLocalizable< RandomAccess< T > >
+		implements Cursor< Void >
 {
-	private final RandomAccess< T > randomAccess;
+	private final FinalInterval interval;
 
 	private final int n;
 
@@ -63,22 +67,23 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
 
 	public RandomAccessibleRegionCursor( final RandomAccessibleInterval< T > interval, final long size )
 	{
-		super( interval );
-		randomAccess = interval.randomAccess();
-		n = numDimensions();
-		maxLineIndex = dimension( 0 ) - 1;
+		super( interval.randomAccess() );
+		this.interval = new FinalInterval( interval );
+		n = interval.numDimensions();
+		maxLineIndex = interval.dimension( 0 ) - 1;
 		maxIndex = size;
 		reset();
 	}
 
-	protected RandomAccessibleRegionCursor( final RandomAccessibleRegionCursor< T > cursor )
+	protected RandomAccessibleRegionCursor( final RandomAccessibleRegionCursor< T > other )
 	{
-		super( cursor.sourceInterval );
-		this.randomAccess = cursor.randomAccess.copyRandomAccess();
-		n = cursor.n;
-		lineIndex = cursor.lineIndex;
-		maxIndex = cursor.maxIndex;
-		maxLineIndex = cursor.maxLineIndex;
+		super( other.delegate.copyRandomAccess() );
+		interval = other.interval;
+		n = other.n;
+		index = other.index;
+		maxIndex = other.maxIndex;
+		lineIndex = other.lineIndex;
+		maxLineIndex = other.maxLineIndex;
 	}
 
 	@Override
@@ -99,23 +104,23 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
 	{
 		do
 		{
-			randomAccess.fwd( 0 );
+			delegate.fwd( 0 );
 			if ( ++lineIndex > maxLineIndex )
 				nextLine();
 		}
-		while ( !randomAccess.get().get() );
+		while ( !delegate.get().get() );
 		++index;
 	}
 
 	private void nextLine()
 	{
 		lineIndex = 0;
-		randomAccess.setPosition( min( 0 ), 0 );
+		delegate.setPosition( interval.min( 0 ), 0 );
 		for ( int d = 1; d < n; ++d )
 		{
-			randomAccess.fwd( d );
-			if ( randomAccess.getLongPosition( d ) > max( d ) )
-				randomAccess.setPosition( min( d ), d );
+			delegate.fwd( d );
+			if ( delegate.getLongPosition( d ) > interval.max( d ) )
+				delegate.setPosition( interval.min( d ), d );
 			else
 				break;
 		}
@@ -126,8 +131,8 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
 	{
 		index = 0;
 		lineIndex = -1;
-		min( randomAccess );
-		randomAccess.bck( 0 );
+		interval.min( delegate );
+		delegate.bck( 0 );
 	}
 
 	@Override
@@ -144,66 +149,14 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > >
 	}
 
 	@Override
-	public void remove()
-	{}
-
-	@Override
 	public RandomAccessibleRegionCursor< T > copy()
 	{
-		return new RandomAccessibleRegionCursor< T >( this );
+		return new RandomAccessibleRegionCursor<>( this );
 	}
 
 	@Override
 	public RandomAccessibleRegionCursor< T > copyCursor()
 	{
 		return copy();
-	}
-
-	@Override
-	public void localize( final float[] position )
-	{
-		randomAccess.localize( position );
-	}
-
-	@Override
-	public void localize( final double[] position )
-	{
-		randomAccess.localize( position );
-	}
-
-	@Override
-	public float getFloatPosition( final int d )
-	{
-		return randomAccess.getFloatPosition( d );
-	}
-
-	@Override
-	public double getDoublePosition( final int d )
-	{
-		return randomAccess.getDoublePosition( d );
-	}
-
-	@Override
-	public void localize( final int[] position )
-	{
-		randomAccess.localize( position );
-	}
-
-	@Override
-	public void localize( final long[] position )
-	{
-		randomAccess.localize( position );
-	}
-
-	@Override
-	public int getIntPosition( final int d )
-	{
-		return randomAccess.getIntPosition( d );
-	}
-
-	@Override
-	public long getLongPosition( final int d )
-	{
-		return randomAccess.getLongPosition( d );
 	}
 }

@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,6 +42,7 @@ import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.FinalRealInterval;
 import net.imglib2.Interval;
+import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccessibleInterval;
@@ -56,10 +57,10 @@ import net.imglib2.view.Views;
 
 public class ROIUtils
 {
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	public static < T extends BooleanType< T > > long countTrue( final IterableInterval< T > interval )
 	{
 		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
+		for ( final T t : interval )
 			if ( t.get() )
 				++sum;
 		return sum;
@@ -176,7 +177,7 @@ public class ROIUtils
 	 * Create {@link IterationCode} from {@link RandomAccessibleInterval}. Only
 	 * positions with value 'true' are considered during {@link IterationCode}
 	 * construction.
-	 * 
+	 *
 	 * @param region
 	 *            to derive {@link IterationCode} from.
 	 * @return {@link IterationCode} representing the region

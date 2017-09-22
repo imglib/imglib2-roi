@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,6 +43,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.IterableRegion;
 import net.imglib2.type.BooleanType;
+import net.imglib2.view.Views;
 
 /**
  * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
@@ -57,11 +58,11 @@ import net.imglib2.type.BooleanType;
 public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
 {
-	final long size;
+	private final long size;
 
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
+	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, ROIUtils.countTrue( interval ) );
+		this( interval, ROIUtils.countTrue( Views.iterable( interval ) ) );
 	}
 
 	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )

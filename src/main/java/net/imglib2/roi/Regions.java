@@ -109,7 +109,7 @@ public class Regions
 		if ( region instanceof IterableRegion )
 			return ( IterableRegion< B > ) region;
 		else
-			return IterableRandomAccessibleRegion.create( region );
+			return new IterableRandomAccessibleRegion<>( region );
 	}
 
 	/*
