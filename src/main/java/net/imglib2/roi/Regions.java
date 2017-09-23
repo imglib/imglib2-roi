@@ -36,6 +36,7 @@ package net.imglib2.roi;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.Positionable;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.util.IterationCodeRegionWrappedRandomAccessibleInterval;
@@ -47,6 +48,7 @@ import net.imglib2.roi.util.RegionWrappedRandomAccessibleInterval;
 import net.imglib2.roi.util.SamplingIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableInterval;
 import net.imglib2.roi.util.SamplingPositionableIterableIntervalUnsafe;
+import net.imglib2.roi.util.TemplateRandomAccessible;
 import net.imglib2.type.BooleanType;
 
 public class Regions
@@ -148,5 +150,12 @@ public class Regions
 			return ( PositionableIterableRegion< B > ) region;
 		else
 			return new IterationCodeRegionWrappedRandomAccessibleInterval<>( region );
+	}
+
+
+
+	public static < T, B extends BooleanType< B > > RandomAccessible< IterableInterval< T > > neighborhoodsRandomAccessible( RandomAccessibleInterval< B > region, final RandomAccessible< T > source )
+	{
+		return new TemplateRandomAccessible<>( sample( itcodepositionable( region ), source, true ) );
 	}
 }
