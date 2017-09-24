@@ -67,6 +67,8 @@ public final class BinaryOperations
 {
 	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > AND = ( left, right ) -> right.and( left );
 
+	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > ANDX = binOp( ( left, right ) -> right.and( left ), Operation.AND );
+
 	private final static BiFunction< Mask< RealLocalizable >, Mask< RealLocalizable >, Predicate< RealLocalizable > > REAL_AND = ( left, right ) -> right.and( left );
 
 	private final static BiFunction< Mask< Localizable >, Mask< Localizable >, Predicate< Localizable > > OR = ( left, right ) -> right.or( left );
@@ -114,7 +116,12 @@ public final class BinaryOperations
 	 */
 	public static BiFunction< MaskRealInterval, AffineGet, MaskRealInterval > intervalTransform( final int numDimensions )
 	{
-		return ( left, right ) -> new MaskRealIntervalOperationResult<>( createAffinePredicate( numDimensions ).apply( left, right ), left.boundaryType(), Arrays.asList( left, right ), Operation.TRANSFORM, realInterval( left, right ) );
+		return ( left, right ) -> new MaskRealIntervalOperationResult<>(
+				createAffinePredicate( numDimensions ).apply( left, right ),
+				left.boundaryType(),
+				Arrays.asList( left, right ),
+				Operation.TRANSFORM,
+				realInterval( left, right ) );
 	}
 
 	// -- AND --
@@ -123,6 +130,12 @@ public final class BinaryOperations
 	public static BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > and()
 	{
 		return binOp( AND, Operation.AND );
+	}
+
+	/** The intersection of two discrete space Masks. */
+	public static Mask< Localizable > andx( Mask< Localizable > left, Mask< Localizable > right )
+	{
+		return ANDX.apply( left, right );
 	}
 
 	/**

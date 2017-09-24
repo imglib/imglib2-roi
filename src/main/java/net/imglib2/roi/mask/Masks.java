@@ -35,7 +35,7 @@
 package net.imglib2.roi.mask;
 
 import java.util.List;
-
+import java.util.function.BiFunction;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.RandomAccess;
@@ -598,5 +598,24 @@ public final class Masks
 				return true;
 		}
 		return false;
+	}
+
+	private static boolean isIntersectionEmpty( final RealInterval left, final RealInterval right )
+	{
+		for ( int d = 0; d < left.numDimensions(); d++ )
+		{
+			if ( left.realMin( d ) > right.realMax( d ) || left.realMax( d ) < right.realMin( d ) )
+				return true;
+		}
+		return false;
+	}
+
+	public static void main( String[] args )
+	{
+		final BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > a1 = BinaryOperations.and();
+		final BiFunction< Mask< Localizable >, Mask< Localizable >, Mask< Localizable > > a2 = BinaryOperations::andx;
+		System.out.println( a1 );
+		System.out.println( a2 );
+		System.out.println( a1 == a2 );
 	}
 }
