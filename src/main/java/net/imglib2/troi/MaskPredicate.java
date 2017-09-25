@@ -66,7 +66,7 @@ public interface MaskPredicate< T > extends Predicate< T >
 	@Override
 	public MaskPredicate< T > negate();
 
-	public MaskPredicate< T > substract( Predicate< ? super T > other );
+	public MaskPredicate< T > minus( Predicate< ? super T > other );
 
 	public MaskPredicate< T > xor( Predicate< ? super T > other );
 }
