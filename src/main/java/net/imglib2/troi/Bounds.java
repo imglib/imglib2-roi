@@ -9,22 +9,22 @@ import net.imglib2.util.Intervals;
 /**
  * Operations on mask bounds. Bounds can be UNBOUNDED, EMPTY, or a (Real)Interval.
  */
-public class Bounds
+public abstract class Bounds< I, B extends Bounds< I, B > >
 {
 	public interface BinaryBoundsOperator
 	{
-		public < I, B extends AbstractBounds< I, B > > B apply( B left, B right );
+		public < I, B extends Bounds< I, B > > B apply( B left, B right );
 	}
 
 	public interface UnaryBoundsOperator
 	{
-		public < I, B extends AbstractBounds< I, B > > B apply( B arg );
+		public < I, B extends Bounds< I, B > > B apply( B arg );
 	}
 
 	public static final BinaryBoundsOperator and = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends AbstractBounds< I, B > > B apply( final B left, final B right )
+		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.and( right );
 		}
@@ -33,7 +33,7 @@ public class Bounds
 	public static final BinaryBoundsOperator or = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends AbstractBounds< I, B > > B apply( final B left, final B right )
+		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.or( right );
 		}
@@ -42,7 +42,7 @@ public class Bounds
 	public static final UnaryBoundsOperator negate = new UnaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends AbstractBounds< I, B > > B apply( final B arg )
+		public < I, B extends Bounds< I, B > > B apply( final B arg )
 		{
 			return arg.negate();
 		}
@@ -51,7 +51,7 @@ public class Bounds
 	public static final BinaryBoundsOperator xor = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends AbstractBounds< I, B > > B apply( final B left, final B right )
+		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.xor( right );
 		}
@@ -60,86 +60,87 @@ public class Bounds
 	public static final BinaryBoundsOperator minus = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends AbstractBounds< I, B > > B apply( final B left, final B right )
+		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.minus( right );
 		}
 	};
 
-	public abstract static class AbstractBounds< I, B extends AbstractBounds< I, B > >
+	public boolean isUnbounded()
 	{
-		public boolean isUnbounded()
-		{
-			return interval == null && !empty;
-		}
-
-		public boolean isEmpty()
-		{
-			return empty;
-		}
-
-		public I interval()
-		{
-			return empty ? null : interval;
-		}
-
-		protected abstract B bounds( I i );
-		protected abstract I intersect( I i1, I i2 );
-		protected abstract I union( I i1, I i2 );
-		protected abstract B UNBOUNDED();
-		protected abstract B EMPTY();
-
-		public B and( B that )
-		{
-			if ( this == EMPTY() || that == EMPTY() )
-				return EMPTY();
-			if ( this == UNBOUNDED() )
-				return that;
-			if ( that == UNBOUNDED() )
-				return ( B ) this;
-			return bounds( intersect ( this.interval(), that.interval() ) );
-		}
-
-		public B or( B that )
-		{
-			if ( this == UNBOUNDED() || that == UNBOUNDED() )
-				return UNBOUNDED();
-			if ( this == EMPTY() )
-				return that;
-			if ( that == EMPTY() )
-				return ( B ) this;
-			return bounds( union ( this.interval(), that.interval() ) );
-		}
-
-		public B negate()
-		{
-			return this == UNBOUNDED() ? EMPTY() : UNBOUNDED();
-		}
-
-		public B xor( B that )
-		{
-			// TODO: optimize?
-			return this.and( that.negate() ).or( this.negate().and( that ) );
-		}
-
-		public B minus( B that )
-		{
-			// TODO: optimize?
-			return and( that.negate() );
-		}
-
-		private final I interval;
-
-		private final boolean empty;
-
-		protected AbstractBounds( final I interval, final boolean empty )
-		{
-			this.interval = interval;
-			this.empty = empty;
-		}
+		return interval == null && !empty;
 	}
 
-	public static class IntBounds extends AbstractBounds< Interval, IntBounds >
+	public boolean isEmpty()
+	{
+		return empty;
+	}
+
+	public I interval()
+	{
+		return empty ? null : interval;
+	}
+
+	protected abstract B bounds( I i );
+
+	protected abstract I intersect( I i1, I i2 );
+
+	protected abstract I union( I i1, I i2 );
+
+	protected abstract B UNBOUNDED();
+
+	protected abstract B EMPTY();
+
+	public B and( B that )
+	{
+		if ( this == EMPTY() || that == EMPTY() )
+			return EMPTY();
+		if ( this == UNBOUNDED() )
+			return that;
+		if ( that == UNBOUNDED() )
+			return ( B ) this;
+		return bounds( intersect( this.interval(), that.interval() ) );
+	}
+
+	public B or( B that )
+	{
+		if ( this == UNBOUNDED() || that == UNBOUNDED() )
+			return UNBOUNDED();
+		if ( this == EMPTY() )
+			return that;
+		if ( that == EMPTY() )
+			return ( B ) this;
+		return bounds( union( this.interval(), that.interval() ) );
+	}
+
+	public B negate()
+	{
+		return this == UNBOUNDED() ? EMPTY() : UNBOUNDED();
+	}
+
+	public B xor( B that )
+	{
+		// TODO: optimize?
+		return this.and( that.negate() ).or( this.negate().and( that ) );
+	}
+
+	public B minus( B that )
+	{
+		// TODO: optimize?
+		return and( that.negate() );
+	}
+
+	private final I interval;
+
+	private final boolean empty;
+
+	protected Bounds( final I interval, final boolean empty )
+	{
+		this.interval = interval;
+		this.empty = empty;
+	}
+
+	public static class IntBounds extends Bounds< Interval, IntBounds >
 	{
 		public static final IntBounds UNBOUNDED = new IntBounds( null, false );
 
@@ -191,7 +192,7 @@ public class Bounds
 		}
 	}
 
-	public static class RealBounds extends AbstractBounds< RealInterval, RealBounds >
+	public static class RealBounds extends Bounds< RealInterval, RealBounds >
 	{
 		public static final RealBounds UNBOUNDED = new RealBounds( null, false );
 
