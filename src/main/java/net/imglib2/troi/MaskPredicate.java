@@ -34,9 +34,11 @@
 
 package net.imglib2.troi;
 
+import static net.imglib2.troi.BoundaryType.UNSPECIFIED;
+
 import java.util.function.Predicate;
 
-import static net.imglib2.troi.BoundaryType.UNSPECIFIED;
+import net.imglib2.EuclideanSpace;
 
 /**
  * Base interface for all things that divide an N-space into two parts.
@@ -48,7 +50,7 @@ import static net.imglib2.troi.BoundaryType.UNSPECIFIED;
  * @param <T>
  *            location in N-space; typically a {@code RealLocalizable} or {@code Localizable}).
  */
-public interface MaskPredicate< T > extends Predicate< T >
+public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 {
 
 	/** Returns the boundary behavior of this Mask. */
