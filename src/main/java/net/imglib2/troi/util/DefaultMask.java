@@ -3,25 +3,23 @@ package net.imglib2.troi.util;
 import java.util.function.Predicate;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
-import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Mask;
-import net.imglib2.troi.RealMask;
 
-public class AbstractRealMask extends AbstractEuclideanSpace implements RealMask
+public class DefaultMask extends AbstractEuclideanSpace implements Mask
 {
 	private final BoundaryType boundaryType;
 
-	private final Predicate< ? super RealLocalizable > predicate;
+	private final Predicate< ? super Localizable > predicate;
 
 	/**
 	 * @param n
 	 * 		number of dimensions.
 	 */
-	public AbstractRealMask(
+	public DefaultMask(
 			final int n,
 			final BoundaryType boundaryType,
-			final Predicate< ? super RealLocalizable > predicate )
+			final Predicate< ? super Localizable > predicate )
 	{
 		super( n );
 		this.boundaryType = boundaryType;
@@ -35,7 +33,7 @@ public class AbstractRealMask extends AbstractEuclideanSpace implements RealMask
 	}
 
 	@Override
-	public boolean test( final RealLocalizable localizable )
+	public boolean test( final Localizable localizable )
 	{
 		return predicate.test( localizable );
 	}

@@ -1,6 +1,7 @@
 package net.imglib2.troi;
 
 import java.util.function.Predicate;
+
 import net.imglib2.Interval;
 import net.imglib2.RealInterval;
 import net.imglib2.troi.util.TODO_Intervals;
@@ -98,7 +99,8 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 	protected abstract B EMPTY();
 
-	public B and( B that )
+	@SuppressWarnings( "unchecked" )
+	public B and( final B that )
 	{
 		if ( this == EMPTY() || that == EMPTY() )
 			return EMPTY();
@@ -109,7 +111,8 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 		return bounds( intersect( this.interval(), that.interval() ) );
 	}
 
-	public B or( B that )
+	@SuppressWarnings( "unchecked" )
+	public B or( final B that )
 	{
 		if ( this == UNBOUNDED() || that == UNBOUNDED() )
 			return UNBOUNDED();
@@ -122,19 +125,17 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 	public B negate()
 	{
-		return this == UNBOUNDED() ? EMPTY() : UNBOUNDED();
+		return UNBOUNDED();
 	}
 
-	public B xor( B that )
+	public B xor( final B that )
 	{
-		// TODO: optimize?
-		return this.and( that.negate() ).or( this.negate().and( that ) );
+		return this.or( that );
 	}
 
-	public B minus( B that )
+	public B minus( final B that )
 	{
-		// TODO: optimize?
-		return and( that.negate() );
+		return ( B ) this;
 	}
 
 	private final I interval;
@@ -153,7 +154,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 		public static final IntBounds EMPTY = new IntBounds( null, true );
 
-		public static IntBounds of( Predicate< ? > predicate )
+		public static IntBounds of( final Predicate< ? > predicate )
 		{
 			if ( predicate instanceof Interval )
 				return IntBounds.of( ( Interval ) predicate );
@@ -163,12 +164,13 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 				return IntBounds.UNBOUNDED;
 		}
 
-		public static IntBounds of( Interval i )
+		public static IntBounds of( final Interval i )
 		{
 			return i == null ? UNBOUNDED : Intervals.isEmpty( i ) ? EMPTY : new IntBounds( i, false );
 		}
 
-		protected IntBounds bounds( Interval i )
+		@Override
+		protected IntBounds bounds( final Interval i )
 		{
 			return of( i );
 		}
@@ -178,21 +180,25 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 			super( interval, empty );
 		}
 
-		protected Interval intersect( Interval i1, Interval i2 )
+		@Override
+		protected Interval intersect( final Interval i1, final Interval i2 )
 		{
 			return Intervals.intersect( i1, i2 );
 		}
 
-		protected Interval union( Interval i1, Interval i2 )
+		@Override
+		protected Interval union( final Interval i1, final Interval i2 )
 		{
 			return Intervals.union( i1, i2 );
 		}
 
+		@Override
 		protected IntBounds UNBOUNDED()
 		{
 			return UNBOUNDED;
 		}
 
+		@Override
 		protected IntBounds EMPTY()
 		{
 			return EMPTY;
@@ -205,7 +211,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 		public static final RealBounds EMPTY = new RealBounds( null, true );
 
-		public static RealBounds of( Predicate< ? > predicate )
+		public static RealBounds of( final Predicate< ? > predicate )
 		{
 			if ( predicate instanceof RealInterval )
 				return RealBounds.of( ( RealInterval ) predicate );
@@ -213,12 +219,13 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 				return RealBounds.UNBOUNDED;
 		}
 
-		public static RealBounds of( RealInterval i )
+		public static RealBounds of( final RealInterval i )
 		{
 			return i == null ? UNBOUNDED : TODO_Intervals.isEmpty( i ) ? EMPTY : new RealBounds( i, false );
 		}
 
-		protected RealBounds bounds( RealInterval i )
+		@Override
+		protected RealBounds bounds( final RealInterval i )
 		{
 			return of( i );
 		}
@@ -228,21 +235,25 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 			super( interval, empty );
 		}
 
-		protected RealInterval intersect( RealInterval i1, RealInterval i2 )
+		@Override
+		protected RealInterval intersect( final RealInterval i1, final RealInterval i2 )
 		{
 			return TODO_Intervals.intersect( i1, i2 );
 		}
 
-		protected RealInterval union( RealInterval i1, RealInterval i2 )
+		@Override
+		protected RealInterval union( final RealInterval i1, final RealInterval i2 )
 		{
 			return TODO_Intervals.union( i1, i2 );
 		}
 
+		@Override
 		protected RealBounds UNBOUNDED()
 		{
 			return UNBOUNDED;
 		}
 
+		@Override
 		protected RealBounds EMPTY()
 		{
 			return EMPTY;

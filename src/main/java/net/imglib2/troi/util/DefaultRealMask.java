@@ -1,28 +1,29 @@
 package net.imglib2.troi.util;
 
 import java.util.function.Predicate;
-import net.imglib2.AbstractInterval;
-import net.imglib2.AbstractRealInterval;
-import net.imglib2.Interval;
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
-import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.MaskInterval;
-import net.imglib2.troi.RealMaskRealInterval;
+import net.imglib2.troi.Mask;
+import net.imglib2.troi.RealMask;
 
-public class AbstractRealMaskRealInterval extends AbstractRealInterval implements RealMaskRealInterval
+public class DefaultRealMask extends AbstractEuclideanSpace implements RealMask
 {
 	private final BoundaryType boundaryType;
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
-	public AbstractRealMaskRealInterval(
-			final RealInterval interval,
+	/**
+	 * @param n
+	 * 		number of dimensions.
+	 */
+	public DefaultRealMask(
+			final int n,
 			final BoundaryType boundaryType,
-			Predicate< ? super RealLocalizable > predicate )
+			final Predicate< ? super RealLocalizable > predicate )
 	{
-		super( interval );
+		super( n );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
 	}
