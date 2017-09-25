@@ -135,6 +135,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 		return this.or( that );
 	}
 
+	@SuppressWarnings( "unchecked" )
 	public B minus( final B that )
 	{
 		return ( B ) this;
