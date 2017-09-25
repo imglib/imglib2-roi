@@ -7,13 +7,13 @@ import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.MaskInterval;
 
-public class AbstractMaskInterval extends AbstractInterval implements MaskInterval
+public class DefaultMaskInterval extends AbstractInterval implements MaskInterval
 {
 	private final BoundaryType boundaryType;
 
 	private final Predicate< ? super Localizable > predicate;
 
-	public AbstractMaskInterval(
+	public DefaultMaskInterval(
 			final Interval interval,
 			final BoundaryType boundaryType,
 			Predicate< ? super Localizable > predicate )
