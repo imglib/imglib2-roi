@@ -8,5 +8,8 @@ import net.imglib2.RealLocalizable;
 public interface RealMaskRealInterval extends RealMask, RealInterval
 {
 	@Override
-	public RealMaskRealInterval and( Predicate< ? super RealLocalizable > other );
+	public default RealMaskRealInterval and( Predicate< ? super RealLocalizable > other )
+	{
+		throw new UnsupportedOperationException( "TODO" );
+	}
 }

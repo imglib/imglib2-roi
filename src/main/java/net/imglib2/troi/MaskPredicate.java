@@ -34,13 +34,9 @@
 
 package net.imglib2.troi;
 
-import java.util.Objects;
 import java.util.function.Predicate;
-import net.imglib2.troi.MaskPredicate.BoundaryType;
 
-import static net.imglib2.troi.MaskPredicate.BoundaryType.CLOSED;
-import static net.imglib2.troi.MaskPredicate.BoundaryType.OPEN;
-import static net.imglib2.troi.MaskPredicate.BoundaryType.UNSPECIFIED;
+import static net.imglib2.troi.BoundaryType.UNSPECIFIED;
 
 /**
  * Base interface for all things that divide an N-space into two parts.
@@ -54,18 +50,6 @@ import static net.imglib2.troi.MaskPredicate.BoundaryType.UNSPECIFIED;
  */
 public interface MaskPredicate< T > extends Predicate< T >
 {
-	/**
-	 * Defines the edge behavior of the Mask.
-	 * <ul>
-	 * <li>CLOSED: contains all points on the boundary</li>
-	 * <li>OPEN: contains no points on the boundary</li>
-	 * <li>UNSPECIFIED: boundary behavior is unclear</li>
-	 * </ul>
-	 */
-	enum BoundaryType
-	{
-		CLOSED, OPEN, UNSPECIFIED;
-	}
 
 	/** Returns the boundary behavior of this Mask. */
 	default BoundaryType boundaryType()
@@ -81,4 +65,8 @@ public interface MaskPredicate< T > extends Predicate< T >
 
 	@Override
 	public MaskPredicate< T > negate();
+
+	public MaskPredicate< T > substract( Predicate< ? super T > other );
+
+	public MaskPredicate< T > xor( Predicate< ? super T > other );
 }

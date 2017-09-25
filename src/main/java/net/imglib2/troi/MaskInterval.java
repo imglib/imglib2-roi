@@ -11,4 +11,16 @@ public interface MaskInterval extends Mask, Interval
 	{
 		return Masks.and( this, other );
 	}
+
+//	@Override
+//	public default Mask or( Predicate< ? super Localizable > other )
+//	{
+//		throw new UnsupportedOperationException( "TODO" );
+//	}
+
+	// note: NOT overriding Mask.or!
+	public default MaskInterval or( MaskInterval other )
+	{
+		throw new UnsupportedOperationException( "TODO" );
+	}
 }
