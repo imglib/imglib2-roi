@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.troi.Bounds.BinaryBoundsOperator;
 import net.imglib2.troi.Bounds.IntBounds;
 import net.imglib2.troi.Bounds.RealBounds;
@@ -16,6 +17,8 @@ import net.imglib2.troi.util.DefaultMask;
 import net.imglib2.troi.util.DefaultMaskInterval;
 import net.imglib2.troi.util.DefaultRealMask;
 import net.imglib2.troi.util.DefaultRealMaskRealInterval;
+import net.imglib2.troi.util.RealMaskRealIntervalAsRRARI;
+import net.imglib2.type.logic.BoolType;
 
 /**
  * Utility class for working with {@link Mask}s.
@@ -188,6 +191,15 @@ public class Masks
 	{
 		return NEGATE.applyReal( arg );
 	}
+
+	/*
+	 * RandomAccessible Wrappers
+	 */
+	public static RealRandomAccessibleRealInterval< BoolType > toRRARI( final RealMaskRealInterval mask )
+	{
+		return new RealMaskRealIntervalAsRRARI<>( mask, new BoolType() );
+	}
+
 
 	/*
 	 * private utilities
