@@ -1,45 +1,49 @@
 package net.imglib2.troi;
 
 import java.util.function.Predicate;
+
 import net.imglib2.EuclideanSpace;
-import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.realtransform.RealTransform;
 
 public interface RealMask extends MaskPredicate< RealLocalizable >, EuclideanSpace
 {
 	@Override
-	public default RealMask and( Predicate< ? super RealLocalizable > other )
+	public default RealMask and( final Predicate< ? super RealLocalizable > other )
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		return Masks.and( this, other );
 	}
 
 	@Override
-	public default RealMask or( Predicate< ? super RealLocalizable > other )
+	public default RealMask or( final Predicate< ? super RealLocalizable > other )
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		return Masks.or( this, other );
 	}
 
 	@Override
 	public default RealMask negate()
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		return Masks.negate( this );
 	}
 
 	@Override
-	public default RealMask substract( Predicate< ? super RealLocalizable > other )
+	public default RealMask minus( final Predicate< ? super RealLocalizable > other )
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		return Masks.minus( this, other );
 	}
 
 	@Override
-	public default RealMask xor( Predicate< ? super RealLocalizable > other )
+	public default RealMask xor( final Predicate< ? super RealLocalizable > other )
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		return Masks.xor( this, other );
 	}
 
-	public default RealMask transform( RealTransform transformToSource )
+	/*
+	 * TODO: transformFromSource or transformToSource?
+	 * TODO: should this really be a method in the interface?
+	 */
+	public default RealMask transform( final RealTransform transformToSource )
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		throw new UnsupportedOperationException( "TODO, not yet implemented" );
 	}
 }
