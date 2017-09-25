@@ -1,6 +1,7 @@
 package net.imglib2.troi;
 
-import java.util.List;
+import net.imglib2.Localizable;
+import net.imglib2.RealLocalizable;
 
 /**
  * A {@link Mask} which has resulted from an {@link Operation} on one or more
