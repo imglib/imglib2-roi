@@ -8,14 +8,16 @@ import net.imglib2.troi.util.TODO_Intervals;
 import net.imglib2.util.Intervals;
 
 /**
- * Operations on mask bounds. Bounds can be UNBOUNDED, EMPTY, or a (Real)Interval.
+ * Operations on mask bounds. Bounds can be UNBOUNDED, EMPTY, or a
+ * (Real)Interval.
  *
- * TODO: which public methods can/should be made package private?
+ * Specialized for RealInterval and Interval in nested subclasses
+ * {@link IntBounds} and {@link RealBounds}.
  *
  * @param <I>
- *     interval type ({@link Interval} or {@link RealInterval})
+ *            interval type ({@link Interval} or {@link RealInterval})
  * @param <B>
- *     recursive type of this {@code Bounds}
+ *            recursive type of this {@code Bounds}
  */
 public abstract class Bounds< I, B extends Bounds< I, B > >
 {
