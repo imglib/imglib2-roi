@@ -34,7 +34,7 @@ public class Masks
 	 * TODO: should these be public?
 	 */
 
-	static final BinaryMaskOperator AND = new BinaryMaskOperator( BoundaryType::and, Bounds.and )
+	public static final BinaryMaskOperator AND = new BinaryMaskOperator( BoundaryType::and, Bounds.and )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -43,7 +43,7 @@ public class Masks
 		}
 	};
 
-	static final BinaryMaskOperator OR = new BinaryMaskOperator( BoundaryType::or, Bounds.or )
+	public static final BinaryMaskOperator OR = new BinaryMaskOperator( BoundaryType::or, Bounds.or )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -52,7 +52,7 @@ public class Masks
 		}
 	};
 
-	static final BinaryMaskOperator XOR = new BinaryMaskOperator( BoundaryType::xor, Bounds.xor )
+	public static final BinaryMaskOperator XOR = new BinaryMaskOperator( BoundaryType::xor, Bounds.xor )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -61,7 +61,7 @@ public class Masks
 		}
 	};
 
-	static final BinaryMaskOperator MINUS = new BinaryMaskOperator( BoundaryType::minus, Bounds.minus )
+	public static final BinaryMaskOperator MINUS = new BinaryMaskOperator( BoundaryType::minus, Bounds.minus )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -70,7 +70,7 @@ public class Masks
 		}
 	};
 
-	static final UnaryMaskOperator NEGATE = new UnaryMaskOperator( BoundaryType::negate, Bounds.negate )
+	public static final UnaryMaskOperator NEGATE = new UnaryMaskOperator( BoundaryType::negate, Bounds.negate )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )
@@ -251,11 +251,7 @@ public class Masks
 			final int n = checkDimensions( left, right );
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final IntBounds bounds = boundsOp.apply( IntBounds.of( left ), IntBounds.of( right ) );
-			if ( bounds == IntBounds.EMPTY )
-				// TODO
-				// EmptyMaskInterval...
-				throw new UnsupportedOperationException( "TODO, not yet implemented" );
-			else if ( bounds == IntBounds.UNBOUNDED )
+			if ( bounds.isUnbounded() )
 				return new DefaultMask( n, boundaryType, predicate( left, right ) );
 			else
 				return new DefaultMaskInterval( bounds.interval(), boundaryType, predicate( left, right ) );
@@ -266,11 +262,7 @@ public class Masks
 			final int n = checkDimensions( left, right );
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final RealBounds bounds = boundsOp.apply( RealBounds.of( left ), RealBounds.of( right ) );
-			if ( bounds == RealBounds.EMPTY )
-				// TODO
-				// EmptyMaskInterval...
-				throw new UnsupportedOperationException( "TODO, not yet implemented" );
-			else if ( bounds == RealBounds.UNBOUNDED )
+			if ( bounds.isUnbounded() )
 				return new DefaultRealMask( n, boundaryType, predicate( left, right ) );
 			else
 				return new DefaultRealMaskRealInterval( bounds.interval(), boundaryType, predicate( left, right ) );
@@ -316,11 +308,7 @@ public class Masks
 			final int n = checkDimensions( arg );
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final IntBounds bounds = boundsOp.apply( IntBounds.of( arg ) );
-			if ( bounds == IntBounds.EMPTY )
-				// TODO
-				// EmptyMaskInterval...
-				throw new UnsupportedOperationException( "TODO, not yet implemented" );
-			else if ( bounds == IntBounds.UNBOUNDED )
+			if ( bounds.isUnbounded() )
 				return new DefaultMask( n, boundaryType, predicate( arg ) );
 			else
 				return new DefaultMaskInterval( bounds.interval(), boundaryType, predicate( arg ) );
@@ -331,11 +319,7 @@ public class Masks
 			final int n = checkDimensions( arg );
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final RealBounds bounds = boundsOp.apply( RealBounds.of( arg ) );
-			if ( bounds == RealBounds.EMPTY )
-				// TODO
-				// EmptyMaskInterval...
-				throw new UnsupportedOperationException( "TODO, not yet implemented" );
-			else if ( bounds == RealBounds.UNBOUNDED )
+			if ( bounds.isUnbounded() )
 				return new DefaultRealMask( n, boundaryType, predicate( arg ) );
 			else
 				return new DefaultRealMaskRealInterval( bounds.interval(), boundaryType, predicate( arg ) );
