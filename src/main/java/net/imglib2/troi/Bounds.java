@@ -2,39 +2,48 @@ package net.imglib2.troi;
 
 import java.util.function.Predicate;
 
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractWrappedInterval;
+import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.Interval;
+import net.imglib2.Positionable;
 import net.imglib2.RealInterval;
+import net.imglib2.RealPositionable;
 import net.imglib2.troi.util.TODO_Intervals;
 import net.imglib2.util.Intervals;
 
 /**
- * Operations on mask bounds. Bounds can be UNBOUNDED, EMPTY, or a
- * (Real)Interval.
- *
+ * Operations on mask bounds. Bounds can be UNBOUNDED, or a (possibly empty)
+ * (Real)Interval. Bounds can be composites of other Bounds and change if the
+ * underlying Bounds are modified. A Bounds can never go from UNBOUNDED to being
+ * an interval or vice versa, though.
+ * <p>
  * Specialized for RealInterval and Interval in nested subclasses
  * {@link IntBounds} and {@link RealBounds}.
  *
  * @param <I>
- *            interval type ({@link Interval} or {@link RealInterval})
+ *            interval type ({@code Interval} or {@code RealInterval})
  * @param <B>
  *            recursive type of this {@code Bounds}
+ *
+ * @author Tobias Pietzsch
  */
-public abstract class Bounds< I, B extends Bounds< I, B > >
+public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 {
 	public interface BinaryBoundsOperator
 	{
-		public < I, B extends Bounds< I, B > > B apply( B left, B right );
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( B left, B right );
 	}
 
 	public interface UnaryBoundsOperator
 	{
-		public < I, B extends Bounds< I, B > > B apply( B arg );
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( B arg );
 	}
 
 	public static final BinaryBoundsOperator and = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.and( right );
 		}
@@ -43,7 +52,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 	public static final BinaryBoundsOperator or = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.or( right );
 		}
@@ -52,7 +61,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 	public static final UnaryBoundsOperator negate = new UnaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends Bounds< I, B > > B apply( final B arg )
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( final B arg )
 		{
 			return arg.negate();
 		}
@@ -61,7 +70,7 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 	public static final BinaryBoundsOperator xor = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.xor( right );
 		}
@@ -70,59 +79,76 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 	public static final BinaryBoundsOperator minus = new BinaryBoundsOperator()
 	{
 		@Override
-		public < I, B extends Bounds< I, B > > B apply( final B left, final B right )
+		public < I extends Bounds.Empty, B extends Bounds< I, B > > B apply( final B left, final B right )
 		{
 			return left.minus( right );
 		}
 	};
 
+	private final I interval;
+
+	protected Bounds( final I interval )
+	{
+		this.interval = interval;
+	}
+
 	public boolean isUnbounded()
 	{
-		return interval == null && !empty;
+		return interval == null;
 	}
 
 	public boolean isEmpty()
 	{
-		return empty;
+		return interval != null && interval.isEmpty();
 	}
 
 	public I interval()
 	{
-		return empty ? null : interval;
+		return interval;
 	}
 
-	protected abstract B bounds( I i );
+	/**
+	 * Intersection of two <b>bounded</b> {@link Bounds}.
+	 *
+	 * @param arg0
+	 * 		must not be {@link #isUnbounded() unbounded}
+	 * @param arg1
+	 * 		must not be {@link #isUnbounded() unbounded}
+	 *
+	 * @return intersection (also bounded)
+	 */
+	protected abstract B intersect( B arg0, B arg1 );
 
-	protected abstract I intersect( I i1, I i2 );
-
-	protected abstract I union( I i1, I i2 );
+	/**
+	 * Union of two <b>bounded</b> {@link Bounds}.
+	 *
+	 * @param arg0
+	 * 		must not be {@link #isUnbounded() unbounded}
+	 * @param arg1
+	 * 		must not be {@link #isUnbounded() unbounded}
+	 *
+	 * @return intersection (also bounded)
+	 */
+	protected abstract B union( B arg0, B arg1 );
 
 	protected abstract B UNBOUNDED();
-
-	protected abstract B EMPTY();
 
 	@SuppressWarnings( "unchecked" )
 	public B and( final B that )
 	{
-		if ( this == EMPTY() || that == EMPTY() )
-			return EMPTY();
-		if ( this == UNBOUNDED() )
+		if ( this.isUnbounded() )
 			return that;
-		if ( that == UNBOUNDED() )
+		if ( that.isUnbounded() )
 			return ( B ) this;
-		return bounds( intersect( this.interval(), that.interval() ) );
+		return intersect( ( B ) this, that );
 	}
 
 	@SuppressWarnings( "unchecked" )
 	public B or( final B that )
 	{
-		if ( this == UNBOUNDED() || that == UNBOUNDED() )
+		if ( this.isUnbounded() || that.isUnbounded() )
 			return UNBOUNDED();
-		if ( this == EMPTY() )
-			return that;
-		if ( that == EMPTY() )
-			return ( B ) this;
-		return bounds( union( this.interval(), that.interval() ) );
+		return union( ( B ) this, that );
 	}
 
 	public B negate()
@@ -141,21 +167,212 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 		return ( B ) this;
 	}
 
-	private final I interval;
-
-	private final boolean empty;
-
-	protected Bounds( final I interval, final boolean empty )
+	public interface Empty
 	{
-		this.interval = interval;
-		this.empty = empty;
+		boolean isEmpty();
 	}
 
-	public static class IntBounds extends Bounds< Interval, IntBounds >
-	{
-		public static final IntBounds UNBOUNDED = new IntBounds( null, false );
+	public interface IntervalOrEmpty extends Interval, Empty {}
 
-		public static final IntBounds EMPTY = new IntBounds( null, true );
+	public static class WrappedIntervalOrEmpty extends AbstractWrappedInterval< Interval > implements IntervalOrEmpty
+	{
+		public WrappedIntervalOrEmpty( final Interval source )
+		{
+			super( source );
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			return Intervals.isEmpty( this );
+		}
+	}
+
+	public static abstract class AbstractIntervalOrEmpty extends AbstractEuclideanSpace implements IntervalOrEmpty
+	{
+		public AbstractIntervalOrEmpty( final int n )
+		{
+			super( n );
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			for ( int d = 0; d < n; ++d )
+				if ( min( d ) > max( d ) )
+					return true;
+			return false;
+		}
+
+		@Override
+		public double realMin( final int d )
+		{
+			return min( d );
+		}
+
+		@Override
+		public void realMin( final double[] realMin )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMin[ d ] = realMin( d );
+		}
+
+		@Override
+		public void realMin( final RealPositionable realMin )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMin.setPosition( realMin( d ), d );
+		}
+
+		@Override
+		public double realMax( final int d )
+		{
+			return max( d );
+		}
+
+		@Override
+		public void realMax( final double[] realMax )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMax[ d ] = realMax( d );
+		}
+
+		@Override
+		public void realMax( final RealPositionable realMax )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMax.setPosition( realMax( d ), d );
+		}
+
+		@Override
+		public void min( final long[] min )
+		{
+			for ( int d = 0; d < n; ++d )
+				min[ d ] = min( d );
+		}
+
+		@Override
+		public void min( final Positionable min )
+		{
+			for ( int d = 0; d < n; ++d )
+				min.setPosition( min( d ), d );
+		}
+
+		@Override
+		public void max( final long[] max )
+		{
+			for ( int d = 0; d < n; ++d )
+				max[ d ] = max( d );
+		}
+
+		@Override
+		public void max( final Positionable max )
+		{
+			for ( int d = 0; d < n; ++d )
+				max.setPosition( max( d ), d );
+		}
+
+		@Override
+		public void dimensions( final long[] dimensions )
+		{
+			for ( int d = 0; d < n; ++d )
+				dimensions[ d ] = dimension( d );
+		}
+
+		@Override
+		public long dimension( final int d )
+		{
+			return max( d ) - min( d ) + 1;
+		}
+	}
+
+	public static class IntersectionIntervalOrEmpty extends AbstractIntervalOrEmpty
+	{
+		private final IntervalOrEmpty i1;
+
+		private final IntervalOrEmpty i2;
+
+		public IntersectionIntervalOrEmpty( final IntervalOrEmpty i1, final IntervalOrEmpty i2 )
+		{
+			super( i1.numDimensions() );
+			this.i1 = i1;
+			this.i2 = i2;
+			assert ( i1.numDimensions() == i2.numDimensions() );
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			if ( i1.isEmpty() || i2.isEmpty() )
+				return Long.MAX_VALUE;
+			return Math.max( i1.min( d ), i2.min( d ) );
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			if ( i1.isEmpty() || i2.isEmpty() )
+				return Long.MIN_VALUE;
+			return Math.min( i1.max( d ), i2.max( d ) );
+		}
+	}
+
+	public static class UnionIntervalOrEmpty extends AbstractIntervalOrEmpty
+	{
+		private final IntervalOrEmpty i1;
+
+		private final IntervalOrEmpty i2;
+
+		public UnionIntervalOrEmpty( final IntervalOrEmpty i1, final IntervalOrEmpty i2 )
+		{
+			super( i1.numDimensions() );
+			this.i1 = i1;
+			this.i2 = i2;
+			assert ( i1.numDimensions() == i2.numDimensions() );
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			if ( i1.isEmpty() )
+			{
+				if ( i2.isEmpty() )
+					return Long.MAX_VALUE;
+				else
+					return i2.min( d );
+			}
+			else
+			{
+				if ( i2.isEmpty() )
+					return i1.min( d );
+				else
+					return Math.min( i1.min( d ), i2.min( d ) );
+			}
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			if ( i1.isEmpty() )
+			{
+				if ( i2.isEmpty() )
+					return Long.MIN_VALUE;
+				else
+					return i2.max( d );
+			}
+			else
+			{
+				if ( i2.isEmpty() )
+					return i1.max( d );
+				else
+					return Math.max( i1.max( d ), i2.max( d ) );
+			}
+		}
+	}
+
+	public static class IntBounds extends Bounds<IntervalOrEmpty,IntBounds>
+	{
+		public static final IntBounds UNBOUNDED = new IntBounds( null );
 
 		public static IntBounds of( final Predicate< ? > predicate )
 		{
@@ -169,30 +386,29 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 		public static IntBounds of( final Interval i )
 		{
-			return i == null ? UNBOUNDED : Intervals.isEmpty( i ) ? EMPTY : new IntBounds( i, false );
+			if ( i == null )
+				return UNBOUNDED;
+			else if ( i instanceof IntervalOrEmpty )
+				return new IntBounds( ( IntervalOrEmpty ) i );
+			else
+				return new IntBounds( new WrappedIntervalOrEmpty( i ) );
+		}
+
+		protected IntBounds( final IntervalOrEmpty interval )
+		{
+			super( interval );
 		}
 
 		@Override
-		protected IntBounds bounds( final Interval i )
+		protected IntBounds intersect( final IntBounds arg0, final IntBounds arg1 )
 		{
-			return of( i );
-		}
-
-		protected IntBounds( final Interval interval, final boolean empty )
-		{
-			super( interval, empty );
+			return new IntBounds( new IntersectionIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
-		protected Interval intersect( final Interval i1, final Interval i2 )
+		protected IntBounds union( final IntBounds arg0, final IntBounds arg1 )
 		{
-			return Intervals.intersect( i1, i2 );
-		}
-
-		@Override
-		protected Interval union( final Interval i1, final Interval i2 )
-		{
-			return Intervals.union( i1, i2 );
+			return new IntBounds( new UnionIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
@@ -200,19 +416,156 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 		{
 			return UNBOUNDED;
 		}
+	}
+
+	public interface RealIntervalOrEmpty extends RealInterval, Empty {}
+
+	public static class WrappedRealIntervalOrEmpty extends AbstractWrappedRealInterval< RealInterval > implements RealIntervalOrEmpty
+	{
+		public WrappedRealIntervalOrEmpty( final RealInterval source )
+		{
+			super( source );
+		}
 
 		@Override
-		protected IntBounds EMPTY()
+		public boolean isEmpty()
 		{
-			return EMPTY;
+			return TODO_Intervals.isEmpty( this );
 		}
 	}
 
-	public static class RealBounds extends Bounds< RealInterval, RealBounds >
+	public static abstract class AbstractRealIntervalOrEmpty extends AbstractEuclideanSpace implements RealIntervalOrEmpty
 	{
-		public static final RealBounds UNBOUNDED = new RealBounds( null, false );
+		public AbstractRealIntervalOrEmpty( final int n )
+		{
+			super( n );
+		}
 
-		public static final RealBounds EMPTY = new RealBounds( null, true );
+		@Override
+		public boolean isEmpty()
+		{
+			for ( int d = 0; d < n; ++d )
+				if ( realMin( d ) > realMax( d ) )
+					return true;
+			return false;
+		}
+
+		@Override
+		public void realMin( final double[] realMin )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMin[ d ] = realMin( d );
+		}
+
+		@Override
+		public void realMin( final RealPositionable realMin )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMin.setPosition( realMin( d ), d );
+		}
+
+		@Override
+		public void realMax( final double[] realMax )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMax[ d ] = realMax( d );
+		}
+
+		@Override
+		public void realMax( final RealPositionable realMax )
+		{
+			for ( int d = 0; d < n; ++d )
+				realMax.setPosition( realMax( d ), d );
+		}
+	}
+
+	public static class IntersectionRealIntervalOrEmpty extends AbstractRealIntervalOrEmpty
+	{
+		private final RealIntervalOrEmpty i1;
+
+		private final RealIntervalOrEmpty i2;
+
+		public IntersectionRealIntervalOrEmpty( final RealIntervalOrEmpty i1, final RealIntervalOrEmpty i2 )
+		{
+			super( i1.numDimensions() );
+			this.i1 = i1;
+			this.i2 = i2;
+			assert ( i1.numDimensions() == i2.numDimensions() );
+		}
+
+		@Override
+		public double realMin( final int d )
+		{
+			if ( i1.isEmpty() || i2.isEmpty() )
+				return Double.POSITIVE_INFINITY;
+			return Math.max( i1.realMin( d ), i2.realMin( d ) );
+		}
+
+		@Override
+		public double realMax( final int d )
+		{
+			if ( i1.isEmpty() || i2.isEmpty() )
+				return Double.NEGATIVE_INFINITY;
+			return Math.min( i1.realMax( d ), i2.realMax( d ) );
+		}
+	}
+
+	public static class UnionRealIntervalOrEmpty extends AbstractRealIntervalOrEmpty
+	{
+		private final RealIntervalOrEmpty i1;
+
+		private final RealIntervalOrEmpty i2;
+
+		public UnionRealIntervalOrEmpty( final RealIntervalOrEmpty i1, final RealIntervalOrEmpty i2 )
+		{
+			super( i1.numDimensions() );
+			this.i1 = i1;
+			this.i2 = i2;
+			assert ( i1.numDimensions() == i2.numDimensions() );
+		}
+
+		@Override
+		public double realMin( final int d )
+		{
+			if ( i1.isEmpty() )
+			{
+				if ( i2.isEmpty() )
+					return Double.POSITIVE_INFINITY;
+				else
+					return i2.realMin( d );
+			}
+			else
+			{
+				if ( i2.isEmpty() )
+					return i1.realMin( d );
+				else
+					return Math.min( i1.realMin( d ), i2.realMin( d ) );
+			}
+		}
+
+		@Override
+		public double realMax( final int d )
+		{
+			if ( i1.isEmpty() )
+			{
+				if ( i2.isEmpty() )
+					return Double.NEGATIVE_INFINITY;
+				else
+					return i2.realMax( d );
+			}
+			else
+			{
+				if ( i2.isEmpty() )
+					return i1.realMax( d );
+				else
+					return Math.max( i1.realMax( d ), i2.realMax( d ) );
+			}
+		}
+	}
+
+	public static class RealBounds extends Bounds<RealIntervalOrEmpty,RealBounds>
+	{
+		public static final RealBounds UNBOUNDED = new RealBounds( null );
 
 		public static RealBounds of( final Predicate< ? > predicate )
 		{
@@ -224,42 +577,35 @@ public abstract class Bounds< I, B extends Bounds< I, B > >
 
 		public static RealBounds of( final RealInterval i )
 		{
-			return i == null ? UNBOUNDED : TODO_Intervals.isEmpty( i ) ? EMPTY : new RealBounds( i, false );
+			if ( i == null )
+				return UNBOUNDED;
+			else if ( i instanceof RealIntervalOrEmpty )
+				return new RealBounds( ( RealIntervalOrEmpty ) i );
+			else
+				return new RealBounds( new WrappedRealIntervalOrEmpty( i ) );
+		}
+
+		protected RealBounds( final RealIntervalOrEmpty interval )
+		{
+			super( interval );
 		}
 
 		@Override
-		protected RealBounds bounds( final RealInterval i )
+		protected RealBounds intersect( final RealBounds arg0, final RealBounds arg1 )
 		{
-			return of( i );
-		}
-
-		protected RealBounds( final RealInterval interval, final boolean empty )
-		{
-			super( interval, empty );
+			return new RealBounds( new IntersectionRealIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
-		protected RealInterval intersect( final RealInterval i1, final RealInterval i2 )
+		protected RealBounds union( final RealBounds arg0, final RealBounds arg1 )
 		{
-			return TODO_Intervals.intersect( i1, i2 );
-		}
-
-		@Override
-		protected RealInterval union( final RealInterval i1, final RealInterval i2 )
-		{
-			return TODO_Intervals.union( i1, i2 );
+			return new RealBounds( new UnionRealIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
 		protected RealBounds UNBOUNDED()
 		{
 			return UNBOUNDED;
-		}
-
-		@Override
-		protected RealBounds EMPTY()
-		{
-			return EMPTY;
 		}
 	}
 }
