@@ -5,12 +5,17 @@ import java.util.function.Predicate;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
 
+import static net.imglib2.troi.Operators.AND;
+import static net.imglib2.troi.Operators.MINUS;
+import static net.imglib2.troi.Operators.OR;
+import static net.imglib2.troi.Operators.XOR;
+
 public interface MaskInterval extends Mask, Interval
 {
 	@Override
 	public default MaskInterval and( final Predicate< ? super Localizable > other )
 	{
-		return Masks.and( this, other );
+		return AND.applyInterval( this, other );
 	}
 
 	/*
@@ -19,13 +24,13 @@ public interface MaskInterval extends Mask, Interval
 	 */
 	public default MaskInterval or( final MaskInterval other )
 	{
-		return Masks.or( this, other );
+		return OR.applyInterval( this, other );
 	}
 
 	@Override
 	public default MaskInterval minus( final Predicate< ? super Localizable > other )
 	{
-		return Masks.minus( this, other );
+		return MINUS.applyInterval( this, other );
 	}
 
 	/*
@@ -34,6 +39,6 @@ public interface MaskInterval extends Mask, Interval
 	 */
 	public default MaskInterval xor( final MaskInterval other )
 	{
-		return Masks.xor( this, other );
+		return XOR.applyInterval( this, other );
 	}
 }

@@ -6,36 +6,42 @@ import net.imglib2.EuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.realtransform.RealTransform;
 
+import static net.imglib2.troi.Operators.AND;
+import static net.imglib2.troi.Operators.MINUS;
+import static net.imglib2.troi.Operators.NEGATE;
+import static net.imglib2.troi.Operators.OR;
+import static net.imglib2.troi.Operators.XOR;
+
 public interface RealMask extends MaskPredicate< RealLocalizable >, EuclideanSpace
 {
 	@Override
 	public default RealMask and( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.and( this, other );
+		return AND.applyReal( this, other );
 	}
 
 	@Override
 	public default RealMask or( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.or( this, other );
+		return OR.applyReal( this, other );
 	}
 
 	@Override
 	public default RealMask negate()
 	{
-		return Masks.negate( this );
+		return NEGATE.applyReal( this );
 	}
 
 	@Override
 	public default RealMask minus( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.minus( this, other );
+		return MINUS.applyReal( this, other );
 	}
 
 	@Override
 	public default RealMask xor( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.xor( this, other );
+		return XOR.applyReal( this, other );
 	}
 
 	/*
