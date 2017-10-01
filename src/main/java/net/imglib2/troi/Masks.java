@@ -13,10 +13,22 @@ import net.imglib2.troi.Bounds.BinaryBoundsOperator;
 import net.imglib2.troi.Bounds.IntBounds;
 import net.imglib2.troi.Bounds.RealBounds;
 import net.imglib2.troi.Bounds.UnaryBoundsOperator;
-import net.imglib2.troi.util.DefaultMask;
-import net.imglib2.troi.util.DefaultMaskInterval;
-import net.imglib2.troi.util.DefaultRealMask;
-import net.imglib2.troi.util.DefaultRealMaskRealInterval;
+import net.imglib2.troi.MaskTrees.BinaryCompositeMask;
+import net.imglib2.troi.MaskTrees.BinaryCompositeMaskInterval;
+import net.imglib2.troi.MaskTrees.BinaryCompositeRealMask;
+import net.imglib2.troi.MaskTrees.BinaryCompositeRealMaskRealInterval;
+import net.imglib2.troi.MaskTrees.UnaryCompositeMask;
+import net.imglib2.troi.MaskTrees.UnaryCompositeMaskInterval;
+import net.imglib2.troi.MaskTrees.UnaryCompositeRealMask;
+import net.imglib2.troi.MaskTrees.UnaryCompositeRealMaskRealInterval;
+import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeMask;
+import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeMaskInterval;
+import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeRealMask;
+import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeRealMaskRealInterval;
+import net.imglib2.troi.MaskTrees.DefaultUnaryCompositeMask;
+import net.imglib2.troi.MaskTrees.DefaultUnaryCompositeMaskInterval;
+import net.imglib2.troi.MaskTrees.DefaultUnaryCompositeRealMask;
+import net.imglib2.troi.MaskTrees.DefaultUnaryCompositeRealMaskRealInterval;
 import net.imglib2.troi.util.RealMaskRealIntervalAsRRARI;
 import net.imglib2.type.logic.BoolType;
 
@@ -235,9 +247,12 @@ public class Masks
 		}
 	}
 
-	static abstract class BinaryMaskOperator
+	public interface MaskOperator
+	{}
+
+	public static abstract class BinaryMaskOperator implements MaskOperator
 	{
-		BinaryOperator< BoundaryType> boundaryTypeOp;
+		BinaryOperator< BoundaryType > boundaryTypeOp;
 
 		BinaryBoundsOperator boundsOp;
 
@@ -255,9 +270,9 @@ public class Masks
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final IntBounds bounds = boundsOp.apply( IntBounds.of( left ), IntBounds.of( right ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultMask( n, boundaryType, predicate( left, right ) );
+				return new DefaultBinaryCompositeMask( this, left, right, n, boundaryType );
 			else
-				return new DefaultMaskInterval( bounds.interval(), boundaryType, predicate( left, right ) );
+				return new DefaultBinaryCompositeMaskInterval( this, left, right, bounds.interval(), boundaryType );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > left, final Predicate< ? super RealLocalizable > right )
@@ -266,9 +281,9 @@ public class Masks
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final RealBounds bounds = boundsOp.apply( RealBounds.of( left ), RealBounds.of( right ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultRealMask( n, boundaryType, predicate( left, right ) );
+				return new DefaultBinaryCompositeRealMask( this, left, right, n, boundaryType );
 			else
-				return new DefaultRealMaskRealInterval( bounds.interval(), boundaryType, predicate( left, right ) );
+				return new DefaultBinaryCompositeRealMaskRealInterval( this, left, right, bounds.interval(), boundaryType );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > left, final Predicate< ? super Localizable > right )
@@ -292,9 +307,9 @@ public class Masks
 		public abstract < T > Predicate< T > predicate( Predicate< ? super T > left, Predicate< ? super T > right );
 	}
 
-	static abstract class UnaryMaskOperator
+	public static abstract class UnaryMaskOperator implements MaskOperator
 	{
-		UnaryOperator< BoundaryType> boundaryTypeOp;
+		UnaryOperator< BoundaryType > boundaryTypeOp;
 
 		UnaryBoundsOperator boundsOp;
 
@@ -312,9 +327,9 @@ public class Masks
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final IntBounds bounds = boundsOp.apply( IntBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultMask( n, boundaryType, predicate( arg ) );
+				return new DefaultUnaryCompositeMask( this, arg, n, boundaryType );
 			else
-				return new DefaultMaskInterval( bounds.interval(), boundaryType, predicate( arg ) );
+				return new DefaultUnaryCompositeMaskInterval( this, arg, bounds.interval(), boundaryType );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > arg )
@@ -323,9 +338,9 @@ public class Masks
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final RealBounds bounds = boundsOp.apply( RealBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultRealMask( n, boundaryType, predicate( arg ) );
+				return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType );
 			else
-				return new DefaultRealMaskRealInterval( bounds.interval(), boundaryType, predicate( arg ) );
+				return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > arg )
