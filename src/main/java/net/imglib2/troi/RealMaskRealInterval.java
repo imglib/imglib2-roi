@@ -5,12 +5,17 @@ import java.util.function.Predicate;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 
+import static net.imglib2.troi.Operators.AND;
+import static net.imglib2.troi.Operators.MINUS;
+import static net.imglib2.troi.Operators.OR;
+import static net.imglib2.troi.Operators.XOR;
+
 public interface RealMaskRealInterval extends RealMask, RealInterval
 {
 	@Override
 	public default RealMaskRealInterval and( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.and( this, other );
+		return AND.applyRealInterval( this, other );
 	}
 
 	/*
@@ -19,13 +24,13 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	 */
 	public default RealMaskRealInterval or( final RealMaskRealInterval other )
 	{
-		return Masks.or( this, other );
+		return OR.applyRealInterval( this, other );
 	}
 
 	@Override
 	public default RealMaskRealInterval minus( final Predicate< ? super RealLocalizable > other )
 	{
-		return Masks.minus( this, other );
+		return MINUS.applyRealInterval( this, other );
 	}
 
 	/*
@@ -34,6 +39,6 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	 */
 	public default RealMaskRealInterval xor( final RealMaskRealInterval other )
 	{
-		return Masks.xor( this, other );
+		return XOR.applyRealInterval( this, other );
 	}
 }

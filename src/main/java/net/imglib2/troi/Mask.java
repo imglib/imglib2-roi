@@ -6,36 +6,42 @@ import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.transform.Transform;
 
+import static net.imglib2.troi.Operators.AND;
+import static net.imglib2.troi.Operators.MINUS;
+import static net.imglib2.troi.Operators.NEGATE;
+import static net.imglib2.troi.Operators.OR;
+import static net.imglib2.troi.Operators.XOR;
+
 public interface Mask extends MaskPredicate< Localizable >, EuclideanSpace
 {
 	@Override
 	public default Mask and( final Predicate< ? super Localizable > other )
 	{
-		return Masks.and( this, other );
+		return AND.apply( this, other );
 	}
 
 	@Override
 	public default Mask or( final Predicate< ? super Localizable > other )
 	{
-		return Masks.or( this, other );
+		return OR.apply( this, other );
 	}
 
 	@Override
 	public default Mask negate()
 	{
-		return Masks.negate( this );
+		return NEGATE.apply( this );
 	}
 
 	@Override
 	public default Mask minus( final Predicate< ? super Localizable > other )
 	{
-		return Masks.minus( this, other );
+		return MINUS.apply( this, other );
 	}
 
 	@Override
 	public default Mask xor( final Predicate< ? super Localizable > other )
 	{
-		return Masks.xor( this, other );
+		return XOR.apply( this, other );
 	}
 
 	/*

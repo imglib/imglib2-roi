@@ -1,15 +1,13 @@
 package net.imglib2.troi;
 
 import java.util.function.Predicate;
-
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.troi.util.RealMaskRealIntervalAsRRARI;
 import net.imglib2.type.logic.BoolType;
 
-import static net.imglib2.troi.Operators.*;
-import static net.imglib2.troi.Operators.NEGATE;
+import static net.imglib2.troi.Operators.AND;
 
 /**
  * Utility class for working with {@link Mask}s.
@@ -27,12 +25,12 @@ public class Masks
 
 	public static Mask and( final Mask left, final Predicate< ? super Localizable > right )
 	{
-		return AND.apply( left, right );
+		return left.and( right );
 	}
 
 	public static MaskInterval and( final MaskInterval left, final Predicate< ? super Localizable > right )
 	{
-		return AND.applyInterval( left, right );
+		return left.and( right );
 	}
 
 	// TODO: do we need/want this:
@@ -43,37 +41,37 @@ public class Masks
 
 	public static Mask or( final Mask left, final Predicate< ? super Localizable > right )
 	{
-		return OR.apply( left, right );
+		return left.or( right );
 	}
 
 	public static MaskInterval or( final MaskInterval left, final MaskInterval right )
 	{
-		return OR.applyInterval( left, right );
+		return left.or( right );
 	}
 
 	public static Mask xor( final Mask left, final Predicate< ? super Localizable > right )
 	{
-		return XOR.apply( left, right );
+		return left.xor( right );
 	}
 
 	public static MaskInterval xor( final MaskInterval left, final MaskInterval right )
 	{
-		return XOR.applyInterval( left, right );
+		return left.xor( right );
 	}
 
 	public static Mask minus( final Mask left, final Predicate< ? super Localizable > right )
 	{
-		return MINUS.apply( left, right );
+		return left.minus( right );
 	}
 
 	public static MaskInterval minus( final MaskInterval left, final Predicate< ? super Localizable > right )
 	{
-		return MINUS.applyInterval( left, right );
+		return left.minus( right );
 	}
 
 	public static Mask negate( final Mask arg )
 	{
-		return NEGATE.apply( arg );
+		return arg.negate();
 	}
 
 
@@ -84,12 +82,12 @@ public class Masks
 
 	static RealMask and( final RealMask left, final Predicate< ? super RealLocalizable > right )
 	{
-		return AND.applyReal( left, right );
+		return left.and( right );
 	}
 
 	static RealMaskRealInterval and( final RealMaskRealInterval left, final Predicate< ? super RealLocalizable > right )
 	{
-		return AND.applyRealInterval( left, right );
+		return left.and( right );
 	}
 
 	// TODO: do we need/want this:
@@ -100,37 +98,37 @@ public class Masks
 
 	public static RealMask or( final RealMask left, final Predicate< ? super RealLocalizable > right )
 	{
-		return OR.applyReal( left, right );
+		return left.or( right );
 	}
 
 	public static RealMaskRealInterval or( final RealMaskRealInterval left, final RealMaskRealInterval right )
 	{
-		return OR.applyRealInterval( left, right );
+		return left.or( right );
 	}
 
 	public static RealMask xor( final RealMask left, final Predicate< ? super RealLocalizable > right )
 	{
-		return XOR.applyReal( left, right );
+		return left.xor( right );
 	}
 
 	public static RealMaskRealInterval xor( final RealMaskRealInterval left, final RealMaskRealInterval right )
 	{
-		return XOR.applyRealInterval( left, right );
+		return left.xor( right );
 	}
 
 	public static RealMask minus( final RealMask left, final Predicate< ? super RealLocalizable > right )
 	{
-		return MINUS.applyReal( left, right );
+		return left.minus( right );
 	}
 
 	public static RealMaskRealInterval minus( final RealMaskRealInterval left, final Predicate< ? super RealLocalizable > right )
 	{
-		return MINUS.applyRealInterval( left, right );
+		return left.minus( right );
 	}
 
 	public static RealMask negate( final RealMask arg )
 	{
-		return NEGATE.applyReal( arg );
+		return arg.negate();
 	}
 
 	/*
