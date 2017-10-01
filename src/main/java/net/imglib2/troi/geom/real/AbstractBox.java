@@ -35,7 +35,6 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.RealLocalizable;
 
 /**
  * Abstract base class for implementations of {@link Box}.
@@ -61,9 +60,6 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 		if ( max.length < min.length )
 			throw new IllegalArgumentException( "Max array cannot be smaller than the min array" );
 	}
-
-	@Override
-	public abstract boolean test( RealLocalizable l );
 
 	@Override
 	public double sideLength( final int d )

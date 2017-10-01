@@ -34,7 +34,6 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 
 /**
@@ -66,9 +65,6 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		this.center = center.clone();
 		this.radius = radius;
 	}
-
-	@Override
-	public abstract boolean test( RealLocalizable l );
 
 	@Override
 	public double realMin( final int d )
