@@ -5,13 +5,13 @@ import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Mask;
-import net.imglib2.troi.Masks;
+import net.imglib2.troi.Operators;
 
 public class DefaultUnaryCompositeMask
 		extends AbstractEuclideanSpace
 		implements UnaryCompositeMaskPredicate< Localizable >, Mask
 {
-	private final Masks.UnaryMaskOperator operator;
+	private final Operators.UnaryMaskOperator operator;
 
 	private final Predicate< ? super Localizable > arg0;
 
@@ -20,7 +20,7 @@ public class DefaultUnaryCompositeMask
 	private final Predicate< ? super Localizable > predicate;
 
 	public DefaultUnaryCompositeMask(
-			Masks.UnaryMaskOperator operator,
+			Operators.UnaryMaskOperator operator,
 			final Predicate< ? super Localizable > arg0,
 			final int numDimensions,
 			final BoundaryType boundaryType )
@@ -45,7 +45,7 @@ public class DefaultUnaryCompositeMask
 	}
 
 	@Override
-	public Masks.UnaryMaskOperator operator()
+	public Operators.UnaryMaskOperator operator()
 	{
 		return operator;
 	}

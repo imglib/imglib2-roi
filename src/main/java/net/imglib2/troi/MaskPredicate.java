@@ -46,7 +46,7 @@ import net.imglib2.EuclideanSpace;
  * @author Alison Walter
  * @author Curtis Rueden
  * @author Tobias Pietzsch
- * @author Christian Dietz, University of Konstanz
+ * @author Christian Dietz
  * @param <T>
  *            location in N-space; typically a {@code RealLocalizable} or {@code Localizable}).
  */
