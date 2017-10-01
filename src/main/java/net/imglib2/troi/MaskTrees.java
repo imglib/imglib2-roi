@@ -80,41 +80,9 @@ public class MaskTrees
 		}
 	}
 
-	public interface BinaryCompositeMask extends BinaryCompositeMaskPredicate< Localizable >, Mask
-	{
-	}
-
-	public interface BinaryCompositeMaskInterval extends BinaryCompositeMask, MaskInterval
-	{
-	}
-
-	public interface UnaryCompositeMask extends UnaryCompositeMaskPredicate< Localizable >, Mask
-	{
-	}
-
-	public interface UnaryCompositeMaskInterval extends UnaryCompositeMask, MaskInterval
-	{
-	}
-
-	public interface BinaryCompositeRealMask extends BinaryCompositeMaskPredicate< RealLocalizable >, RealMask
-	{
-	}
-
-	public interface BinaryCompositeRealMaskRealInterval extends BinaryCompositeRealMask, RealMaskRealInterval
-	{
-	}
-
-	public interface UnaryCompositeRealMask extends UnaryCompositeMaskPredicate< RealLocalizable >, RealMask
-	{
-	}
-
-	public interface UnaryCompositeRealMaskRealInterval extends UnaryCompositeRealMask, RealMaskRealInterval
-	{
-	}
-
 	public static class DefaultBinaryCompositeMask
 			extends AbstractEuclideanSpace
-			implements BinaryCompositeMask
+			implements BinaryCompositeMaskPredicate< Localizable >, Mask
 	{
 		private final BinaryMaskOperator operator;
 
@@ -174,7 +142,7 @@ public class MaskTrees
 
 	public static class DefaultUnaryCompositeMask
 			extends AbstractEuclideanSpace
-			implements UnaryCompositeMask
+			implements UnaryCompositeMaskPredicate< Localizable >, Mask
 	{
 		private final UnaryMaskOperator operator;
 
@@ -224,7 +192,7 @@ public class MaskTrees
 
 	public static class DefaultBinaryCompositeMaskInterval
 			extends AbstractWrappedInterval< IntervalOrEmpty >
-			implements BinaryCompositeMaskInterval, IntervalOrEmpty
+			implements BinaryCompositeMaskPredicate< Localizable >, MaskInterval, IntervalOrEmpty
 	{
 		private final BinaryMaskOperator operator;
 
@@ -290,7 +258,7 @@ public class MaskTrees
 
 	public static class DefaultUnaryCompositeMaskInterval
 			extends AbstractWrappedInterval< IntervalOrEmpty >
-			implements UnaryCompositeMaskInterval, IntervalOrEmpty
+			implements UnaryCompositeMaskPredicate< Localizable >, MaskInterval, IntervalOrEmpty
 	{
 		private final UnaryMaskOperator operator;
 
@@ -346,7 +314,7 @@ public class MaskTrees
 
 	public static class DefaultBinaryCompositeRealMask
 			extends AbstractEuclideanSpace
-			implements BinaryCompositeRealMask
+			implements BinaryCompositeMaskPredicate< RealLocalizable >, RealMask
 	{
 		private final BinaryMaskOperator operator;
 
@@ -406,7 +374,7 @@ public class MaskTrees
 
 	public static class DefaultUnaryCompositeRealMask
 			extends AbstractEuclideanSpace
-			implements UnaryCompositeRealMask
+			implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMask
 	{
 		private final UnaryMaskOperator operator;
 
@@ -456,7 +424,7 @@ public class MaskTrees
 
 	public static class DefaultBinaryCompositeRealMaskRealInterval
 			extends AbstractWrappedRealInterval< RealIntervalOrEmpty >
-			implements BinaryCompositeRealMaskRealInterval, RealIntervalOrEmpty
+			implements BinaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval, RealIntervalOrEmpty
 	{
 		private final BinaryMaskOperator operator;
 
@@ -522,7 +490,7 @@ public class MaskTrees
 
 	public static class DefaultUnaryCompositeRealMaskRealInterval
 			extends AbstractWrappedRealInterval< RealIntervalOrEmpty >
-			implements UnaryCompositeRealMaskRealInterval, RealIntervalOrEmpty
+			implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval, RealIntervalOrEmpty
 	{
 		private final UnaryMaskOperator operator;
 

@@ -13,14 +13,6 @@ import net.imglib2.troi.Bounds.BinaryBoundsOperator;
 import net.imglib2.troi.Bounds.IntBounds;
 import net.imglib2.troi.Bounds.RealBounds;
 import net.imglib2.troi.Bounds.UnaryBoundsOperator;
-import net.imglib2.troi.MaskTrees.BinaryCompositeMask;
-import net.imglib2.troi.MaskTrees.BinaryCompositeMaskInterval;
-import net.imglib2.troi.MaskTrees.BinaryCompositeRealMask;
-import net.imglib2.troi.MaskTrees.BinaryCompositeRealMaskRealInterval;
-import net.imglib2.troi.MaskTrees.UnaryCompositeMask;
-import net.imglib2.troi.MaskTrees.UnaryCompositeMaskInterval;
-import net.imglib2.troi.MaskTrees.UnaryCompositeRealMask;
-import net.imglib2.troi.MaskTrees.UnaryCompositeRealMaskRealInterval;
 import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeMask;
 import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeMaskInterval;
 import net.imglib2.troi.MaskTrees.DefaultBinaryCompositeRealMask;
@@ -43,7 +35,6 @@ public class Masks
 	/*
 	 * MaskOperator definitions (for both integral and real masks)
 	 * ===============================================================
-	 * TODO: should these be public?
 	 */
 
 	public static final BinaryMaskOperator AND = new BinaryMaskOperator( BoundaryType::and, Bounds.and )
