@@ -5,14 +5,14 @@ import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Bounds;
-import net.imglib2.troi.Masks;
+import net.imglib2.troi.Operators;
 import net.imglib2.troi.RealMaskRealInterval;
 
 public class DefaultBinaryCompositeRealMaskRealInterval
 		extends AbstractWrappedRealInterval< Bounds.RealIntervalOrEmpty >
 		implements BinaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval, Bounds.RealIntervalOrEmpty
 {
-	private final Masks.BinaryMaskOperator operator;
+	private final Operators.BinaryMaskOperator operator;
 
 	private final Predicate< ? super RealLocalizable > arg0;
 
@@ -23,7 +23,7 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 	private final Predicate< ? super RealLocalizable > predicate;
 
 	public DefaultBinaryCompositeRealMaskRealInterval(
-			Masks.BinaryMaskOperator operator,
+			Operators.BinaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final Predicate< ? super RealLocalizable > arg1,
 			final Bounds.RealIntervalOrEmpty interval,
@@ -50,7 +50,7 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 	}
 
 	@Override
-	public Masks.BinaryMaskOperator operator()
+	public Operators.BinaryMaskOperator operator()
 	{
 		return operator;
 	}

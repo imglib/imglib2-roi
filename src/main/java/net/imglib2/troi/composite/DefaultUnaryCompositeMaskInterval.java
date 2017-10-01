@@ -6,13 +6,13 @@ import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Bounds;
 import net.imglib2.troi.MaskInterval;
-import net.imglib2.troi.Masks;
+import net.imglib2.troi.Operators;
 
 public class DefaultUnaryCompositeMaskInterval
 		extends AbstractWrappedInterval< Bounds.IntervalOrEmpty >
 		implements UnaryCompositeMaskPredicate< Localizable >, MaskInterval, Bounds.IntervalOrEmpty
 {
-	private final Masks.UnaryMaskOperator operator;
+	private final Operators.UnaryMaskOperator operator;
 
 	private final Predicate< ? super Localizable > arg0;
 
@@ -21,7 +21,7 @@ public class DefaultUnaryCompositeMaskInterval
 	private final Predicate< ? super Localizable > predicate;
 
 	public DefaultUnaryCompositeMaskInterval(
-			Masks.UnaryMaskOperator operator,
+			Operators.UnaryMaskOperator operator,
 			final Predicate< ? super Localizable > arg0,
 			final Bounds.IntervalOrEmpty interval,
 			final BoundaryType boundaryType )
@@ -46,7 +46,7 @@ public class DefaultUnaryCompositeMaskInterval
 	}
 
 	@Override
-	public Masks.UnaryMaskOperator operator()
+	public Operators.UnaryMaskOperator operator()
 	{
 		return operator;
 	}

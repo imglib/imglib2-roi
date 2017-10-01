@@ -3,12 +3,12 @@ package net.imglib2.troi.composite;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import net.imglib2.troi.Masks;
+import net.imglib2.troi.Operators;
 
 public interface BinaryCompositeMaskPredicate< T > extends CompositeMaskPredicate< T >
 {
 	@Override
-	Masks.BinaryMaskOperator operator();
+	Operators.BinaryMaskOperator operator();
 
 	Predicate< ? super T > arg0();
 
