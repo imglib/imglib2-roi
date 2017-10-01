@@ -20,6 +20,12 @@ import net.imglib2.util.Intervals;
  * <p>
  * Specialized for RealInterval and Interval in nested subclasses
  * {@link IntBounds} and {@link RealBounds}.
+ * </p>
+ * <p>
+ * TODO: explain how empty intervals are determined by min/max and how emptiness
+ * property is propagated.
+ * </p>
+ *
  *
  * @param <I>
  *            interval type ({@code Interval} or {@code RealInterval})
