@@ -23,9 +23,9 @@ import net.imglib2.realtransform.AffineTransform2D;
 import net.imglib2.troi.Bounds.SmallestContainingInterval;
 import net.imglib2.troi.geom.real.ClosedSphere;
 import net.imglib2.troi.geom.real.Sphere;
-import net.imglib2.troi.util.TODO_Intervals;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.type.numeric.ARGBType;
+import net.imglib2.util.Intervals;
 import net.imglib2.util.LinAlgHelpers;
 
 public class ModifyDemo
@@ -75,7 +75,7 @@ public class ModifyDemo
 			protected void draw( final Graphics2D g )
 			{
 				g.setColor( Color.RED );
-				if ( TODO_Intervals.isEmpty( compositerrai ) )
+				if ( Intervals.isEmpty( compositerrai ) )
 					g.drawString( "composite interval is empty", 400, 300 );
 				else
 				{

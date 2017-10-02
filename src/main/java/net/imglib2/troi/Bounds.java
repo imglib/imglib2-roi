@@ -9,7 +9,6 @@ import net.imglib2.Interval;
 import net.imglib2.Positionable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
-import net.imglib2.troi.util.TODO_Intervals;
 import net.imglib2.util.Intervals;
 
 /**
@@ -497,7 +496,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		@Override
 		public boolean isEmpty()
 		{
-			return TODO_Intervals.isEmpty( this );
+			return Intervals.isEmpty( this );
 		}
 	}
 
