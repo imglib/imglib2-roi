@@ -39,8 +39,11 @@ public class ModifyDemo
 
 		// Combine the spheres using operators
 		final RealMaskRealInterval composite = s1.and( s2 ).and( s3 );
+//		final RealMaskRealInterval composite = s1.and( s2 ).minus( s3 );
+//		final RealMaskRealInterval composite = s1.xor( s2 ).xor( s3 );
 
-		final InputTriggerConfig config = new InputTriggerConfig( Arrays.asList( new InputTriggerDescription( new String[] {"not mapped"}, "2d drag rotate", "bdv" ) ) );
+		final InputTriggerConfig config = new InputTriggerConfig( Arrays.asList(
+						new InputTriggerDescription( new String[] { "not mapped" }, "2d drag rotate", "bdv" ) ) );
 
 		// Wrap the intersection as a RealRandomAccessibleRealInterval
 		final RealRandomAccessibleRealInterval< BoolType > s1rrai = Masks.toRRARI( s1 );
@@ -48,7 +51,7 @@ public class ModifyDemo
 				s1rrai,
 				new SmallestContainingInterval( s1rrai ),
 				"Sphere 1",
-				Bdv.options().is2D().axisOrder( AxisOrder.XYZ ).inputTriggerConfig( config ) );
+				Bdv.options().is2D().inputTriggerConfig( config ).axisOrder( AxisOrder.XYZ ) );
 		final RealRandomAccessibleRealInterval< BoolType > s2rrai = Masks.toRRARI( s2 );
 		final BdvSource bdv2 = BdvFunctions.show(
 				s2rrai,
@@ -81,15 +84,23 @@ public class ModifyDemo
 				{
 					final AffineTransform2D t = new AffineTransform2D();
 					this.getCurrentTransform2D( t );
-					final double[] min = new double[ 2 ];
-					final double[] max = new double[ 2 ];
-					t.apply( new double[] { composite.realMin( 0 ), composite.realMin( 1 ) }, min );
-					t.apply( new double[] { composite.realMax( 0 ), composite.realMax( 1 ) }, max );
-					final int x = ( int ) min[ 0 ];
-					final int y = ( int ) min[ 1 ];
-					final int width = ( int ) max[ 0 ] - x;
-					final int height = ( int ) max[ 1 ] - y;
-					g.drawRect( x, y, width, height );
+					final double[][] p = new double[][] {
+						{ composite.realMin( 0 ), composite.realMin( 1 ) },
+						{ composite.realMax( 0 ), composite.realMin( 1 ) },
+						{ composite.realMax( 0 ), composite.realMax( 1 ) },
+						{ composite.realMin( 0 ), composite.realMax( 1 ) }
+					};
+					final double[] q = new double[ 2 ];
+					for ( int i = 0; i < 4; ++i )
+					{
+						t.apply( p[ i ], q );
+						final int x1 = ( int ) q[ 0 ];
+						final int y1 = ( int ) q[ 1 ];
+						t.apply( p[ ( i + 1 ) % 4 ], q );
+						final int x2 = ( int ) q[ 0 ];
+						final int y2 = ( int ) q[ 1 ];
+						g.drawLine( x1, y1, x2, y2 );
+					}
 				}
 			}
 		}, "composite interval", Bdv.options().addTo( bdv1 ) );
