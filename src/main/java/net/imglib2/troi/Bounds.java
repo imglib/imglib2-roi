@@ -123,7 +123,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 *
 	 * @return intersection (also bounded)
 	 */
-	protected abstract B intersect( B arg0, B arg1 );
+	protected abstract B intersectBounded( B arg0, B arg1 );
 
 	/**
 	 * Union of two <b>bounded</b> {@link Bounds}.
@@ -135,7 +135,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 *
 	 * @return intersection (also bounded)
 	 */
-	protected abstract B union( B arg0, B arg1 );
+	protected abstract B unionBounded( B arg0, B arg1 );
 
 	protected abstract B UNBOUNDED();
 
@@ -146,7 +146,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			return that;
 		if ( that.isUnbounded() )
 			return ( B ) this;
-		return intersect( ( B ) this, that );
+		return intersectBounded( ( B ) this, that );
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -154,7 +154,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	{
 		if ( this.isUnbounded() || that.isUnbounded() )
 			return UNBOUNDED();
-		return union( ( B ) this, that );
+		return unionBounded( ( B ) this, that );
 	}
 
 	public B negate()
@@ -421,13 +421,13 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 
 		@Override
-		protected IntBounds intersect( final IntBounds arg0, final IntBounds arg1 )
+		protected IntBounds intersectBounded( final IntBounds arg0, final IntBounds arg1 )
 		{
 			return new IntBounds( new IntersectionIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
-		protected IntBounds union( final IntBounds arg0, final IntBounds arg1 )
+		protected IntBounds unionBounded( final IntBounds arg0, final IntBounds arg1 )
 		{
 			return new IntBounds( new UnionIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
@@ -613,13 +613,13 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 
 		@Override
-		protected RealBounds intersect( final RealBounds arg0, final RealBounds arg1 )
+		protected RealBounds intersectBounded( final RealBounds arg0, final RealBounds arg1 )
 		{
 			return new RealBounds( new IntersectionRealIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
 
 		@Override
-		protected RealBounds union( final RealBounds arg0, final RealBounds arg1 )
+		protected RealBounds unionBounded( final RealBounds arg0, final RealBounds arg1 )
 		{
 			return new RealBounds( new UnionRealIntervalOrEmpty( arg0.interval(), arg1.interval() ) );
 		}
