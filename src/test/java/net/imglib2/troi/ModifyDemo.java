@@ -17,12 +17,10 @@ import bdv.util.BdvSource;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.animate.TextOverlayAnimator;
 import bdv.viewer.animate.TextOverlayAnimator.TextPosition;
-import net.imglib2.Interval;
-import net.imglib2.RealInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.realtransform.AffineTransform2D;
-import net.imglib2.troi.Bounds.AbstractIntervalOrEmpty;
+import net.imglib2.troi.Bounds.SmallestContainingInterval;
 import net.imglib2.troi.geom.real.ClosedSphere;
 import net.imglib2.troi.geom.real.Sphere;
 import net.imglib2.troi.util.TODO_Intervals;
@@ -48,25 +46,25 @@ public class ModifyDemo
 		final RealRandomAccessibleRealInterval< BoolType > s1rrai = Masks.toRRARI( s1 );
 		final BdvSource bdv1 = BdvFunctions.show(
 				s1rrai,
-				new WrappedContainingInterval( s1rrai ),
+				new SmallestContainingInterval( s1rrai ),
 				"Sphere 1",
 				Bdv.options().is2D().axisOrder( AxisOrder.XYZ ).inputTriggerConfig( config ) );
 		final RealRandomAccessibleRealInterval< BoolType > s2rrai = Masks.toRRARI( s2 );
 		final BdvSource bdv2 = BdvFunctions.show(
 				s2rrai,
-				new WrappedContainingInterval( s2rrai ),
+				new SmallestContainingInterval( s2rrai ),
 				"Sphere 2",
 				Bdv.options().addTo( bdv1 ).axisOrder( AxisOrder.XYZ ) );
 		final RealRandomAccessibleRealInterval< BoolType > s3rrai = Masks.toRRARI( s3 );
 		final BdvSource bdv3 = BdvFunctions.show(
 				s3rrai,
-				new WrappedContainingInterval( s3rrai ),
+				new SmallestContainingInterval( s3rrai ),
 				"Sphere 3",
 				Bdv.options().addTo( bdv1 ).axisOrder( AxisOrder.XYZ ) );
 		final RealRandomAccessibleRealInterval< BoolType > compositerrai = Masks.toRRARI( composite );
 		final BdvSource bdv4 = BdvFunctions.show(
 				compositerrai,
-				new WrappedContainingInterval( compositerrai ),
+				new SmallestContainingInterval( compositerrai ),
 				"composite",
 				Bdv.options().addTo( bdv1 ).axisOrder( AxisOrder.XYZ ) );
 
@@ -154,28 +152,5 @@ public class ModifyDemo
 		behaviours.install( bdv1.getBdvHandle().getTriggerbindings(), "demo" );
 
 		viewer.addOverlayAnimator( new TextOverlayAnimator( "left click + drag to move objects", 8000, TextPosition.CENTER ) );
-	}
-
-	static class WrappedContainingInterval extends AbstractIntervalOrEmpty implements Interval
-	{
-		private final RealInterval source;
-
-		public WrappedContainingInterval( final RealInterval source )
-		{
-			super( source.numDimensions() );
-			this.source = source;
-		}
-
-		@Override
-		public long min( final int d )
-		{
-			return ( long ) Math.floor( source.realMin( d ) );
-		}
-
-		@Override
-		public long max( final int d )
-		{
-			return ( long ) Math.ceil( source.realMax( d ) );
-		}
 	}
 }
