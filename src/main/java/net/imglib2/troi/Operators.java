@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
 import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
+import net.imglib2.troi.composite.CompositeMaskPredicate;
 import net.imglib2.troi.composite.DefaultBinaryCompositeMask;
 import net.imglib2.troi.composite.DefaultBinaryCompositeMaskInterval;
 import net.imglib2.troi.composite.DefaultBinaryCompositeRealMask;
@@ -16,6 +18,19 @@ import net.imglib2.troi.composite.DefaultUnaryCompositeMaskInterval;
 import net.imglib2.troi.composite.DefaultUnaryCompositeRealMask;
 import net.imglib2.troi.composite.DefaultUnaryCompositeRealMaskRealInterval;
 
+/**
+ * MaskOperator interfaces and instances. The concrete operator instances (e.g.,
+ * {@link #AND}) combine the appropriate operations for the
+ * {@link BoundaryType}, the {@link Bounds} interval, and the mask predicate.
+ * <p>
+ * The operator instances are used both, as constants referring to a specific
+ * operator (see {@link CompositeMaskPredicate#operator()}), and to combine
+ * source masks with the respective operation (e.g., see
+ * {@link BinaryMaskOperator#apply(Predicate, Predicate)}).
+ * </p>
+ *
+ * @author Tobias Pietzsch
+ */
 public class Operators
 {
 	/*
