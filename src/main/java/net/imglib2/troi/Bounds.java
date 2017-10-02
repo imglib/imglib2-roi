@@ -309,6 +309,33 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	}
 
 	/**
+	 * Represents the smallest {@link Interval} completely containing a
+	 * specified {@link RealInterval}. Adapts to changes of the source interval.
+	 */
+	public static class SmallestContainingInterval extends AbstractIntervalOrEmpty implements Interval
+	{
+		private final RealInterval source;
+
+		public SmallestContainingInterval( final RealInterval source )
+		{
+			super( source.numDimensions() );
+			this.source = source;
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			return ( long ) Math.floor( source.realMin( d ) );
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			return ( long ) Math.ceil( source.realMax( d ) );
+		}
+	}
+
+	/**
 	 * The intersection of two intervals. Adapts to changes of the source
 	 * intervals.
 	 */
@@ -411,7 +438,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			if ( predicate instanceof Interval )
 				return IntBounds.of( ( Interval ) predicate );
 			else if ( predicate instanceof RealInterval )
-				return IntBounds.of( Intervals.smallestContainingInterval( ( RealInterval ) predicate ) );
+				return IntBounds.of( new SmallestContainingInterval( ( RealInterval ) predicate ) );
 			else
 				return IntBounds.UNBOUNDED;
 		}
