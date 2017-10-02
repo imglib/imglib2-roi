@@ -182,13 +182,14 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	}
 
 	/**
-	 * And {@link Interval} with an {@link #isEmpty()} method.
+	 * An {@link Interval} with an {@link #isEmpty()} method.
 	 */
 	public interface IntervalOrEmpty extends Interval, Empty
 	{}
 
 	/**
-	 * Wrap a source {@link Interval}, add {@link #isEmpty()} method.
+	 * Wrap and augment a source {@link Interval} with an {@link #isEmpty()}
+	 * method.
 	 */
 	public static class WrappedIntervalOrEmpty extends AbstractWrappedInterval< Interval > implements IntervalOrEmpty
 	{
@@ -307,6 +308,10 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * The intersection of two intervals. Adapts to changes of the source
+	 * intervals.
+	 */
 	public static class IntersectionIntervalOrEmpty extends AbstractIntervalOrEmpty
 	{
 		private final IntervalOrEmpty i1;
@@ -338,6 +343,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * The union of two intervals. Adapts to changes of the source intervals.
+	 */
 	public static class UnionIntervalOrEmpty extends AbstractIntervalOrEmpty
 	{
 		private final IntervalOrEmpty i1;
@@ -391,6 +399,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * Implement {@link Bounds} for integer intervals.
+	 */
 	public static class IntBounds extends Bounds< IntervalOrEmpty, IntBounds >
 	{
 		public static final IntBounds UNBOUNDED = new IntBounds( null );
@@ -439,9 +450,16 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * A {@link RealInterval} with an {@link #isEmpty()} method.
+	 */
 	public interface RealIntervalOrEmpty extends RealInterval, Empty
 	{}
 
+	/**
+	 * Wrap and augment a source {@link RealInterval} with an {@link #isEmpty()}
+	 * method.
+	 */
 	public static class WrappedRealIntervalOrEmpty extends AbstractWrappedRealInterval< RealInterval > implements RealIntervalOrEmpty
 	{
 		public WrappedRealIntervalOrEmpty( final RealInterval source )
@@ -456,6 +474,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * Abstract base implementation for {@link RealIntervalOrEmpty}, leaving
+	 * {@link #realMin(int)} and {@link #realMax(int)} methods to be implemented
+	 * by derived classes.
+	 */
 	public static abstract class AbstractRealIntervalOrEmpty extends AbstractEuclideanSpace implements RealIntervalOrEmpty
 	{
 		public AbstractRealIntervalOrEmpty( final int n )
@@ -501,6 +524,10 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * The intersection of two intervals. Adapts to changes of the source
+	 * intervals.
+	 */
 	public static class IntersectionRealIntervalOrEmpty extends AbstractRealIntervalOrEmpty
 	{
 		private final RealIntervalOrEmpty i1;
@@ -532,6 +559,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * The union of two intervals. Adapts to changes of the source intervals.
+	 */
 	public static class UnionRealIntervalOrEmpty extends AbstractRealIntervalOrEmpty
 	{
 		private final RealIntervalOrEmpty i1;
@@ -585,6 +615,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * Implement {@link Bounds} for real intervals.
+	 */
 	public static class RealBounds extends Bounds< RealIntervalOrEmpty, RealBounds >
 	{
 		public static final RealBounds UNBOUNDED = new RealBounds( null );
