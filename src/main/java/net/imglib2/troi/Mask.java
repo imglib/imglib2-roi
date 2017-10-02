@@ -1,17 +1,23 @@
 package net.imglib2.troi;
 
-import java.util.function.Predicate;
-
-import net.imglib2.EuclideanSpace;
-import net.imglib2.Localizable;
-import net.imglib2.transform.Transform;
-
 import static net.imglib2.troi.Operators.AND;
 import static net.imglib2.troi.Operators.MINUS;
 import static net.imglib2.troi.Operators.NEGATE;
 import static net.imglib2.troi.Operators.OR;
 import static net.imglib2.troi.Operators.XOR;
 
+import java.util.function.Predicate;
+
+import net.imglib2.EuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.transform.Transform;
+
+/**
+ * A {@link MaskPredicate} for integral {@link Localizable}. Results of
+ * operations ({@code and, or, negate}, etc) are also {@code Mask}s.
+ *
+ * @author Tobias Pietzsch
+ */
 public interface Mask extends MaskPredicate< Localizable >, EuclideanSpace
 {
 	@Override
@@ -45,8 +51,8 @@ public interface Mask extends MaskPredicate< Localizable >, EuclideanSpace
 	}
 
 	/*
-	 * TODO: transformFromSource or transformToSource?
-	 * TODO: should this really be a method in the interface?
+	 * TODO: transformFromSource or transformToSource? TODO: should this really
+	 * be a method in the interface?
 	 */
 	public default Mask transform( final Transform transformToSource )
 	{

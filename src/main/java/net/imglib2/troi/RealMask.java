@@ -1,17 +1,23 @@
 package net.imglib2.troi;
 
-import java.util.function.Predicate;
-
-import net.imglib2.EuclideanSpace;
-import net.imglib2.RealLocalizable;
-import net.imglib2.realtransform.RealTransform;
-
 import static net.imglib2.troi.Operators.AND;
 import static net.imglib2.troi.Operators.MINUS;
 import static net.imglib2.troi.Operators.NEGATE;
 import static net.imglib2.troi.Operators.OR;
 import static net.imglib2.troi.Operators.XOR;
 
+import java.util.function.Predicate;
+
+import net.imglib2.EuclideanSpace;
+import net.imglib2.RealLocalizable;
+import net.imglib2.realtransform.RealTransform;
+
+/**
+ * A {@link MaskPredicate} for {@link RealLocalizable}. Results of operations
+ * ({@code and, or, negate}, etc) are also {@code RealMask}s.
+ *
+ * @author Tobias Pietzsch
+ */
 public interface RealMask extends MaskPredicate< RealLocalizable >, EuclideanSpace
 {
 	@Override
@@ -45,8 +51,8 @@ public interface RealMask extends MaskPredicate< RealLocalizable >, EuclideanSpa
 	}
 
 	/*
-	 * TODO: transformFromSource or transformToSource?
-	 * TODO: should this really be a method in the interface?
+	 * TODO: transformFromSource or transformToSource? TODO: should this really
+	 * be a method in the interface?
 	 */
 	public default RealMask transform( final RealTransform transformToSource )
 	{

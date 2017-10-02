@@ -1,13 +1,14 @@
 package net.imglib2.troi;
 
+import static net.imglib2.troi.Operators.AND;
+
 import java.util.function.Predicate;
+
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.troi.util.RealMaskRealIntervalAsRRARI;
 import net.imglib2.type.logic.BoolType;
-
-import static net.imglib2.troi.Operators.AND;
 
 /**
  * Utility class for working with {@link Mask}s.
@@ -133,6 +134,7 @@ public class Masks
 
 	/*
 	 * RandomAccessible Wrappers
+	 * ===============================================================
 	 */
 
 	// TODO there is only this one for the Demo
