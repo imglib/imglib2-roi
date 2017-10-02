@@ -117,9 +117,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 * Intersection of two <b>bounded</b> {@link Bounds}.
 	 *
 	 * @param arg0
-	 * 		must not be {@link #isUnbounded() unbounded}
+	 *            must not be {@link #isUnbounded() unbounded}
 	 * @param arg1
-	 * 		must not be {@link #isUnbounded() unbounded}
+	 *            must not be {@link #isUnbounded() unbounded}
 	 *
 	 * @return intersection (also bounded)
 	 */
@@ -129,9 +129,9 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 * Union of two <b>bounded</b> {@link Bounds}.
 	 *
 	 * @param arg0
-	 * 		must not be {@link #isUnbounded() unbounded}
+	 *            must not be {@link #isUnbounded() unbounded}
 	 * @param arg1
-	 * 		must not be {@link #isUnbounded() unbounded}
+	 *            must not be {@link #isUnbounded() unbounded}
 	 *
 	 * @return intersection (also bounded)
 	 */
@@ -173,13 +173,23 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		return ( B ) this;
 	}
 
+	/**
+	 * Something that can tell whether it {@link #isEmpty()}
+	 */
 	public interface Empty
 	{
 		boolean isEmpty();
 	}
 
-	public interface IntervalOrEmpty extends Interval, Empty {}
+	/**
+	 * And {@link Interval} with an {@link #isEmpty()} method.
+	 */
+	public interface IntervalOrEmpty extends Interval, Empty
+	{}
 
+	/**
+	 * Wrap a source {@link Interval}, add {@link #isEmpty()} method.
+	 */
 	public static class WrappedIntervalOrEmpty extends AbstractWrappedInterval< Interval > implements IntervalOrEmpty
 	{
 		public WrappedIntervalOrEmpty( final Interval source )
@@ -194,6 +204,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
+	/**
+	 * Abstract base implementation for {@link IntervalOrEmpty}, leaving
+	 * {@link #min(int)} and {@link #max(int)} methods to be implemented by
+	 * derived classes.
+	 */
 	public static abstract class AbstractIntervalOrEmpty extends AbstractEuclideanSpace implements IntervalOrEmpty
 	{
 		public AbstractIntervalOrEmpty( final int n )
@@ -376,7 +391,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
-	public static class IntBounds extends Bounds<IntervalOrEmpty,IntBounds>
+	public static class IntBounds extends Bounds< IntervalOrEmpty, IntBounds >
 	{
 		public static final IntBounds UNBOUNDED = new IntBounds( null );
 
@@ -424,7 +439,8 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
-	public interface RealIntervalOrEmpty extends RealInterval, Empty {}
+	public interface RealIntervalOrEmpty extends RealInterval, Empty
+	{}
 
 	public static class WrappedRealIntervalOrEmpty extends AbstractWrappedRealInterval< RealInterval > implements RealIntervalOrEmpty
 	{
@@ -569,7 +585,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		}
 	}
 
-	public static class RealBounds extends Bounds<RealIntervalOrEmpty,RealBounds>
+	public static class RealBounds extends Bounds< RealIntervalOrEmpty, RealBounds >
 	{
 		public static final RealBounds UNBOUNDED = new RealBounds( null );
 

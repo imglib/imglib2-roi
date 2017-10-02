@@ -1,18 +1,22 @@
 package net.imglib2.troi.composite;
 
 import java.util.function.Predicate;
+
 import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Bounds;
-import net.imglib2.troi.Operators;
+import net.imglib2.troi.Operators.UnaryMaskOperator;
 import net.imglib2.troi.RealMaskRealInterval;
 
+/**
+ * @author Tobias Pietzsch
+ */
 public class DefaultUnaryCompositeRealMaskRealInterval
 		extends AbstractWrappedRealInterval< Bounds.RealIntervalOrEmpty >
 		implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval, Bounds.RealIntervalOrEmpty
 {
-	private final Operators.UnaryMaskOperator operator;
+	private final UnaryMaskOperator operator;
 
 	private final Predicate< ? super RealLocalizable > arg0;
 
@@ -21,7 +25,7 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	private final Predicate< ? super RealLocalizable > predicate;
 
 	public DefaultUnaryCompositeRealMaskRealInterval(
-			Operators.UnaryMaskOperator operator,
+			final UnaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final Bounds.RealIntervalOrEmpty interval,
 			final BoundaryType boundaryType )
@@ -46,7 +50,7 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	}
 
 	@Override
-	public Operators.UnaryMaskOperator operator()
+	public UnaryMaskOperator operator()
 	{
 		return operator;
 	}

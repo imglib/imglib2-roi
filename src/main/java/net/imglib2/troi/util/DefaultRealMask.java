@@ -1,13 +1,15 @@
 package net.imglib2.troi.util;
 
 import java.util.function.Predicate;
+
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.Mask;
 import net.imglib2.troi.RealMask;
 
+/**
+ * @author Tobias Pietzsch
+ */
 public class DefaultRealMask extends AbstractEuclideanSpace implements RealMask
 {
 	private final BoundaryType boundaryType;

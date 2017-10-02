@@ -40,6 +40,9 @@ import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.troi.RealMaskRealInterval;
 import net.imglib2.type.BooleanType;
 
+/**
+ * @author Tobias Pietzsch
+ */
 public class RealMaskRealIntervalAsRRARI< B extends BooleanType< B > >
 	extends AbstractWrappedRealInterval< RealMaskRealInterval >
 	implements RealRandomAccessibleRealInterval< B >

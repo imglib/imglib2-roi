@@ -45,7 +45,7 @@ import net.imglib2.type.BooleanType;
 /**
  * {@link RealRandomAccess} based on {@link Mask} with {@link RealLocalizable}s.
  *
- * @author Christian Dietz, University of Konstanz
+ * @author Christian Dietz
  * @author Tobias Pietzsch
  */
 public class MaskPredicateRealRandomAccess< B extends BooleanType< B > > extends RealPoint implements RealRandomAccess< B >
