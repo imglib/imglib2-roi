@@ -14,12 +14,12 @@ public enum BoundaryType
 {
 	CLOSED, OPEN, UNSPECIFIED;
 
-	public BoundaryType and( BoundaryType that )
+	public BoundaryType and( final BoundaryType that )
 	{
 		return this == that ? this : UNSPECIFIED;
 	}
 
-	public BoundaryType or( BoundaryType that )
+	public BoundaryType or( final BoundaryType that )
 	{
 		return this == that ? this : UNSPECIFIED;
 	}
@@ -29,19 +29,17 @@ public enum BoundaryType
 		return this == OPEN ? CLOSED : this == CLOSED ? OPEN : UNSPECIFIED;
 	}
 
-	public BoundaryType minus( BoundaryType that )
+	public BoundaryType minus( final BoundaryType that )
 	{
-		// TODO
-		throw new UnsupportedOperationException( "TODO, not yet implemented" );
+		return this != that && that != UNSPECIFIED ? this : UNSPECIFIED;
 	}
 
-	public BoundaryType xor( BoundaryType that )
+	public BoundaryType xor( final BoundaryType that )
 	{
-		// TODO
-		throw new UnsupportedOperationException( "TODO, not yet implemented" );
+		return UNSPECIFIED;
 	}
 
-	public static BoundaryType of( Predicate< ? > predicate )
+	public static BoundaryType of( final Predicate< ? > predicate )
 	{
 		if ( predicate instanceof MaskPredicate )
 			return ( ( MaskPredicate< ? > ) predicate ).boundaryType();
