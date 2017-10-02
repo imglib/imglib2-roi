@@ -1,12 +1,16 @@
 package net.imglib2.troi.util;
 
 import java.util.function.Predicate;
+
 import net.imglib2.AbstractInterval;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.MaskInterval;
 
+/**
+ * @author Tobias Pietzsch
+ */
 public class DefaultMaskInterval extends AbstractInterval implements MaskInterval
 {
 	private final BoundaryType boundaryType;
@@ -16,7 +20,7 @@ public class DefaultMaskInterval extends AbstractInterval implements MaskInterva
 	public DefaultMaskInterval(
 			final Interval interval,
 			final BoundaryType boundaryType,
-			Predicate< ? super Localizable > predicate )
+			final Predicate< ? super Localizable > predicate )
 	{
 		super( interval );
 		this.boundaryType = boundaryType;

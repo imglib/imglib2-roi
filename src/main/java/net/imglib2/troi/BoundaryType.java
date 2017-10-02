@@ -9,6 +9,12 @@ import java.util.function.Predicate;
  * <li>OPEN: contains no points on the boundary</li>
  * <li>UNSPECIFIED: boundary behavior is unclear</li>
  * </ul>
+ *
+ * Also provides unary and binary operations on (masks having specific) edge
+ * behaviours.
+ *
+ * @author Tobias Pietzsch
+ * @author Alison Walter
  */
 public enum BoundaryType
 {

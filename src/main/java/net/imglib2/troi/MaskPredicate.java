@@ -43,12 +43,14 @@ import net.imglib2.EuclideanSpace;
 /**
  * Base interface for all things that divide an N-space into two parts.
  *
+ * @param <T>
+ *            location in N-space; typically a {@code RealLocalizable} or
+ *            {@code Localizable}).
+ *
  * @author Alison Walter
  * @author Curtis Rueden
  * @author Tobias Pietzsch
  * @author Christian Dietz
- * @param <T>
- *            location in N-space; typically a {@code RealLocalizable} or {@code Localizable}).
  */
 public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 {

@@ -1,17 +1,21 @@
 package net.imglib2.troi.composite;
 
 import java.util.function.Predicate;
+
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.Operators;
+import net.imglib2.troi.Operators.BinaryMaskOperator;
 import net.imglib2.troi.RealMask;
 
+/**
+ * @author Tobias Pietzsch
+ */
 public class DefaultBinaryCompositeRealMask
 		extends AbstractEuclideanSpace
 		implements BinaryCompositeMaskPredicate< RealLocalizable >, RealMask
 {
-	private final Operators.BinaryMaskOperator operator;
+	private final BinaryMaskOperator operator;
 
 	private final Predicate< ? super RealLocalizable > arg0;
 
@@ -22,7 +26,7 @@ public class DefaultBinaryCompositeRealMask
 	private final Predicate< ? super RealLocalizable > predicate;
 
 	public DefaultBinaryCompositeRealMask(
-			Operators.BinaryMaskOperator operator,
+			final BinaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final Predicate< ? super RealLocalizable > arg1,
 			final int numDimensions,
@@ -49,7 +53,7 @@ public class DefaultBinaryCompositeRealMask
 	}
 
 	@Override
-	public Operators.BinaryMaskOperator operator()
+	public BinaryMaskOperator operator()
 	{
 		return operator;
 	}
