@@ -60,13 +60,7 @@ public class ClosedSphere extends AbstractSphere
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
-
-		double distancePowered = 0;
-		for ( int d = 0; d < n; d++ )
-			distancePowered += ( l.getDoublePosition( d ) - center[ d ] ) * ( l.getDoublePosition( d ) - center[ d ] );
-
-		return distancePowered <= radius * radius;
+		return distancePowered( l ) <= radius * radius;
 	}
 
 	@Override

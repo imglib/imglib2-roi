@@ -34,18 +34,39 @@
 
 package net.imglib2.troi.geom.real;
 
-import net.imglib2.troi.RealMaskRealInterval;
+import net.imglib2.RealLocalizable;
+import net.imglib2.troi.BoundaryType;
 
 /**
- * A {@link RealMaskRealInterval} which defines an n-d sphere.
+ * A {@link Sphere} which does <b>not</b> contain any boundary points.
  *
  * @author Alison Walter
  */
-public interface Sphere extends Ellipsoid
+public class OpenSphere extends AbstractSphere
 {
-	/** Returns the radius of this sphere. */
-	double radius();
+	/**
+	 * Creates an n-d sphere.
+	 *
+	 * @param center
+	 *            Point where the sphere is centered
+	 * @param radius
+	 *            Radius of the sphere, must be positive and non-zero. A zero
+	 *            radius would result in an empty region.
+	 */
+	public OpenSphere( final double[] center, final double radius )
+	{
+		super( center, radius );
+	}
 
-	/** Sets the radius. */
-	void setRadius( double radius );
+	@Override
+	public boolean test( final RealLocalizable l )
+	{
+		return distancePowered( l ) < radius * radius;
+	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.OPEN;
+	}
 }

@@ -34,6 +34,7 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 
 /**
@@ -65,6 +66,9 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		this.center = center.clone();
 		this.radius = radius;
 	}
+
+	@Override
+	public abstract boolean test( RealLocalizable l );
 
 	@Override
 	public double realMin( final int d )
@@ -106,6 +110,18 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 			max.setPosition( realMax( i ), i );
 	}
 
+	@Override
+	public double exponent()
+	{
+		return 2;
+	}
+
+	@Override
+	public double semiAxisLength( final int d )
+	{
+		return radius;
+	}
+
 	/** Returns a copy of center. */
 	@Override
 	public double[] center()
@@ -117,6 +133,16 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	public double radius()
 	{
 		return radius;
+	}
+
+	/**
+	 * Sets the radius of this sphere. The dimension, d, is ignored since
+	 * spheres have the same extension in all dimensions.
+	 */
+	@Override
+	public void setSemiAxisLength( final int d, final double length )
+	{
+		setRadius( length );
 	}
 
 	/**
@@ -135,5 +161,18 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		if ( radius <= 0 )
 			throw new IllegalArgumentException( "Radius must be positive and non-zero." );
 		this.radius = radius;
+	}
+
+	// -- Helper methods --
+
+	protected double distancePowered( final RealLocalizable l )
+	{
+		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
+
+		double distancePowered = 0;
+		for ( int d = 0; d < n; d++ )
+			distancePowered += ( l.getDoublePosition( d ) - center[ d ] ) * ( l.getDoublePosition( d ) - center[ d ] );
+
+		return distancePowered;
 	}
 }
