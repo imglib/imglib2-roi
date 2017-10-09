@@ -34,6 +34,8 @@
 
 package net.imglib2.troi.geom.real;
 
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.troi.RealMaskRealInterval;
 
 /**
@@ -41,7 +43,7 @@ import net.imglib2.troi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Sphere extends Ellipsoid
+public interface Sphere< T extends RealLocalizable & RealPositionable > extends Ellipsoid< T >
 {
 	/** Returns the radius of this sphere. */
 	double radius();

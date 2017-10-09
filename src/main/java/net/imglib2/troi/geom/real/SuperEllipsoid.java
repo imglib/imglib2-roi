@@ -34,6 +34,8 @@
 
 package net.imglib2.troi.geom.real;
 
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.troi.RealMaskRealInterval;
 
 /**
@@ -41,7 +43,7 @@ import net.imglib2.troi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface SuperEllipsoid extends RealMaskRealInterval
+public interface SuperEllipsoid< T extends RealLocalizable & RealPositionable > extends RealMaskRealInterval
 {
 	/** Returns the exponent of this superellipsoid */
 	double exponent();
@@ -52,14 +54,11 @@ public interface SuperEllipsoid extends RealMaskRealInterval
 	double semiAxisLength( int d );
 
 	/** Returns the center of the superellipsoid */
-	double[] center();
+	T center();
 
 	/** Sets the exponent. */
 	void setExponent( double exponent );
 
 	/** Sets the semi-axis length in dimension d. */
 	void setSemiAxisLength( int d, double length );
-
-	/** Centers the superellipsoid at the given coordinates. */
-	void setCenter( double[] center );
 }

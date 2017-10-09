@@ -61,7 +61,7 @@ public class EllipsoidTest
 	@Test
 	public void testOpenEllipsoid()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertFalse( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -77,8 +77,8 @@ public class EllipsoidTest
 
 		// ellipsoid characteristics
 		assertEquals( e.exponent(), 2, 0 );
-		assertEquals( e.center()[ 0 ], 12, 0 );
-		assertEquals( e.center()[ 1 ], 23, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 12, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 23, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 9, 0 );
 		assertTrue( e.boundaryType() == BoundaryType.OPEN );
@@ -87,7 +87,7 @@ public class EllipsoidTest
 	@Test
 	public void testClosedEllipsoid()
 	{
-		final Ellipsoid e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertTrue( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -103,8 +103,8 @@ public class EllipsoidTest
 
 		// ellipsoid characteristics
 		assertEquals( e.exponent(), 2, 0 );
-		assertEquals( e.center()[ 0 ], 12, 0 );
-		assertEquals( e.center()[ 1 ], 23, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 12, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 23, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 4, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 9, 0 );
 		assertTrue( e.boundaryType() == BoundaryType.CLOSED );
@@ -113,7 +113,7 @@ public class EllipsoidTest
 	@Test
 	public void testEllipsoidSetExponent()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
 
 		exception.expect( UnsupportedOperationException.class );
 		e.setExponent( 3 );
@@ -122,10 +122,10 @@ public class EllipsoidTest
 	@Test
 	public void testMutateOpenEllipsoid()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
-		assertEquals( e.center()[ 0 ], 0, 0 );
-		assertEquals( e.center()[ 1 ], 6.25, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
 		assertTrue( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
@@ -133,10 +133,10 @@ public class EllipsoidTest
 		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change center
-		e.setCenter( new double[] { 10, 15 } );
+		e.center().setPosition( new double[] { 10, 15 } );
 
-		assertEquals( e.center()[ 0 ], 10, 0 );
-		assertEquals( e.center()[ 1 ], 15, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 15, 0 );
 		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
 		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
 		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
@@ -154,10 +154,10 @@ public class EllipsoidTest
 	@Test
 	public void testMutateClosedEllipsoid()
 	{
-		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
-		assertEquals( e.center()[ 0 ], 0, 0 );
-		assertEquals( e.center()[ 1 ], 6.25, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
 		assertEquals( e.semiAxisLength( 0 ), 1, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 2.25, 0 );
 		assertTrue( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
@@ -165,10 +165,10 @@ public class EllipsoidTest
 		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
 
 		// change center
-		e.setCenter( new double[] { 10, 15 } );
+		e.center().setPosition( new double[] { 10, 15 } );
 
-		assertEquals( e.center()[ 0 ], 10, 0 );
-		assertEquals( e.center()[ 1 ], 15, 0 );
+		assertEquals( e.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( e.center().getDoublePosition( 1 ), 15, 0 );
 		assertFalse( e.test( new RealPoint( new double[] { 0.5, 7 } ) ) );
 		assertTrue( e.test( new RealPoint( new double[] { 9.25, 16 } ) ) );
 		assertFalse( e.test( new RealPoint( new double[] { 13.5, 16 } ) ) );
@@ -200,20 +200,25 @@ public class EllipsoidTest
 	@Test
 	public void testCenterLonger()
 	{
-		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
 
 		assertEquals( e.numDimensions(), 2 );
-		assertEquals( e.center().length, 2 );
-		assertArrayEquals( e.center(), new double[] { 0, 0 }, 0 );
+		assertEquals( e.center().numDimensions(), 2 );
+
+		final double[] t = new double[ e.numDimensions() ];
+		e.center().localize( t );
+		assertArrayEquals( t, new double[] { 0, 0 }, 0 );
 	}
 
 	@Test
 	public void testSemiAxisLengthLonger()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
 
 		assertEquals( e.numDimensions(), 2 );
-		assertArrayEquals( e.center(), new double[] { 0, 0 }, 0 );
+		final double[] t = new double[ e.numDimensions() ];
+		e.center().localize( t );
+		assertArrayEquals( t, new double[] { 0, 0 }, 0 );
 
 		assertEquals( e.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( e.semiAxisLength( 1 ), 6, 0 );
@@ -225,7 +230,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetNegativeSemiAxisLength()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
 
 		exception.expect( IllegalArgumentException.class );
 		e.setSemiAxisLength( 0, -0.125 );
@@ -234,19 +239,20 @@ public class EllipsoidTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
 
-		exception.expect( IllegalArgumentException.class );
-		e.setCenter( new double[] { 4, 3 } );
+		exception.expect( ArrayIndexOutOfBoundsException.class );
+		e.center().setPosition( new double[] { 4, 3 } );
 	}
 
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final Ellipsoid e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
 
-		e.setCenter( new double[] { 4, 12, 5 } );
-		final double[] c = e.center();
+		e.center().setPosition( new double[] { 4, 12, 5 } );
+		final double[] c = new double[ e.center().numDimensions() ];
+		e.center().localize( c );
 		assertEquals( c.length, 2 );
 		assertEquals( c[ 0 ], 4, 0 );
 		assertEquals( c[ 1 ], 12, 0 );
@@ -256,7 +262,7 @@ public class EllipsoidTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open or closed ellipsoids
-		final Ellipsoid e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 		double[] min = new double[] { 12 - 4, 23 - 9 };
 		double[] max = new double[] { 12 + 4, 23 + 9 };
 		final double[] eMin = new double[ 2 ];
@@ -276,7 +282,7 @@ public class EllipsoidTest
 		assertArrayEquals( min, eMin, 0 );
 		assertArrayEquals( max, eMax, 0 );
 
-		e.setCenter( new double[] { 120, -30 } );
+		e.center().setPosition( new double[] { 120, -30 } );
 		min = new double[] { 120 - 0.25, -30 - 9 };
 		max = new double[] { 120 + 0.25, -30 + 9 };
 		e.realMin( eMin );

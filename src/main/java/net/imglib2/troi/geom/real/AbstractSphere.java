@@ -35,6 +35,7 @@ package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
 
 /**
@@ -42,9 +43,9 @@ import net.imglib2.RealPositionable;
  *
  * @author Alison Walter
  */
-public abstract class AbstractSphere extends AbstractEuclideanSpace implements Sphere
+public abstract class AbstractSphere extends AbstractEuclideanSpace implements Sphere< RealPoint >
 {
-	protected double[] center;
+	protected final double[] center;
 
 	protected double radius;
 
@@ -122,11 +123,14 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		return radius;
 	}
 
-	/** Returns a copy of center. */
+	/**
+	 * Returns the center. Changes to the returned center will mutate the
+	 * sphere.
+	 */
 	@Override
-	public double[] center()
+	public RealPoint center()
 	{
-		return center.clone();
+		return RealPoint.wrap( center );
 	}
 
 	@Override
@@ -143,16 +147,6 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	public void setSemiAxisLength( final int d, final double length )
 	{
 		setRadius( length );
-	}
-
-	/**
-	 * If the array has length > n, it will be truncated, if < n an exception is
-	 * thrown.
-	 */
-	@Override
-	public void setCenter( final double[] center )
-	{
-		System.arraycopy( center, 0, this.center, 0, n );
 	}
 
 	@Override

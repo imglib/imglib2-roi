@@ -35,6 +35,7 @@ package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
 
 /**
@@ -42,11 +43,11 @@ import net.imglib2.RealPositionable;
  *
  * @author Alison Walter
  */
-public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid
+public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid< RealPoint >
 {
 	protected double exponent;
 
-	protected double[] center;
+	protected final double[] center;
 
 	protected final double[] semiAxisLengths;
 
@@ -136,11 +137,14 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 		return semiAxisLengths[ d ];
 	}
 
-	/** Return copy of center */
+	/**
+	 * Returns the center. Changes to the returned center will mutate the
+	 * superellipsoid.
+	 */
 	@Override
-	public double[] center()
+	public RealPoint center()
 	{
-		return center.clone();
+		return RealPoint.wrap( center );
 	}
 
 	@Override
@@ -157,21 +161,6 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 		if ( length <= 0 )
 			throw new IllegalArgumentException( "Semi-axis length must be positive and non-zero" );
 		semiAxisLengths[ d ] = length;
-	}
-
-	/**
-	 * Sets the center.
-	 *
-	 * @param center
-	 *            if this array is longer than {@code n} it will be truncated,
-	 *            if shorter an {@link IllegalArgumentException} is thrown.
-	 */
-	@Override
-	public void setCenter( final double[] center )
-	{
-		if ( center.length < n )
-			throw new IllegalArgumentException( "Center must have a length of at least " + n );
-		System.arraycopy( center, 0, this.center, 0, n );
 	}
 
 	// -- Helper methods --

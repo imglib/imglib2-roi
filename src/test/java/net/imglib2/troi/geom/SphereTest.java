@@ -61,7 +61,7 @@ public class SphereTest
 	@Test
 	public void testOpenCircle()
 	{
-		final Sphere s = new OpenSphere( new double[] { 10, 10 }, 8 );
+		final Sphere< RealPoint > s = new OpenSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertFalse( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -77,8 +77,8 @@ public class SphereTest
 
 		// sphere characteristics
 		assertEquals( s.exponent(), 2, 0 );
-		assertEquals( s.center()[ 0 ], 10, 0 );
-		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 10, 0 );
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
 		assertEquals( s.radius(), 8, 0 );
@@ -88,7 +88,7 @@ public class SphereTest
 	@Test
 	public void testClosedCircle()
 	{
-		final Sphere s = new ClosedSphere( new double[] { 10, 10 }, 8 );
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertTrue( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -104,8 +104,8 @@ public class SphereTest
 
 		// sphere characteristics
 		assertEquals( s.exponent(), 2, 0 );
-		assertEquals( s.center()[ 0 ], 10, 0 );
-		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 10, 0 );
 		assertEquals( s.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( s.semiAxisLength( 1 ), 8, 0 );
 		assertEquals( s.radius(), 8, 0 );
@@ -115,7 +115,7 @@ public class SphereTest
 	@Test
 	public void testSphereSetExponent()
 	{
-		final Sphere s = new OpenSphere( new double[] { 1, 1 }, 4 );
+		final Sphere< RealPoint > s = new OpenSphere( new double[] { 1, 1 }, 4 );
 
 		exception.expect( UnsupportedOperationException.class );
 		s.setExponent( 0.25 );
@@ -124,20 +124,20 @@ public class SphereTest
 	@Test
 	public void testMutateOpenSphere()
 	{
-		final Sphere s = new OpenSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealPoint > s = new OpenSphere( new double[] { 3, 2 }, 5 );
 
-		assertEquals( s.center()[ 0 ], 3, 0 );
-		assertEquals( s.center()[ 1 ], 2, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
 		assertEquals( s.radius(), 5, 0 );
 		assertTrue( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change center
-		s.setCenter( new double[] { -10, 10 } );
+		s.center().setPosition( new double[] { -10, 10 } );
 
-		assertEquals( s.center()[ 0 ], -10, 0 );
-		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), -10, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 10, 0 );
 		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
 		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
@@ -155,20 +155,20 @@ public class SphereTest
 	@Test
 	public void testMutateClosedSphere()
 	{
-		final Sphere s = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 3, 2 }, 5 );
 
-		assertEquals( s.center()[ 0 ], 3, 0 );
-		assertEquals( s.center()[ 1 ], 2, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
 		assertEquals( s.radius(), 5, 0 );
 		assertTrue( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
 
 		// change center
-		s.setCenter( new double[] { -10, 10 } );
+		s.center().setPosition( new double[] { -10, 10 } );
 
-		assertEquals( s.center()[ 0 ], -10, 0 );
-		assertEquals( s.center()[ 1 ], 10, 0 );
+		assertEquals( s.center().getDoublePosition( 0 ), -10, 0 );
+		assertEquals( s.center().getDoublePosition( 1 ), 10, 0 );
 		assertFalse( s.test( new RealPoint( new double[] { 6.5, 2.25 } ) ) );
 		assertTrue( s.test( new RealPoint( new double[] { -9.5, 11.125 } ) ) );
 		assertFalse( s.test( new RealPoint( new double[] { -17.5, 10.25 } ) ) );
@@ -193,7 +193,7 @@ public class SphereTest
 	@Test
 	public void testSetNegativeRadius()
 	{
-		final Sphere cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
 
 		exception.expect( IllegalArgumentException.class );
 		cs.setRadius( -2 );
@@ -202,20 +202,21 @@ public class SphereTest
 	@Test
 	public void testSetTooShortCenter()
 	{
-		final Sphere cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
 
 		exception.expect( IndexOutOfBoundsException.class );
-		cs.setCenter( new double[] { 1, 1 } );
+		cs.center().setPosition( new double[] { 1, 1 } );
 	}
 
 	@Test
 	public void testSetTooLongCenter()
 	{
-		final Sphere os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealPoint > os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
 
-		os.setCenter( new double[] { 1, 2, 3, 4 } );
+		os.center().setPosition( new double[] { 1, 2, 3, 4 } );
 
-		final double[] c = os.center();
+		final double[] c = new double[ os.numDimensions() ];
+		os.center().localize( c );
 		assertEquals( c.length, os.numDimensions() );
 		assertEquals( c[ 0 ], 1, 0 );
 		assertEquals( c[ 1 ], 2, 0 );
@@ -226,7 +227,7 @@ public class SphereTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open and closed spheres
-		final Sphere s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
 		double[] min = new double[] { 3 - 5, 2 - 5, 1 - 5 };
 		double[] max = new double[] { 3 + 5, 2 + 5, 1 + 5 };
 		final double[] sMin = new double[ 3 ];
@@ -246,7 +247,7 @@ public class SphereTest
 		assertArrayEquals( min, sMin, 0 );
 		assertArrayEquals( max, sMax, 0 );
 
-		s.setCenter( new double[] { 0, 0, 0 } );
+		s.center().setPosition( new double[] { 0, 0, 0 } );
 		min = new double[] { -2, -2, -2 };
 		max = new double[] { 2, 2, 2 };
 		s.realMin( sMin );

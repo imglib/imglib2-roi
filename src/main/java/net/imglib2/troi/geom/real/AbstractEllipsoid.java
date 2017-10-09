@@ -34,13 +34,14 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
 
 /**
  * Abstract base class for {@link Ellipsoid} implementations.
  *
  * @author Alison Walter
  */
-public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implements Ellipsoid
+public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implements Ellipsoid< RealPoint >
 {
 
 	/**

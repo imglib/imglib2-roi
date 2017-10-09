@@ -61,7 +61,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testOpen2DSuperEllipse()
 	{
-		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
 		assertFalse( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
@@ -79,8 +79,8 @@ public class SuperEllipsoidTest
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 0.5, 0 );
-		assertEquals( se.center()[ 0 ], 10, 0 );
-		assertEquals( se.center()[ 1 ], 10, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 8, 0 );
 		assertTrue( se.boundaryType() == BoundaryType.OPEN );
@@ -89,7 +89,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testClosed2DSuperEllipse()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
 		assertTrue( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
@@ -107,8 +107,8 @@ public class SuperEllipsoidTest
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 0.5, 0 );
-		assertEquals( se.center()[ 0 ], 10, 0 );
-		assertEquals( se.center()[ 1 ], 10, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 10, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 8, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 8, 0 );
 		assertTrue( se.boundaryType() == BoundaryType.CLOSED );
@@ -117,7 +117,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testOpen3DSuperEllipsoid()
 	{
-		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
 		assertFalse( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
@@ -136,9 +136,9 @@ public class SuperEllipsoidTest
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 6, 0 );
-		assertEquals( se.center()[ 0 ], 4, 0 );
-		assertEquals( se.center()[ 1 ], 7, 0 );
-		assertEquals( se.center()[ 2 ], 2, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 4, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 7, 0 );
+		assertEquals( se.center().getDoublePosition( 2 ), 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 2 ), 1.5, 0 );
@@ -148,7 +148,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testClosed3DSuperEllipsoid()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
 		assertTrue( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
@@ -167,9 +167,9 @@ public class SuperEllipsoidTest
 
 		// superellipsoid characteristics
 		assertEquals( se.exponent(), 6, 0 );
-		assertEquals( se.center()[ 0 ], 4, 0 );
-		assertEquals( se.center()[ 1 ], 7, 0 );
-		assertEquals( se.center()[ 2 ], 2, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 4, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 7, 0 );
+		assertEquals( se.center().getDoublePosition( 2 ), 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 10, 0 );
 		assertEquals( se.semiAxisLength( 2 ), 1.5, 0 );
@@ -179,11 +179,11 @@ public class SuperEllipsoidTest
 	@Test
 	public void testMutateOpenSuperEllipsoid()
 	{
-		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
 
 		assertEquals( se.exponent(), 2, 0 );
-		assertEquals( se.center()[ 0 ], 2, 0 );
-		assertEquals( se.center()[ 1 ], 2, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 2, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
 		assertTrue( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
@@ -192,10 +192,10 @@ public class SuperEllipsoidTest
 		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change center
-		se.setCenter( new double[] { 5.5, 6 } );
+		se.center().setPosition( new double[] { 5.5, 6 } );
 
-		assertEquals( se.center()[ 0 ], 5.5, 0 );
-		assertEquals( se.center()[ 1 ], 6, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 5.5, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 6, 0 );
 		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
 		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
 		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
@@ -224,11 +224,11 @@ public class SuperEllipsoidTest
 	@Test
 	public void testMutateClosedSuperEllipsoid()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
 
 		assertEquals( se.exponent(), 2, 0 );
-		assertEquals( se.center()[ 0 ], 2, 0 );
-		assertEquals( se.center()[ 1 ], 2, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 2, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 2, 0 );
 		assertEquals( se.semiAxisLength( 0 ), 0.25, 0 );
 		assertEquals( se.semiAxisLength( 1 ), 2, 0 );
 		assertTrue( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
@@ -237,10 +237,10 @@ public class SuperEllipsoidTest
 		assertFalse( se.test( new RealPoint( new double[] { 7, 7.5 } ) ) );
 
 		// change center
-		se.setCenter( new double[] { 5.5, 6 } );
+		se.center().setPosition( new double[] { 5.5, 6 } );
 
-		assertEquals( se.center()[ 0 ], 5.5, 0 );
-		assertEquals( se.center()[ 1 ], 6, 0 );
+		assertEquals( se.center().getDoublePosition( 0 ), 5.5, 0 );
+		assertEquals( se.center().getDoublePosition( 1 ), 6, 0 );
 		assertFalse( se.test( new RealPoint( new double[] { 2.125, 3 } ) ) );
 		assertTrue( se.test( new RealPoint( new double[] { 5.6, 7.5 } ) ) );
 		assertFalse( se.test( new RealPoint( new double[] { 7, 6 } ) ) );
@@ -269,9 +269,10 @@ public class SuperEllipsoidTest
 	@Test
 	public void testCenterLonger()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0, 3 }, new double[] { 3, 2 }, 2 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 0, 0, 3 }, new double[] { 3, 2 }, 2 );
 
-		final double[] c = se.center();
+		final double[] c = new double[ se.numDimensions() ];
+		se.center().localize( c );
 		assertEquals( c.length, se.numDimensions() );
 		assertEquals( c[ 0 ], 0, 0 );
 		assertEquals( c[ 1 ], 0, 0 );
@@ -280,7 +281,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSemiAxisLonger()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4, 6 }, 2 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4, 6 }, 2 );
 
 		assertEquals( se.numDimensions(), 2 );
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
@@ -307,10 +308,11 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
-		se.setCenter( new double[] { 3, 3, 3, 3 } );
-		final double[] c = se.center();
+		se.center().setPosition( new double[] { 3, 3, 3, 3 } );
+		final double[] c = new double[ se.numDimensions() ];
+		se.center().localize( c );
 
 		assertEquals( c.length, se.numDimensions() );
 		assertEquals( c[ 0 ], 3, 0 );
@@ -321,16 +323,16 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
-		exception.expect( IllegalArgumentException.class );
-		se.setCenter( new double[] { 1, 1 } );
+		exception.expect( IndexOutOfBoundsException.class );
+		se.center().setPosition( new double[] { 1, 1 } );
 	}
 
 	@Test
 	public void testSetNegativeSemiAxisLength()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		exception.expect( IllegalArgumentException.class );
 		se.setSemiAxisLength( 0, -0.01 );
@@ -339,7 +341,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetZeroExponent()
 	{
-		final SuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final SuperEllipsoid< RealPoint > se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		exception.expect( IllegalArgumentException.class );
 		se.setExponent( 0 );
@@ -349,7 +351,7 @@ public class SuperEllipsoidTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open and closed super ellipsoids
-		final SuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 		double[] min = new double[] { 4 - 3, 7 - 10, 2 - 1.5 };
 		double[] max = new double[] { 4 + 3, 7 + 10, 2 + 1.5 };
 		final double[] seMin = new double[ 3 ];
@@ -375,7 +377,7 @@ public class SuperEllipsoidTest
 		assertArrayEquals( min, seMin, 0 );
 		assertArrayEquals( max, seMax, 0 );
 
-		se.setCenter( new double[] { 0, 0, 0 } );
+		se.center().setPosition( new double[] { 0, 0, 0 } );
 		min = new double[] { -3, -2, -1.5 };
 		max = new double[] { 3, 2, 1.5 };
 		se.realMin( seMin );
