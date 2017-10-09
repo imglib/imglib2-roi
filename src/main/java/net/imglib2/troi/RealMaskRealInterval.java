@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 
 /**
  * A bounded {@link RealMask}, that is, the mask predicate evaluates to
@@ -22,7 +23,7 @@ import net.imglib2.RealLocalizable;
 public interface RealMaskRealInterval extends RealMask, RealInterval
 {
 	@Override
-	public default RealMaskRealInterval and( final Predicate< ? super RealLocalizable > other )
+	default RealMaskRealInterval and( final Predicate< ? super RealLocalizable > other )
 	{
 		return AND.applyRealInterval( this, other );
 	}
@@ -31,13 +32,13 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	 * Note: *NOT* overriding RealMask.or(), just specializing for
 	 * RealMaskRealInterval argument.
 	 */
-	public default RealMaskRealInterval or( final RealMaskRealInterval other )
+	default RealMaskRealInterval or( final RealMaskRealInterval other )
 	{
 		return OR.applyRealInterval( this, other );
 	}
 
 	@Override
-	public default RealMaskRealInterval minus( final Predicate< ? super RealLocalizable > other )
+	default RealMaskRealInterval minus( final Predicate< ? super RealLocalizable > other )
 	{
 		return MINUS.applyRealInterval( this, other );
 	}
@@ -46,8 +47,38 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	 * Note: *NOT* overriding RealMask.xor(), just specializing for
 	 * RealMaskRealInterval argument.
 	 */
-	public default RealMaskRealInterval xor( final RealMaskRealInterval other )
+	default RealMaskRealInterval xor( final RealMaskRealInterval other )
 	{
 		return XOR.applyRealInterval( this, other );
+	}
+
+	// -- RealInterval Methods --
+
+	@Override
+	default void realMin( final double[] min )
+	{
+		for ( int i = 0; i < numDimensions(); i++ )
+			min[ i ] = realMin( i );
+	}
+
+	@Override
+	default void realMin( final RealPositionable min )
+	{
+		for ( int i = 0; i < numDimensions(); i++ )
+			min.setPosition( realMin( i ), i );
+	}
+
+	@Override
+	default void realMax( final double[] max )
+	{
+		for ( int i = 0; i < numDimensions(); i++ )
+			max[ i ] = realMax( i );
+	}
+
+	@Override
+	default void realMax( final RealPositionable max )
+	{
+		for ( int i = 0; i < numDimensions(); i++ )
+			max.setPosition( realMax( i ), i );
 	}
 }
