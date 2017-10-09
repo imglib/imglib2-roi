@@ -36,7 +36,6 @@ package net.imglib2.troi.geom.real;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
-import net.imglib2.RealPositionable;
 
 /**
  * Abstract base class for {@link Sphere} implementations.
@@ -78,37 +77,9 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	}
 
 	@Override
-	public void realMin( final double[] min )
-	{
-		for ( int i = 0; i < n; i++ )
-			min[ i ] = realMin( i );
-	}
-
-	@Override
-	public void realMin( final RealPositionable min )
-	{
-		for ( int i = 0; i < n; i++ )
-			min.setPosition( realMin( i ), i );
-	}
-
-	@Override
 	public double realMax( final int d )
 	{
 		return center[ d ] + radius;
-	}
-
-	@Override
-	public void realMax( final double[] max )
-	{
-		for ( int i = 0; i < n; i++ )
-			max[ i ] = realMax( i );
-	}
-
-	@Override
-	public void realMax( final RealPositionable max )
-	{
-		for ( int i = 0; i < n; i++ )
-			max.setPosition( realMax( i ), i );
 	}
 
 	@Override
