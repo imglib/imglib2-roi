@@ -34,9 +34,6 @@
 
 package net.imglib2.troi.geom;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.imglib2.RealLocalizable;
 
 import gnu.trove.list.array.TDoubleArrayList;
@@ -120,45 +117,6 @@ public class GeomMaths
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * Creates a {@code List< double[]} from a {@code List< R >}.
-	 *
-	 * @param pts
-	 *            List of RealLocalizables to be converted. All RealLocalizables
-	 *            are assumed to have the same number of dimensions.
-	 * @return {@code List< double[]}
-	 */
-	public static < R extends RealLocalizable > List< double[] > createVerticesList( final List< R > pts )
-	{
-		final List< double[] > vert = new ArrayList<>();
-		for ( int i = 0; i < pts.size(); i++ )
-		{
-			final double[] location = new double[ pts.get( i ).numDimensions() ];
-			pts.get( i ).localize( location );
-			vert.add( location );
-		}
-		return vert;
-	}
-
-	/**
-	 * Creates a {@code List< double[]} from a {@code double[][]}.
-	 *
-	 * @param pts
-	 *            Points to be converted, the first index specifies the point
-	 *            and the second specifies the location in that dimension. All
-	 *            points are assumed to have the same number of dimensions.
-	 * @return {@code List< double[]}
-	 */
-	public static < R extends RealLocalizable > List< double[] > createVerticesList( final double[][] pts )
-	{
-		final List< double[] > vert = new ArrayList<>();
-		for ( int i = 0; i < pts.length; i++ )
-		{
-			vert.add( pts[ i ].clone() );
-		}
-		return vert;
 	}
 
 	// -- Helper methods --
