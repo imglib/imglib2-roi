@@ -35,17 +35,21 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
+import net.imglib2.Localizable;
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
+import net.imglib2.troi.RealMask;
 
 /**
  * Abstract base class for implementations of {@link Box}.
  *
  * @author Alison Walter
  */
-public abstract class AbstractBox extends AbstractRealInterval implements Box
+public abstract class AbstractBox extends AbstractRealInterval implements Box< RealPoint >
 {
 	/**
-	 * Creates an n-d rectangular {@link Mask} in real space. The dimensionality
-	 * is dictated by the length of the min array.
+	 * Creates an n-d rectangular {@link RealMask}. The dimensionality is
+	 * dictated by the length of the min array.
 	 *
 	 * @param min
 	 *            An array containing the minimum position in each dimension. A
@@ -68,34 +72,14 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 	}
 
 	@Override
-	public double[] center()
+	public RealPoint center()
 	{
 		final double[] center = new double[ n ];
 		for ( int d = 0; d < n; d++ )
 		{
 			center[ d ] = ( max[ d ] + min[ d ] ) / 2.0;
 		}
-		return center;
-	}
-
-	/**
-	 * Sets the center of the box.
-	 *
-	 * @param center
-	 *            contains the position of new center in each dimension,
-	 *            positions dimensions greater than {@code n} will be ignored
-	 */
-	@Override
-	public void setCenter( final double[] center )
-	{
-		if ( center.length < n )
-			throw new IllegalArgumentException( "Center must have at least length " + n );
-		for ( int d = 0; d < n; d++ )
-		{
-			final double halfSideLength = sideLength( d ) / 2.0;
-			min[ d ] = center[ d ] - halfSideLength;
-			max[ d ] = center[ d ] + halfSideLength;
-		}
+		return new BoxCenter( center );
 	}
 
 	@Override
@@ -103,8 +87,184 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box
 	{
 		if ( length < 0 )
 			throw new IllegalArgumentException( "Cannot have negative edge lengths " );
-		final double[] center = center();
-		max[ d ] = center[ d ] + length / 2.0;
-		min[ d ] = center[ d ] - length / 2.0;
+		final double center = ( max[ d ] + min[ d ] ) / 2.0;
+		max[ d ] = center + length / 2.0;
+		min[ d ] = center - length / 2.0;
+	}
+
+	// -- Helper classes --
+
+	private class BoxCenter extends RealPoint
+	{
+		protected BoxCenter( final double[] center )
+		{
+			super( center );
+		}
+
+		@Override
+		public void fwd( final int d )
+		{
+			super.fwd( d );
+			updateMinMax();
+		}
+
+		@Override
+		public void bck( final int d )
+		{
+			super.bck( d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final int distance, final int d )
+		{
+			super.move( distance, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final long distance, final int d )
+		{
+			super.move( distance, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final Localizable localizable )
+		{
+			super.move( localizable );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final int[] distance )
+		{
+			super.move( distance );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final long[] distance )
+		{
+			super.move( distance );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final Localizable localizable )
+		{
+			super.setPosition( localizable );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final int[] position )
+		{
+			super.setPosition( position );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final long[] position )
+		{
+			super.setPosition( position );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final int position, final int d )
+		{
+			super.setPosition( position, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final long position, final int d )
+		{
+			super.setPosition( position, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final float distance, final int d )
+		{
+			super.move( distance, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final double distance, final int d )
+		{
+			super.move( distance, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final RealLocalizable distance )
+		{
+			super.move( distance );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final float[] distance )
+		{
+			super.move( distance );
+			updateMinMax();
+		}
+
+		@Override
+		public void move( final double[] distance )
+		{
+			super.move( distance );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final RealLocalizable position )
+		{
+			super.setPosition( position );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final float[] position )
+		{
+			super.setPosition( position );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final double[] position )
+		{
+			super.setPosition( position );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final float position, final int d )
+		{
+			super.setPosition( position, d );
+			updateMinMax();
+		}
+
+		@Override
+		public void setPosition( final double position, final int d )
+		{
+			super.setPosition( position, d );
+			updateMinMax();
+		}
+
+		// -- Helper methods --
+
+		private void updateMinMax()
+		{
+			for ( int d = 0; d < n; d++ )
+			{
+				final double halfSideLength = sideLength( d ) / 2.0;
+				max[ d ] = position[ d ] + halfSideLength;
+				min[ d ] = position[ d ] - halfSideLength;
+			}
+		}
 	}
 }

@@ -36,21 +36,22 @@ package net.imglib2.troi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.RealMask;
+import net.imglib2.troi.RealMaskRealInterval;
 
 /**
- * A {@link Box} which contains <b>all</b> edge points defined by the min and
- * max values in each dimension.
+ * A {@link Box} which contains <b>no</b> edge points defined by the min and max
+ * values in each dimension.
  *
  * @author Alison Walter
  * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
  *         rhaase@mpi-cbg.de
  */
-public class ClosedBox extends AbstractBox
+public class OpenBox extends AbstractBox
 {
+
 	/**
-	 * Creates an n-d rectangular {@link RealMask} in real space. The dimensionality
-	 * is dictated by the length of the min array.
+	 * Creates an n-d rectangular {@link RealMaskRealInterval} in real space.
+	 * The dimensionality is dictated by the length of the min array.
 	 *
 	 * @param min
 	 *            An array containing the minimum position in each dimension. A
@@ -59,7 +60,7 @@ public class ClosedBox extends AbstractBox
 	 *            An array containing maximum position in each dimension. A copy
 	 *            of this array is stored.
 	 */
-	public ClosedBox( final double[] min, final double[] max )
+	public OpenBox( final double[] min, final double[] max )
 	{
 		super( min, max );
 	}
@@ -71,14 +72,15 @@ public class ClosedBox extends AbstractBox
 		for ( int d = 0; d < n && isInside; d++ )
 		{
 			final double x = l.getDoublePosition( d );
-			isInside &= x >= min[ d ] && x <= max[ d ];
+			isInside &= x > min[ d ] && x < max[ d ];
 		}
+
 		return isInside;
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
-		return BoundaryType.CLOSED;
+		return BoundaryType.OPEN;
 	}
 }

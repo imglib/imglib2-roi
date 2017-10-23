@@ -34,6 +34,8 @@
 
 package net.imglib2.troi.geom.real;
 
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.troi.RealMaskRealInterval;
 
 /**
@@ -41,16 +43,13 @@ import net.imglib2.troi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Box extends RealMaskRealInterval
+public interface Box< T extends RealLocalizable & RealPositionable > extends RealMaskRealInterval
 {
 	/** Returns side length of Box in dimension d. */
 	double sideLength( int d );
 
 	/** Returns the center of the Box. */
-	double[] center();
-
-	/** Centers the box at the new coordinates. */
-	void setCenter( double[] center );
+	T center();
 
 	/** Updates the length of the side in dimension d. */
 	void setSideLength( int d, double length );
