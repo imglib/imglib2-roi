@@ -49,7 +49,6 @@ public enum BoundaryType
 	{
 		if ( predicate instanceof MaskPredicate )
 			return ( ( MaskPredicate< ? > ) predicate ).boundaryType();
-		else
-			return UNSPECIFIED;
+		return UNSPECIFIED;
 	}
 }

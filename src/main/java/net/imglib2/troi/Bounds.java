@@ -311,7 +311,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 * Represents the smallest {@link Interval} completely containing a
 	 * specified {@link RealInterval}. Adapts to changes of the source interval.
 	 */
-	public static class SmallestContainingInterval extends AbstractIntervalOrEmpty implements Interval
+	public static class SmallestContainingInterval extends AbstractIntervalOrEmpty
 	{
 		private final RealInterval source;
 
@@ -393,16 +393,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			{
 				if ( i2.isEmpty() )
 					return Long.MAX_VALUE;
-				else
-					return i2.min( d );
+				return i2.min( d );
 			}
-			else
-			{
-				if ( i2.isEmpty() )
-					return i1.min( d );
-				else
-					return Math.min( i1.min( d ), i2.min( d ) );
-			}
+			if ( i2.isEmpty() )
+				return i1.min( d );
+			return Math.min( i1.min( d ), i2.min( d ) );
 		}
 
 		@Override
@@ -412,16 +407,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			{
 				if ( i2.isEmpty() )
 					return Long.MIN_VALUE;
-				else
-					return i2.max( d );
+				return i2.max( d );
 			}
-			else
-			{
-				if ( i2.isEmpty() )
-					return i1.max( d );
-				else
-					return Math.max( i1.max( d ), i2.max( d ) );
-			}
+			if ( i2.isEmpty() )
+				return i1.max( d );
+			return Math.max( i1.max( d ), i2.max( d ) );
 		}
 	}
 
@@ -609,16 +599,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			{
 				if ( i2.isEmpty() )
 					return Double.POSITIVE_INFINITY;
-				else
-					return i2.realMin( d );
+				return i2.realMin( d );
 			}
-			else
-			{
-				if ( i2.isEmpty() )
-					return i1.realMin( d );
-				else
-					return Math.min( i1.realMin( d ), i2.realMin( d ) );
-			}
+			if ( i2.isEmpty() )
+				return i1.realMin( d );
+			return Math.min( i1.realMin( d ), i2.realMin( d ) );
 		}
 
 		@Override
@@ -628,16 +613,11 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 			{
 				if ( i2.isEmpty() )
 					return Double.NEGATIVE_INFINITY;
-				else
-					return i2.realMax( d );
+				return i2.realMax( d );
 			}
-			else
-			{
-				if ( i2.isEmpty() )
-					return i1.realMax( d );
-				else
-					return Math.max( i1.realMax( d ), i2.realMax( d ) );
-			}
+			if ( i2.isEmpty() )
+				return i1.realMax( d );
+			return Math.max( i1.realMax( d ), i2.realMax( d ) );
 		}
 	}
 
@@ -652,8 +632,7 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 		{
 			if ( predicate instanceof RealInterval )
 				return RealBounds.of( ( RealInterval ) predicate );
-			else
-				return RealBounds.UNBOUNDED;
+			return RealBounds.UNBOUNDED;
 		}
 
 		public static RealBounds of( final RealInterval i )

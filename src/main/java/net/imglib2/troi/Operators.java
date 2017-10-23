@@ -34,7 +34,7 @@ import net.imglib2.troi.composite.DefaultUnaryCompositeRealMaskRealInterval;
 public class Operators
 {
 	/*
-	 * MaskOperator definitions (for both integral and real masks)
+	 * MaskOperator definitions (for both integer and real masks)
 	 * ===========================================================
 	 */
 
@@ -79,7 +79,7 @@ public class Operators
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )
 		{
-			return t -> ! arg.test( t );
+			return t -> !arg.test( t );
 		}
 	};
 
@@ -98,7 +98,7 @@ public class Operators
 		Bounds.BinaryBoundsOperator boundsOp;
 
 		public BinaryMaskOperator(
-				final BinaryOperator< BoundaryType> boundaryTypeOp,
+				final BinaryOperator< BoundaryType > boundaryTypeOp,
 				final Bounds.BinaryBoundsOperator boundsOp )
 		{
 			this.boundaryTypeOp = boundaryTypeOp;
@@ -112,8 +112,7 @@ public class Operators
 			final Bounds.IntBounds bounds = boundsOp.apply( Bounds.IntBounds.of( left ), Bounds.IntBounds.of( right ) );
 			if ( bounds.isUnbounded() )
 				return new DefaultBinaryCompositeMask( this, left, right, n, boundaryType );
-			else
-				return new DefaultBinaryCompositeMaskInterval( this, left, right, bounds.interval(), boundaryType );
+			return new DefaultBinaryCompositeMaskInterval( this, left, right, bounds.interval(), boundaryType );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > left, final Predicate< ? super RealLocalizable > right )
@@ -123,8 +122,7 @@ public class Operators
 			final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( left ), Bounds.RealBounds.of( right ) );
 			if ( bounds.isUnbounded() )
 				return new DefaultBinaryCompositeRealMask( this, left, right, n, boundaryType );
-			else
-				return new DefaultBinaryCompositeRealMaskRealInterval( this, left, right, bounds.interval(), boundaryType );
+			return new DefaultBinaryCompositeRealMaskRealInterval( this, left, right, bounds.interval(), boundaryType );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > left, final Predicate< ? super Localizable > right )
@@ -132,8 +130,7 @@ public class Operators
 			final Mask mask = apply( left, right );
 			if ( mask instanceof MaskInterval )
 				return ( MaskInterval ) mask;
-			else
-				throw new IllegalArgumentException( "result is not an interval" );
+			throw new IllegalArgumentException( "result is not an interval" );
 		}
 
 		public RealMaskRealInterval applyRealInterval( final Predicate< ? super RealLocalizable > left, final Predicate< ? super RealLocalizable > right )
@@ -141,8 +138,7 @@ public class Operators
 			final RealMask mask = applyReal( left, right );
 			if ( mask instanceof RealMaskRealInterval )
 				return ( RealMaskRealInterval ) mask;
-			else
-				throw new IllegalArgumentException( "result is not an interval" );
+			throw new IllegalArgumentException( "result is not an interval" );
 		}
 
 		public abstract < T > Predicate< T > predicate( Predicate< ? super T > left, Predicate< ? super T > right );
@@ -155,7 +151,7 @@ public class Operators
 		Bounds.UnaryBoundsOperator boundsOp;
 
 		public UnaryMaskOperator(
-				final UnaryOperator< BoundaryType> boundaryTypeOp,
+				final UnaryOperator< BoundaryType > boundaryTypeOp,
 				final Bounds.UnaryBoundsOperator boundsOp )
 		{
 			this.boundaryTypeOp = boundaryTypeOp;
@@ -169,8 +165,7 @@ public class Operators
 			final Bounds.IntBounds bounds = boundsOp.apply( Bounds.IntBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
 				return new DefaultUnaryCompositeMask( this, arg, n, boundaryType );
-			else
-				return new DefaultUnaryCompositeMaskInterval( this, arg, bounds.interval(), boundaryType );
+			return new DefaultUnaryCompositeMaskInterval( this, arg, bounds.interval(), boundaryType );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > arg )
@@ -180,8 +175,7 @@ public class Operators
 			final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
 				return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType );
-			else
-				return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType );
+			return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > arg )
@@ -189,8 +183,7 @@ public class Operators
 			final Mask mask = apply( arg );
 			if ( mask instanceof MaskInterval )
 				return ( MaskInterval ) mask;
-			else
-				throw new IllegalArgumentException( "result is not an interval" );
+			throw new IllegalArgumentException( "result is not an interval" );
 		}
 
 		public RealMaskRealInterval applyRealInterval( final Predicate< ? super RealLocalizable > arg )
@@ -198,8 +191,7 @@ public class Operators
 			final RealMask mask = applyReal( arg );
 			if ( mask instanceof RealMaskRealInterval )
 				return ( RealMaskRealInterval ) mask;
-			else
-				throw new IllegalArgumentException( "result is not an interval" );
+			throw new IllegalArgumentException( "result is not an interval" );
 		}
 
 		public abstract < T > Predicate< T > predicate( Predicate< ? super T > arg );
@@ -211,12 +203,15 @@ public class Operators
 	 */
 
 	/**
-	 * Checks that all {@code args} have same dimensionality.
-	 * Those {@code args} that do not implement {@link EuclideanSpace} are ignored (unless none of them does).
+	 * Checks that all {@code args} have same dimensionality. Those {@code args}
+	 * that do not implement {@link EuclideanSpace} are ignored (unless none of
+	 * them does).
 	 *
 	 * @param args
 	 * @return number of dimensions
-	 * @throws IllegalArgumentException if no arg has dimensions or two args have incompatible number of dimensions
+	 * @throws IllegalArgumentException
+	 *             if no arg has dimensions or two args have incompatible number
+	 *             of dimensions
 	 */
 	public static int checkDimensions( final Object... args )
 	{

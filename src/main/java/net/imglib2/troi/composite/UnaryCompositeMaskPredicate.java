@@ -18,21 +18,20 @@ import net.imglib2.troi.Operators.UnaryMaskOperator;
 public interface UnaryCompositeMaskPredicate< T > extends CompositeMaskPredicate< T >
 {
 	@Override
-	public UnaryMaskOperator operator();
+	UnaryMaskOperator operator();
 
-	public Predicate< ? super T > arg0();
+	Predicate< ? super T > arg0();
 
 	@Override
-	public default Predicate< ? super T > operand( final int index )
+	default Predicate< ? super T > operand( final int index )
 	{
 		if ( index == 0 )
 			return arg0();
-		else
-			throw new IllegalArgumentException();
+		throw new IllegalArgumentException();
 	}
 
 	@Override
-	public default List< Predicate< ? > > operands()
+	default List< Predicate< ? > > operands()
 	{
 		return Arrays.asList( arg0() );
 	}

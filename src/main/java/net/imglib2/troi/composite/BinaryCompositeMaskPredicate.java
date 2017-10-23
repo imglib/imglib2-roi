@@ -18,11 +18,11 @@ import net.imglib2.troi.Operators.BinaryMaskOperator;
 public interface BinaryCompositeMaskPredicate< T > extends CompositeMaskPredicate< T >
 {
 	@Override
-	public BinaryMaskOperator operator();
+	BinaryMaskOperator operator();
 
-	public Predicate< ? super T > arg0();
+	Predicate< ? super T > arg0();
 
-	public Predicate< ? super T > arg1();
+	Predicate< ? super T > arg1();
 
 	@Override
 	default Predicate< ? super T > operand( final int index )

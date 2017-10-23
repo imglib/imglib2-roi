@@ -19,12 +19,12 @@ import net.imglib2.troi.Operators.MaskOperator;
 public interface CompositeMaskPredicate< T > extends MaskPredicate< T >
 {
 	/** Returns the operation which lead to this mask. */
-	public MaskOperator operator();
+	MaskOperator operator();
 
-	public Predicate< ? super T > operand( final int index );
+	Predicate< ? super T > operand( final int index );
 
 	/**
 	 * Returns the list of operands, which were used to compute this Mask.
 	 */
-	public List< Predicate< ? > > operands();
+	List< Predicate< ? > > operands();
 }

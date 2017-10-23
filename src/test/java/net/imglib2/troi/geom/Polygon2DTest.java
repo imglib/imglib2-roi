@@ -119,9 +119,9 @@ public class Polygon2DTest
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 0 ), points.get( 0 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 2 ), points.get( 2 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 4 ), points.get( 4 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 0 ), points.get( 0 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 2 ), points.get( 2 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 4 ), points.get( 4 ) ) );
 		assertTrue( polygon.boundaryType() == BoundaryType.UNSPECIFIED );
 	}
 
@@ -153,9 +153,9 @@ public class Polygon2DTest
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 1 ), points.get( 1 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 3 ), points.get( 3 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 4 ), points.get( 4 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 1 ), points.get( 1 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 3 ), points.get( 3 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 4 ), points.get( 4 ) ) );
 		assertTrue( polygon.boundaryType() == BoundaryType.OPEN );
 	}
 
@@ -187,9 +187,9 @@ public class Polygon2DTest
 
 		// 2D polygon characteristics
 		assertEquals( polygon.numVertices(), 5 );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 0 ), points.get( 0 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 1 ), points.get( 1 ) ) );
-		assertTrue(assertRealLocalizableEquals( polygon.vertex( 2 ), points.get( 2 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 0 ), points.get( 0 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 1 ), points.get( 1 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertex( 2 ), points.get( 2 ) ) );
 		assertTrue( polygon.boundaryType() == BoundaryType.CLOSED );
 	}
 

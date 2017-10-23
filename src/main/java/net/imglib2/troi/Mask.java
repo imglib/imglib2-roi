@@ -8,7 +8,6 @@ import static net.imglib2.troi.Operators.XOR;
 
 import java.util.function.Predicate;
 
-import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.transform.Transform;
 
@@ -18,34 +17,34 @@ import net.imglib2.transform.Transform;
  *
  * @author Tobias Pietzsch
  */
-public interface Mask extends MaskPredicate< Localizable >, EuclideanSpace
+public interface Mask extends MaskPredicate< Localizable >
 {
 	@Override
-	public default Mask and( final Predicate< ? super Localizable > other )
+	default Mask and( final Predicate< ? super Localizable > other )
 	{
 		return AND.apply( this, other );
 	}
 
 	@Override
-	public default Mask or( final Predicate< ? super Localizable > other )
+	default Mask or( final Predicate< ? super Localizable > other )
 	{
 		return OR.apply( this, other );
 	}
 
 	@Override
-	public default Mask negate()
+	default Mask negate()
 	{
 		return NEGATE.apply( this );
 	}
 
 	@Override
-	public default Mask minus( final Predicate< ? super Localizable > other )
+	default Mask minus( final Predicate< ? super Localizable > other )
 	{
 		return MINUS.apply( this, other );
 	}
 
 	@Override
-	public default Mask xor( final Predicate< ? super Localizable > other )
+	default Mask xor( final Predicate< ? super Localizable > other )
 	{
 		return XOR.apply( this, other );
 	}
@@ -54,7 +53,7 @@ public interface Mask extends MaskPredicate< Localizable >, EuclideanSpace
 	 * TODO: transformFromSource or transformToSource? TODO: should this really
 	 * be a method in the interface?
 	 */
-	public default Mask transform( final Transform transformToSource )
+	default Mask transform( final Transform transformToSource )
 	{
 		throw new UnsupportedOperationException( "TODO, not yet implemented" );
 	}
