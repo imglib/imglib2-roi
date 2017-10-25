@@ -46,15 +46,12 @@ public interface RealMask extends MaskPredicate< RealLocalizable >
 	@Override
 	default RealMask xor( final Predicate< ? super RealLocalizable > other )
 	{
+
 		return XOR.applyReal( this, other );
 	}
 
-	/*
-	 * TODO: transformFromSource or transformToSource? TODO: should this really
-	 * be a method in the interface?
-	 */
 	default RealMask transform( final RealTransform transformToSource )
 	{
-		throw new UnsupportedOperationException( "TODO, not yet implemented" );
+		return ( new Operators.RealMaskRealTransformOperator( transformToSource ) ).applyReal( this );
 	}
 }

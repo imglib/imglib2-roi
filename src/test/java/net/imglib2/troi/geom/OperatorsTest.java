@@ -4,8 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import net.imglib2.FinalInterval;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPoint;
+import net.imglib2.realtransform.AffineGet;
+import net.imglib2.realtransform.AffineTransform;
+import net.imglib2.realtransform.AffineTransform2D;
+import net.imglib2.realtransform.AffineTransform3D;
+import net.imglib2.realtransform.DeformationFieldTransform;
+import net.imglib2.realtransform.RealTransform;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Masks;
 import net.imglib2.troi.Operators;
@@ -25,6 +33,8 @@ import net.imglib2.troi.geom.real.OpenEllipsoid;
 import net.imglib2.troi.geom.real.OpenSphere;
 import net.imglib2.troi.geom.real.Polygon2D;
 import net.imglib2.troi.geom.real.Sphere;
+import net.imglib2.type.numeric.real.DoubleType;
+import net.imglib2.util.ConstantUtils;
 
 import org.junit.Test;
 
@@ -615,6 +625,175 @@ public class OperatorsTest
 
 	// -- Transform --
 
+	@Test
+	public void test2DRotatedBox()
+	{
+		final double angle = 45.0 / 180.0 * Math.PI;
+
+		final double[][] rotationMatrix = { { Math.cos( angle ), -Math.sin( angle ) }, { Math.sin( angle ), Math.cos( angle ) } };
+
+		final Box< RealPoint > b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
+		final AffineGet transformToSource = createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 );
+		final RealMaskRealInterval rm = b.transform( transformToSource );
+
+		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
+
+		final RealPoint test = new RealPoint( new double[] { 3, 4 } );
+		final RealPoint testTrans = new RealPoint( 2 );
+		final AffineGet transformFromSource = transformToSource.inverse();
+		transformFromSource.apply( test, testTrans );
+		assertTrue( b.test( test ) );
+		assertTrue( rm.test( testTrans ) );
+
+		test.setPosition( new double[] { 4, 0 } );
+		transformFromSource.apply( test, testTrans );
+		assertFalse( b.test( test ) );
+		assertFalse( rm.test( testTrans ) );
+
+		test.setPosition( new double[] { 6.5, 1.5 } );
+		transformFromSource.apply( test, testTrans );
+		final double maxZero = testTrans.getDoublePosition( 0 );
+		test.setPosition( new double[] { 6.5, 7.5 } );
+		transformFromSource.apply( test, testTrans );
+		final double maxOne = testTrans.getDoublePosition( 1 );
+		test.setPosition( new double[] { 2.5, 7.5 } );
+		transformFromSource.apply( test, testTrans );
+		final double minZero = testTrans.getDoublePosition( 0 );
+		test.setPosition( new double[] { 2.5, 1.5 } );
+		transformFromSource.apply( test, testTrans );
+		final double minOne = testTrans.getDoublePosition( 1 );
+
+		assertEquals( rm.realMax( 0 ), maxZero, 0 );
+		assertEquals( rm.realMax( 1 ), maxOne, 0 );
+		assertEquals( rm.realMin( 0 ), minZero, 0 );
+		assertEquals( rm.realMin( 1 ), minOne, 0 );
+	}
+
+	@Test
+	public void testTranslate()
+	{
+		final Sphere< RealPoint > s = new OpenSphere( new double[] { -2.5, 6, 80 }, 2 );
+		final AffineTransform3D transformFromSource = new AffineTransform3D();
+		transformFromSource.translate( new double[] { 5, 6.25, -63 } );
+		final AffineTransform3D transformToSource = transformFromSource.inverse();
+		final RealMaskRealInterval rm = s.transform( transformToSource );
+
+		assertTrue( rm.boundaryType() == BoundaryType.OPEN );
+
+		final RealPoint test = new RealPoint( new double[] { -2.5, 6, 80 } );
+		assertTrue( s.test( test ) );
+		assertFalse( rm.test( test ) );
+
+		test.setPosition( new double[] { 2.5, 12.25, 17 } );
+		assertFalse( s.test( test ) );
+		assertTrue( rm.test( test ) );
+
+		assertEquals( rm.realMax( 0 ), 4.5, 0 );
+		assertEquals( rm.realMax( 1 ), 14.25, 0 );
+		assertEquals( rm.realMax( 2 ), 19, 0 );
+		assertEquals( rm.realMin( 0 ), 0.5, 0 );
+		assertEquals( rm.realMin( 1 ), 10.25, 0 );
+		assertEquals( rm.realMin( 2 ), 15, 0 );
+
+		// Move s
+		s.center().setPosition( new double[] { -10, -0.25, -0.5 } );
+
+		test.setPosition( s.center() );
+		assertTrue( s.test( test ) );
+		assertFalse( rm.test( test ) );
+
+		test.setPosition( new double[] { -5, 6, -63.5 } );
+		assertFalse( s.test( test ) );
+		assertTrue( rm.test( test ) );
+
+		assertEquals( rm.realMax( 0 ), -3, 0 );
+		assertEquals( rm.realMax( 1 ), 8, 0 );
+		assertEquals( rm.realMax( 2 ), -61.5, 0 );
+		assertEquals( rm.realMin( 0 ), -7, 0 );
+		assertEquals( rm.realMin( 1 ), 4, 0 );
+		assertEquals( rm.realMin( 2 ), -65.5, 0 );
+	}
+
+	@Test
+	public void test3DRotatedBox()
+	{
+		final double angle = 30.0 / 180.0 * Math.PI;
+
+		final double[][] rotationMatrix = { { Math.cos( angle ), 0, Math.sin( angle ) }, { 0, 1, 0 }, { -Math.sin( angle ), 0, Math.cos( angle ) } };
+
+		final Box< RealPoint > b = new ClosedBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
+		final RealMaskRealInterval rm = b.transform( createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
+
+		// inside both
+		assertTrue( b.test( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 3.5, 6.1, 2 } ) ) );
+
+		// inside original only
+		assertTrue( b.test( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 4.99, 8, 5.93 } ) ) );
+
+		// inside rotated only
+		assertFalse( b.test( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 7.15374953738, 8, 4.29450524066 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
+
+		// Test Interval
+		assertEquals( rm.realMin( 0 ), ( 1 - 3 ) * Math.cos( angle ) + ( -4 - 1 ) * Math.sin( angle ) + 3, 1e-15 );
+		assertEquals( rm.realMin( 1 ), 5.75, 0 );
+		assertEquals( rm.realMin( 2 ), ( 5 - 3 ) * -Math.sin( angle ) + ( -4 - 1 ) * Math.cos( angle ) + 1, 1e-15 );
+		assertEquals( rm.realMax( 0 ), ( 5 - 3 ) * Math.cos( angle ) + ( 6 - 1 ) * Math.sin( angle ) + 3, 1e-15 );
+		assertEquals( rm.realMax( 1 ), 8.25, 0 );
+		assertEquals( rm.realMax( 2 ), ( 1 - 3 ) * -Math.sin( angle ) + ( 6 - 1 ) * Math.cos( angle ) + 1, 1e-15 );
+	}
+
+	@Test
+	public void test2DShearedBox()
+	{
+		final Box< RealPoint > b = new ClosedBox( new double[] { 1, 3 }, new double[] { 4, 9 } );
+		final AffineTransform2D transform = new AffineTransform2D();
+		transform.set( 1, 2, 0, 0, 1, 0 );
+
+		final RealMaskRealInterval rm = b.transform( transform.inverse() );
+
+		// inside original only
+		assertTrue( b.test( new RealPoint( new double[] { 1, 9 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 1, 9 } ) ) );
+
+		// inside transformed only
+		assertFalse( b.test( new RealPoint( new double[] { 22, 9 } ) ) );
+		assertTrue( rm.test( new RealPoint( new double[] { 22, 9 } ) ) );
+
+		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
+
+		// Test Interval
+		assertEquals( rm.realMin( 0 ), 7, 0 );
+		assertEquals( rm.realMin( 1 ), 3, 0 );
+		assertEquals( rm.realMax( 0 ), 22, 0 );
+		assertEquals( rm.realMax( 1 ), 9, 0 );
+	}
+
+	@Test
+	public void testNonInvertibleTransform()
+	{
+		final Ellipsoid< RealPoint > e = new OpenEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
+		final RandomAccessibleInterval< DoubleType > def = ConstantUtils.constantRandomAccessibleInterval( new DoubleType( -10.0 ), 3, new FinalInterval( 4, 4, 2 ) );
+		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def );
+		final RealMask rm = e.transform( transformToSource );
+
+		assertTrue( rm.boundaryType() == BoundaryType.OPEN );
+
+		final RealPoint test = new RealPoint( new double[] { 10, -6.5 } );
+		assertTrue( e.test( test ) );
+		assertFalse( rm.test( test ) );
+
+		test.setPosition( new double[] { 20, 3.5 } );
+		assertFalse( e.test( test ) );
+		assertTrue( rm.test( test ) );
+
+		assertFalse( rm instanceof RealInterval );
+	}
+
 	// -- Xor --
 
 	@Test
@@ -816,6 +995,31 @@ public class OperatorsTest
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
 	}
 
+	@Test
+	public void testUnaryCompositeMaskPredicateTransform()
+	{
+		final Box< RealPoint > b = new OpenBox( new double[] { 0, 1 }, new double[] { 12, 19 } );
+		final AffineTransform2D t = new AffineTransform2D();
+		t.translate( 1, 5 );
+		final AffineTransform2D i = t.inverse();
+		final RealMaskRealInterval rm = b.transform( i );
+
+		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
+		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() instanceof Operators.RealMaskRealTransformOperator );
+		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
+
+		final RealTransform r = ( ( Operators.RealMaskRealTransformOperator ) ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() ).transformToSource();
+		assertTrue( r instanceof AffineTransform2D );
+		final AffineTransform2D ar = ( AffineTransform2D ) r;
+
+		assertEquals( i.get( 0, 0 ), ar.get( 0, 0 ), 0 );
+		assertEquals( i.get( 0, 1 ), ar.get( 0, 1 ), 0 );
+		assertEquals( i.get( 1, 0 ), ar.get( 1, 0 ), 0 );
+		assertEquals( i.get( 1, 1 ), ar.get( 1, 1 ), 0 );
+		assertEquals( i.get( 0, 2 ), ar.get( 0, 2 ), 0 );
+		assertEquals( i.get( 1, 2 ), ar.get( 1, 2 ), 0 );
+	}
+
 	// -- Test equals --
 
 	@Test
@@ -862,4 +1066,40 @@ public class OperatorsTest
 		assertFalse( rm.equals( rm4 ) );
 	}
 
+	// -- Helper methods --
+
+	private static AffineGet createAffineRotationMatrix( final double[] center, final double[][] rotationMatrix, final int dim )
+	{
+		assert rotationMatrix.length == dim;
+		assert rotationMatrix[ 0 ].length == dim;
+
+		final AffineTransform affine = new AffineTransform( dim );
+		final double[][] transform = new double[ dim ][ dim + 1 ];
+		assert rotationMatrix[ 0 ].length == dim;
+
+		for ( int i = 0; i < dim; i++ )
+		{
+			double translate = 0;
+			for ( int j = 0; j < dim + 1; j++ )
+			{
+				if ( i < rotationMatrix.length && j < rotationMatrix[ i ].length )
+				{
+					transform[ i ][ j ] = rotationMatrix[ i ][ j ];
+					translate += transform[ i ][ j ] * -center[ j ];
+				}
+				if ( j == dim )
+				{
+					transform[ i ][ j ] = translate;
+				}
+			}
+		}
+
+		for ( int n = 0; n < dim; n++ )
+		{
+			transform[ n ][ dim ] += center[ n ];
+		}
+
+		affine.set( transform );
+		return affine.inverse();
+	}
 }

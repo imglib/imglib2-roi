@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
+import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.util.Intervals;
 
 /**
@@ -66,6 +67,14 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	default RealMaskRealInterval xor( final RealMaskRealInterval other )
 	{
 		return XOR.applyRealInterval( this, other );
+	}
+
+	/*
+	 * Note: *NOT* overriding RealMask.transform()
+	 */
+	default RealMaskRealInterval transform( final InvertibleRealTransform transformToSource )
+	{
+		return ( new Operators.RealMaskRealTransformOperator( transformToSource ) ).applyRealInterval( this );
 	}
 
 	// -- RealInterval Methods --

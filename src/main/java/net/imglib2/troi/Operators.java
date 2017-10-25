@@ -9,6 +9,8 @@ import java.util.function.UnaryOperator;
 import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
+import net.imglib2.realtransform.RealTransform;
 import net.imglib2.troi.composite.CompositeMaskPredicate;
 import net.imglib2.troi.composite.DefaultBinaryCompositeMask;
 import net.imglib2.troi.composite.DefaultBinaryCompositeMaskInterval;
@@ -284,6 +286,92 @@ public class Operators
 		}
 
 		public abstract < T > Predicate< T > predicate( Predicate< ? super T > arg );
+	}
+
+	/*
+	 * Transform
+	 * =========
+	 */
+	/**
+	 * Applies transformation to a given real-space {@link Predicate}.
+	 */
+	public static class RealMaskRealTransformOperator extends UnaryMaskOperator
+	{
+		private final RealTransform transformToSource;
+
+		private final ThreadLocal< RealPoint > pt;
+
+		/**
+		 * Creates a {@link UnaryMaskOperator} which applies
+		 * {@code transformToSource} to a given real-space {@link Predicate}.
+		 *
+		 * @param transformToSource
+		 *            {@link RealTransform} for transforming back to source
+		 */
+		public RealMaskRealTransformOperator( final RealTransform transformToSource )
+		{
+			super( BoundaryType::transform, new Bounds.TransformBoundsOperator( transformToSource ),
+					t -> {
+						if ( t instanceof MaskPredicate )
+							return ( ( MaskPredicate< ? > ) t ).isEmpty();
+						return false;
+					},
+					t -> {
+						if ( t instanceof MaskPredicate )
+							return ( ( MaskPredicate< ? > ) t ).isAll();
+						return false;
+					} );
+			this.transformToSource = transformToSource;
+			pt = new ThreadLocal< RealPoint >()
+			{
+				@Override
+				protected RealPoint initialValue()
+				{
+					return new RealPoint( transformToSource.numTargetDimensions() );
+				}
+			};
+		}
+
+		/**
+		 * Returns the {@link RealTransform} associated with this operator.
+		 *
+		 * @return the RealTransform applied by this operator
+		 */
+		public RealTransform transformToSource()
+		{
+			return transformToSource;
+		}
+
+		/**
+		 * @throws UnsupportedOperationException
+		 *             cannot apply {@link RealTransform} to integer predicates
+		 */
+		@Override
+		public Mask apply( final Predicate< ? super Localizable > arg )
+		{
+			throw new UnsupportedOperationException( "apply" );
+		}
+
+		/**
+		 * @throws UnsupportedOperationException
+		 *             cannot apply {@link RealTransform} to integer predicates
+		 */
+		@Override
+		public MaskInterval applyInterval( final Predicate< ? super Localizable > arg )
+		{
+			throw new UnsupportedOperationException( "applyInterval" );
+		}
+
+		@Override
+		@SuppressWarnings( "unchecked" )
+		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )
+		{
+			return t -> {
+				final RealPoint rp = pt.get();
+				transformToSource.apply( ( RealLocalizable ) t, rp );
+				return arg.test( ( T ) rp );
+			};
+		}
 	}
 
 	/*

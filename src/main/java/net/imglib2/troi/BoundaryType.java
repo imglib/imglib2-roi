@@ -45,6 +45,11 @@ public enum BoundaryType
 		return UNSPECIFIED;
 	}
 
+	public BoundaryType transform()
+	{
+		return this;
+	}
+
 	public static BoundaryType of( final Predicate< ? > predicate )
 	{
 		if ( predicate instanceof MaskPredicate )
