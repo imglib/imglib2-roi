@@ -68,9 +68,6 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	}
 
 	@Override
-	public abstract boolean test( RealLocalizable l );
-
-	@Override
 	public double realMin( final int d )
 	{
 		return center[ d ] - radius;
@@ -126,6 +123,30 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 		if ( radius <= 0 )
 			throw new IllegalArgumentException( "Radius must be positive and non-zero." );
 		this.radius = radius;
+	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof SuperEllipsoid ) )
+			return false;
+
+		final SuperEllipsoid< ? > se = ( SuperEllipsoid< ? > ) obj;
+		if ( se.numDimensions() != n || 2 != se.exponent() || boundaryType() != se.boundaryType() )
+			return false;
+
+		for ( int i = 0; i < n; i++ )
+		{
+			if ( center[ i ] != se.center().getDoublePosition( i ) || radius != se.semiAxisLength( i ) )
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
 	}
 
 	// -- Helper methods --

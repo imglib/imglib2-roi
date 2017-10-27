@@ -40,13 +40,20 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
+import net.imglib2.troi.geom.real.DefaultLine;
 import net.imglib2.troi.geom.real.DefaultPointMask;
+import net.imglib2.troi.geom.real.Line;
 import net.imglib2.troi.geom.real.PointMask;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * Tests for {@link PointMask}.
+ *
+ * @author Alison Walter
+ */
 public class PointMaskTest
 {
 	@Rule
@@ -145,5 +152,21 @@ public class PointMaskTest
 		pt.realMax( ptMax );
 		assertArrayEquals( loc, ptMin, 0 );
 		assertArrayEquals( loc, ptMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
+		final Line< RealPoint > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+
+		assertTrue( pm.equals( pm2 ) );
+
+		pm2.move( 0.5, 1 );
+		assertFalse( pm.equals( pm2 ) );
+		assertFalse( pm.equals( pm3 ) );
+		assertFalse( pm.equals( l ) );
 	}
 }

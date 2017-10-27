@@ -43,7 +43,9 @@ import java.util.List;
 
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
+import net.imglib2.troi.geom.real.DefaultLine;
 import net.imglib2.troi.geom.real.DefaultPolyline;
+import net.imglib2.troi.geom.real.Line;
 import net.imglib2.troi.geom.real.Polyline;
 
 import org.junit.Before;
@@ -342,6 +344,34 @@ public class PolylineTest
 		pl.realMax( plMax );
 		assertArrayEquals( min, plMin, 0 );
 		assertArrayEquals( max, plMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final RealPoint rp = new RealPoint( new double[] { 0, 0, 0 } );
+		final RealPoint rp2 = new RealPoint( new double[] { 12, 12, 12 } );
+		final RealPoint rp3 = new RealPoint( new double[] { 4, 4, 4 } );
+
+		final ArrayList< RealPoint > a = new ArrayList<>();
+		a.add( rp );
+		a.add( rp2 );
+		a.add( rp3 );
+
+		final ArrayList< RealPoint > a2 = new ArrayList<>();
+		a2.add( rp );
+		a2.add( rp3 );
+		a2.add( rp2 );
+
+		final Polyline< RealPoint > p = new DefaultPolyline<>( a );
+		Polyline< RealPoint > o = new DefaultPolyline<>( a );
+
+		assertTrue( p.equals( o ) );
+
+		o = new DefaultPolyline<>( a2 );
+		final Line< RealPoint > l = new DefaultLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
+		assertFalse( p.equals( o ) );
+		assertFalse( p.equals( l ) );
 	}
 
 	// -- Helper methods --

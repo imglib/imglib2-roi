@@ -43,8 +43,10 @@ import java.util.List;
 
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
+import net.imglib2.troi.geom.real.DefaultPointMask;
 import net.imglib2.troi.geom.real.DefaultRealPointCollection;
 import net.imglib2.troi.geom.real.KDTreeRealPointCollection;
+import net.imglib2.troi.geom.real.PointMask;
 import net.imglib2.troi.geom.real.RealPointCollection;
 import net.imglib2.troi.geom.real.RealPointSampleListRealPointCollection;
 
@@ -276,5 +278,71 @@ public class RealPointCollectionTest
 		rpc.realMax( rpcMax );
 		assertArrayEquals( min, rpcMin, 0 );
 		assertArrayEquals( max, rpcMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		// Contain the same points
+		final List< RealPoint > l = new ArrayList<>();
+		l.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+		l.add( new RealPoint( new double[] { -1, 0 } ) );
+		l.add( new RealPoint( new double[] { 83, 4 } ) );
+
+		final RealPointCollection< RealPoint > d = new DefaultRealPointCollection<>( l );
+		final RealPointCollection< RealPoint > k = new KDTreeRealPointCollection<>( l );
+		final RealPointCollection< RealPoint > r = new RealPointSampleListRealPointCollection<>( l );
+
+		assertTrue( d.equals( k ) );
+		assertTrue( d.equals( r ) );
+		assertTrue( k.equals( d ) );
+		assertTrue( r.equals( d ) );
+		assertTrue( r.equals( k ) );
+		assertTrue( k.equals( r ) );
+
+		// Contain different number of points
+		final List< RealPoint > l2 = new ArrayList<>();
+		l2.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+		l.add( new RealPoint( new double[] { -1, 0 } ) );
+
+		final RealPointCollection< RealPoint > d2 = new DefaultRealPointCollection<>( l2 );
+		final RealPointCollection< RealPoint > k2 = new KDTreeRealPointCollection<>( l2 );
+		final RealPointCollection< RealPoint > r2 = new RealPointSampleListRealPointCollection<>( l2 );
+
+		assertFalse( d.equals( d2 ) );
+		assertFalse( d2.equals( d ) );
+		assertFalse( k.equals( k2 ) );
+		assertFalse( k2.equals( k ) );
+		assertFalse( r.equals( r2 ) );
+		assertFalse( r2.equals( r ) );
+		assertFalse( r.equals( k2 ) );
+		assertFalse( r2.equals( d ) );
+
+		// Contain same points in different order
+		final List< RealPoint > l3 = new ArrayList<>();
+		l3.add( new RealPoint( new double[] { 83, 4 } ) );
+		l3.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l3.add( new RealPoint( new double[] { -1, 0 } ) );
+		l3.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+
+		final RealPointCollection< RealPoint > d3 = new DefaultRealPointCollection<>( l3 );
+		final RealPointCollection< RealPoint > k3 = new KDTreeRealPointCollection<>( l3 );
+		final RealPointCollection< RealPoint > r3 = new RealPointSampleListRealPointCollection<>( l3 );
+
+		assertTrue( d3.equals( d ) );
+		assertTrue( d.equals( d3 ) );
+		assertTrue( k3.equals( k ) );
+		assertTrue( k.equals( k3 ) );
+		assertTrue( r3.equals( r ) );
+		assertTrue( r.equals( r3 ) );
+		assertTrue( r3.equals( d ) );
+		assertTrue( r3.equals( k ) );
+		assertTrue( k.equals( r3 ) );
+
+		// Different shape
+		final PointMask pm = new DefaultPointMask( new double[] { 83, 4 } );
+		assertFalse( d.equals( pm ) );
 	}
 }

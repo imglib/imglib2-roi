@@ -43,6 +43,8 @@ import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.geom.real.ClosedEllipsoid;
 import net.imglib2.troi.geom.real.Ellipsoid;
 import net.imglib2.troi.geom.real.OpenEllipsoid;
+import net.imglib2.troi.geom.real.OpenSuperEllipsoid;
+import net.imglib2.troi.geom.real.SuperEllipsoid;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -289,5 +291,29 @@ public class EllipsoidTest
 		e.realMax( eMax );
 		assertArrayEquals( min, eMin, 0 );
 		assertArrayEquals( max, eMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealPoint > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final Ellipsoid< RealPoint > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+
+		assertTrue( oe.equals( oe2 ) );
+		assertTrue( oe.equals( se ) );
+
+		oe2.center().move( new double[] { 2, 3 } );
+		se.setExponent( 3 );
+		// Different center
+		assertFalse( oe.equals( oe2 ) );
+		// Different number of dimensions
+		assertFalse( oe.equals( oe3 ) );
+		// Different boundary behavior
+		assertFalse( oe.equals( ce ) );
+		// Different exponents
+		assertFalse( oe.equals( se ) );
 	}
 }

@@ -41,7 +41,9 @@ import static org.junit.Assert.assertTrue;
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.geom.real.DefaultLine;
+import net.imglib2.troi.geom.real.DefaultPointMask;
 import net.imglib2.troi.geom.real.Line;
+import net.imglib2.troi.geom.real.PointMask;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -293,5 +295,21 @@ public class LineTest
 		l.realMax( lMax );
 		assertArrayEquals( min, lMin, 0 );
 		assertArrayEquals( max, lMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final Line< RealPoint > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealPoint > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealPoint > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
+		final PointMask p = new DefaultPointMask( new double[] { 1, 1, 1 } );
+
+		assertTrue( l.equals( l2 ) );
+
+		l2.endpointOne().move( -1, 0 );
+		assertFalse( l.equals( l2 ) );
+		assertFalse( l.equals( l3 ) );
+		assertFalse( l.equals( p ) );
 	}
 }

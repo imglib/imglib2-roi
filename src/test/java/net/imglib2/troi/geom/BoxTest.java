@@ -42,6 +42,8 @@ import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.geom.real.Box;
 import net.imglib2.troi.geom.real.ClosedBox;
+import net.imglib2.troi.geom.real.ClosedEllipsoid;
+import net.imglib2.troi.geom.real.Ellipsoid;
 import net.imglib2.troi.geom.real.OpenBox;
 
 import org.junit.Rule;
@@ -351,5 +353,30 @@ public class BoxTest
 		max = new double[] { 5, 11 };
 		assertArrayEquals( max, bMax, 0 );
 		assertArrayEquals( min, bMin, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final Box< RealPoint > cb = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > cb3 = new ClosedBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
+		final Box< RealPoint > cb4 = new ClosedBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
+		final Box< RealPoint > cb5 = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > ob = new OpenBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
+
+		// Same box
+		assertTrue( cb.equals( cb5 ) );
+
+		// Different side lengths
+		assertFalse( cb.equals( cb2 ) );
+		// Different dims
+		assertFalse( cb.equals( cb3 ) );
+		assertFalse( cb.equals( cb4 ) );
+		// Different edge behavior
+		assertFalse( cb.equals( ob ) );
+		// Different shape
+		assertFalse( cb.equals( e ) );
 	}
 }

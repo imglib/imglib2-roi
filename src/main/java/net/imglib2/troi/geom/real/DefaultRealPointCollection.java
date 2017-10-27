@@ -103,6 +103,34 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 		updateMinMax();
 	}
 
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof RealPointCollection ) )
+			return false;
+
+		final RealPointCollection< ? extends RealLocalizable > rpc = ( RealPointCollection< ? > ) obj;
+		if ( n != rpc.numDimensions() || boundaryType() != rpc.boundaryType() )
+			return false;
+
+		int count = 0;
+		for ( final RealLocalizable l : rpc.points() )
+		{
+			final double[] t = new double[ l.numDimensions() ];
+			l.localize( t );
+			if ( points.get( new TDoubleArrayList( t ) ) == null )
+				return false;
+			count++;
+		}
+		return count == points.size();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
+
 	// -- Helper methods --
 
 	private double squareDistance( final L ptOne, final RealLocalizable ptTwo )
@@ -128,7 +156,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 
 	private void updateMinMax()
 	{
-		RealInterval interval = Regions.getBoundsReal( points.values() );
+		final RealInterval interval = Regions.getBoundsReal( points.values() );
 		interval.realMin( min );
 		interval.realMax( max );
 	}

@@ -40,8 +40,12 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
+import net.imglib2.troi.geom.real.ClosedEllipsoid;
+import net.imglib2.troi.geom.real.ClosedSphere;
 import net.imglib2.troi.geom.real.ClosedSuperEllipsoid;
+import net.imglib2.troi.geom.real.Ellipsoid;
 import net.imglib2.troi.geom.real.OpenSuperEllipsoid;
+import net.imglib2.troi.geom.real.Sphere;
 import net.imglib2.troi.geom.real.SuperEllipsoid;
 
 import org.junit.Rule;
@@ -384,5 +388,30 @@ public class SuperEllipsoidTest
 		se.realMax( seMax );
 		assertArrayEquals( min, seMin, 0 );
 		assertArrayEquals( max, seMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final SuperEllipsoid< RealPoint > ose = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final SuperEllipsoid< RealPoint > cse = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final SuperEllipsoid< RealPoint > ose2 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final SuperEllipsoid< RealPoint > ose3 = new OpenSuperEllipsoid( new double[] { 0, 0, 0 }, new double[] { 0.5, 3, 2 }, 4 );
+		final SuperEllipsoid< RealPoint > ose4 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 1 );
+
+		assertTrue( ose.equals( ose2 ) );
+
+		ose2.setSemiAxisLength( 0, 0.25 );
+		assertFalse( ose.equals( ose2 ) );
+		assertFalse( ose.equals( cse ) );
+		assertFalse( ose.equals( ose3 ) );
+		assertFalse( ose.equals( ose4 ) );
+
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealPoint > cse2 = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealPoint > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+
+		assertTrue( cse2.equals( cs ) );
+		assertTrue( cse2.equals( ce ) );
 	}
 }

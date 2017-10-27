@@ -81,4 +81,23 @@ public class DefaultPointMask extends RealPoint implements PointMask
 		}
 		return true;
 	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof PointMask ) )
+			return false;
+
+		final PointMask pm = ( PointMask ) obj;
+		if ( pm.numDimensions() != n || pm.boundaryType() != boundaryType() )
+			return false;
+
+		return test( pm );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
 }

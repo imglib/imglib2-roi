@@ -92,6 +92,30 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 		min[ d ] = center - length / 2.0;
 	}
 
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof Box ) )
+			return false;
+
+		final Box< ? > b = ( Box< ? > ) obj;
+		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
+			return false;
+
+		for ( int i = 0; i < n; i++ )
+		{
+			if ( min[ i ] != b.realMin( i ) || max[ i ] != b.realMax( i ) )
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
+
 	// -- Helper classes --
 
 	private class BoxCenter extends RealPoint

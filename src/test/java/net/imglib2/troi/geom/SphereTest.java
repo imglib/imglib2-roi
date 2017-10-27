@@ -40,9 +40,13 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
+import net.imglib2.troi.geom.real.ClosedEllipsoid;
 import net.imglib2.troi.geom.real.ClosedSphere;
+import net.imglib2.troi.geom.real.ClosedSuperEllipsoid;
+import net.imglib2.troi.geom.real.Ellipsoid;
 import net.imglib2.troi.geom.real.OpenSphere;
 import net.imglib2.troi.geom.real.Sphere;
+import net.imglib2.troi.geom.real.SuperEllipsoid;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -254,5 +258,25 @@ public class SphereTest
 		s.realMax( sMax );
 		assertArrayEquals( min, sMin, 0 );
 		assertArrayEquals( max, sMax, 0 );
+	}
+
+	@Test
+	public void testEquals()
+	{
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealPoint > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealPoint > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealPoint > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealPoint > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+
+		assertTrue( cs.equals( cs2 ) );
+		assertTrue( cs.equals( cse ) );
+		assertTrue( cs.equals( ce ) );
+
+		cs2.setRadius( 3 );
+		assertFalse( cs.equals( cs2 ) );
+		assertFalse( cs.equals( cs3 ) );
+		assertFalse( cs.equals( os ) );
 	}
 }

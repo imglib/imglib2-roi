@@ -412,6 +412,24 @@ public class Polygon2DTest
 		assertArrayEquals( max, pMax, 0 );
 	}
 
+	@Test
+	public void testEquals()
+	{
+		final Polygon2D< RealPoint > p = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D< RealPoint > p2 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D< RealPoint > p3 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
+		final Polygon2D< RealPoint > p4 = new DefaultPolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
+		final Polygon2D< RealPoint > cp = new ClosedPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+
+		assertTrue( p.equals( p2 ) );
+
+		p2.vertex( 0 ).move( -1, 1 );
+		assertFalse( p.equals( p2 ) );
+		assertFalse( p.equals( p3 ) );
+		assertFalse( p.equals( p4 ) );
+		assertFalse( p.equals( cp ) );
+	}
+
 	// -- Helper methods --
 
 	private boolean assertRealLocalizableEquals( final RealLocalizable predicted, final RealLocalizable expected )
