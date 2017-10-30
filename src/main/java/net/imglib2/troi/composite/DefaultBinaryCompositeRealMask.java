@@ -69,4 +69,20 @@ public class DefaultBinaryCompositeRealMask
 	{
 		return arg1;
 	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof BinaryCompositeMaskPredicate ) || !( obj instanceof RealMask ) )
+			return false;
+
+		final BinaryCompositeMaskPredicate< ? > b = ( BinaryCompositeMaskPredicate< ? > ) obj;
+		return b.operator() == operator && arg0.equals( b.arg0() ) && arg1.equals( b.arg1() );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
 }

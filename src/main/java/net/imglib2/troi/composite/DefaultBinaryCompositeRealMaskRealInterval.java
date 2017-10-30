@@ -76,4 +76,20 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 	{
 		return this.sourceInterval.isEmpty();
 	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof BinaryCompositeMaskPredicate ) || !( obj instanceof RealMaskRealInterval ) )
+			return false;
+
+		final BinaryCompositeMaskPredicate< ? > b = ( BinaryCompositeMaskPredicate< ? > ) obj;
+		return b.operator() == operator && arg0.equals( b.arg0() ) && arg1.equals( b.arg1() );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
 }

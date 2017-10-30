@@ -629,6 +629,52 @@ public class OperatorsTest
 		assertFalse( ( ( RealIntervalOrEmpty ) rm4 ).isEmpty() );
 	}
 
+	// -- Test equals --
+
+	@Test
+	public void testSimpleCompositeEquals()
+	{
+		final Box< RealPoint > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+
+		final RealMaskRealInterval a = b.and( s );
+		final RealMaskRealInterval a2 = b2.and( s2 );
+		final RealMaskRealInterval a3 = s.and( b );
+		final RealMaskRealInterval o = b.or( s );
+
+		assertTrue( a.equals( a2 ) );
+
+		// order of operations matters
+		assertFalse( a.equals( a3 ) );
+		assertFalse( a.equals( o ) );
+	}
+
+	@Test
+	public void testCompositeEquals()
+	{
+		final Box< RealPoint > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Box< RealPoint > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealPoint > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+
+		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
+		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );
+		final RealMask rm3 = ob2.xor( oe2.or( cb2.xor( cs2 ) ).negate() );
+		final RealMask rm4 = ob2.xor( ob2.or( cb2.and( cs2 ) ).negate() );
+
+		assertTrue( rm.equals( rm2 ) );
+
+		assertFalse( rm.equals( rm3 ) );
+		assertFalse( rm.equals( rm4 ) );
+	}
+
 	// -- Helper classes --
 
 	private static class EmptyMask extends AbstractEuclideanSpace implements RealMaskRealInterval

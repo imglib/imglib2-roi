@@ -66,4 +66,20 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	{
 		return this.sourceInterval.isEmpty();
 	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof UnaryCompositeMaskPredicate ) || !( obj instanceof RealMaskRealInterval ) )
+			return false;
+
+		final UnaryCompositeMaskPredicate< ? > u = ( UnaryCompositeMaskPredicate< ? > ) obj;
+		return u.operator() == operator && arg0.equals( u.arg0() );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode();
+	}
 }
