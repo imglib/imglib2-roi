@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
+import net.imglib2.util.Intervals;
 
 /**
  * A bounded {@link Mask}, that is, the mask predicate evaluates to
@@ -21,6 +22,20 @@ import net.imglib2.Localizable;
  */
 public interface MaskInterval extends Mask, Interval
 {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>
+	 * If this {@link Interval} is empty (i.e. min &gt; max), then {@link #test}
+	 * should always return {@code false}.
+	 * </p>
+	 */
+	@Override
+	default boolean isEmpty()
+	{
+		return Intervals.isEmpty( this );
+	}
+
 	@Override
 	default MaskInterval and( final Predicate< ? super Localizable > other )
 	{

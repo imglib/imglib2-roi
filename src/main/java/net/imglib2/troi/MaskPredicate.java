@@ -61,6 +61,24 @@ public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 		return UNSPECIFIED;
 	}
 
+	/**
+	 * Returns true if {@link MaskPredicate#test} is known to always return
+	 * false.
+	 */
+	default boolean isEmpty()
+	{
+		return false;
+	}
+
+	/**
+	 * Returns true if {@link MaskPredicate#test} is known to always return
+	 * true.
+	 */
+	default boolean isAll()
+	{
+		return false;
+	}
+
 	@Override
 	public MaskPredicate< T > and( Predicate< ? super T > other );
 

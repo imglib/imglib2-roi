@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
+import net.imglib2.util.Intervals;
 
 /**
  * A bounded {@link RealMask}, that is, the mask predicate evaluates to
@@ -22,6 +23,21 @@ import net.imglib2.RealPositionable;
  */
 public interface RealMaskRealInterval extends RealMask, RealInterval
 {
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>
+	 * If this {@link RealInterval} is empty (i.e. min &gt; max), then
+	 * {@link #test} should always return {@code false}.
+	 * </p>
+	 */
+	@Override
+	default boolean isEmpty()
+	{
+		return Intervals.isEmpty( this );
+	}
+
 	@Override
 	default RealMaskRealInterval and( final Predicate< ? super RealLocalizable > other )
 	{
