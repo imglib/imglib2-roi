@@ -7,6 +7,7 @@ import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.MaskInterval;
+import net.imglib2.util.Intervals;
 
 /**
  * @author Tobias Pietzsch
@@ -36,6 +37,8 @@ public class DefaultMaskInterval extends AbstractInterval implements MaskInterva
 	@Override
 	public boolean test( final Localizable localizable )
 	{
-		return predicate.test( localizable );
+		if ( Intervals.contains( this, localizable ) )
+			return predicate.test( localizable );
+		return false;
 	}
 }

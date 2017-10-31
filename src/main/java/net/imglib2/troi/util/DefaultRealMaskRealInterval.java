@@ -7,6 +7,7 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.RealMaskRealInterval;
+import net.imglib2.util.Intervals;
 
 /**
  * @author Tobias Pietzsch
@@ -36,6 +37,8 @@ public class DefaultRealMaskRealInterval extends AbstractRealInterval implements
 	@Override
 	public boolean test( final RealLocalizable localizable )
 	{
-		return predicate.test( localizable );
+		if ( Intervals.contains( this, localizable ) )
+			return predicate.test( localizable );
+		return false;
 	}
 }
