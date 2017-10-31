@@ -3,11 +3,12 @@ package net.imglib2.troi.composite;
 import java.util.function.Predicate;
 
 import net.imglib2.AbstractWrappedRealInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.Bounds;
 import net.imglib2.troi.Operators.UnaryMaskOperator;
 import net.imglib2.troi.RealMaskRealInterval;
+import net.imglib2.util.Intervals;
 
 /**
  * A {@link RealMaskRealInterval} which is the result of an operation on a
@@ -16,8 +17,8 @@ import net.imglib2.troi.RealMaskRealInterval;
  * @author Tobias Pietzsch
  */
 public class DefaultUnaryCompositeRealMaskRealInterval
-		extends AbstractWrappedRealInterval< Bounds.RealIntervalOrEmpty >
-		implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval, Bounds.RealIntervalOrEmpty
+		extends AbstractWrappedRealInterval< RealInterval >
+		implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval
 {
 	private final UnaryMaskOperator operator;
 
@@ -34,7 +35,7 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	public DefaultUnaryCompositeRealMaskRealInterval(
 			final UnaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
-			final Bounds.RealIntervalOrEmpty interval,
+			final RealInterval interval,
 			final BoundaryType boundaryType,
 			final Predicate< Predicate< ? > > emptyOp,
 			final boolean isAll )
@@ -75,7 +76,7 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	@Override
 	public boolean isEmpty()
 	{
-		return this.sourceInterval.isEmpty() || emptyOp.test( arg0 );
+		return Intervals.isEmpty( sourceInterval ) || emptyOp.test( arg0 );
 	}
 
 	@Override

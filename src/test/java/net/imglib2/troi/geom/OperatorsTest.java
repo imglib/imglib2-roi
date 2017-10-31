@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.Bounds.RealIntervalOrEmpty;
 import net.imglib2.troi.Masks;
 import net.imglib2.troi.Operators;
 import net.imglib2.troi.RealMask;
@@ -77,7 +76,7 @@ public class OperatorsTest
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 		assertEquals( rm.numDimensions(), 2 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm ).isEmpty() );
+		assertFalse( rm.isEmpty() );
 
 		// True for x: [1, 3] y: [3, 10] AND x: [1,7] y: 3
 		assertTrue( rm.test( new RealPoint( new double[] { 2, 6.5 } ) ) );
@@ -116,17 +115,14 @@ public class OperatorsTest
 		final Box< RealPoint > b2 = new ClosedBox( new double[] { 5.5, 10 }, new double[] { 11.25, 30.25 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
-		assertTrue( rm instanceof RealIntervalOrEmpty );
-		final RealIntervalOrEmpty rioe = ( RealIntervalOrEmpty ) rm;
-
 		assertTrue( rm.test( new RealPoint( new double[] { 6, 11 } ) ) );
 		assertFalse( rm.test( new RealPoint( new double[] { 7, 22 } ) ) );
 
-		assertFalse( rioe.isEmpty() );
-		assertEquals( rioe.realMax( 0 ), 11.25, 0 );
-		assertEquals( rioe.realMax( 1 ), 20, 0 );
-		assertEquals( rioe.realMin( 0 ), 5.5, 0 );
-		assertEquals( rioe.realMin( 1 ), 10, 0 );
+		assertFalse( rm.isEmpty() );
+		assertEquals( rm.realMax( 0 ), 11.25, 0 );
+		assertEquals( rm.realMax( 1 ), 20, 0 );
+		assertEquals( rm.realMin( 0 ), 5.5, 0 );
+		assertEquals( rm.realMin( 1 ), 10, 0 );
 
 		// Move
 		b1.center().move( new double[] { 1.5, 3 } );
@@ -134,11 +130,11 @@ public class OperatorsTest
 		assertTrue( rm.test( new RealPoint( new double[] { 7, 22 } ) ) );
 		assertFalse( rm.test( new RealPoint( new double[] { 6, 11 } ) ) );
 
-		assertFalse( rioe.isEmpty() );
-		assertEquals( rioe.realMax( 0 ), 11.25, 0 );
-		assertEquals( rioe.realMax( 1 ), 23, 0 );
-		assertEquals( rioe.realMin( 0 ), 6.5, 0 );
-		assertEquals( rioe.realMin( 1 ), 10.5, 0 );
+		assertFalse( rm.isEmpty() );
+		assertEquals( rm.realMax( 0 ), 11.25, 0 );
+		assertEquals( rm.realMax( 1 ), 23, 0 );
+		assertEquals( rm.realMin( 0 ), 6.5, 0 );
+		assertEquals( rm.realMin( 1 ), 10.5, 0 );
 
 		// Make Empty
 		b2.center().setPosition( new double[] { 100, 100 } );
@@ -146,11 +142,11 @@ public class OperatorsTest
 		assertFalse( rm.test( new RealPoint( new double[] { 8, 16.5 } ) ) );
 		assertFalse( rm.test( new RealPoint( new double[] { 100, 100 } ) ) );
 
-		assertTrue( rioe.isEmpty() );
-		assertEquals( rioe.realMax( 0 ), 13.5, 0 );
-		assertEquals( rioe.realMax( 1 ), 23, 0 );
-		assertEquals( rioe.realMin( 0 ), 97.125, 0 );
-		assertEquals( rioe.realMin( 1 ), 89.875, 0 );
+		assertTrue( rm.isEmpty() );
+		assertEquals( rm.realMax( 0 ), 13.5, 0 );
+		assertEquals( rm.realMax( 1 ), 23, 0 );
+		assertEquals( rm.realMin( 0 ), 97.125, 0 );
+		assertEquals( rm.realMin( 1 ), 89.875, 0 );
 	}
 
 	@Test

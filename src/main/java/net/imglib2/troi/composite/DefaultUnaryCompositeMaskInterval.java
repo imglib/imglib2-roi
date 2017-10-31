@@ -3,11 +3,12 @@ package net.imglib2.troi.composite;
 import java.util.function.Predicate;
 
 import net.imglib2.AbstractWrappedInterval;
+import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.troi.BoundaryType;
-import net.imglib2.troi.Bounds;
 import net.imglib2.troi.MaskInterval;
 import net.imglib2.troi.Operators.UnaryMaskOperator;
+import net.imglib2.util.Intervals;
 
 /**
  * A {@link MaskInterval} which is the result of an operation on a
@@ -16,8 +17,8 @@ import net.imglib2.troi.Operators.UnaryMaskOperator;
  * @author Tobias Pietzsch
  */
 public class DefaultUnaryCompositeMaskInterval
-		extends AbstractWrappedInterval< Bounds.IntervalOrEmpty >
-		implements UnaryCompositeMaskPredicate< Localizable >, MaskInterval, Bounds.IntervalOrEmpty
+		extends AbstractWrappedInterval< Interval >
+		implements UnaryCompositeMaskPredicate< Localizable >, MaskInterval
 {
 	private final UnaryMaskOperator operator;
 
@@ -34,7 +35,7 @@ public class DefaultUnaryCompositeMaskInterval
 	public DefaultUnaryCompositeMaskInterval(
 			final UnaryMaskOperator operator,
 			final Predicate< ? super Localizable > arg0,
-			final Bounds.IntervalOrEmpty interval,
+			final Interval interval,
 			final BoundaryType boundaryType,
 			final Predicate< Predicate< ? > > emptyOp,
 			final boolean isAll )
@@ -75,7 +76,7 @@ public class DefaultUnaryCompositeMaskInterval
 	@Override
 	public boolean isEmpty()
 	{
-		return this.sourceInterval.isEmpty() || emptyOp.test( arg0 );
+		return Intervals.isEmpty( sourceInterval ) || emptyOp.test( arg0 );
 	}
 
 	@Override
