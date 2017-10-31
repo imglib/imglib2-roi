@@ -1,5 +1,6 @@
 package net.imglib2.troi.composite;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import net.imglib2.AbstractEuclideanSpace;
@@ -9,6 +10,8 @@ import net.imglib2.troi.Mask;
 import net.imglib2.troi.Operators.BinaryMaskOperator;
 
 /**
+ * A {@link Mask} which is the result of an operation on two {@link Predicate}s.
+ *
  * @author Tobias Pietzsch
  */
 public class DefaultBinaryCompositeMask
@@ -25,12 +28,18 @@ public class DefaultBinaryCompositeMask
 
 	private final Predicate< ? super Localizable > predicate;
 
+	private final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp;
+
+	private final boolean isAll;
+
 	public DefaultBinaryCompositeMask(
 			final BinaryMaskOperator operator,
 			final Predicate< ? super Localizable > arg0,
 			final Predicate< ? super Localizable > arg1,
 			final int numDimensions,
-			final BoundaryType boundaryType )
+			final BoundaryType boundaryType,
+			final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp,
+			final boolean isAll )
 	{
 		super( numDimensions );
 		this.operator = operator;
@@ -38,6 +47,8 @@ public class DefaultBinaryCompositeMask
 		this.arg1 = arg1;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0, arg1 );
+		this.emptyOp = emptyOp;
+		this.isAll = isAll;
 	}
 
 	@Override
@@ -68,6 +79,18 @@ public class DefaultBinaryCompositeMask
 	public Predicate< ? super Localizable > arg1()
 	{
 		return arg1;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return emptyOp.test( arg0, arg1 );
+	}
+
+	@Override
+	public boolean isAll()
+	{
+		return isAll;
 	}
 
 	@Override

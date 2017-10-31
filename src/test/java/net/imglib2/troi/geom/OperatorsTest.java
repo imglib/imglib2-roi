@@ -4,12 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealInterval;
-import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.troi.BoundaryType;
 import net.imglib2.troi.Bounds.RealIntervalOrEmpty;
+import net.imglib2.troi.Masks;
 import net.imglib2.troi.Operators;
 import net.imglib2.troi.RealMask;
 import net.imglib2.troi.RealMaskRealInterval;
@@ -111,24 +110,6 @@ public class OperatorsTest
 	}
 
 	@Test
-	public void testAndEmpty()
-	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
-		final RealMaskRealInterval rm = b1.and( b2 );
-
-		assertFalse( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
-		assertFalse( rm.test( new RealPoint( new double[] { 2, 9 } ) ) );
-
-		assertTrue( rm instanceof RealIntervalOrEmpty );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm ).isEmpty() );
-		assertEquals( rm.realMax( 0 ), 3.125, 0 );
-		assertEquals( rm.realMax( 1 ), 7.5, 0 );
-		assertEquals( rm.realMin( 0 ), 1.25, 0 );
-		assertEquals( rm.realMin( 1 ), 8.5, 0 );
-	}
-
-	@Test
 	public void testAndMovingOperands()
 	{
 		final Box< RealPoint > b1 = new ClosedBox( new double[] { 5, 7.5 }, new double[] { 12, 20 } );
@@ -170,6 +151,74 @@ public class OperatorsTest
 		assertEquals( rioe.realMax( 1 ), 23, 0 );
 		assertEquals( rioe.realMin( 0 ), 97.125, 0 );
 		assertEquals( rioe.realMin( 1 ), 89.875, 0 );
+	}
+
+	@Test
+	public void testAndResultingInEmpty()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
+		final Box< RealPoint > b2 = new OpenBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
+		final RealMaskRealInterval rm = b1.and( b2 );
+
+		assertFalse( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 2, 9 } ) ) );
+
+		// Empty since the operands do not overlap
+		assertTrue( rm.isEmpty() );
+		assertEquals( rm.realMax( 0 ), 3.125, 0 );
+		assertEquals( rm.realMax( 1 ), 7.5, 0 );
+		assertEquals( rm.realMin( 0 ), 1.25, 0 );
+		assertEquals( rm.realMin( 1 ), 8.5, 0 );
+	}
+
+	@Test
+	public void testAndWithEmpty()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
+		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
+
+		// Both Empty
+		final RealMaskRealInterval rm1 = empty1.and( empty2 );
+		assertTrue( rm1.isEmpty() );
+
+		// First Empty
+		final RealMaskRealInterval rm2 = empty1.and( b1 );
+		assertTrue( rm2.isEmpty() );
+
+		// Second Empty
+		final RealMaskRealInterval rm3 = b1.and( empty2 );
+		assertTrue( rm3.isEmpty() );
+
+		// Neither Empty
+		final RealMaskRealInterval rm4 = b1.and( b2 );
+		assertFalse( rm4.isEmpty() );
+	}
+
+	@Test
+	public void testAndWithAll()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMask all1 = Masks.allRealMask( 2 );
+		final RealMask all2 = Masks.allRealMask( 2 );
+
+		// Both All
+		final RealMask rm1 = all1.and( all2 );
+		assertTrue( rm1.isAll() );
+
+		// First All
+		final RealMask rm2 = all1.and( b1 );
+		assertFalse( rm2.isAll() );
+
+		// Second All
+		final RealMask rm3 = b1.and( all1 );
+		assertFalse( rm3.isAll() );
+
+		// Neither All
+		final RealMaskRealInterval rm4 = b1.and( b2 );
+		assertFalse( rm4.isAll() );
 	}
 
 	// -- Minus --
@@ -293,6 +342,91 @@ public class OperatorsTest
 		assertEquals( rm.realMax( 1 ), 8.5, 0 );
 	}
 
+	@Test
+	public void testMinusResultingInEmpty()
+	{
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { -4.25, 6 }, 3.5 );
+		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { -4.25, 6 }, 3.5 );
+		final RealMaskRealInterval rm = s.minus( s2 );
+
+		assertTrue( rm.isEmpty() );
+
+		assertEquals( rm.realMin( 0 ), -7.75, 0 );
+		assertEquals( rm.realMin( 1 ), 2.5, 0 );
+		assertEquals( rm.realMax( 0 ), -0.75, 0 );
+		assertEquals( rm.realMax( 1 ), 9.5, 0 );
+
+		s.center().move( new double[] { 5, 5 } );
+		assertFalse( rm.isEmpty() );
+	}
+
+	@Test
+	public void testMinusWithEmpty()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
+		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
+
+		// Both Empty
+		final RealMaskRealInterval rm1 = empty1.minus( empty2 );
+		assertTrue( rm1.isEmpty() );
+
+		// First Empty
+		final RealMaskRealInterval rm2 = empty1.minus( b1 );
+		assertTrue( rm2.isEmpty() );
+
+		// Second Empty
+		final RealMaskRealInterval rm3 = b1.minus( empty1 );
+		assertFalse( rm3.isEmpty() );
+
+		// Neither Empty
+		final RealMaskRealInterval rm4 = b1.minus( b2 );
+		assertFalse( rm4.isEmpty() );
+	}
+
+	@Test
+	public void testMinusWithAll()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMask all1 = Masks.allRealMask( 2 );
+		final RealMask all2 = Masks.allRealMask( 2 );
+
+		// Both All
+		final RealMask rm1 = all1.minus( all2 );
+		assertFalse( rm1.isAll() );
+		assertTrue( rm1.isEmpty() );
+		assertFalse( rm1 instanceof RealInterval );
+
+		// First All
+		final RealMask rm2 = all1.minus( b1 );
+		assertFalse( rm2.isAll() );
+		assertFalse( rm2.isEmpty() );
+		assertFalse( rm2 instanceof RealInterval );
+
+		// Second All
+		final RealMask rm3 = b1.minus( all1 );
+		assertFalse( rm3.isAll() );
+		assertTrue( rm3.isEmpty() );
+		assertTrue( rm3 instanceof RealInterval );
+
+		assertEquals( ( ( RealInterval ) rm3 ).realMax( 0 ), 12, 0 );
+		assertEquals( ( ( RealInterval ) rm3 ).realMax( 1 ), 12, 0 );
+		assertEquals( ( ( RealInterval ) rm3 ).realMin( 0 ), 0, 0 );
+		assertEquals( ( ( RealInterval ) rm3 ).realMin( 1 ), 0, 0 );
+
+		// Neither All
+		final RealMaskRealInterval rm4 = b1.minus( b2 );
+		assertFalse( rm4.isAll() );
+		assertFalse( rm4.isEmpty() );
+
+		// All minus Empty
+		final RealMask rm5 = all1.minus( Masks.emptyRealMaskRealInterval( 2 ) );
+		assertTrue( rm5.isAll() );
+		assertFalse( rm5.isEmpty() );
+	}
+
 	// -- Negate --
 
 	@Test
@@ -310,6 +444,28 @@ public class OperatorsTest
 		// outside, but there is no bounding box
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
 		assertFalse( rm instanceof RealInterval );
+	}
+
+	@Test
+	public void testNegateEmpty()
+	{
+		final RealMaskRealInterval empty = Masks.emptyRealMaskRealInterval( 2 );
+		final RealMask rm = empty.negate();
+
+		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
+		assertTrue( rm.isAll() );
+		assertFalse( rm.isEmpty() );
+	}
+
+	@Test
+	public void testNegateAll()
+	{
+		final RealMask all = Masks.allRealMask( 2 );
+		final RealMask rm = all.negate();
+
+		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
+		assertFalse( rm.isAll() );
+		assertTrue( rm.isEmpty() );
 	}
 
 	// -- Or --
@@ -407,6 +563,60 @@ public class OperatorsTest
 		assertFalse( rm.test( new RealPoint( new double[] { 6, 9 } ) ) );
 	}
 
+	@Test
+	public void testOrWithEmpty()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
+		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
+
+		// Both Empty
+		final RealMaskRealInterval rm1 = empty1.or( empty2 );
+		assertTrue( rm1.isEmpty() );
+
+		// First Empty
+		final RealMaskRealInterval rm2 = empty1.or( b1 );
+		assertFalse( rm2.isEmpty() );
+
+		// Second Empty
+		final RealMaskRealInterval rm3 = b1.or( empty1 );
+		assertFalse( rm3.isEmpty() );
+
+		// Neither Empty
+		final RealMaskRealInterval rm4 = b1.or( b2 );
+		assertFalse( rm4.isEmpty() );
+	}
+
+	@Test
+	public void testOrWithAll()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMask all1 = Masks.allRealMask( 2 );
+		final RealMask all2 = Masks.allRealMask( 2 );
+
+		// Both All
+		final RealMask rm1 = all1.or( all2 );
+		assertTrue( rm1.isAll() );
+		assertFalse( rm1.isEmpty() );
+
+		// First All
+		final RealMask rm2 = all1.or( b1 );
+		assertTrue( rm2.isAll() );
+		assertFalse( rm2.isEmpty() );
+
+		// Second All
+		final RealMask rm3 = b1.or( all1 );
+		assertTrue( rm3.isAll() );
+		assertFalse( rm3.isEmpty() );
+
+		// Neither All
+		final RealMaskRealInterval rm4 = b1.or( b2 );
+		assertFalse( rm4.isAll() );
+		assertFalse( rm4.isEmpty() );
+	}
+
 	// -- Transform --
 
 	// -- Xor --
@@ -500,6 +710,89 @@ public class OperatorsTest
 		assertFalse( rm.test( new RealPoint( new double[] { 122, 36 } ) ) );
 	}
 
+	@Test
+	public void testXorResultingInEmpty()
+	{
+		final Ellipsoid< RealPoint > e1 = new OpenEllipsoid( new double[] { 3, -4.25 }, new double[] { 0.5, 7 } );
+		final Ellipsoid< RealPoint > e2 = new OpenEllipsoid( new double[] { 3, -4.25 }, new double[] { 0.5, 7 } );
+		final RealMaskRealInterval rm = e1.xor( e2 );
+
+		assertFalse( rm.test( new RealPoint( new double[] { 3, -4.25 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 2.5, -4.25 } ) ) );
+		assertFalse( rm.test( new RealPoint( new double[] { 12, 60 } ) ) );
+
+		assertTrue( rm.isEmpty() );
+		assertEquals( rm.realMax( 0 ), 3.5, 0 );
+		assertEquals( rm.realMax( 1 ), 2.75, 0 );
+		assertEquals( rm.realMin( 0 ), 2.5, 0 );
+		assertEquals( rm.realMin( 1 ), -11.25, 0 );
+
+		e1.center().move( new double[] { 11, 6 } );
+		assertFalse( rm.isEmpty() );
+	}
+
+	@Test
+	public void testXorWithEmpty()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
+		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
+
+		// Both Empty
+		final RealMaskRealInterval rm1 = empty1.xor( empty2 );
+		assertTrue( rm1.isEmpty() );
+
+		// First Empty
+		final RealMaskRealInterval rm2 = empty1.xor( b1 );
+		assertFalse( rm2.isEmpty() );
+
+		// Second Empty
+		final RealMaskRealInterval rm3 = b1.xor( empty1 );
+		assertFalse( rm3.isEmpty() );
+
+		// Neither Empty
+		final RealMaskRealInterval rm4 = b1.xor( b2 );
+		assertFalse( rm4.isEmpty() );
+
+		// Both are all
+		final RealMask rm5 = Masks.allRealMask( 2 ).xor( Masks.allRealMask( 2 ) );
+		assertTrue( rm5.isEmpty() );
+	}
+
+	@Test
+	public void testXorWithAll()
+	{
+		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final RealMask all1 = Masks.allRealMask( 2 );
+		final RealMask all2 = Masks.allRealMask( 2 );
+
+		// Both All
+		final RealMask rm1 = all1.xor( all2 );
+		assertFalse( rm1.isAll() );
+		assertTrue( rm1.isEmpty() );
+
+		// First All
+		final RealMask rm2 = all1.xor( b1 );
+		assertFalse( rm2.isAll() );
+		assertFalse( rm2.isEmpty() );
+
+		// Second All
+		final RealMask rm3 = b1.xor( all1 );
+		assertFalse( rm3.isAll() );
+		assertFalse( rm3.isEmpty() );
+
+		// Neither All
+		final RealMaskRealInterval rm4 = b1.xor( b2 );
+		assertFalse( rm4.isAll() );
+
+		// First all, second empty
+		final RealMask rm5 = all1.xor( Masks.emptyRealMask( 2 ) );
+		assertTrue( rm5.isAll() );
+		assertFalse( rm5.isEmpty() );
+	}
+
 	// -- Test Operand/Operation retrieval --
 
 	@Test
@@ -525,108 +818,6 @@ public class OperatorsTest
 		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() == Operators.NEGATE );
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
-	}
-
-	// -- Test empty propagation --
-
-	@Test
-	public void testAndWithEmpty()
-	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
-		final RealMaskRealInterval empty1 = new EmptyMask( 2 );
-		final RealMaskRealInterval empty2 = new EmptyMask( 2 );
-
-		// Both Empty
-		final RealMaskRealInterval rm1 = empty1.and( empty2 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm1 ).isEmpty() );
-
-		// First Empty
-		final RealMaskRealInterval rm2 = empty1.and( b1 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm2 ).isEmpty() );
-
-		// Second Empty
-		final RealMaskRealInterval rm3 = b1.and( empty2 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm3 ).isEmpty() );
-
-		// Neither Empty
-		final RealMaskRealInterval rm4 = b1.and( b2 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm4 ).isEmpty() );
-	}
-
-	@Test
-	public void testMinusWithEmpty()
-	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
-		final RealMaskRealInterval empty1 = new EmptyMask( 2 );
-		final RealMaskRealInterval empty2 = new EmptyMask( 2 );
-
-		// Both Empty
-		final RealMaskRealInterval rm1 = empty1.minus( empty2 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm1 ).isEmpty() );
-
-		// First Empty
-		final RealMaskRealInterval rm2 = empty1.minus( b1 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm2 ).isEmpty() );
-
-		// Second Empty
-		final RealMaskRealInterval rm3 = b1.minus( empty1 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm3 ).isEmpty() );
-
-		// Neither Empty
-		final RealMaskRealInterval rm4 = b1.minus( b2 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm4 ).isEmpty() );
-	}
-
-	@Test
-	public void testOrWithEmpty()
-	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
-		final RealMaskRealInterval empty1 = new EmptyMask( 2 );
-		final RealMaskRealInterval empty2 = new EmptyMask( 2 );
-
-		// Both Empty
-		final RealMaskRealInterval rm1 = empty1.or( empty2 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm1 ).isEmpty() );
-
-		// First Empty
-		final RealMaskRealInterval rm2 = empty1.or( b1 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm2 ).isEmpty() );
-
-		// Second Empty
-		final RealMaskRealInterval rm3 = b1.or( empty1 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm3 ).isEmpty() );
-
-		// Neither Empty
-		final RealMaskRealInterval rm4 = b1.or( b2 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm4 ).isEmpty() );
-	}
-
-	@Test
-	public void testXorWithEmpty()
-	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
-		final RealMaskRealInterval empty1 = new EmptyMask( 2 );
-		final RealMaskRealInterval empty2 = new EmptyMask( 2 );
-
-		// Both Empty
-		final RealMaskRealInterval rm1 = empty1.xor( empty2 );
-		assertTrue( ( ( RealIntervalOrEmpty ) rm1 ).isEmpty() );
-
-		// First Empty
-		final RealMaskRealInterval rm2 = empty1.xor( b1 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm2 ).isEmpty() );
-
-		// Second Empty
-		final RealMaskRealInterval rm3 = b1.xor( empty1 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm3 ).isEmpty() );
-
-		// Neither Empty
-		final RealMaskRealInterval rm4 = b1.xor( b2 );
-		assertFalse( ( ( RealIntervalOrEmpty ) rm4 ).isEmpty() );
 	}
 
 	// -- Test equals --
@@ -673,36 +864,6 @@ public class OperatorsTest
 
 		assertFalse( rm.equals( rm3 ) );
 		assertFalse( rm.equals( rm4 ) );
-	}
-
-	// -- Helper classes --
-
-	private static class EmptyMask extends AbstractEuclideanSpace implements RealMaskRealInterval
-	{
-
-		public EmptyMask( final int dims )
-		{
-			super( dims );
-		}
-
-		@Override
-		public boolean test( final RealLocalizable t )
-		{
-			return false;
-		}
-
-		@Override
-		public double realMin( final int d )
-		{
-			return Double.POSITIVE_INFINITY;
-		}
-
-		@Override
-		public double realMax( final int d )
-		{
-			return Double.NEGATIVE_INFINITY;
-		}
-
 	}
 
 }

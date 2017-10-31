@@ -9,6 +9,9 @@ import net.imglib2.troi.Operators.UnaryMaskOperator;
 import net.imglib2.troi.RealMask;
 
 /**
+ * A {@link RealMask} which is the result of an operation on a
+ * {@link Predicate}.
+ *
  * @author Tobias Pietzsch
  */
 public class DefaultUnaryCompositeRealMask
@@ -23,17 +26,25 @@ public class DefaultUnaryCompositeRealMask
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
+	private final Predicate< Predicate< ? > > emptyOp;
+
+	private final boolean isAll;
+
 	public DefaultUnaryCompositeRealMask(
 			final UnaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final int numDimensions,
-			final BoundaryType boundaryType )
+			final BoundaryType boundaryType,
+			final Predicate< Predicate< ? > > emptyOp,
+			final boolean isAll )
 	{
 		super( numDimensions );
 		this.operator = operator;
 		this.arg0 = arg0;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0 );
+		this.emptyOp = emptyOp;
+		this.isAll = isAll;
 	}
 
 	@Override
@@ -58,6 +69,18 @@ public class DefaultUnaryCompositeRealMask
 	public Predicate< ? super RealLocalizable > arg0()
 	{
 		return arg0;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return emptyOp.test( arg0 );
+	}
+
+	@Override
+	public boolean isAll()
+	{
+		return isAll;
 	}
 
 	@Override

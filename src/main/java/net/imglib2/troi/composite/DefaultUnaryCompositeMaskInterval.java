@@ -10,6 +10,9 @@ import net.imglib2.troi.MaskInterval;
 import net.imglib2.troi.Operators.UnaryMaskOperator;
 
 /**
+ * A {@link MaskInterval} which is the result of an operation on a
+ * {@link Predicate}.
+ *
  * @author Tobias Pietzsch
  */
 public class DefaultUnaryCompositeMaskInterval
@@ -24,17 +27,25 @@ public class DefaultUnaryCompositeMaskInterval
 
 	private final Predicate< ? super Localizable > predicate;
 
+	private final Predicate< Predicate< ? > > emptyOp;
+
+	private final boolean isAll;
+
 	public DefaultUnaryCompositeMaskInterval(
 			final UnaryMaskOperator operator,
 			final Predicate< ? super Localizable > arg0,
 			final Bounds.IntervalOrEmpty interval,
-			final BoundaryType boundaryType )
+			final BoundaryType boundaryType,
+			final Predicate< Predicate< ? > > emptyOp,
+			final boolean isAll )
 	{
 		super( interval );
 		this.operator = operator;
 		this.arg0 = arg0;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0 );
+		this.emptyOp = emptyOp;
+		this.isAll = isAll;
 	}
 
 	@Override
@@ -64,7 +75,13 @@ public class DefaultUnaryCompositeMaskInterval
 	@Override
 	public boolean isEmpty()
 	{
-		return this.sourceInterval.isEmpty();
+		return this.sourceInterval.isEmpty() || emptyOp.test( arg0 );
+	}
+
+	@Override
+	public boolean isAll()
+	{
+		return isAll;
 	}
 
 	@Override

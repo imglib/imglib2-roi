@@ -1,5 +1,6 @@
 package net.imglib2.troi.composite;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import net.imglib2.AbstractWrappedRealInterval;
@@ -10,6 +11,9 @@ import net.imglib2.troi.Operators.BinaryMaskOperator;
 import net.imglib2.troi.RealMaskRealInterval;
 
 /**
+ * A {@link RealMaskRealInterval} which results from an operation on two
+ * {@link Predicate}s.
+ *
  * @author Tobias Pietzsch
  */
 public class DefaultBinaryCompositeRealMaskRealInterval
@@ -26,12 +30,18 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
+	private final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp;
+
+	private final boolean isAll;
+
 	public DefaultBinaryCompositeRealMaskRealInterval(
 			final BinaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final Predicate< ? super RealLocalizable > arg1,
 			final Bounds.RealIntervalOrEmpty interval,
-			final BoundaryType boundaryType )
+			final BoundaryType boundaryType,
+			final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp,
+			final boolean isAll )
 	{
 		super( interval );
 		this.operator = operator;
@@ -39,6 +49,8 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 		this.arg1 = arg1;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0, arg1 );
+		this.emptyOp = emptyOp;
+		this.isAll = isAll;
 	}
 
 	@Override
@@ -74,7 +86,13 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 	@Override
 	public boolean isEmpty()
 	{
-		return this.sourceInterval.isEmpty();
+		return this.sourceInterval.isEmpty() || emptyOp.test( arg0, arg1 );
+	}
+
+	@Override
+	public boolean isAll()
+	{
+		return isAll;
 	}
 
 	@Override

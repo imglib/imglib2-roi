@@ -470,7 +470,13 @@ public abstract class Bounds< I extends Bounds.Empty, B extends Bounds< I, B > >
 	 * A {@link RealInterval} with an {@link #isEmpty()} method.
 	 */
 	public interface RealIntervalOrEmpty extends RealInterval, Empty
-	{}
+	{
+		// TODO - find out why not?
+		@Override
+		default boolean isEmpty() {
+			return Intervals.isEmpty( this );
+		}
+	}
 
 	/**
 	 * Wrap and augment a source {@link RealInterval} with an {@link #isEmpty()}
