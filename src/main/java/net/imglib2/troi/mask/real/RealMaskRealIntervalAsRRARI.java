@@ -31,7 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.troi.util;
+package net.imglib2.troi.mask.real;
 
 import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.RealInterval;

@@ -10,11 +10,11 @@ import net.imglib2.Localizable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessibleRealInterval;
-import net.imglib2.troi.util.DefaultMask;
-import net.imglib2.troi.util.DefaultMaskInterval;
-import net.imglib2.troi.util.DefaultRealMask;
-import net.imglib2.troi.util.DefaultRealMaskRealInterval;
-import net.imglib2.troi.util.RealMaskRealIntervalAsRRARI;
+import net.imglib2.troi.mask.integer.DefaultMask;
+import net.imglib2.troi.mask.integer.DefaultMaskInterval;
+import net.imglib2.troi.mask.real.DefaultRealMask;
+import net.imglib2.troi.mask.real.DefaultRealMaskRealInterval;
+import net.imglib2.troi.mask.real.RealMaskRealIntervalAsRRARI;
 import net.imglib2.type.logic.BoolType;
 
 /**

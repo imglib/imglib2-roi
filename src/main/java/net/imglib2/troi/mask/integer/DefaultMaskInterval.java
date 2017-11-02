@@ -1,4 +1,4 @@
-package net.imglib2.troi.util;
+package net.imglib2.troi.mask.integer;
 
 import java.util.function.Predicate;
 
