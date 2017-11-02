@@ -35,10 +35,11 @@ package net.imglib2.troi.geom.real;
 
 import java.util.Arrays;
 
-import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.troi.geom.GeomMaths;
+import net.imglib2.troi.util.AbstractUpdateBoundsRealPoint;
 import net.imglib2.util.Intervals;
 
 /**
@@ -47,7 +48,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Alison Walter
  */
-public class DefaultLine extends AbstractEuclideanSpace implements Line< RealPoint >
+public class DefaultLine extends AbstractRealInterval implements Line< RealPoint >
 {
 	private double[] pointOne;
 
@@ -100,6 +101,12 @@ public class DefaultLine extends AbstractEuclideanSpace implements Line< RealPoi
 			this.pointOne = pointOne;
 			this.pointTwo = pointTwo;
 		}
+
+		for ( int d = 0; d < n; d++ )
+		{
+			min[ d ] = Math.min( this.pointOne[ d ], this.pointTwo[ d ] );
+			max[ d ] = Math.max( this.pointOne[ d ], this.pointTwo[ d ] );
+		}
 	}
 
 	@Override
@@ -116,7 +123,7 @@ public class DefaultLine extends AbstractEuclideanSpace implements Line< RealPoi
 	@Override
 	public RealPoint endpointOne()
 	{
-		return RealPoint.wrap( pointOne );
+		return new LineEndPoint( pointOne );
 	}
 
 	/**
@@ -126,7 +133,7 @@ public class DefaultLine extends AbstractEuclideanSpace implements Line< RealPoi
 	@Override
 	public RealPoint endpointTwo()
 	{
-		return RealPoint.wrap( pointTwo );
+		return new LineEndPoint( pointTwo );
 	}
 
 	@Override
@@ -167,5 +174,25 @@ public class DefaultLine extends AbstractEuclideanSpace implements Line< RealPoi
 		final double[] pt = new double[ l.numDimensions() ];
 		l.localize( pt );
 		return pt;
+	}
+
+	// -- Helper classes --
+
+	private class LineEndPoint extends AbstractUpdateBoundsRealPoint
+	{
+		public LineEndPoint( final double[] pos )
+		{
+			super( pos );
+		}
+
+		@Override
+		public void updateBounds()
+		{
+			for ( int d = 0; d < n; d++ )
+			{
+				min[ d ] = Math.min( pointOne[ d ], pointTwo[ d ] );
+				max[ d ] = Math.max( pointOne[ d ], pointTwo[ d ] );
+			}
+		}
 	}
 }

@@ -35,10 +35,9 @@
 package net.imglib2.troi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.Localizable;
-import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.troi.RealMask;
+import net.imglib2.troi.util.AbstractUpdateBoundsRealPoint;
 
 /**
  * Abstract base class for implementations of {@link Box}.
@@ -118,7 +117,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 
 	// -- Helper classes --
 
-	private class BoxCenter extends RealPoint
+	private class BoxCenter extends AbstractUpdateBoundsRealPoint
 	{
 		protected BoxCenter( final double[] center )
 		{
@@ -126,162 +125,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 		}
 
 		@Override
-		public void fwd( final int d )
-		{
-			super.fwd( d );
-			updateMinMax();
-		}
-
-		@Override
-		public void bck( final int d )
-		{
-			super.bck( d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final int distance, final int d )
-		{
-			super.move( distance, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final long distance, final int d )
-		{
-			super.move( distance, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final Localizable localizable )
-		{
-			super.move( localizable );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final int[] distance )
-		{
-			super.move( distance );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final long[] distance )
-		{
-			super.move( distance );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final Localizable localizable )
-		{
-			super.setPosition( localizable );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final int[] position )
-		{
-			super.setPosition( position );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final long[] position )
-		{
-			super.setPosition( position );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final int position, final int d )
-		{
-			super.setPosition( position, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final long position, final int d )
-		{
-			super.setPosition( position, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final float distance, final int d )
-		{
-			super.move( distance, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final double distance, final int d )
-		{
-			super.move( distance, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final RealLocalizable distance )
-		{
-			super.move( distance );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final float[] distance )
-		{
-			super.move( distance );
-			updateMinMax();
-		}
-
-		@Override
-		public void move( final double[] distance )
-		{
-			super.move( distance );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final RealLocalizable position )
-		{
-			super.setPosition( position );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final float[] position )
-		{
-			super.setPosition( position );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final double[] position )
-		{
-			super.setPosition( position );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final float position, final int d )
-		{
-			super.setPosition( position, d );
-			updateMinMax();
-		}
-
-		@Override
-		public void setPosition( final double position, final int d )
-		{
-			super.setPosition( position, d );
-			updateMinMax();
-		}
-
-		// -- Helper methods --
-
-		private void updateMinMax()
+		public void updateBounds()
 		{
 			for ( int d = 0; d < n; d++ )
 			{

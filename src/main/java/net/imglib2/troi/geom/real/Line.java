@@ -57,16 +57,4 @@ public interface Line< T extends RealLocalizable & RealPositionable > extends Re
 	{
 		return BoundaryType.CLOSED;
 	}
-
-	@Override
-	default double realMin( final int d )
-	{
-		return Math.min( endpointOne().getDoublePosition( d ), endpointTwo().getDoublePosition( d ) );
-	}
-
-	@Override
-	default double realMax( final int d )
-	{
-		return Math.max( endpointOne().getDoublePosition( d ), endpointTwo().getDoublePosition( d ) );
-	}
 }

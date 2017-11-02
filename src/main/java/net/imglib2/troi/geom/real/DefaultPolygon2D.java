@@ -35,10 +35,12 @@ package net.imglib2.troi.geom.real;
 
 import java.util.List;
 
-import net.imglib2.Localizable;
+import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.roi.Regions;
 import net.imglib2.troi.geom.GeomMaths;
+import net.imglib2.troi.util.AbstractUpdateBoundsRealPoint;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -57,7 +59,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class DefaultPolygon2D implements Polygon2D< RealPoint >
+public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D< RealPoint >
 {
 	protected final TDoubleArrayList x;
 
@@ -72,8 +74,14 @@ public class DefaultPolygon2D implements Polygon2D< RealPoint >
 	 */
 	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
+		// Regions.getBoundsReal(...) could create an interval with n > 2, if
+		// the first vertex had n > 2. Instead create 2D interval, and then set
+		// min/max.
+		super( 2 );
+
 		x = new TDoubleArrayList( vertices.size() );
 		y = new TDoubleArrayList( vertices.size() );
+
 		populateXY( vertices );
 	}
 
@@ -89,6 +97,7 @@ public class DefaultPolygon2D implements Polygon2D< RealPoint >
 	 */
 	public DefaultPolygon2D( final double[] x, final double[] y )
 	{
+		super( Regions.getBoundsReal( x, y ) );
 		if ( x.length == y.length )
 		{
 			this.x = new TDoubleArrayList( x );
@@ -136,6 +145,7 @@ public class DefaultPolygon2D implements Polygon2D< RealPoint >
 	{
 		x.insert( index, vertex[ 0 ] );
 		y.insert( index, vertex[ 1 ] );
+		updateMinMax();
 	}
 
 	@Override
@@ -143,6 +153,7 @@ public class DefaultPolygon2D implements Polygon2D< RealPoint >
 	{
 		x.removeAt( index );
 		y.removeAt( index );
+		updateMinMax();
 	}
 
 	@Override
@@ -180,188 +191,74 @@ public class DefaultPolygon2D implements Polygon2D< RealPoint >
 	 */
 	private void populateXY( final List< ? extends RealLocalizable > vertices )
 	{
+		double minX = Double.POSITIVE_INFINITY;
+		double minY = Double.POSITIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY;
+		double maxY = Double.NEGATIVE_INFINITY;
 		for ( int i = 0; i < vertices.size(); i++ )
 		{
 			final double xi = vertices.get( i ).getDoublePosition( 0 );
 			final double yi = vertices.get( i ).getDoublePosition( 1 );
 			x.add( xi );
 			y.add( yi );
+			if ( xi > maxX )
+				maxX = xi;
+			if ( xi < minX )
+				minX = xi;
+			if ( yi > maxY )
+				maxY = yi;
+			if ( yi < minY )
+				minY = yi;
 		}
+		max[ 0 ] = maxX;
+		max[ 1 ] = maxY;
+		min[ 0 ] = minX;
+		min[ 1 ] = minY;
+	}
+
+	private void updateMinMax()
+	{
+		double maxX = x.get( 0 );
+		double minX = x.get( 0 );
+		double maxY = y.get( 0 );
+		double minY = y.get( 0 );
+		for ( int i = 1; i < numVertices(); i++ )
+		{
+			if ( x.get( i ) > maxX )
+				maxX = x.get( i );
+			if ( x.get( i ) < minX )
+				minX = x.get( i );
+			if ( y.get( i ) > maxY )
+				maxY = y.get( i );
+			if ( y.get( i ) < minY )
+				minY = y.get( i );
+		}
+
+		max[ 0 ] = maxX;
+		max[ 1 ] = maxY;
+		min[ 0 ] = minX;
+		min[ 1 ] = minY;
 	}
 
 	// -- Helper classes --
 
-	private class Polygon2DVertex extends RealPoint
+	private class Polygon2DVertex extends AbstractUpdateBoundsRealPoint
 	{
-
 		private final int pos;
 
-		protected Polygon2DVertex( final int pos )
+		public Polygon2DVertex( final int pos )
 		{
 			super( new double[] { x.get( pos ), y.get( pos ) } );
 			this.pos = pos;
 		}
 
 		@Override
-		public void fwd( final int d )
-		{
-			super.fwd( d );
-			updateXY();
-		}
-
-		@Override
-		public void bck( final int d )
-		{
-			super.bck( d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final int distance, final int d )
-		{
-			super.move( distance, d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final long distance, final int d )
-		{
-			super.move( distance, d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final Localizable localizable )
-		{
-			super.move( localizable );
-			updateXY();
-		}
-
-		@Override
-		public void move( final int[] distance )
-		{
-			super.move( distance );
-			updateXY();
-		}
-
-		@Override
-		public void move( final long[] distance )
-		{
-			super.move( distance );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final Localizable localizable )
-		{
-			super.setPosition( localizable );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final int[] position )
-		{
-			super.setPosition( position );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final long[] position )
-		{
-			super.setPosition( position );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final int position, final int d )
-		{
-			super.setPosition( position, d );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final long position, final int d )
-		{
-			super.setPosition( position, d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final float distance, final int d )
-		{
-			super.move( distance, d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final double distance, final int d )
-		{
-			super.move( distance, d );
-			updateXY();
-		}
-
-		@Override
-		public void move( final RealLocalizable distance )
-		{
-			super.move( distance );
-			updateXY();
-		}
-
-		@Override
-		public void move( final float[] distance )
-		{
-			super.move( distance );
-			updateXY();
-		}
-
-		@Override
-		public void move( final double[] distance )
-		{
-			super.move( distance );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final RealLocalizable position )
-		{
-			super.setPosition( position );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final float[] position )
-		{
-			super.setPosition( position );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final double[] position )
-		{
-			super.setPosition( position );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final float position, final int d )
-		{
-			super.setPosition( position, d );
-			updateXY();
-		}
-
-		@Override
-		public void setPosition( final double position, final int d )
-		{
-			super.setPosition( position, d );
-			updateXY();
-		}
-
-		// -- Helper methods --
-
-		private void updateXY()
+		public void updateBounds()
 		{
 			x.set( pos, position[ 0 ] );
 			y.set( pos, position[ 1 ] );
+
+			updateMinMax();
 		}
 	}
 }
