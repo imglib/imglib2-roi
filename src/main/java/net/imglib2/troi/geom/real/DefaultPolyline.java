@@ -34,49 +34,57 @@
 
 package net.imglib2.troi.geom.real;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
+import net.imglib2.RealPoint;
+import net.imglib2.roi.Regions;
 import net.imglib2.troi.geom.GeomMaths;
+import net.imglib2.troi.util.AbstractUpdateBoundsRealPoint;
 
 /**
  * A polyline, which can be embedded in n-dimensional space.
  *
  * @author Alison Walter
  */
-public class DefaultPolyline< T extends RealLocalizable & RealPositionable > extends AbstractEuclideanSpace implements Polyline< T >
+public class DefaultPolyline extends AbstractRealInterval implements Polyline< RealPoint >
 {
-	private final List< T > vertices;
+	private final List< double[] > vertices;
 
 	/**
 	 * Creates a polyline with the specified vertices. The dimensionality of the
-	 * space is determined by the dimensionality of the first vertex. This
-	 * constructor will check to ensure that all vertices have the same number
-	 * of dimensions, and if not an error will be thrown.
+	 * space is determined by the dimensionality of the first vertex. If a given
+	 * vertex has fewer dimensions then an exception will be thrown. However, if
+	 * the given vertex has more dimensions it will be truncated.
 	 *
 	 * @param vertices
 	 *            Vertices which define the polyline in the desired order.
 	 */
-	public DefaultPolyline( final List< T > vertices )
+	public DefaultPolyline( final List< ? extends RealLocalizable > vertices )
 	{
-		super( vertices.get( 0 ).numDimensions() );
+		super( Regions.getBoundsReal( vertices ) );
+		this.vertices = new ArrayList<>( vertices.size() );
+
 		for ( int i = 0; i < vertices.size(); i++ )
-			if ( vertices.get( i ).numDimensions() != n )
-				throw new IllegalArgumentException( "All vertices must have exactly " + n + " dimensions!" );
-		this.vertices = vertices;
+		{
+			final double[] p = new double[ n ];
+			for ( int d = 0; d < n; d++ )
+			{
+				p[ d ] = vertices.get( i ).getDoublePosition( d );
+			}
+			this.vertices.add( p );
+		}
 	}
 
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		final double[] ptOne = new double[ n ];
-		final double[] ptTwo = new double[ n ];
 		for ( int i = 1; i < vertices.size(); i++ )
 		{
-			vertices.get( i - 1 ).localize( ptOne );
-			vertices.get( i ).localize( ptTwo );
+			final double[] ptOne = vertices.get( i - 1 );
+			final double[] ptTwo = vertices.get( i );
 			final boolean testLineContains = GeomMaths.lineContains( ptOne, ptTwo, l, n );
 			if ( testLineContains )
 				return true;
@@ -90,9 +98,9 @@ public class DefaultPolyline< T extends RealLocalizable & RealPositionable > ext
 	 * have been added/removed.
 	 */
 	@Override
-	public T vertex( final int pos )
+	public RealPoint vertex( final int pos )
 	{
-		return vertices.get( pos );
+		return new PolylineVertex( vertices.get( pos ) );
 	}
 
 	@Override
@@ -102,17 +110,22 @@ public class DefaultPolyline< T extends RealLocalizable & RealPositionable > ext
 	}
 
 	@Override
-	public void addVertex( final int index, final T vertex )
+	public void addVertex( final int index, final RealLocalizable vertex )
 	{
-		if ( vertex.numDimensions() != n )
-			throw new IllegalArgumentException( "Vertex must have " + n + " dimensions" );
-		vertices.add( index, vertex );
+		if ( vertex.numDimensions() < n )
+			throw new IllegalArgumentException( "Vertex must have at least" + n + " dimensions" );
+		final double[] p = new double[ n ];
+		for ( int d = 0; d < n; d++ )
+			p[ d ] = vertex.getDoublePosition( d );
+		vertices.add( index, p );
+		updateMinMax();
 	}
 
 	@Override
 	public void removeVertex( final int index )
 	{
 		vertices.remove( index );
+		updateMinMax();
 	}
 
 	@Override
@@ -129,7 +142,7 @@ public class DefaultPolyline< T extends RealLocalizable & RealPositionable > ext
 		{
 			for ( int d = 0; d < n; d++ )
 			{
-				if ( vertices.get( i ).getDoublePosition( d ) != p.vertex( i ).getDoublePosition( d ) )
+				if ( vertices.get( i )[ d ] != p.vertex( i ).getDoublePosition( d ) )
 					return false;
 			}
 		}
@@ -140,5 +153,42 @@ public class DefaultPolyline< T extends RealLocalizable & RealPositionable > ext
 	public int hashCode()
 	{
 		return super.hashCode();
+	}
+
+	// -- Helper methods --
+
+	private void updateMinMax()
+	{
+		for ( int d = 0; d < n; d++ )
+		{
+			double minD = vertices.get( 0 )[ d ];
+			double maxD = vertices.get( 0 )[ d ];
+			for ( int i = 1; i < numVertices(); i++ )
+			{
+				if ( vertices.get( i )[ d ] < minD )
+					minD = vertices.get( i )[ d ];
+				if ( vertices.get( i )[ d ] > maxD )
+					maxD = vertices.get( i )[ d ];
+			}
+			min[ d ] = minD;
+			max[ d ] = maxD;
+		}
+	}
+
+	// -- Helper classes --
+
+	private class PolylineVertex extends AbstractUpdateBoundsRealPoint
+	{
+		public PolylineVertex( final double[] pos )
+		{
+			super( pos );
+		}
+
+		@Override
+		public void updateBounds()
+		{
+			updateMinMax();
+		}
+
 	}
 }

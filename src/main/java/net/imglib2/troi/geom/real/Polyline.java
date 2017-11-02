@@ -53,7 +53,7 @@ public interface Polyline< T extends RealLocalizable & RealPositionable > extend
 	int numVertices();
 
 	/** Adds a vertex at the given index. */
-	void addVertex( int index, T vertex );
+	void addVertex( int index, RealLocalizable vertex );
 
 	/** Removes the vertex at the given index. */
 	void removeVertex( int index );
@@ -62,31 +62,5 @@ public interface Polyline< T extends RealLocalizable & RealPositionable > extend
 	default BoundaryType boundaryType()
 	{
 		return BoundaryType.CLOSED;
-	}
-
-	// -- RealInterval methods --
-
-	@Override
-	default double realMin( final int d )
-	{
-		double min = vertex( 0 ).getDoublePosition( d );
-		for ( int i = 1; i < numVertices(); i++ )
-		{
-			if ( vertex( i ).getDoublePosition( d ) < min )
-				min = vertex( i ).getDoublePosition( d );
-		}
-		return min;
-	}
-
-	@Override
-	default double realMax( final int d )
-	{
-		double max = vertex( 0 ).getDoublePosition( d );
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			if ( vertex( i ).getDoublePosition( d ) > max )
-				max = vertex( i ).getDoublePosition( d );
-		}
-		return max;
 	}
 }
