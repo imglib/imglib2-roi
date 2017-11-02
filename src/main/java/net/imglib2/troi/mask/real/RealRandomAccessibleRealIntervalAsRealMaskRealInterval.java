@@ -33,57 +33,36 @@
  */
 package net.imglib2.troi.mask.real;
 
-import java.util.function.Predicate;
-
+import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.troi.MaskPredicate;
-import net.imglib2.troi.RealMask;
+import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.troi.RealMaskRealInterval;
 import net.imglib2.type.BooleanType;
+import net.imglib2.util.Intervals;
 
 /**
- * {@link RealRandomAccess} based on {@link RealMask}.
+ * Wraps a {@link RealRandomAccessibleRealInterval} as a
+ * {@link RealMaskRealInterval}.
  *
- * @author Christian Dietz
- * @author Tobias Pietzsch
+ * @author Alison Walter
  */
-public class MaskPredicateRealRandomAccess< B extends BooleanType< B > > extends RealPoint implements RealRandomAccess< B >
+public class RealRandomAccessibleRealIntervalAsRealMaskRealInterval< B extends BooleanType< B > > extends AbstractWrappedRealInterval< RealRandomAccessibleRealInterval< B > > implements RealMaskRealInterval
 {
-	private final Predicate< ? super RealLocalizable > contains;
-
-	private final B type;
-
-	public MaskPredicateRealRandomAccess( final MaskPredicate< ? super RealLocalizable > contains, final B type )
+	public RealRandomAccessibleRealIntervalAsRealMaskRealInterval( final RealRandomAccessibleRealInterval< B > rrari )
 	{
-		super( contains.numDimensions() );
-		this.contains = contains;
-		this.type = type.createVariable();
-	}
-
-	protected MaskPredicateRealRandomAccess( final MaskPredicateRealRandomAccess< B > cra )
-	{
-		super( cra.numDimensions() );
-		contains = cra.contains;
-		type = cra.type.copy();
+		super( rrari );
 	}
 
 	@Override
-	public B get()
+	public boolean test( final RealLocalizable l )
 	{
-		type.set( contains.test( this ) );
-		return type;
-	}
-
-	@Override
-	public MaskPredicateRealRandomAccess< B > copy()
-	{
-		return new MaskPredicateRealRandomAccess<>( this );
-	}
-
-	@Override
-	public RealRandomAccess< B > copyRealRandomAccess()
-	{
-		return copy();
+		if ( Intervals.contains( this, l ) )
+		{
+			final RealRandomAccess< B > accessor = sourceInterval.realRandomAccess();
+			accessor.setPosition( l );
+			return accessor.get().get();
+		}
+		return false;
 	}
 }

@@ -33,57 +33,45 @@
  */
 package net.imglib2.troi.mask.real;
 
-import java.util.function.Predicate;
-
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.troi.MaskPredicate;
+import net.imglib2.RealRandomAccessible;
 import net.imglib2.troi.RealMask;
 import net.imglib2.type.BooleanType;
+import net.imglib2.util.Intervals;
 
 /**
- * {@link RealRandomAccess} based on {@link RealMask}.
+ * Wraps a {@link RealRandomAccessible} as a {@link RealMask}.
  *
- * @author Christian Dietz
- * @author Tobias Pietzsch
+ * @author Alison Walter
  */
-public class MaskPredicateRealRandomAccess< B extends BooleanType< B > > extends RealPoint implements RealRandomAccess< B >
+public class RealRandomAccessibleAsRealMask< B extends BooleanType< B > > extends AbstractEuclideanSpace implements RealMask
 {
-	private final Predicate< ? super RealLocalizable > contains;
+	private final RealRandomAccessible< B > rra;
 
-	private final B type;
-
-	public MaskPredicateRealRandomAccess( final MaskPredicate< ? super RealLocalizable > contains, final B type )
+	public RealRandomAccessibleAsRealMask( final RealRandomAccessible< B > rra )
 	{
-		super( contains.numDimensions() );
-		this.contains = contains;
-		this.type = type.createVariable();
+		super( rra.numDimensions() );
+		this.rra = rra;
 	}
 
-	protected MaskPredicateRealRandomAccess( final MaskPredicateRealRandomAccess< B > cra )
+	// TODO: Consider making an interface (Wrapped?) which has getSource() method
+	public RealRandomAccessible< B > getSource()
 	{
-		super( cra.numDimensions() );
-		contains = cra.contains;
-		type = cra.type.copy();
+		return rra;
 	}
 
 	@Override
-	public B get()
+	public boolean test( final RealLocalizable l )
 	{
-		type.set( contains.test( this ) );
-		return type;
+		if ( rra instanceof RealInterval )
+			if ( !Intervals.contains( ( RealInterval ) rra, l ) )
+				return false;
+		final RealRandomAccess< B > accessor = rra.realRandomAccess();
+		accessor.setPosition( l );
+		return accessor.get().get();
 	}
 
-	@Override
-	public MaskPredicateRealRandomAccess< B > copy()
-	{
-		return new MaskPredicateRealRandomAccess<>( this );
-	}
-
-	@Override
-	public RealRandomAccess< B > copyRealRandomAccess()
-	{
-		return copy();
-	}
 }

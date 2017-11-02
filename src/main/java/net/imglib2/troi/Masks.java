@@ -14,7 +14,7 @@ import net.imglib2.troi.mask.integer.DefaultMask;
 import net.imglib2.troi.mask.integer.DefaultMaskInterval;
 import net.imglib2.troi.mask.real.DefaultRealMask;
 import net.imglib2.troi.mask.real.DefaultRealMaskRealInterval;
-import net.imglib2.troi.mask.real.RealMaskRealIntervalAsRRARI;
+import net.imglib2.troi.mask.real.RealMaskRealIntervalAsRealRandomAccessibleRealInterval;
 import net.imglib2.type.logic.BoolType;
 
 /**
@@ -132,7 +132,7 @@ public class Masks
 	 */
 	public static RealRandomAccessibleRealInterval< BoolType > toRRARI( final RealMaskRealInterval mask )
 	{
-		return new RealMaskRealIntervalAsRRARI<>( mask, new BoolType() );
+		return new RealMaskRealIntervalAsRealRandomAccessibleRealInterval<>( mask, new BoolType() );
 	}
 
 	/*

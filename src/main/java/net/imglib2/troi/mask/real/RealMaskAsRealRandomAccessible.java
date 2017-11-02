@@ -33,32 +33,46 @@
  */
 package net.imglib2.troi.mask.real;
 
-import net.imglib2.AbstractWrappedRealInterval;
+import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealInterval;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.RealRandomAccessibleRealInterval;
-import net.imglib2.troi.RealMaskRealInterval;
+import net.imglib2.RealRandomAccessible;
+import net.imglib2.troi.RealMask;
 import net.imglib2.type.BooleanType;
 
 /**
- * @author Tobias Pietzsch
+ * This class takes a {@link RealMask} and wraps it as a
+ * {@link RealRandomAccessible}.
+ *
+ * @author Alison Walter
+ *
+ * @param <B>
+ *            {@link BooleanType} of RealRandomAccessible
  */
-public class RealMaskRealIntervalAsRRARI< B extends BooleanType< B > >
-	extends AbstractWrappedRealInterval< RealMaskRealInterval >
-	implements RealRandomAccessibleRealInterval< B >
+public class RealMaskAsRealRandomAccessible< B extends BooleanType< B > > extends AbstractEuclideanSpace implements RealRandomAccessible< B >
 {
+
+	private final RealMask mask;
+
 	private final B type;
 
-	public RealMaskRealIntervalAsRRARI( final RealMaskRealInterval mask, final B type )
+	public RealMaskAsRealRandomAccessible( final RealMask mask, final B type )
 	{
-		super( mask );
+		super( mask.numDimensions() );
+		this.mask = mask;
 		this.type = type;
+	}
+
+	// TODO: Consider making an interface (Wrapped?) which has getSource() method
+	public RealMask getSource()
+	{
+		return mask;
 	}
 
 	@Override
 	public RealRandomAccess< B > realRandomAccess()
 	{
-		return new MaskPredicateRealRandomAccess<>( sourceInterval, type );
+		return new MaskPredicateRealRandomAccess<>( mask, type );
 	}
 
 	@Override
@@ -66,4 +80,5 @@ public class RealMaskRealIntervalAsRRARI< B extends BooleanType< B > >
 	{
 		return realRandomAccess();
 	}
+
 }

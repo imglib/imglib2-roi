@@ -33,57 +33,37 @@
  */
 package net.imglib2.troi.mask.real;
 
-import java.util.function.Predicate;
-
-import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
+import net.imglib2.AbstractWrappedRealInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealRandomAccess;
-import net.imglib2.troi.MaskPredicate;
-import net.imglib2.troi.RealMask;
+import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.troi.RealMaskRealInterval;
 import net.imglib2.type.BooleanType;
 
 /**
- * {@link RealRandomAccess} based on {@link RealMask}.
- *
- * @author Christian Dietz
  * @author Tobias Pietzsch
  */
-public class MaskPredicateRealRandomAccess< B extends BooleanType< B > > extends RealPoint implements RealRandomAccess< B >
+public class RealMaskRealIntervalAsRealRandomAccessibleRealInterval< B extends BooleanType< B > >
+	extends AbstractWrappedRealInterval< RealMaskRealInterval >
+	implements RealRandomAccessibleRealInterval< B >
 {
-	private final Predicate< ? super RealLocalizable > contains;
-
 	private final B type;
 
-	public MaskPredicateRealRandomAccess( final MaskPredicate< ? super RealLocalizable > contains, final B type )
+	public RealMaskRealIntervalAsRealRandomAccessibleRealInterval( final RealMaskRealInterval mask, final B type )
 	{
-		super( contains.numDimensions() );
-		this.contains = contains;
-		this.type = type.createVariable();
-	}
-
-	protected MaskPredicateRealRandomAccess( final MaskPredicateRealRandomAccess< B > cra )
-	{
-		super( cra.numDimensions() );
-		contains = cra.contains;
-		type = cra.type.copy();
+		super( mask );
+		this.type = type;
 	}
 
 	@Override
-	public B get()
+	public RealRandomAccess< B > realRandomAccess()
 	{
-		type.set( contains.test( this ) );
-		return type;
+		return new MaskPredicateRealRandomAccess<>( sourceInterval, type );
 	}
 
 	@Override
-	public MaskPredicateRealRandomAccess< B > copy()
+	public RealRandomAccess< B > realRandomAccess( final RealInterval interval )
 	{
-		return new MaskPredicateRealRandomAccess<>( this );
-	}
-
-	@Override
-	public RealRandomAccess< B > copyRealRandomAccess()
-	{
-		return copy();
+		return realRandomAccess();
 	}
 }
