@@ -33,6 +33,8 @@
  */
 package net.imglib2.roi.geometric;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
@@ -58,11 +60,14 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 {
 	private final List< ? extends RealLocalizable > vertices;
 
+	private final List< ? extends RealLocalizable > unmodifiableVertices;
+
 	public Polygon( final List< ? extends RealLocalizable > vertices )
 	{
 		super( ROIUtils.getBoundsReal( vertices ) );
 		assert( this.n == 2 );
-		this.vertices = vertices;
+		this.vertices = new ArrayList<>( vertices );
+		unmodifiableVertices = Collections.unmodifiableList( this.vertices );
 	}
 
 	/**
@@ -118,7 +123,7 @@ public class Polygon extends AbstractRealInterval implements RealRandomAccessibl
 	 */
 	public List< ? extends RealLocalizable > getVertices()
 	{
-		return vertices;
+		return unmodifiableVertices;
 	}
 
 	public IterableRandomAccessibleRegion< BoolType > rasterize()
