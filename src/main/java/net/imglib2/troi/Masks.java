@@ -1,7 +1,5 @@
 package net.imglib2.troi;
 
-import static net.imglib2.troi.Operators.AND;
-
 import java.util.function.Predicate;
 
 import net.imglib2.Localizable;
@@ -32,12 +30,6 @@ public class Masks
 	public static MaskInterval and( final MaskInterval left, final Predicate< ? super Localizable > right )
 	{
 		return left.and( right );
-	}
-
-	// TODO: do we need/want this:
-	public static MaskInterval andMaskInterval( final Predicate< ? super Localizable > left, final MaskInterval right )
-	{
-		return AND.applyInterval( left, right );
 	}
 
 	public static Mask or( final Mask left, final Predicate< ? super Localizable > right )
@@ -75,26 +67,19 @@ public class Masks
 		return arg.negate();
 	}
 
-
 	/*
 	 * Methods for real masks
 	 * ===============================================================
 	 */
 
-	static RealMask and( final RealMask left, final Predicate< ? super RealLocalizable > right )
+	public static RealMask and( final RealMask left, final Predicate< ? super RealLocalizable > right )
 	{
 		return left.and( right );
 	}
 
-	static RealMaskRealInterval and( final RealMaskRealInterval left, final Predicate< ? super RealLocalizable > right )
+	public static RealMaskRealInterval and( final RealMaskRealInterval left, final Predicate< ? super RealLocalizable > right )
 	{
 		return left.and( right );
-	}
-
-	// TODO: do we need/want this:
-	static RealMaskRealInterval andMaskInterval( final Predicate< ? super RealLocalizable > left, final RealMaskRealInterval right )
-	{
-		return AND.applyRealInterval( left, right );
 	}
 
 	public static RealMask or( final RealMask left, final Predicate< ? super RealLocalizable > right )
