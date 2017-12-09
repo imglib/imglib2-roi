@@ -74,21 +74,7 @@ public class Operators
 	 * ===========================================================
 	 */
 
-	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.and,
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return r.isEmpty() || l.isEmpty();
-			},
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return l.isAll() && r.isAll();
-			} )
+	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.and, Masks.EMPTY_AND, Masks.ALL_AND )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -97,21 +83,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.or,
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return r.isEmpty() && l.isEmpty();
-			},
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return l.isAll() || r.isAll();
-			} )
+	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.or, Masks.EMPTY_OR, Masks.ALL_OR )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -120,21 +92,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.xor,
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return left.equals( right ) || ( r.isEmpty() && l.isEmpty() ) || ( r.isAll() && l.isAll() );
-			},
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return ( l.isAll() && r.isEmpty() ) || ( l.isEmpty() && r.isAll() );
-			} )
+	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.xor, Masks.EMPTY_XOR, Masks.ALL_XOR )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -145,21 +103,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.minus,
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return left.equals( right ) || r.isAll() || l.isEmpty();
-			},
-			( left, right ) -> {
-				if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > r = (net.imglib2.roi.MaskPredicate< ? > ) right;
-				final MaskPredicate< ? > l = (net.imglib2.roi.MaskPredicate< ? > ) left;
-				return l.isAll() && r.isEmpty();
-			} )
+	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.minus, Masks.EMPTY_MINUS, Masks.ALL_MINUS )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -170,19 +114,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.negate,
-			t -> {
-				if ( !( t instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > m = (net.imglib2.roi.MaskPredicate< ? > ) t;
-				return m.isAll();
-			},
-			t -> {
-				if ( !( t instanceof MaskPredicate< ? > ) )
-					return false;
-				final MaskPredicate< ? > m = (net.imglib2.roi.MaskPredicate< ? > ) t;
-				return m.isEmpty();
-			} )
+	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.negate, Masks.EMPTY_NEGATE, Masks.ALL_NEGATE )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )

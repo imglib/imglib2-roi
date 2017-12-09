@@ -34,6 +34,7 @@
 package net.imglib2.roi;
 
 import java.util.Arrays;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import net.imglib2.FinalInterval;
@@ -69,6 +70,84 @@ import net.imglib2.type.BooleanType;
  */
 public class Masks
 {
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_AND = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return r.isEmpty() || l.isEmpty();
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_OR = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return r.isEmpty() && l.isEmpty();
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_XOR = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return left.equals( right ) || ( r.isEmpty() && l.isEmpty() ) || ( r.isAll() && l.isAll() );
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_MINUS = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return left.equals( right ) || r.isAll() || l.isEmpty();
+	};
+
+	public static final Predicate< Predicate< ? > > EMPTY_NEGATE = t -> {
+		if ( !( t instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
+		return m.isAll();
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_AND = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return l.isAll() && r.isAll();
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_OR = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return l.isAll() || r.isAll();
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_XOR = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return ( l.isAll() && r.isEmpty() ) || ( l.isEmpty() && r.isAll() );
+	};
+
+	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_MINUS = ( left, right ) -> {
+		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
+		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
+		return l.isAll() && r.isEmpty();
+	};
+
+	public static final Predicate< Predicate< ? > > ALL_NEGATE = t -> {
+		if ( !( t instanceof MaskPredicate< ? > ) )
+			return false;
+		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
+		return m.isEmpty();
+	};
+
 	/*
 	 * Methods for integer masks
 	 * ===============================================================
