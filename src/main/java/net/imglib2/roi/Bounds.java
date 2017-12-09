@@ -165,19 +165,6 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	 */
 	protected abstract B unionBounded( B arg0, B arg1 );
 
-	/**
-	 * {@link Bounds} resulting from a transformation.
-	 *
-	 * @param arg0
-	 *            must not be {@link #isUnbounded() unbounded}
-	 * @param transformToSource
-	 *            a {@link RealTransform} or {@link Transform}
-	 * @return bounds of the transformed source {@link Bound}, if
-	 *         {@code transformToSource} is not invertible returns
-	 *         {@link Bounds#unbounded()}
-	 */
-	protected abstract B transformBounded( B arg0, Object transformToSource );
-
 	protected abstract B unbounded();
 
 	@SuppressWarnings( "unchecked" )
@@ -212,12 +199,6 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	public B minus( final B that )
 	{
 		return ( B ) this;
-	}
-
-	@SuppressWarnings( "unchecked" )
-	public B transform( final Object transformToSource )
-	{
-		return transformBounded( ( B ) this, transformToSource );
 	}
 
 	/**
@@ -469,8 +450,16 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			return UNBOUNDED;
 		}
 
-		@Override
-		protected IntBounds transformBounded( final IntBounds arg0, final Object transformToSource )
+		/**
+		 * {@link IntBounds} resulting from a transformation.
+		 *
+		 * @param transformToSource
+		 *            a {@link Transform}
+		 * @return bounds of the transformed source {@link IntBounds}, if
+		 *         {@code transformToSource} is not invertible returns
+		 *         {@link IntBounds#UNBOUNDED}
+		 */
+		public IntBounds transform( final Transform transformToSource )
 		{
 			throw new UnsupportedOperationException( "transform not supported for IntBounds" );
 		}
@@ -642,14 +631,20 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			return UNBOUNDED;
 		}
 
-		@Override
-		protected RealBounds transformBounded( final RealBounds arg0, final Object transformToSource )
+		/**
+		 * {@link RealBounds} resulting from a transformation.
+		 *
+		 * @param transformToSource
+		 *            a {@link RealTransform}
+		 * @return bounds of the transformed source {@link RealBounds}, if
+		 *         {@code transformToSource} is not invertible returns
+		 *         {@link RealBounds#UNBOUNDED}
+		 */
+		public RealBounds transform( final RealTransform transformToSource )
 		{
-			if ( !( transformToSource instanceof RealTransform ) )
-				throw new IllegalArgumentException( "transformToSource must be a RealTransform not " + transformToSource.getClass() );
 			if ( !( transformToSource instanceof InvertibleRealTransform ) )
 				return UNBOUNDED;
-			return new RealBounds( new RealTransformRealInterval( arg0.interval(), ( InvertibleRealTransform ) transformToSource ) );
+			return new RealBounds( new RealTransformRealInterval( interval(), ( InvertibleRealTransform ) transformToSource ) );
 		}
 	}
 
@@ -658,9 +653,9 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	/**
 	 * Applies a transformation to a given {@link Bounds}.
 	 */
-	public static final class TransformBoundsOperator implements UnaryBoundsOperator
+	public static final class RealTransformBoundsOperator
 	{
-		private final Object transformToSource;
+		private final RealTransform transformToSource;
 
 		/**
 		 * Creates a {@link UnaryBoundsOperator} with the given transform.
@@ -668,13 +663,12 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		 * @param transformToSource
 		 *            a {@link RealTransform} or {@link Transform}
 		 */
-		public TransformBoundsOperator( final Object transformToSource )
+		public RealTransformBoundsOperator( final RealTransform transformToSource )
 		{
 			this.transformToSource = transformToSource;
 		}
 
-		@Override
-		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B arg )
+		public RealBounds apply( final RealBounds arg )
 		{
 			return arg.transform( transformToSource );
 		}

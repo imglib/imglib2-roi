@@ -268,7 +268,7 @@ public class Operators
 		 */
 		public RealMaskRealTransformOperator( final RealTransform transformToSource )
 		{
-			super( BoundaryType::transform, new Bounds.TransformBoundsOperator( transformToSource ), t -> UNKNOWN );
+			super( BoundaryType::transform, new Bounds.RealTransformBoundsOperator( transformToSource ), t -> UNKNOWN );
 			this.transformToSource = transformToSource;
 			pt = new ThreadLocal< RealPoint >()
 			{
