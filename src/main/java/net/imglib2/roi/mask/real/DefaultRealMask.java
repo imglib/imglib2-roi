@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.RealMask;
 
 /**
@@ -49,6 +50,8 @@ public class DefaultRealMask extends AbstractEuclideanSpace implements RealMask
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
+	private final KnownConstant knownConstant;
+
 	/**
 	 * @param n
 	 * 		number of dimensions.
@@ -56,11 +59,13 @@ public class DefaultRealMask extends AbstractEuclideanSpace implements RealMask
 	public DefaultRealMask(
 			final int n,
 			final BoundaryType boundaryType,
-			final Predicate< ? super RealLocalizable > predicate )
+			final Predicate< ? super RealLocalizable > predicate,
+			final KnownConstant knownConstant )
 	{
 		super( n );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
 	@Override
@@ -73,5 +78,11 @@ public class DefaultRealMask extends AbstractEuclideanSpace implements RealMask
 	public boolean test( final RealLocalizable localizable )
 	{
 		return predicate.test( localizable );
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }

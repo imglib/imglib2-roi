@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,7 +34,6 @@
 package net.imglib2.roi;
 
 import java.util.Arrays;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import net.imglib2.FinalInterval;
@@ -70,84 +69,6 @@ import net.imglib2.type.BooleanType;
  */
 public class Masks
 {
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_AND = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return r.isEmpty() || l.isEmpty();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_OR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return r.isEmpty() && l.isEmpty();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_XOR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return left.equals( right ) || ( r.isEmpty() && l.isEmpty() ) || ( r.isAll() && l.isAll() );
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_MINUS = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return left.equals( right ) || r.isAll() || l.isEmpty();
-	};
-
-	public static final Predicate< Predicate< ? > > EMPTY_NEGATE = t -> {
-		if ( !( t instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
-		return m.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_AND = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() && r.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_OR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() || r.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_XOR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return ( l.isAll() && r.isEmpty() ) || ( l.isEmpty() && r.isAll() );
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_MINUS = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() && r.isEmpty();
-	};
-
-	public static final Predicate< Predicate< ? > > ALL_NEGATE = t -> {
-		if ( !( t instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
-		return m.isEmpty();
-	};
-
 	/*
 	 * Methods for integer masks
 	 * ===============================================================
@@ -403,14 +324,7 @@ public class Masks
 	 */
 	public static Mask emptyMask( final int numDims )
 	{
-		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> false )
-		{
-			@Override
-			public boolean isEmpty()
-			{
-				return true;
-			}
-		};
+		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -423,7 +337,7 @@ public class Masks
 	 */
 	public static MaskInterval emptyMaskInterval( final int numDims )
 	{
-		return new DefaultMaskInterval( emptyInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false );
+		return new DefaultMaskInterval( emptyInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -436,14 +350,7 @@ public class Masks
 	 */
 	public static RealMask emptyRealMask( final int numDims )
 	{
-		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> false )
-		{
-			@Override
-			public boolean isEmpty()
-			{
-				return true;
-			}
-		};
+		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -458,7 +365,7 @@ public class Masks
 	 */
 	public static RealMaskRealInterval emptyRealMaskRealInterval( final int numDims )
 	{
-		return new DefaultRealMaskRealInterval( emptyRealInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false );
+		return new DefaultRealMaskRealInterval( emptyRealInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/*
@@ -513,14 +420,7 @@ public class Masks
 	 */
 	public static Mask allMask( final int numDims )
 	{
-		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> true )
-		{
-			@Override
-			public boolean isAll()
-			{
-				return true;
-			}
-		};
+		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> true, KnownConstant.ALL_TRUE );
 	}
 
 	/**
@@ -532,13 +432,6 @@ public class Masks
 	 */
 	public static RealMask allRealMask( final int numDims )
 	{
-		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> true )
-		{
-			@Override
-			public boolean isAll()
-			{
-				return true;
-			}
-		};
+		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> true, KnownConstant.ALL_TRUE );
 	}
 }

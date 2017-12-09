@@ -39,6 +39,7 @@ import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.util.Intervals;
 
@@ -51,14 +52,18 @@ public class DefaultRealMaskRealInterval extends AbstractRealInterval implements
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
+	private final KnownConstant knownConstant;
+
 	public DefaultRealMaskRealInterval(
 			final RealInterval interval,
 			final BoundaryType boundaryType,
-			final Predicate< ? super RealLocalizable > predicate )
+			final Predicate< ? super RealLocalizable > predicate,
+			final KnownConstant knownConstant )
 	{
 		super( interval );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
 	@Override
@@ -73,5 +78,11 @@ public class DefaultRealMaskRealInterval extends AbstractRealInterval implements
 		if ( Intervals.contains( this, localizable ) )
 			return predicate.test( localizable );
 		return false;
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }

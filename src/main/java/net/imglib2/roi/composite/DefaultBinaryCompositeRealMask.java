@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,14 +33,15 @@
  */
 package net.imglib2.roi.composite;
 
-import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.RealMask;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Operators.BinaryMaskOperator;
+import net.imglib2.roi.RealMask;
 
 /**
  * A {@link RealMask} which is the result of an operation on two
@@ -62,9 +63,7 @@ public class DefaultBinaryCompositeRealMask
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
-	private final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp;
-
-	private final boolean isAll;
+	private final BinaryOperator< KnownConstant > knownConstantOp;
 
 	public DefaultBinaryCompositeRealMask(
 			final BinaryMaskOperator operator,
@@ -72,8 +71,7 @@ public class DefaultBinaryCompositeRealMask
 			final Predicate< ? super RealLocalizable > arg1,
 			final int numDimensions,
 			final BoundaryType boundaryType,
-			final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp,
-			final boolean isAll )
+			final BinaryOperator< KnownConstant > knownConstantOp )
 	{
 		super( numDimensions );
 		this.operator = operator;
@@ -81,14 +79,19 @@ public class DefaultBinaryCompositeRealMask
 		this.arg1 = arg1;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0, arg1 );
-		this.emptyOp = emptyOp;
-		this.isAll = isAll;
+		this.knownConstantOp = knownConstantOp;
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
 		return boundaryType;
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstantOp.apply( KnownConstant.of( arg0 ), KnownConstant.of( arg1 ) );
 	}
 
 	@Override
@@ -113,18 +116,6 @@ public class DefaultBinaryCompositeRealMask
 	public Predicate< ? super RealLocalizable > arg1()
 	{
 		return arg1;
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		return emptyOp.test( arg0, arg1 );
-	}
-
-	@Override
-	public boolean isAll()
-	{
-		return isAll;
 	}
 
 	@Override

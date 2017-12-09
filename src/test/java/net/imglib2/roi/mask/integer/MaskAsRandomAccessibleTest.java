@@ -44,6 +44,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Mask;
 import net.imglib2.roi.MaskInterval;
 import net.imglib2.roi.mask.integer.DefaultMask;
@@ -78,11 +79,11 @@ public class MaskAsRandomAccessibleTest
 	@BeforeClass
 	public static void setup()
 	{
-		m = new DefaultMask( 2, BoundaryType.UNSPECIFIED, l -> ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false );
+		m = new DefaultMask( 2, BoundaryType.UNSPECIFIED, l -> ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false, KnownConstant.UNKNOWN );
 		ra = new MaskAsRandomAccessible<>( m, new BoolType() );
 		access = ra.randomAccess();
 
-		mi = new DefaultMaskInterval( new FinalInterval( new long[] { 0, 0 }, new long[] { 10, 10 } ), BoundaryType.UNSPECIFIED, l -> ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false );
+		mi = new DefaultMaskInterval( new FinalInterval( new long[] { 0, 0 }, new long[] { 10, 10 } ), BoundaryType.UNSPECIFIED, l -> ( l.getDoublePosition( 0 ) * l.getDoublePosition( 1 ) ) % 2 == 0 ? true : false, KnownConstant.UNKNOWN );
 		rai = new MaskIntervalAsRandomAccessibleInterval<>( mi, new BitType() );
 		accessInterval = rai.randomAccess();
 	}

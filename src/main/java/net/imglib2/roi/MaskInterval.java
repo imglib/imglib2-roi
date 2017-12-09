@@ -66,7 +66,7 @@ public interface MaskInterval extends Mask, Interval
 	@Override
 	default boolean isEmpty()
 	{
-		return Intervals.isEmpty( this );
+		return Intervals.isEmpty( this ) || knownConstant() == KnownConstant.ALL_TRUE;
 	}
 
 	@Override

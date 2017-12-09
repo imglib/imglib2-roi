@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Mask;
 
 /**
@@ -49,6 +50,8 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 
 	private final Predicate< ? super Localizable > predicate;
 
+	private final KnownConstant knownConstant;
+
 	/**
 	 * @param n
 	 * 		number of dimensions.
@@ -56,11 +59,13 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 	public DefaultMask(
 			final int n,
 			final BoundaryType boundaryType,
-			final Predicate< ? super Localizable > predicate )
+			final Predicate< ? super Localizable > predicate,
+			final KnownConstant knownConstant )
 	{
 		super( n );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
 	@Override
@@ -73,5 +78,11 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 	public boolean test( final Localizable localizable )
 	{
 		return predicate.test( localizable );
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }
