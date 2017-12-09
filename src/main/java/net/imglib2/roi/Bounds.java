@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,15 +34,11 @@
 package net.imglib2.roi;
 
 import java.util.function.Predicate;
-
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
-import net.imglib2.realtransform.InvertibleRealTransform;
-import net.imglib2.realtransform.RealTransform;
-import net.imglib2.transform.Transform;
 import net.imglib2.util.Intervals;
 
 /**
@@ -449,20 +445,6 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		{
 			return UNBOUNDED;
 		}
-
-		/**
-		 * {@link IntBounds} resulting from a transformation.
-		 *
-		 * @param transformToSource
-		 *            a {@link Transform}
-		 * @return bounds of the transformed source {@link IntBounds}, if
-		 *         {@code transformToSource} is not invertible returns
-		 *         {@link IntBounds#UNBOUNDED}
-		 */
-		public IntBounds transform( final Transform transformToSource )
-		{
-			throw new UnsupportedOperationException( "transform not supported for IntBounds" );
-		}
 	}
 
 	/**
@@ -629,170 +611,6 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		protected RealBounds unbounded()
 		{
 			return UNBOUNDED;
-		}
-
-		/**
-		 * {@link RealBounds} resulting from a transformation.
-		 *
-		 * @param transformToSource
-		 *            a {@link RealTransform}
-		 * @return bounds of the transformed source {@link RealBounds}, if
-		 *         {@code transformToSource} is not invertible returns
-		 *         {@link RealBounds#UNBOUNDED}
-		 */
-		public RealBounds transform( final RealTransform transformToSource )
-		{
-			if ( !( transformToSource instanceof InvertibleRealTransform ) )
-				return UNBOUNDED;
-			return new RealBounds( new RealTransformRealInterval( interval(), ( InvertibleRealTransform ) transformToSource ) );
-		}
-	}
-
-	// -- Transform --
-
-	/**
-	 * Applies a transformation to a given {@link Bounds}.
-	 */
-	public static final class RealTransformBoundsOperator
-	{
-		private final RealTransform transformToSource;
-
-		/**
-		 * Creates a {@link UnaryBoundsOperator} with the given transform.
-		 *
-		 * @param transformToSource
-		 *            a {@link RealTransform} or {@link Transform}
-		 */
-		public RealTransformBoundsOperator( final RealTransform transformToSource )
-		{
-			this.transformToSource = transformToSource;
-		}
-
-		public RealBounds apply( final RealBounds arg )
-		{
-			return arg.transform( transformToSource );
-		}
-	}
-
-	/**
-	 * The {@link Bounds} for a transformed source. These bounds are not
-	 * guaranteed to represent the minimum bounding box.
-	 */
-	public static class RealTransformRealInterval extends AbstractAdaptingRealInterval
-	{
-		private final RealInterval source;
-
-		private final InvertibleRealTransform transformToSource;
-
-		private final double[] cachedSourceMin;
-
-		private final double[] cachedSourceMax;
-
-		private final double[] min;
-
-		private final double[] max;
-
-		/**
-		 * Creates {@link Bounds} for a transformed source interval. These
-		 * bounds update as the source interval changes.
-		 *
-		 * @param source
-		 *            bounds to be transformed
-		 * @param transformToSource
-		 *            transformation for going to source
-		 */
-		public RealTransformRealInterval( final RealInterval source, final InvertibleRealTransform transformToSource )
-		{
-			super( source.numDimensions() );
-			this.source = source;
-			this.transformToSource = transformToSource;
-
-			cachedSourceMin = new double[ n ];
-			cachedSourceMax = new double[ n ];
-			min = new double[ n ];
-			max = new double[ n ];
-
-			this.source.realMax( cachedSourceMax );
-			this.source.realMin( cachedSourceMin );
-			updateMinMax();
-		}
-
-		@Override
-		public double realMin( final int d )
-		{
-			if ( updateNeeded() )
-				updateMinMax();
-			return min[ d ];
-		}
-
-		@Override
-		public double realMax( final int d )
-		{
-			if ( updateNeeded() )
-				updateMinMax();
-			return max[ d ];
-		}
-
-		// -- Helper methods --
-
-		private boolean updateNeeded()
-		{
-			for ( int d = 0; d < n; d++ )
-			{
-				if ( cachedSourceMin[ d ] != source.realMin( d ) || cachedSourceMax[ d ] != source.realMax( d ) )
-					return true;
-			}
-			return false;
-		}
-
-		private void updateMinMax()
-		{
-			final double[][] transformedCorners = createCorners();
-
-			for ( int d = 0; d < n; d++ )
-			{
-				double mx = transformedCorners[ 0 ][ d ];
-				double mn = transformedCorners[ 0 ][ d ];
-				for ( int i = 1; i < transformedCorners.length; i++ )
-				{
-					if ( transformedCorners[ i ][ d ] > mx )
-						mx = transformedCorners[ i ][ d ];
-					if ( transformedCorners[ i ][ d ] < mn )
-						mn = transformedCorners[ i ][ d ];
-				}
-				min[ d ] = mn;
-				max[ d ] = mx;
-			}
-
-			source.realMax( cachedSourceMax );
-			source.realMin( cachedSourceMin );
-		}
-
-		private double[][] createCorners()
-		{
-			final double[][] corners = new double[ ( int ) Math.pow( 2, n ) ][ n ];
-			int s = corners.length / 2;
-			boolean mn = false;
-			for ( int d = 0; d < n; d++ )
-			{
-				for ( int i = 0; i < corners.length; i++ )
-				{
-					if ( i % s == 0 )
-					{
-						mn = !mn;
-					}
-					if ( mn )
-						corners[ i ][ d ] = source.realMin( d );
-					else
-						corners[ i ][ d ] = source.realMax( d );
-				}
-				s = s / 2;
-			}
-
-			for ( int i = 0; i < corners.length; i++ )
-				transformToSource.inverse().apply( corners[ i ], corners[ i ] );
-
-			return corners;
 		}
 	}
 }
