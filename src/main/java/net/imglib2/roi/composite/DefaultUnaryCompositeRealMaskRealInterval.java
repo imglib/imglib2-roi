@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,14 +33,18 @@
  */
 package net.imglib2.roi.composite;
 
+import static net.imglib2.roi.KnownConstant.ALL_FALSE;
+
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Operators.UnaryMaskOperator;
+import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.util.Intervals;
 
 /**
@@ -61,31 +65,35 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 
 	private final Predicate< ? super RealLocalizable > predicate;
 
-	private final Predicate< Predicate< ? > > emptyOp;
-
-	private final boolean isAll;
+	private final UnaryOperator< KnownConstant > knownConstantOp;
 
 	public DefaultUnaryCompositeRealMaskRealInterval(
 			final UnaryMaskOperator operator,
 			final Predicate< ? super RealLocalizable > arg0,
 			final RealInterval interval,
 			final BoundaryType boundaryType,
-			final Predicate< Predicate< ? > > emptyOp,
-			final boolean isAll )
+			final UnaryOperator< KnownConstant > knownConstantOp )
 	{
 		super( interval );
 		this.operator = operator;
 		this.arg0 = arg0;
 		this.boundaryType = boundaryType;
 		this.predicate = operator.predicate( arg0 );
-		this.emptyOp = emptyOp;
-		this.isAll = isAll;
+		this.knownConstantOp = knownConstantOp;
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
 		return boundaryType;
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return Intervals.isEmpty( sourceInterval )
+				? ALL_FALSE
+				: knownConstantOp.apply( KnownConstant.of( arg0 ) );
 	}
 
 	@Override
@@ -104,18 +112,6 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 	public Predicate< ? super RealLocalizable > arg0()
 	{
 		return arg0;
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		return Intervals.isEmpty( sourceInterval ) || emptyOp.test( arg0 );
-	}
-
-	@Override
-	public boolean isAll()
-	{
-		return isAll;
 	}
 
 	@Override

@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -70,84 +70,6 @@ import net.imglib2.type.BooleanType;
  */
 public class Masks
 {
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_AND = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return r.isEmpty() || l.isEmpty();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_OR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return r.isEmpty() && l.isEmpty();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_XOR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return left.equals( right ) || ( r.isEmpty() && l.isEmpty() ) || ( r.isAll() && l.isAll() );
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > EMPTY_MINUS = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return left.equals( right ) || r.isAll() || l.isEmpty();
-	};
-
-	public static final Predicate< Predicate< ? > > EMPTY_NEGATE = t -> {
-		if ( !( t instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
-		return m.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_AND = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() && r.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_OR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() || r.isAll();
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_XOR = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return ( l.isAll() && r.isEmpty() ) || ( l.isEmpty() && r.isAll() );
-	};
-
-	public static final BiPredicate< Predicate< ? >, Predicate< ? > > ALL_MINUS = ( left, right ) -> {
-		if ( !( left instanceof MaskPredicate< ? > ) || !( right instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > r = ( MaskPredicate< ? > ) right;
-		final MaskPredicate< ? > l = ( MaskPredicate< ? > ) left;
-		return l.isAll() && r.isEmpty();
-	};
-
-	public static final Predicate< Predicate< ? > > ALL_NEGATE = t -> {
-		if ( !( t instanceof MaskPredicate< ? > ) )
-			return false;
-		final MaskPredicate< ? > m = ( MaskPredicate< ? > ) t;
-		return m.isEmpty();
-	};
-
 	/*
 	 * Methods for integer masks
 	 * ===============================================================

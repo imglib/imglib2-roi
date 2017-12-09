@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,8 +33,9 @@
  */
 package net.imglib2.roi;
 
+import static net.imglib2.roi.KnownConstant.UNKNOWN;
+
 import java.util.Arrays;
-import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -74,7 +75,7 @@ public class Operators
 	 * ===========================================================
 	 */
 
-	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.and, Masks.EMPTY_AND, Masks.ALL_AND )
+	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.and, KnownConstant::and )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -83,7 +84,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.or, Masks.EMPTY_OR, Masks.ALL_OR )
+	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.or, KnownConstant::or )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -92,7 +93,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.xor, Masks.EMPTY_XOR, Masks.ALL_XOR )
+	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.xor, KnownConstant::xor )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -103,7 +104,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.minus, Masks.EMPTY_MINUS, Masks.ALL_MINUS )
+	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.minus, KnownConstant::minus )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -114,7 +115,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.negate, Masks.EMPTY_NEGATE, Masks.ALL_NEGATE )
+	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.negate, KnownConstant::negate )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )
@@ -137,20 +138,16 @@ public class Operators
 
 		Bounds.BinaryBoundsOperator boundsOp;
 
-		BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp;
-
-		BiPredicate< Predicate< ? >, Predicate< ? > > allOp;
+		BinaryOperator< KnownConstant > knownConstantOp;
 
 		public BinaryMaskOperator(
 				final BinaryOperator< BoundaryType > boundaryTypeOp,
 				final Bounds.BinaryBoundsOperator boundsOp,
-				final BiPredicate< Predicate< ? >, Predicate< ? > > emptyOp,
-				final BiPredicate< Predicate< ? >, Predicate< ? > > allOp )
+				final BinaryOperator< KnownConstant > knownConstantOp )
 		{
 			this.boundaryTypeOp = boundaryTypeOp;
 			this.boundsOp = boundsOp;
-			this.emptyOp = emptyOp;
-			this.allOp = allOp;
+			this.knownConstantOp = knownConstantOp;
 		}
 
 		public Mask apply( final Predicate< ? super Localizable > left, final Predicate< ? super Localizable > right )
@@ -159,8 +156,8 @@ public class Operators
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final Bounds.IntBounds bounds = boundsOp.apply( Bounds.IntBounds.of( left ), Bounds.IntBounds.of( right ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultBinaryCompositeMask( this, left, right, n, boundaryType, emptyOp, allOp.test( left, right ) );
-			return new DefaultBinaryCompositeMaskInterval( this, left, right, bounds.interval(), boundaryType, emptyOp, allOp.test( left, right ) );
+				return new DefaultBinaryCompositeMask( this, left, right, n, boundaryType, knownConstantOp );
+			return new DefaultBinaryCompositeMaskInterval( this, left, right, bounds.interval(), boundaryType, knownConstantOp );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > left, final Predicate< ? super RealLocalizable > right )
@@ -169,8 +166,8 @@ public class Operators
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( left ), BoundaryType.of( right ) );
 			final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( left ), Bounds.RealBounds.of( right ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultBinaryCompositeRealMask( this, left, right, n, boundaryType, emptyOp, allOp.test( left, right ) );
-			return new DefaultBinaryCompositeRealMaskRealInterval( this, left, right, bounds.interval(), boundaryType, emptyOp, allOp.test( left, right ) );
+				return new DefaultBinaryCompositeRealMask( this, left, right, n, boundaryType, knownConstantOp );
+			return new DefaultBinaryCompositeRealMaskRealInterval( this, left, right, bounds.interval(), boundaryType, knownConstantOp );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > left, final Predicate< ? super Localizable > right )
@@ -198,20 +195,16 @@ public class Operators
 
 		Bounds.UnaryBoundsOperator boundsOp;
 
-		Predicate< Predicate< ? > > emptyOp;
-
-		Predicate< Predicate< ? > > allOp;
+		UnaryOperator< KnownConstant > knownConstantOp;
 
 		public UnaryMaskOperator(
 				final UnaryOperator< BoundaryType > boundaryTypeOp,
 				final Bounds.UnaryBoundsOperator boundsOp,
-				final Predicate< Predicate< ? > > emptyOp,
-				final Predicate< Predicate< ? > > allOp )
+				final UnaryOperator< KnownConstant > knownConstantOp )
 		{
 			this.boundaryTypeOp = boundaryTypeOp;
 			this.boundsOp = boundsOp;
-			this.emptyOp = emptyOp;
-			this.allOp = allOp;
+			this.knownConstantOp = knownConstantOp;
 		}
 
 		public Mask apply( final Predicate< ? super Localizable > arg )
@@ -220,8 +213,8 @@ public class Operators
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final Bounds.IntBounds bounds = boundsOp.apply( Bounds.IntBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultUnaryCompositeMask( this, arg, n, boundaryType, emptyOp, allOp.test( arg ) );
-			return new DefaultUnaryCompositeMaskInterval( this, arg, bounds.interval(), boundaryType, emptyOp, allOp.test( arg ) );
+				return new DefaultUnaryCompositeMask( this, arg, n, boundaryType, knownConstantOp );
+			return new DefaultUnaryCompositeMaskInterval( this, arg, bounds.interval(), boundaryType, knownConstantOp );
 		}
 
 		public RealMask applyReal( final Predicate< ? super RealLocalizable > arg )
@@ -230,8 +223,8 @@ public class Operators
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( arg ) );
 			if ( bounds.isUnbounded() )
-				return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType, emptyOp, allOp.test( arg ) );
-			return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType, emptyOp, allOp.test( arg ) );
+				return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType, knownConstantOp );
+			return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType, knownConstantOp );
 		}
 
 		public MaskInterval applyInterval( final Predicate< ? super Localizable > arg )
@@ -275,17 +268,7 @@ public class Operators
 		 */
 		public RealMaskRealTransformOperator( final RealTransform transformToSource )
 		{
-			super( BoundaryType::transform, new Bounds.TransformBoundsOperator( transformToSource ),
-					t -> {
-						if ( t instanceof MaskPredicate )
-							return ( (net.imglib2.roi.MaskPredicate< ? > ) t ).isEmpty();
-						return false;
-					},
-					t -> {
-						if ( t instanceof MaskPredicate )
-							return ( (net.imglib2.roi.MaskPredicate< ? > ) t ).isAll();
-						return false;
-					} );
+			super( BoundaryType::transform, new Bounds.TransformBoundsOperator( transformToSource ), t -> UNKNOWN );
 			this.transformToSource = transformToSource;
 			pt = new ThreadLocal< RealPoint >()
 			{
