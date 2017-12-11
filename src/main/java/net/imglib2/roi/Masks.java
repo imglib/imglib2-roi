@@ -34,7 +34,6 @@
 package net.imglib2.roi;
 
 import java.util.Arrays;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import net.imglib2.FinalInterval;
@@ -325,14 +324,7 @@ public class Masks
 	 */
 	public static Mask emptyMask( final int numDims )
 	{
-		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> false )
-		{
-			@Override
-			public boolean isEmpty()
-			{
-				return true;
-			}
-		};
+		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -345,7 +337,7 @@ public class Masks
 	 */
 	public static MaskInterval emptyMaskInterval( final int numDims )
 	{
-		return new DefaultMaskInterval( emptyInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false );
+		return new DefaultMaskInterval( emptyInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -358,14 +350,7 @@ public class Masks
 	 */
 	public static RealMask emptyRealMask( final int numDims )
 	{
-		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> false )
-		{
-			@Override
-			public boolean isEmpty()
-			{
-				return true;
-			}
-		};
+		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/**
@@ -380,7 +365,7 @@ public class Masks
 	 */
 	public static RealMaskRealInterval emptyRealMaskRealInterval( final int numDims )
 	{
-		return new DefaultRealMaskRealInterval( emptyRealInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false );
+		return new DefaultRealMaskRealInterval( emptyRealInterval( numDims ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 	}
 
 	/*
@@ -435,14 +420,7 @@ public class Masks
 	 */
 	public static Mask allMask( final int numDims )
 	{
-		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> true )
-		{
-			@Override
-			public boolean isAll()
-			{
-				return true;
-			}
-		};
+		return new DefaultMask( numDims, BoundaryType.UNSPECIFIED, t -> true, KnownConstant.ALL_TRUE );
 	}
 
 	/**
@@ -454,13 +432,6 @@ public class Masks
 	 */
 	public static RealMask allRealMask( final int numDims )
 	{
-		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> true )
-		{
-			@Override
-			public boolean isAll()
-			{
-				return true;
-			}
-		};
+		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> true, KnownConstant.ALL_TRUE );
 	}
 }

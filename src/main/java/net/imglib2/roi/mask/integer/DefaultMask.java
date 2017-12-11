@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Mask;
 
 /**
@@ -49,6 +50,8 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 
 	private final Predicate< ? super Localizable > predicate;
 
+	private final KnownConstant knownConstant;
+
 	/**
 	 * @param n
 	 * 		number of dimensions.
@@ -56,11 +59,13 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 	public DefaultMask(
 			final int n,
 			final BoundaryType boundaryType,
-			final Predicate< ? super Localizable > predicate )
+			final Predicate< ? super Localizable > predicate,
+			final KnownConstant knownConstant )
 	{
 		super( n );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
 	@Override
@@ -73,5 +78,11 @@ public class DefaultMask extends AbstractEuclideanSpace implements Mask
 	public boolean test( final Localizable localizable )
 	{
 		return predicate.test( localizable );
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }

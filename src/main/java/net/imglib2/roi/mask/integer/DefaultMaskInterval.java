@@ -39,6 +39,7 @@ import net.imglib2.AbstractInterval;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.MaskInterval;
 import net.imglib2.util.Intervals;
 
@@ -51,14 +52,18 @@ public class DefaultMaskInterval extends AbstractInterval implements MaskInterva
 
 	private final Predicate< ? super Localizable > predicate;
 
+	private final KnownConstant knownConstant;
+
 	public DefaultMaskInterval(
 			final Interval interval,
 			final BoundaryType boundaryType,
-			final Predicate< ? super Localizable > predicate )
+			final Predicate< ? super Localizable > predicate,
+			final KnownConstant knownConstant )
 	{
 		super( interval );
 		this.boundaryType = boundaryType;
 		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
 	@Override
@@ -73,5 +78,11 @@ public class DefaultMaskInterval extends AbstractInterval implements MaskInterva
 		if ( Intervals.contains( this, localizable ) )
 			return predicate.test( localizable );
 		return false;
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }
