@@ -79,7 +79,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( B arg );
 	}
 
-	public static final BinaryBoundsOperator and = new BinaryBoundsOperator()
+	public static final BinaryBoundsOperator AND = new BinaryBoundsOperator()
 	{
 		@Override
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B left, final B right )
@@ -88,7 +88,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 	};
 
-	public static final BinaryBoundsOperator or = new BinaryBoundsOperator()
+	public static final BinaryBoundsOperator OR = new BinaryBoundsOperator()
 	{
 		@Override
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B left, final B right )
@@ -97,7 +97,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 	};
 
-	public static final UnaryBoundsOperator negate = new UnaryBoundsOperator()
+	public static final UnaryBoundsOperator NEGATE = new UnaryBoundsOperator()
 	{
 		@Override
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B arg )
@@ -106,7 +106,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 	};
 
-	public static final BinaryBoundsOperator xor = new BinaryBoundsOperator()
+	public static final BinaryBoundsOperator XOR = new BinaryBoundsOperator()
 	{
 		@Override
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B left, final B right )
@@ -115,7 +115,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 	};
 
-	public static final BinaryBoundsOperator minus = new BinaryBoundsOperator()
+	public static final BinaryBoundsOperator MINUS = new BinaryBoundsOperator()
 	{
 		@Override
 		public < I extends RealInterval, B extends Bounds< I, B > > B apply( final B left, final B right )
@@ -174,11 +174,11 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	 *            a {@link RealTransform} or {@link Transform}
 	 * @return bounds of the transformed source {@link Bound}, if
 	 *         {@code transformToSource} is not invertible returns
-	 *         {@link Bounds#UNBOUNDED()}
+	 *         {@link Bounds#unbounded()}
 	 */
 	protected abstract B transformBounded( B arg0, Object transformToSource );
 
-	protected abstract B UNBOUNDED();
+	protected abstract B unbounded();
 
 	@SuppressWarnings( "unchecked" )
 	public B and( final B that )
@@ -194,13 +194,13 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	public B or( final B that )
 	{
 		if ( this.isUnbounded() || that.isUnbounded() )
-			return UNBOUNDED();
+			return unbounded();
 		return unionBounded( ( B ) this, that );
 	}
 
 	public B negate()
 	{
-		return UNBOUNDED();
+		return unbounded();
 	}
 
 	public B xor( final B that )
@@ -464,7 +464,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		protected IntBounds UNBOUNDED()
+		protected IntBounds unbounded()
 		{
 			return UNBOUNDED;
 		}
@@ -637,7 +637,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		protected RealBounds UNBOUNDED()
+		protected RealBounds unbounded()
 		{
 			return UNBOUNDED;
 		}
