@@ -69,7 +69,7 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	@Override
 	default boolean isEmpty()
 	{
-		return Intervals.isEmpty( this );
+		return Intervals.isEmpty( this ) || knownConstant() == KnownConstant.ALL_FALSE;
 	}
 
 	@Override
