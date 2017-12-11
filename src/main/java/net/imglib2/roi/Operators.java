@@ -75,7 +75,7 @@ public class Operators
 	 * ===========================================================
 	 */
 
-	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.and, KnownConstant::and )
+	public static final Operators.BinaryMaskOperator AND = new Operators.BinaryMaskOperator( BoundaryType::and, Bounds.AND, KnownConstant::and )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -84,7 +84,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.or, KnownConstant::or )
+	public static final Operators.BinaryMaskOperator OR = new Operators.BinaryMaskOperator( BoundaryType::or, Bounds.OR, KnownConstant::or )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -93,7 +93,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.xor, KnownConstant::xor )
+	public static final Operators.BinaryMaskOperator XOR = new Operators.BinaryMaskOperator( BoundaryType::xor, Bounds.XOR, KnownConstant::xor )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -104,7 +104,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.minus, KnownConstant::minus )
+	public static final Operators.BinaryMaskOperator MINUS = new Operators.BinaryMaskOperator( BoundaryType::minus, Bounds.MINUS, KnownConstant::minus )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > left, final Predicate< ? super T > right )
@@ -115,7 +115,7 @@ public class Operators
 		}
 	};
 
-	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.negate, KnownConstant::negate )
+	public static final Operators.UnaryMaskOperator NEGATE = new Operators.UnaryMaskOperator( BoundaryType::negate, Bounds.NEGATE, KnownConstant::negate )
 	{
 		@Override
 		public < T > Predicate< T > predicate( final Predicate< ? super T > arg )
