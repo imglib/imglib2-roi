@@ -56,7 +56,7 @@ public class Transforms
 			n = transformToSource.numSourceDimensions();
 			m = transformToSource.numTargetDimensions();
 			pt = ThreadLocal.withInitial( () -> new RealPoint( m ) );
-			boundaryTypeOp = ( ( transformToSource instanceof InvertibleRealTransform ) && isContinuous( transformToSource ) )
+			boundaryTypeOp = ( willPreserveBounds( transformToSource ) && isContinuous( transformToSource ) )
 					? UnaryOperator.identity()
 					: t -> UNSPECIFIED;
 			knownConstantOp = UnaryOperator.identity();
