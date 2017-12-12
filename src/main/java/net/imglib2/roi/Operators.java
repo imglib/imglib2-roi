@@ -33,8 +33,6 @@
  */
 package net.imglib2.roi;
 
-import static net.imglib2.roi.KnownConstant.UNKNOWN;
-
 import java.util.Arrays;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
@@ -43,8 +41,6 @@ import java.util.function.UnaryOperator;
 import net.imglib2.EuclideanSpace;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
-import net.imglib2.realtransform.RealTransform;
 import net.imglib2.roi.composite.CompositeMaskPredicate;
 import net.imglib2.roi.composite.DefaultBinaryCompositeMask;
 import net.imglib2.roi.composite.DefaultBinaryCompositeMaskInterval;
