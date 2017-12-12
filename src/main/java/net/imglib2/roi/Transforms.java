@@ -2,6 +2,7 @@ package net.imglib2.roi;
 
 import static net.imglib2.roi.BoundaryType.UNSPECIFIED;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -283,8 +284,6 @@ public class Transforms
 	}
 
 	// TODO in RealTransformRealInterval:
-	// * numDimensions
-	// * caching + concurrency
 	// * empty source interval???
 
 	/**
@@ -361,25 +360,35 @@ public class Transforms
 
 		private void updateMinMax()
 		{
-			final double[][] transformedCorners = createCorners();
+			final double[] sMx = new double[ source.numDimensions() ];
+			final double[] sMn = new double[ sMx.length ];
 
-			for ( int d = 0; d < n; d++ )
+			while ( !Arrays.equals( sMx, cachedSourceMax ) ||
+					!Arrays.equals( sMn, cachedSourceMin ) )
 			{
-				double mx = transformedCorners[ 0 ][ d ];
-				double mn = transformedCorners[ 0 ][ d ];
-				for ( int i = 1; i < transformedCorners.length; i++ )
-				{
-					if ( transformedCorners[ i ][ d ] > mx )
-						mx = transformedCorners[ i ][ d ];
-					if ( transformedCorners[ i ][ d ] < mn )
-						mn = transformedCorners[ i ][ d ];
-				}
-				min[ d ] = mn;
-				max[ d ] = mx;
-			}
+				source.realMax( sMx );
+				source.realMin( sMn );
 
-			source.realMax( cachedSourceMax );
-			source.realMin( cachedSourceMin );
+				final double[][] transformedCorners = createCorners();
+
+				for ( int d = 0; d < n; d++ )
+				{
+					double mx = transformedCorners[ 0 ][ d ];
+					double mn = transformedCorners[ 0 ][ d ];
+					for ( int i = 1; i < transformedCorners.length; i++ )
+					{
+						if ( transformedCorners[ i ][ d ] > mx )
+							mx = transformedCorners[ i ][ d ];
+						if ( transformedCorners[ i ][ d ] < mn )
+							mn = transformedCorners[ i ][ d ];
+					}
+					min[ d ] = mn;
+					max[ d ] = mx;
+				}
+
+				source.realMax( cachedSourceMax );
+				source.realMin( cachedSourceMin );
+			}
 		}
 
 		private double[][] createCorners()
