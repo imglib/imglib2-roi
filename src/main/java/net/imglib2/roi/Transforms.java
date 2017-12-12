@@ -1,31 +1,33 @@
 package net.imglib2.roi;
 
+import static net.imglib2.roi.BoundaryType.UNSPECIFIED;
+
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
 import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.EuclideanSpace;
-import net.imglib2.Localizable;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.realtransform.RealTransform;
 import net.imglib2.roi.Operators.MaskOperator;
-import net.imglib2.roi.composite.DefaultUnaryCompositeRealMask;
-import net.imglib2.roi.composite.DefaultUnaryCompositeRealMaskRealInterval;
 import net.imglib2.roi.composite.UnaryCompositeMaskPredicate;
-
-import static net.imglib2.roi.BoundaryType.UNSPECIFIED;
-import static net.imglib2.roi.Operators.checkDimensions;
 
 public class Transforms
 {
 	public static final boolean isContinuous( RealTransform transform )
 	{
-		return false; // TODO
+		return transform instanceof AffineGet; // TODO
 	}
 
-
+	public static final boolean willPreserveBounds( RealTransform transform )
+	{
+		return transform instanceof AffineGet; // TODO
+	}
 
 
 	public static class RealTransformMaskOperator implements MaskOperator
@@ -78,10 +80,10 @@ public class Transforms
 		{
 			checkDimensions( arg );
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
-//			final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( arg ) );
-//			if ( bounds.isUnbounded() )
-//				return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType, emptyOp, allOp.test( arg ) );
-//			return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType, emptyOp, allOp.test( arg ) );
+			if( arg instanceof RealInterval && willPreserveBounds( transformToSource ) )
+				return new RealTransformUnaryCompositeRealMaskRealInterval( this, arg,
+						new RealTransformRealInterval( ( RealInterval ) arg, ( InvertibleRealTransform ) transformToSource ),
+						boundaryType, knownConstantOp );
 			return new RealTransformUnaryCompositeRealMask( this, arg, n, boundaryType, knownConstantOp );
 		}
 
@@ -91,6 +93,22 @@ public class Transforms
 			if ( mask instanceof RealMaskRealInterval )
 				return ( RealMaskRealInterval ) mask;
 			throw new IllegalArgumentException( "result is not an interval" );
+		}
+
+		@Override
+		public boolean equals( final Object obj )
+		{
+			if( obj instanceof RealTransformMaskOperator )
+			{
+				return transformToSource.equals( ( ( RealTransformMaskOperator ) obj ).getTransformToSource() );
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return super.hashCode();
 		}
 
 		private void checkDimensions( Object source )
@@ -171,23 +189,98 @@ public class Transforms
 			return arg0;
 		}
 
-		// TODO
-//		public boolean equals( final Object obj )
-//		public int hashCode()
+		@Override
+		public boolean equals( final Object obj )
+		{
+			if( obj instanceof RealTransformUnaryCompositeRealMask )
+			{
+				RealTransformUnaryCompositeRealMask rtucrm = ( RealTransformUnaryCompositeRealMask ) obj;
+				return operator.equals( rtucrm.operator() ) && arg0.equals( rtucrm.arg0() );
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return super.hashCode();
+		}
 	}
 
-
-	/*
-	public RealMask applyReal( final Predicate< ? super RealLocalizable > arg )
+	public static class RealTransformUnaryCompositeRealMaskRealInterval extends AbstractWrappedRealInterval< RealInterval >
+			implements UnaryCompositeMaskPredicate< RealLocalizable >, RealMaskRealInterval
 	{
-		final int n = checkDimensions( arg );
-		final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
-		final Bounds.RealBounds bounds = boundsOp.apply( Bounds.RealBounds.of( arg ) );
-		if ( bounds.isUnbounded() )
-			return new DefaultUnaryCompositeRealMask( this, arg, n, boundaryType, emptyOp, allOp.test( arg ) );
-		return new DefaultUnaryCompositeRealMaskRealInterval( this, arg, bounds.interval(), boundaryType, emptyOp, allOp.test( arg ) );
+		private final RealTransformMaskOperator operator;
+
+		private final Predicate< ? super RealLocalizable > arg0;
+
+		private final BoundaryType boundaryType;
+
+		private final Predicate< ? super RealLocalizable > predicate;
+
+		private final UnaryOperator< KnownConstant > knownConstantOp;
+
+		public RealTransformUnaryCompositeRealMaskRealInterval( final RealTransformMaskOperator operator,
+				final Predicate< ? super RealLocalizable > arg0,
+				final RealInterval interval,
+				final BoundaryType boundaryType,
+				final UnaryOperator< KnownConstant > knownConstantOp )
+		{
+			super( interval );
+			this.operator = operator;
+			this.arg0 = arg0;
+			this.boundaryType = boundaryType;
+			this.predicate = operator.predicate( arg0 );
+			this.knownConstantOp = knownConstantOp;
+		}
+
+		@Override
+		public BoundaryType boundaryType()
+		{
+			return boundaryType;
+		}
+
+		@Override
+		public KnownConstant knownConstant()
+		{
+			return knownConstantOp.apply( KnownConstant.of( arg0 ) );
+		}
+
+		@Override
+		public boolean test( final RealLocalizable localizable )
+		{
+			return predicate.test( localizable );
+		}
+
+		@Override
+		public MaskOperator operator()
+		{
+			return operator;
+		}
+
+		@Override
+		public Predicate< ? super RealLocalizable > arg0()
+		{
+			return arg0;
+		}
+
+		@Override
+		public boolean equals( final Object obj )
+		{
+			if( obj instanceof RealTransformUnaryCompositeRealMask )
+			{
+				RealTransformUnaryCompositeRealMask rtucrm = ( RealTransformUnaryCompositeRealMask ) obj;
+				return operator.equals( rtucrm.operator() ) && arg0.equals( rtucrm.arg0() );
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return super.hashCode();
+		}
 	}
-	*/
 
 	// TODO in RealTransformRealInterval:
 	// * numDimensions
@@ -223,7 +316,8 @@ public class Transforms
 		 */
 		public RealTransformRealInterval( final RealInterval source, final InvertibleRealTransform transformToSource )
 		{
-			super( source.numDimensions() );
+			// NB: transformToSource so final dimensions of resulting Mask are source dimensions
+			super( transformToSource.numSourceDimensions() );
 			this.source = source;
 			this.transformToSource = transformToSource;
 
@@ -315,6 +409,5 @@ public class Transforms
 			return corners;
 		}
 	}
-
 
 }
