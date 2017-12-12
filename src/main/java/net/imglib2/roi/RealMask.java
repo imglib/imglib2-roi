@@ -85,7 +85,6 @@ public interface RealMask extends MaskPredicate< RealLocalizable >
 
 	default RealMask transform( final RealTransform transformToSource )
 	{
-		throw new UnsupportedOperationException( "TODO, not yet implemented" );
-//		return ( new Operators.RealMaskRealTransformOperator( transformToSource ) ).applyReal( this );
+		return new Transforms.RealTransformMaskOperator( transformToSource ).applyReal( this );
 	}
 }

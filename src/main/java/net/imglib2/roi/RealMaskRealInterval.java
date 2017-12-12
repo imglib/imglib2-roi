@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
-import net.imglib2.realtransform.InvertibleRealTransform;
+import net.imglib2.realtransform.AffineGet;
 import net.imglib2.util.Intervals;
 
 /**
@@ -102,13 +102,13 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 		return XOR.applyRealInterval( this, other );
 	}
 
-//	/*
-//	 * Note: *NOT* overriding RealMask.transform()
-//	 */
-//	default RealMaskRealInterval transform( final InvertibleRealTransform transformToSource )
-//	{
-//		return ( new Operators.RealMaskRealTransformOperator( transformToSource ) ).applyRealInterval( this );
-//	}
+	/*
+	 * Note: *NOT* overriding RealMask.transform()
+	 */
+	default RealMaskRealInterval transform( final AffineGet transformToSource )
+	{
+		return new Transforms.RealTransformMaskOperator( transformToSource ).applyRealInterval( this );
+	}
 
 	// -- RealInterval Methods --
 
