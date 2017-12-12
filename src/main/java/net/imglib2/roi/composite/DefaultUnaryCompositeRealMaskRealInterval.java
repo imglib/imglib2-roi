@@ -121,8 +121,7 @@ public class DefaultUnaryCompositeRealMaskRealInterval
 			return false;
 
 		final UnaryCompositeMaskPredicate< ? > u = ( UnaryCompositeMaskPredicate< ? > ) obj;
-		// TODO: if transforms are UnaryMaskOperator then should be u.operator().equals(operator)?
-		return u.operator() == operator && arg0.equals( u.arg0() );
+		return u.operator().equals( operator ) && arg0.equals( u.arg0() );
 	}
 
 	@Override
