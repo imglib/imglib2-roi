@@ -56,7 +56,6 @@ import net.imglib2.roi.Masks;
 import net.imglib2.roi.Operators;
 import net.imglib2.roi.RealMask;
 import net.imglib2.roi.RealMaskRealInterval;
-import net.imglib2.roi.Transforms;
 import net.imglib2.roi.composite.BinaryCompositeMaskPredicate;
 import net.imglib2.roi.composite.DefaultBinaryCompositeRealMaskRealInterval;
 import net.imglib2.roi.composite.UnaryCompositeMaskPredicate;
@@ -1053,10 +1052,10 @@ public class OperatorsTest
 		final RealMaskRealInterval rm = b.transform( i );
 
 		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
-		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() instanceof Transforms.RealTransformMaskOperator );
+		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() instanceof Operators.RealTransformMaskOperator );
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
 
-		final RealTransform r = ( ( Transforms.RealTransformMaskOperator ) ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() ).getTransformToSource();
+		final RealTransform r = ( ( Operators.RealTransformMaskOperator ) ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() ).getTransformToSource();
 		assertTrue( r instanceof AffineTransform2D );
 		final AffineTransform2D ar = ( AffineTransform2D ) r;
 

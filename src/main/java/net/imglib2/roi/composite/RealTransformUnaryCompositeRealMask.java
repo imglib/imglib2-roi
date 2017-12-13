@@ -8,8 +8,8 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Operators.MaskOperator;
+import net.imglib2.roi.Operators.RealTransformMaskOperator;
 import net.imglib2.roi.RealMask;
-import net.imglib2.roi.Transforms.RealTransformMaskOperator;
 
 /**
  * A {@link RealMask} which is the result of a transform operation on a

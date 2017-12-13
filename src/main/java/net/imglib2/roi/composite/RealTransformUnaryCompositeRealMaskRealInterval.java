@@ -9,8 +9,8 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.KnownConstant;
 import net.imglib2.roi.Operators.MaskOperator;
+import net.imglib2.roi.Operators.RealTransformMaskOperator;
 import net.imglib2.roi.RealMaskRealInterval;
-import net.imglib2.roi.Transforms.RealTransformMaskOperator;
 
 /**
  * A {@link RealMaskRealInterval} which is the result of a transform operation

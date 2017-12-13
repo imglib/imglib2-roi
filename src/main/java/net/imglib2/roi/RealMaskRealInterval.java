@@ -107,7 +107,7 @@ public interface RealMaskRealInterval extends RealMask, RealInterval
 	 */
 	default RealMaskRealInterval transform( final AffineGet transformToSource )
 	{
-		return new Transforms.RealTransformMaskOperator( transformToSource ).applyRealInterval( this );
+		return new Operators.RealTransformMaskOperator( transformToSource ).applyRealInterval( this );
 	}
 
 	// -- RealInterval Methods --

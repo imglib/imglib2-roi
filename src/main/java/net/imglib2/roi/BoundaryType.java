@@ -34,12 +34,6 @@
 package net.imglib2.roi;
 
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import javax.xml.crypto.dsig.Transform;
-import net.imglib2.realtransform.InvertibleRealTransform;
-import net.imglib2.realtransform.RealTransform;
-
-import static net.imglib2.roi.Transforms.isContinuous;
 
 /**
  * Defines the edge behavior of the Mask.
