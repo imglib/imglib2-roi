@@ -41,12 +41,15 @@ import static org.junit.Assert.assertTrue;
 import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.RealPositionable;
 import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.AffineTransform;
 import net.imglib2.realtransform.AffineTransform2D;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.realtransform.DeformationFieldTransform;
+import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.realtransform.RealTransform;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.Masks;
@@ -812,6 +815,54 @@ public class OperatorsTest
 		assertFalse( rm instanceof RealInterval );
 	}
 
+	/**
+	 * At this time (13.Dec.2017), the only scenario in which the bounds are
+	 * preserved is when an AffineGet is used. The AffineGet used here is
+	 * artificial and not technically affine. But is sufficient for the purpose of
+	 * this test.
+	 */
+	@Test
+	public void testTransformDecreaseDimsandBounded()
+	{
+		final Box< RealPoint > b = new OpenBox( new double[] { 0.5, 1.5, 1 }, new double[] { 8, 7, 6 } );
+		final AffineGet transformToSource = new TestTransform( 2 );
+		final RealMaskRealInterval rmri = b.transform( transformToSource );
+
+		assertEquals( 3, b.numDimensions() );
+		assertEquals( 2, rmri.numDimensions() );
+
+		final double[] mx = new double[ 2 ];
+		final double[] mn = new double[ 2 ];
+		rmri.realMax( mx );
+		rmri.realMin( mn );
+		assertEquals( b.realMax( 0 ), mx[ 0 ], 0 );
+		assertEquals( b.realMax( 1 ), mx[ 1 ], 0 );
+		assertEquals( b.realMin( 0 ), mn[ 0 ], 0 );
+		assertEquals( b.realMin( 1 ), mn[ 1 ], 0 );
+	}
+
+	@Test
+	public void testTransformIncreaseDimsandBounded()
+	{
+		final Box< RealPoint > b = new OpenBox( new double[] { 0.5, 1 }, new double[] { 8, 7 } );
+		final AffineGet transformToSource = new TestTransformInverse( 3 );
+		final RealMaskRealInterval rmri = b.transform( transformToSource );
+
+		assertEquals( 2, b.numDimensions() );
+		assertEquals( 3, rmri.numDimensions() );
+
+		final double[] mx = new double[ 3 ];
+		final double[] mn = new double[ 3 ];
+		rmri.realMax( mx );
+		rmri.realMin( mn );
+		assertEquals( b.realMax( 0 ), mx[ 0 ], 0 );
+		assertEquals( b.realMax( 1 ), mx[ 1 ], 0 );
+		assertEquals( 2, mx[ 2 ], 0 );
+		assertEquals( b.realMin( 0 ), mn[ 0 ], 0 );
+		assertEquals( b.realMin( 1 ), mn[ 1 ], 0 );
+		assertEquals( 2, mn[ 2 ], 0 );
+	}
+
 	// -- Xor --
 
 	@Test
@@ -1143,4 +1194,165 @@ public class OperatorsTest
 		affine.set( transform );
 		return affine.inverse();
 	}
+
+	// -- Test class --
+
+	/**
+	 * Currently only AffineGet transforms preserve the bounds. So this test
+	 * transform must be an AffineGet, even though it isn't actually an affine
+	 * transform.
+	 */
+	// TransformToSource i.e. 2D to 3D
+	private final class TestTransform implements AffineGet
+	{
+
+		private final int sourceDim;
+
+		public TestTransform( final int sourceDim )
+		{
+			this.sourceDim = sourceDim;
+		}
+
+		@Override
+		public void applyInverse( final double[] source, final double[] target ) {}
+
+		@Override
+		public void applyInverse( final float[] source, final float[] target ) {}
+
+		@Override
+		public void applyInverse( final RealPositionable source, final RealLocalizable target ) {}
+
+		@Override
+		public InvertibleRealTransform copy() { return null; }
+
+		@Override
+		public int numSourceDimensions()
+		{
+			return sourceDim;
+		}
+
+		@Override
+		public int numTargetDimensions()
+		{
+			return sourceDim + 1;
+		}
+
+		@Override
+		public void apply( double[] source, double[] target )
+		{
+			for( int i = 0; i < numSourceDimensions(); i++ )
+				target[ i ] = source[ i ];
+			target[ numSourceDimensions() ] = 2;
+		}
+
+		@Override
+		public void apply( float[] source, float[] target )
+		{
+			for( int i = 0; i < numSourceDimensions(); i++ )
+				target[ i ] = source[ i ];
+			target[ numSourceDimensions() ] = 2;
+		}
+
+		@Override
+		public void apply( final RealLocalizable source, final RealPositionable target )
+		{
+			for( int i = 0; i < numSourceDimensions(); i++ )
+				target.setPosition( source.getDoublePosition( i ), i );
+			target.setPosition( 2, numSourceDimensions() );
+		}
+
+		@Override
+		public int numDimensions() { return 0; }
+
+		@Override
+		public double get( final int row, final int column ) { return 0; }
+
+		@Override
+		public double[] getRowPackedCopy() { return null; }
+
+		@Override
+		public RealLocalizable d( final int d ) { return null; }
+
+		@Override
+		public AffineGet inverse()
+		{ 
+			return new TestTransformInverse( numTargetDimensions() );
+		}
+	}
+
+	// TransformFromSource i.e. 3D to 2D
+	private final class TestTransformInverse implements AffineGet
+	{
+
+		private final int sourceDim;
+
+		public TestTransformInverse( final int sourceDim )
+		{
+			this.sourceDim = sourceDim;
+		}
+
+		@Override
+		public void applyInverse( final double[] source, final double[] target ) {}
+
+		@Override
+		public void applyInverse( final float[] source, final float[] target ) {}
+
+		@Override
+		public void applyInverse( final RealPositionable source, final RealLocalizable target ) {}
+
+		@Override
+		public InvertibleRealTransform copy() { return null; }
+
+		@Override
+		public int numSourceDimensions()
+		{
+			return sourceDim;
+		}
+
+		@Override
+		public int numTargetDimensions()
+		{
+			return sourceDim - 1;
+		}
+
+		@Override
+		public void apply( double[] source, double[] target )
+		{
+			for( int i = 0; i < numTargetDimensions(); i++ )
+				target[ i ] = source[ i ];
+		}
+
+		@Override
+		public void apply( float[] source, float[] target )
+		{
+			for( int i = 0; i < numTargetDimensions(); i++ )
+				target[ i ] = source[ i ];
+		}
+
+		@Override
+		public void apply( final RealLocalizable source, final RealPositionable target )
+		{
+			for( int i = 0; i < numTargetDimensions(); i++ )
+				target.setPosition( source.getDoublePosition( i ), i );
+		}
+
+		@Override
+		public int numDimensions() { return 0; }
+
+		@Override
+		public double get( final int row, final int column ) { return 0; }
+
+		@Override
+		public double[] getRowPackedCopy() { return null; }
+
+		@Override
+		public RealLocalizable d( final int d ) { return null; }
+
+		@Override
+		public AffineGet inverse()
+		{ 
+			return new TestTransform( numTargetDimensions() );
+		}
+	}
+
 }

@@ -318,8 +318,8 @@ public class Transforms
 			this.source = source;
 			this.transformToSource = transformToSource;
 
-			cachedSourceMin = new double[ n ];
-			cachedSourceMax = new double[ n ];
+			cachedSourceMin = new double[ this.transformToSource.numTargetDimensions() ];
+			cachedSourceMax = new double[ this.transformToSource.numTargetDimensions() ];
 			min = new double[ n ];
 			max = new double[ n ];
 
@@ -348,7 +348,7 @@ public class Transforms
 
 		private boolean updateNeeded()
 		{
-			for ( int d = 0; d < n; d++ )
+			for ( int d = 0; d < transformToSource.numTargetDimensions(); d++ )
 			{
 				if ( cachedSourceMin[ d ] != source.realMin( d ) || cachedSourceMax[ d ] != source.realMax( d ) )
 					return true;
@@ -363,7 +363,7 @@ public class Transforms
 				Arrays.fill( max, Double.NEGATIVE_INFINITY );
 				Arrays.fill( min, Double.POSITIVE_INFINITY );
 			}
-			final double[] sMx = new double[ source.numDimensions() ];
+			final double[] sMx = new double[ transformToSource.numTargetDimensions() ];
 			final double[] sMn = new double[ sMx.length ];
 
 			while ( !Arrays.equals( sMx, cachedSourceMax ) ||
@@ -373,12 +373,13 @@ public class Transforms
 				source.realMin( sMn );
 
 				final double[][] transformedCorners = createCorners();
+				final int numTransformedCorners = transformedCorners.length;
 
 				for ( int d = 0; d < n; d++ )
 				{
 					double mx = transformedCorners[ 0 ][ d ];
 					double mn = transformedCorners[ 0 ][ d ];
-					for ( int i = 1; i < transformedCorners.length; i++ )
+					for ( int i = 1; i < numTransformedCorners; i++ )
 					{
 						if ( transformedCorners[ i ][ d ] > mx )
 							mx = transformedCorners[ i ][ d ];
@@ -396,29 +397,33 @@ public class Transforms
 
 		private double[][] createCorners()
 		{
-			final double[][] corners = new double[ ( int ) Math.pow( 2, n ) ][ n ];
-			int s = corners.length / 2;
+			final int numCorners = ( int ) Math.pow( 2, transformToSource.numTargetDimensions() );
+			final int numSourceDims = transformToSource.numTargetDimensions();
+			final double[][] cornersTransformed = new double[ numCorners ][ numSourceDims ];
+			int s = numCorners / 2;
 			boolean mn = false;
-			for ( int d = 0; d < n; d++ )
+			for ( int d = 0; d < numSourceDims; d++ )
 			{
-				for ( int i = 0; i < corners.length; i++ )
+				for ( int i = 0; i < numCorners; i++ )
 				{
 					if ( i % s == 0 )
 					{
 						mn = !mn;
 					}
 					if ( mn )
-						corners[ i ][ d ] = source.realMin( d );
+						cornersTransformed[ i ][ d ] = source.realMin( d );
 					else
-						corners[ i ][ d ] = source.realMax( d );
+						cornersTransformed[ i ][ d ] = source.realMax( d );
 				}
 				s = s / 2;
 			}
 
-			for ( int i = 0; i < corners.length; i++ )
-				transformToSource.inverse().apply( corners[ i ], corners[ i ] );
+			final double[][] points = new double[ numCorners ][ n ];
 
-			return corners;
+				for ( int i = 0; i < points.length; i++ )
+					transformToSource.inverse().apply( cornersTransformed[ i ], points[ i ] );
+
+			return points;
 		}
 	}
 
