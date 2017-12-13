@@ -382,24 +382,6 @@
 //	}
 //
 //	@Test
-//	public void testMinusResultingInEmpty()
-//	{
-//		final Sphere< RealPoint > s = new ClosedSphere( new double[] { -4.25, 6 }, 3.5 );
-//		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { -4.25, 6 }, 3.5 );
-//		final RealMaskRealInterval rm = s.minus( s2 );
-//
-//		assertTrue( rm.isEmpty() );
-//
-//		assertEquals( rm.realMin( 0 ), -7.75, 0 );
-//		assertEquals( rm.realMin( 1 ), 2.5, 0 );
-//		assertEquals( rm.realMax( 0 ), -0.75, 0 );
-//		assertEquals( rm.realMax( 1 ), 9.5, 0 );
-//
-//		s.center().move( new double[] { 5, 5 } );
-//		assertFalse( rm.isEmpty() );
-//	}
-//
-//	@Test
 //	public void testMinusWithEmpty()
 //	{
 //		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
@@ -916,27 +898,6 @@
 //		assertTrue( rm.test( new RealPoint( new double[] { 118, 36 } ) ) );
 //		assertTrue( rm.test( new RealPoint( new double[] { 124.5, 36 } ) ) );
 //		assertFalse( rm.test( new RealPoint( new double[] { 122, 36 } ) ) );
-//	}
-//
-//	@Test
-//	public void testXorResultingInEmpty()
-//	{
-//		final Ellipsoid< RealPoint > e1 = new OpenEllipsoid( new double[] { 3, -4.25 }, new double[] { 0.5, 7 } );
-//		final Ellipsoid< RealPoint > e2 = new OpenEllipsoid( new double[] { 3, -4.25 }, new double[] { 0.5, 7 } );
-//		final RealMaskRealInterval rm = e1.xor( e2 );
-//
-//		assertFalse( rm.test( new RealPoint( new double[] { 3, -4.25 } ) ) );
-//		assertFalse( rm.test( new RealPoint( new double[] { 2.5, -4.25 } ) ) );
-//		assertFalse( rm.test( new RealPoint( new double[] { 12, 60 } ) ) );
-//
-//		assertTrue( rm.isEmpty() );
-//		assertEquals( rm.realMax( 0 ), 3.5, 0 );
-//		assertEquals( rm.realMax( 1 ), 2.75, 0 );
-//		assertEquals( rm.realMin( 0 ), 2.5, 0 );
-//		assertEquals( rm.realMin( 1 ), -11.25, 0 );
-//
-//		e1.center().move( new double[] { 11, 6 } );
-//		assertFalse( rm.isEmpty() );
 //	}
 //
 //	@Test
