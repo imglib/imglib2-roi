@@ -48,7 +48,6 @@ import net.imglib2.RealPoint;
 import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.realtransform.RealTransform;
-import net.imglib2.roi.Transforms.RealTransformRealInterval;
 import net.imglib2.roi.composite.CompositeMaskPredicate;
 import net.imglib2.roi.composite.DefaultBinaryCompositeMask;
 import net.imglib2.roi.composite.DefaultBinaryCompositeMaskInterval;
@@ -331,7 +330,7 @@ public class Operators
 			final BoundaryType boundaryType = boundaryTypeOp.apply( BoundaryType.of( arg ) );
 			if( arg instanceof RealInterval && willPreserveBounds( transformToSource ) )
 				return new RealTransformUnaryCompositeRealMaskRealInterval( this, arg,
-						new RealTransformRealInterval( ( RealInterval ) arg, ( InvertibleRealTransform ) transformToSource ),
+						new Bounds.RealTransformRealInterval( ( RealInterval ) arg, ( InvertibleRealTransform ) transformToSource ),
 						boundaryType, knownConstantOp );
 			return new RealTransformUnaryCompositeRealMask( this, arg, n, boundaryType, knownConstantOp );
 		}
