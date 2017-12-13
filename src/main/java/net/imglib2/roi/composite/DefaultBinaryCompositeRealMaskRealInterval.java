@@ -137,6 +137,6 @@ public class DefaultBinaryCompositeRealMaskRealInterval
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		return ( arg0.hashCode() * arg0.hashCode() + arg1.hashCode() + operator.hashCode() ) * 63;
 	}
 }

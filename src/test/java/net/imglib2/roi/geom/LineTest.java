@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
@@ -303,6 +304,7 @@ public class LineTest
 		final Line< RealPoint > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
 		final Line< RealPoint > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
 		final Line< RealPoint > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
+		final Line< RealPoint > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
 		final PointMask p = new DefaultPointMask( new double[] { 1, 1, 1 } );
 
 		assertTrue( l.equals( l2 ) );
@@ -310,6 +312,25 @@ public class LineTest
 		l2.endpointOne().move( -1, 0 );
 		assertFalse( l.equals( l2 ) );
 		assertFalse( l.equals( l3 ) );
+		assertFalse( l.equals( l4 ) );
 		assertFalse( l.equals( p ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final Line< RealPoint > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealPoint > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealPoint > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
+		final Line< RealPoint > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
+		final PointMask p = new DefaultPointMask( new double[] { 1, 1, 1 } );
+
+		assertEquals( l.hashCode(), l2.hashCode() );
+
+		l2.endpointOne().move( -1, 0 );
+		assertNotEquals( l.hashCode(), l2.hashCode() );
+		assertNotEquals( l.hashCode(), l3.hashCode() );
+		assertNotEquals( l.hashCode(), l4.hashCode() );
+		assertNotEquals( l.hashCode(), p.hashCode() );
 	}
 }

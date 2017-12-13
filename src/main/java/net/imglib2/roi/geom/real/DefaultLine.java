@@ -157,7 +157,10 @@ public class DefaultLine extends AbstractRealInterval implements Line< RealPoint
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 119;
+		for ( int i = 0; i < n; i++ )
+			result += 53 * pointOne[ i ] + 91 * pointTwo[ i ];
+		return result + 5;
 	}
 
 	// -- Helper methods --

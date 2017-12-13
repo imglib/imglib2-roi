@@ -152,7 +152,17 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline< R
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 777;
+
+		int t = 11;
+		for ( int i = 0; i < numVertices(); i++ )
+		{
+			for ( int d = 0; d < n; d++ )
+				result += t * ( vertices.get( i )[ d ] * vertices.get( i )[ d ] );
+			t += 3;
+		}
+
+		return result;
 	}
 
 	// -- Helper methods --

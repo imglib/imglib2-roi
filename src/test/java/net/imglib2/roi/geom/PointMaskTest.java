@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
@@ -168,5 +169,21 @@ public class PointMaskTest
 		assertFalse( pm.equals( pm2 ) );
 		assertFalse( pm.equals( pm3 ) );
 		assertFalse( pm.equals( l ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
+		final Line< RealPoint > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+
+		assertEquals( pm.hashCode(), pm2.hashCode() );
+
+		pm2.move( 0.5, 1 );
+		assertNotEquals( pm.hashCode(), pm2.hashCode() );
+		assertNotEquals( pm.hashCode(), pm3.hashCode() );
+		assertNotEquals( pm.hashCode(), l.hashCode() );
 	}
 }

@@ -34,7 +34,9 @@
 package net.imglib2.roi.geom;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -344,5 +346,71 @@ public class RealPointCollectionTest
 		// Different shape
 		final PointMask pm = new DefaultPointMask( new double[] { 83, 4 } );
 		assertFalse( d.equals( pm ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		// Contain the same points
+		final List< RealPoint > l = new ArrayList<>();
+		l.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+		l.add( new RealPoint( new double[] { -1, 0 } ) );
+		l.add( new RealPoint( new double[] { 83, 4 } ) );
+
+		final RealPointCollection< RealPoint > d = new DefaultRealPointCollection<>( l );
+		final RealPointCollection< RealPoint > k = new KDTreeRealPointCollection<>( l );
+		final RealPointCollection< RealPoint > r = new RealPointSampleListRealPointCollection<>( l );
+
+		assertEquals( d.hashCode(), k.hashCode() );
+		assertEquals( d.hashCode(), r.hashCode() );
+		assertEquals( k.hashCode(), d.hashCode() );
+		assertEquals( r.hashCode(), d.hashCode() );
+		assertEquals( r.hashCode(), k.hashCode() );
+		assertEquals( k.hashCode(), r.hashCode() );
+
+		// Contain different number of points
+		final List< RealPoint > l2 = new ArrayList<>();
+		l2.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+		l.add( new RealPoint( new double[] { -1, 0 } ) );
+
+		final RealPointCollection< RealPoint > d2 = new DefaultRealPointCollection<>( l2 );
+		final RealPointCollection< RealPoint > k2 = new KDTreeRealPointCollection<>( l2 );
+		final RealPointCollection< RealPoint > r2 = new RealPointSampleListRealPointCollection<>( l2 );
+
+		assertNotEquals( d.hashCode(), d2.hashCode() );
+		assertNotEquals( d2.hashCode(), d.hashCode() );
+		assertNotEquals( k.hashCode(), k2.hashCode() );
+		assertNotEquals( k2.hashCode(), k.hashCode() );
+		assertNotEquals( r.hashCode(), r2.hashCode() );
+		assertNotEquals( r2.hashCode(), r.hashCode() );
+		assertNotEquals( r.hashCode(), k2.hashCode() );
+		assertNotEquals( r2.hashCode(), d.hashCode() );
+
+		// Contain same points in different order
+		final List< RealPoint > l3 = new ArrayList<>();
+		l3.add( new RealPoint( new double[] { 83, 4 } ) );
+		l3.add( new RealPoint( new double[] { -1.5, 2 } ) );
+		l3.add( new RealPoint( new double[] { -1, 0 } ) );
+		l3.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
+
+		final RealPointCollection< RealPoint > d3 = new DefaultRealPointCollection<>( l3 );
+		final RealPointCollection< RealPoint > k3 = new KDTreeRealPointCollection<>( l3 );
+		final RealPointCollection< RealPoint > r3 = new RealPointSampleListRealPointCollection<>( l3 );
+
+		assertEquals( d3.hashCode(), d.hashCode() );
+		assertEquals( d.hashCode(), d3.hashCode() );
+		assertEquals( k3.hashCode(), k.hashCode() );
+		assertEquals( k.hashCode(), k3.hashCode() );
+		assertEquals( r3.hashCode(), r.hashCode() );
+		assertEquals( r.hashCode(), r3.hashCode() );
+		assertEquals( r3.hashCode(), d.hashCode() );
+		assertEquals( r3.hashCode(), k.hashCode() );
+		assertEquals( k.hashCode(), r3.hashCode() );
+
+		// Different shape
+		final PointMask pm = new DefaultPointMask( new double[] { 83, 4 } );
+		assertNotEquals( d.hashCode(), pm.hashCode() );
 	}
 }
