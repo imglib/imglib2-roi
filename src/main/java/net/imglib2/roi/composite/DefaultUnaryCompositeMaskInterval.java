@@ -127,6 +127,6 @@ public class DefaultUnaryCompositeMaskInterval
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		return arg0.hashCode() + operator.hashCode() * 43;
 	}
 }

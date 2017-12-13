@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
@@ -378,5 +379,26 @@ public class BoxTest
 		assertFalse( cb.equals( ob ) );
 		// Different shape
 		assertFalse( cb.equals( e ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final Box< RealPoint > cb = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > cb3 = new ClosedBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
+		final Box< RealPoint > cb4 = new ClosedBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
+		final Box< RealPoint > cb5 = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Box< RealPoint > ob = new OpenBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final Ellipsoid< RealPoint > e = new ClosedEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
+		final Ellipsoid< RealPoint > e2 = new ClosedEllipsoid( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		
+		assertEquals( cb.hashCode(), cb5.hashCode() );
+		assertNotEquals( cb.hashCode(), cb2.hashCode() );
+		assertNotEquals( cb.hashCode(), cb3.hashCode() );
+		assertNotEquals( cb.hashCode(), cb4.hashCode() );
+		assertNotEquals( cb.hashCode(), ob.hashCode() );
+		assertNotEquals( cb.hashCode(), e.hashCode() );
+		assertNotEquals( cb.hashCode(), e2.hashCode() );
 	}
 }

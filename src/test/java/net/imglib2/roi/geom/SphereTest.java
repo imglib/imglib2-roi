@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
@@ -278,5 +279,25 @@ public class SphereTest
 		assertFalse( cs.equals( cs2 ) );
 		assertFalse( cs.equals( cs3 ) );
 		assertFalse( cs.equals( os ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealPoint > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealPoint > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealPoint > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealPoint > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+
+		assertEquals( cs.hashCode(), cs2.hashCode() );
+		assertEquals( cs.hashCode(), cse.hashCode() );
+		assertEquals( cs.hashCode(), ce.hashCode() );
+
+		cs2.setRadius( 3 );
+		assertNotEquals( cs.hashCode(), cs2.hashCode() );
+		assertNotEquals( cs.hashCode(), cs3.hashCode() );
+		assertNotEquals( cs.hashCode(), os.hashCode() );
 	}
 }

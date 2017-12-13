@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -428,6 +429,24 @@ public class Polygon2DTest
 		assertFalse( p.equals( p3 ) );
 		assertFalse( p.equals( p4 ) );
 		assertFalse( p.equals( cp ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final Polygon2D< RealPoint > p = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D< RealPoint > p2 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D< RealPoint > p3 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
+		final Polygon2D< RealPoint > p4 = new DefaultPolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
+		final Polygon2D< RealPoint > cp = new ClosedPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+
+		assertEquals( p.hashCode(), p2.hashCode() );
+
+		p2.vertex( 0 ).move( -1, 1 );
+		assertNotEquals( p.hashCode(), p2.hashCode() );
+		assertNotEquals( p.hashCode(), p3.hashCode() );
+		assertNotEquals( p.hashCode(), p4.hashCode() );
+		assertNotEquals( p.hashCode(), cp.hashCode() );
 	}
 
 	// -- Helper methods --

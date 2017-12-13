@@ -38,6 +38,7 @@ import java.util.List;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
@@ -178,7 +179,22 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D<
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 203;
+		int t = 5;
+		for ( int i = 0; i < numVertices(); i++ )
+		{
+			result += ( x.get( i ) * x.get( i ) ) + ( y.get( i ) * t );
+			t += 7;
+		}
+
+		if ( BoundaryType.CLOSED == boundaryType() )
+			result += 21;
+		else if ( BoundaryType.OPEN == boundaryType() )
+			result += 61;
+		else
+			result += 3;
+
+		return result;
 	}
 
 	// -- Helper methods --

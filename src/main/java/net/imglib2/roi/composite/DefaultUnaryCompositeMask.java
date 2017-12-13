@@ -120,6 +120,6 @@ public class DefaultUnaryCompositeMask
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		return arg0.hashCode() + operator.hashCode() * 71;
 	}
 }

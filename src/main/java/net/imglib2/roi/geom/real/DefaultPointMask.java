@@ -98,6 +98,9 @@ public class DefaultPointMask extends RealPoint implements PointMask
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 301;
+		for ( int i = 0; i < n; i++ )
+			result += 43 * position[ i ];
+		return result;
 	}
 }

@@ -36,6 +36,7 @@ package net.imglib2.roi.geom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
@@ -315,5 +316,29 @@ public class EllipsoidTest
 		assertFalse( oe.equals( ce ) );
 		// Different exponents
 		assertFalse( oe.equals( se ) );
+	}
+
+	@Test
+	public void testHashCode()
+	{
+		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealPoint > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final Ellipsoid< RealPoint > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final SuperEllipsoid< RealPoint > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+
+		assertEquals( oe.hashCode(), oe2.hashCode() );
+		assertEquals( oe.hashCode(), se.hashCode() );
+
+		oe2.center().move( new double[] { 2, 3 } );
+		se.setExponent( 3 );
+		// Different center
+		assertNotEquals( oe.hashCode(), oe2.hashCode() );
+		// Different number of dimensions
+		assertNotEquals( oe.hashCode(), oe3.hashCode() );
+		// Different boundary behavior
+		assertNotEquals( oe.hashCode(), ce.hashCode() );
+		// Different exponents
+		assertNotEquals( oe.hashCode(), se.hashCode() );
 	}
 }

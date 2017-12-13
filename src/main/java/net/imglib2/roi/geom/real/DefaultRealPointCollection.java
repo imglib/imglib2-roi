@@ -161,7 +161,11 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 71;
+		for ( L l : points.values() )
+			for ( int d = 0; d < l.numDimensions(); d++ )
+				result += 3 * l.getDoublePosition( d );
+		return result;
 	}
 
 	// -- Helper methods --

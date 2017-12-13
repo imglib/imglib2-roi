@@ -110,7 +110,7 @@ public class Transforms
 		@Override
 		public int hashCode()
 		{
-			return super.hashCode();
+			return transformToSource.hashCode() * 23;
 		}
 
 		private void checkDimensions( Object source )
@@ -205,7 +205,7 @@ public class Transforms
 		@Override
 		public int hashCode()
 		{
-			return super.hashCode();
+			return arg0.hashCode() + operator.hashCode();
 		}
 	}
 
@@ -280,7 +280,7 @@ public class Transforms
 		@Override
 		public int hashCode()
 		{
-			return super.hashCode();
+			return ( arg0.hashCode() + operator.hashCode() ) * 33;
 		}
 	}
 

@@ -36,6 +36,7 @@ package net.imglib2.roi.geom.real;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
+import net.imglib2.roi.BoundaryType;
 
 /**
  * Abstract base class for {@link Sphere} implementations.
@@ -146,7 +147,20 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements S
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 22;
+		for ( int i = 0; i < n; i++ )
+			result += 13 * center[ i ] + 13 * radius;
+
+		result += 2; // for exponent
+
+		if ( BoundaryType.CLOSED == boundaryType() )
+			result += 5;
+		else if ( BoundaryType.OPEN == boundaryType() )
+			result += 8;
+		else
+			result += 0;
+
+		return result;
 	}
 
 	// -- Helper methods --

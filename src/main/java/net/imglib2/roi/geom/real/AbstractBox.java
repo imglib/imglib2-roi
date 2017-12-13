@@ -34,8 +34,11 @@
 
 package net.imglib2.roi.geom.real;
 
+import java.util.Objects;
+
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealPoint;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMask;
 import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
 
@@ -112,7 +115,16 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 	@Override
 	public int hashCode()
 	{
-		return super.hashCode();
+		int result = 17;
+		for ( int i = 0; i < n; i++ )
+			result += 31 * min[ i ] + 31 * max[ i ];
+		if ( BoundaryType.CLOSED == boundaryType() )
+			result += 5;
+		else if ( BoundaryType.OPEN == boundaryType() )
+			result += 8;
+		else
+			result += 0;
+		return result;
 	}
 
 	// -- Helper classes --

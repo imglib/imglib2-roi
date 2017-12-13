@@ -35,6 +35,7 @@ package net.imglib2.roi.geom;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.imglib2.FinalInterval;
@@ -1099,6 +1100,50 @@ public class OperatorsTest
 
 		assertFalse( rm.equals( rm3 ) );
 		assertFalse( rm.equals( rm4 ) );
+	}
+
+	@Test
+	public void testSimpleCompositeHashCode()
+	{
+		final Box< RealPoint > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealPoint > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+
+		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+
+		final RealMaskRealInterval a = b.and( s );
+		final RealMaskRealInterval a2 = b2.and( s2 );
+		final RealMaskRealInterval a3 = s.and( b );
+		final RealMaskRealInterval o = b.or( s );
+
+		assertEquals( a.hashCode(), a2.hashCode() );
+
+		// order of operations matters
+		assertNotEquals( a.hashCode(), a3.hashCode() );
+		assertNotEquals( a.hashCode(), o.hashCode() );
+	}
+
+	@Test
+	public void testCompositeHashCode()
+	{
+		final Box< RealPoint > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Box< RealPoint > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealPoint > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+
+		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
+		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );
+		final RealMask rm3 = ob2.xor( oe2.or( cb2.xor( cs2 ) ).negate() );
+		final RealMask rm4 = ob2.xor( ob2.or( cb2.and( cs2 ) ).negate() );
+
+		assertEquals( rm.hashCode(), rm2.hashCode() );
+
+		assertNotEquals( rm.hashCode(), rm3.hashCode() );
+		assertNotEquals( rm.hashCode(), rm4.hashCode() );
 	}
 
 	// -- Helper methods --
