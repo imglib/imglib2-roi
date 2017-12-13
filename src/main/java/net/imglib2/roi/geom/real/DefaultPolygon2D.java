@@ -41,7 +41,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
-import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
+import net.imglib2.roi.util.AbstractRealMaskPoint;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -258,7 +258,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D<
 
 	// -- Helper classes --
 
-	private class Polygon2DVertex extends AbstractUpdateBoundsRealPoint
+	private class Polygon2DVertex extends AbstractRealMaskPoint
 	{
 		private final int pos;
 

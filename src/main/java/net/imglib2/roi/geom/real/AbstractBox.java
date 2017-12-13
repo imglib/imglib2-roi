@@ -40,7 +40,7 @@ import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMask;
-import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
+import net.imglib2.roi.util.AbstractRealMaskPoint;
 
 /**
  * Abstract base class for implementations of {@link Box}.
@@ -129,7 +129,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 
 	// -- Helper classes --
 
-	private class BoxCenter extends AbstractUpdateBoundsRealPoint
+	private class BoxCenter extends AbstractRealMaskPoint
 	{
 		protected BoxCenter( final double[] center )
 		{

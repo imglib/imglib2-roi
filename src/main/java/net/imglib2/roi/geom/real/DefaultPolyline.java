@@ -42,7 +42,7 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
-import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
+import net.imglib2.roi.util.AbstractRealMaskPoint;
 
 /**
  * A polyline, which can be embedded in n-dimensional space.
@@ -187,7 +187,7 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline< R
 
 	// -- Helper classes --
 
-	private class PolylineVertex extends AbstractUpdateBoundsRealPoint
+	private class PolylineVertex extends AbstractRealMaskPoint
 	{
 		public PolylineVertex( final double[] pos )
 		{

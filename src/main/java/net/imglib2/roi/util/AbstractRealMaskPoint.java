@@ -37,22 +37,24 @@ import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 
-public abstract class AbstractUpdateBoundsRealPoint extends RealPoint implements UpdateBoundsRealPoint
+public abstract class AbstractRealMaskPoint extends RealPoint
 {
-	public AbstractUpdateBoundsRealPoint( final int n )
+	public AbstractRealMaskPoint( final int n )
 	{
 		super( n );
 	}
 
-	public AbstractUpdateBoundsRealPoint( final double[] pos )
+	public AbstractRealMaskPoint( final double[] pos )
 	{
 		super( pos, false );
 	}
 
-	public AbstractUpdateBoundsRealPoint( final RealLocalizable pos )
+	public AbstractRealMaskPoint( final RealLocalizable pos )
 	{
 		super( pos );
 	}
+
+	public abstract void updateBounds();
 
 	@Override
 	public void move( final float distance, final int d )

@@ -39,7 +39,7 @@ import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.GeomMaths;
-import net.imglib2.roi.util.AbstractUpdateBoundsRealPoint;
+import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.util.Intervals;
 
 /**
@@ -181,7 +181,7 @@ public class DefaultLine extends AbstractRealInterval implements Line< RealPoint
 
 	// -- Helper classes --
 
-	private class LineEndPoint extends AbstractUpdateBoundsRealPoint
+	private class LineEndPoint extends AbstractRealMaskPoint
 	{
 		public LineEndPoint( final double[] pos )
 		{
