@@ -17,6 +17,7 @@ import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.realtransform.RealTransform;
 import net.imglib2.roi.Operators.MaskOperator;
 import net.imglib2.roi.composite.UnaryCompositeMaskPredicate;
+import net.imglib2.util.Intervals;
 
 public class Transforms
 {
@@ -283,9 +284,6 @@ public class Transforms
 		}
 	}
 
-	// TODO in RealTransformRealInterval:
-	// * empty source interval???
-
 	/**
 	 * The {@link Bounds} for a transformed source. These bounds are not
 	 * guaranteed to represent the minimum bounding box.
@@ -360,6 +358,11 @@ public class Transforms
 
 		private void updateMinMax()
 		{
+			if( Intervals.isEmpty( source ) )
+			{
+				Arrays.fill( max, Double.NEGATIVE_INFINITY );
+				Arrays.fill( min, Double.POSITIVE_INFINITY );
+			}
 			final double[] sMx = new double[ source.numDimensions() ];
 			final double[] sMn = new double[ sMx.length ];
 
