@@ -39,7 +39,6 @@ import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.Regions;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
 
@@ -98,7 +97,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D<
 	 */
 	public DefaultPolygon2D( final double[] x, final double[] y )
 	{
-		super( Regions.getBoundsReal( x, y ) );
+		super( GeomMaths.getBoundsReal( x, y ) );
 		if ( x.length == y.length )
 		{
 			this.x = new TDoubleArrayList( x );

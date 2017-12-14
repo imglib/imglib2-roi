@@ -39,7 +39,7 @@ import java.util.HashMap;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.Regions;
+import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.util.Intervals;
 
 import gnu.trove.list.array.TDoubleArrayList;
@@ -65,7 +65,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	 */
 	public DefaultRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
-		super( Regions.getBoundsReal( points.values() ) );
+		super( GeomMaths.getBoundsReal( points.values() ) );
 		this.points = points;
 	}
 
@@ -193,7 +193,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 
 	private void updateMinMax()
 	{
-		final RealInterval interval = Regions.getBoundsReal( points.values() );
+		final RealInterval interval = GeomMaths.getBoundsReal( points.values() );
 		interval.realMin( min );
 		interval.realMax( max );
 	}
