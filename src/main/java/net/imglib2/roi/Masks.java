@@ -59,6 +59,7 @@ import net.imglib2.roi.mask.real.RealMaskRealIntervalAsRealRandomAccessibleRealI
 import net.imglib2.roi.mask.real.RealRandomAccessibleAsRealMask;
 import net.imglib2.roi.mask.real.RealRandomAccessibleRealIntervalAsRealMaskRealInterval;
 import net.imglib2.type.BooleanType;
+import net.imglib2.type.logic.BoolType;
 
 /**
  * Utility class for working with {@link Mask}s.
@@ -176,71 +177,58 @@ public class Masks
 
 	/**
 	 * Wraps the given {@link Mask} as a {@link RandomAccessible} of
-	 * {@link BooleanType}. If the given Mask is a {@link MaskInterval}, a
+	 * {@link BoolType}. If the given Mask is a {@link MaskInterval}, a
 	 * {@link RandomAccessibleInterval} is returned.
 	 *
-	 * @param mask
-	 *            {@link Mask} to be wrapped
-	 * @param type
-	 *            {@link BooleanType} of the resulting RandomAccessible
+	 * @param mask {@link Mask} to be wrapped
 	 * @return a RandomAccessible equivalent to the given Mask
 	 */
-	public static < B extends BooleanType< B > > RandomAccessible< B > toRandomAccessible( final Mask mask, final B type )
+	public static RandomAccessible< BoolType > toRandomAccessible( final Mask mask )
 	{
 		if ( mask instanceof MaskInterval )
-			return toRandomAccessibleInterval( ( MaskInterval ) mask, type );
-		return new MaskAsRandomAccessible<>( mask, type );
+			return toRandomAccessibleInterval( ( MaskInterval ) mask );
+		return new MaskAsRandomAccessible<>( mask, new BoolType() );
 	}
 
 	/**
-	 * Wraps the given {@link MaskInterval} as a
-	 * {@link RandomAccessibleInterval} of {@link BooleanType}.
+	 * Wraps the given {@link MaskInterval} as a {@link RandomAccessibleInterval}
+	 * of {@link BoolType}.
 	 *
-	 * @param mask
-	 *            {@link MaskInterval} to be wrapped
-	 * @param type
-	 *            {@link BooleanType} of the resulting RandomAccessibleInterval
+	 * @param mask {@link MaskInterval} to be wrapped
 	 * @return RandomAccessibleInterval equivalent to given MaskInterval
 	 */
-	public static < B extends BooleanType< B > > RandomAccessibleInterval< B > toRandomAccessibleInterval( final MaskInterval mask, final B type )
+	public static RandomAccessibleInterval< BoolType > toRandomAccessibleInterval( final MaskInterval mask )
 	{
-		return new MaskIntervalAsRandomAccessibleInterval<>( mask, type );
+		return new MaskIntervalAsRandomAccessibleInterval<>( mask, new BoolType() );
 	}
 
 	/**
 	 * Wraps the given {@link RealMask} as a {@link RealRandomAccessible} of
-	 * {@link BooleanType}. If the given RealMask is a
-	 * {@link RealMaskRealInterval}, a {@link RealRandomAccessibleRealInterval}
-	 * is returned.
+	 * {@link BoolType}. If the given RealMask is a {@link RealMaskRealInterval},
+	 * a {@link RealRandomAccessibleRealInterval} is returned.
 	 *
-	 * @param mask
-	 *            {@link RealMask} to be wrapped
-	 * @param type
-	 *            {@link BooleanType} of the resulting RealRandomAccessible
+	 * @param mask {@link RealMask} to be wrapped
 	 * @return RealRandomAccessible equivalent to the given RealMask
 	 */
-	public static < B extends BooleanType< B > > RealRandomAccessible< B > toRealRandomAccessible( final RealMask mask, final B type )
+	public static RealRandomAccessible< BoolType > toRealRandomAccessible( final RealMask mask )
 	{
 		if ( mask instanceof RealMaskRealInterval )
-			return toRealRandomAccessibleRealInterval( ( RealMaskRealInterval ) mask, type );
-		return new RealMaskAsRealRandomAccessible<>( mask, type );
+			return toRealRandomAccessibleRealInterval( ( RealMaskRealInterval ) mask );
+		return new RealMaskAsRealRandomAccessible<>( mask, new BoolType() );
 	}
 
 	/**
 	 * Wraps the given {@link RealMaskRealInterval} as a
-	 * {@link RealRandomAccessibleRealInterval} of {@link BooleanType}.
+	 * {@link RealRandomAccessibleRealInterval} of {@link BoolType}.
 	 *
 	 * @param mask
 	 *            {@link RealMaskRealInterval} to be wrapped
-	 * @param type
-	 *            {@link BooleanType} of the resulting
-	 *            RealRandomAccessibleRealInterval
 	 * @return RealRandomAccessibleRealInterval equivalent to given
 	 *         RealMaskRealInterval
 	 */
-	public static < B extends BooleanType< B > > RealRandomAccessibleRealInterval< B > toRealRandomAccessibleRealInterval( final RealMaskRealInterval mask, final B type )
+	public static RealRandomAccessibleRealInterval< BoolType > toRealRandomAccessibleRealInterval( final RealMaskRealInterval mask )
 	{
-		return new RealMaskRealIntervalAsRealRandomAccessibleRealInterval<>( mask, type );
+		return new RealMaskRealIntervalAsRealRandomAccessibleRealInterval<>( mask, new BoolType() );
 	}
 
 	/*
