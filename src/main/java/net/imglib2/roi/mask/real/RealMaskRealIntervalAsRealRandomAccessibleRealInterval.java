@@ -41,7 +41,11 @@ import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.type.BooleanType;
 
 /**
+ * Wraps a {@link RealMaskRealInterval} as a
+ * {@link RealRandomAccessibleRealInterval}.
+ *
  * @author Tobias Pietzsch
+ * @author Alison Walter
  */
 public class RealMaskRealIntervalAsRealRandomAccessibleRealInterval< B extends BooleanType< B > >
 	extends AbstractWrappedRealInterval< RealMaskRealInterval >
