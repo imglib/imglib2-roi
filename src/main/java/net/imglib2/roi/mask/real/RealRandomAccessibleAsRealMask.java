@@ -34,13 +34,11 @@
 package net.imglib2.roi.mask.real;
 
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.roi.RealMask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.util.Intervals;
 
 /**
  * Wraps a {@link RealRandomAccessible} as a {@link RealMask}.
@@ -51,6 +49,12 @@ public class RealRandomAccessibleAsRealMask< B extends BooleanType< B > > extend
 {
 	private final RealRandomAccessible< B > rra;
 
+	/**
+	 * The given {@link RealRandomAccessible} is expected to be defined
+	 * everywhere.
+	 * 
+	 * @param rra
+	 */
 	public RealRandomAccessibleAsRealMask( final RealRandomAccessible< B > rra )
 	{
 		super( rra.numDimensions() );
@@ -66,9 +70,6 @@ public class RealRandomAccessibleAsRealMask< B extends BooleanType< B > > extend
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		if ( rra instanceof RealInterval )
-			if ( !Intervals.contains( ( RealInterval ) rra, l ) )
-				return false;
 		final RealRandomAccess< B > accessor = rra.realRandomAccess();
 		accessor.setPosition( l );
 		return accessor.get().get();

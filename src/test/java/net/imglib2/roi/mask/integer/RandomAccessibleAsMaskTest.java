@@ -88,22 +88,6 @@ public class RandomAccessibleAsMaskTest
 	}
 
 	@Test
-	public void testRandomAccessibleAsMaskTest()
-	{
-		final long seed = 4;
-		final Random rand = new Random( seed );
-
-		for ( int i = 0; i < 200; i++ )
-		{
-			final long x = rand.nextLong();
-			final long y = rand.nextLong();
-
-			ra.setPosition( new long[] { x, y } );
-			assertEquals( ra.get().get(), ram.test( new Point( new long[] { x, y } ) ) );
-		}
-	}
-
-	@Test
 	public void testRandomAccessibleAsMaskNumDimensions()
 	{
 		assertEquals( ra.numDimensions(), ram.numDimensions() );

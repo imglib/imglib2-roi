@@ -34,13 +34,11 @@
 package net.imglib2.roi.mask.integer;
 
 import net.imglib2.AbstractEuclideanSpace;
-import net.imglib2.Interval;
 import net.imglib2.Localizable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.roi.Mask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.util.Intervals;
 
 /**
  * Wraps a {@link RandomAccessible} as a {@link Mask}.
@@ -51,6 +49,11 @@ public class RandomAccessibleAsMask< B extends BooleanType< B > > extends Abstra
 {
 	private final RandomAccessible< B > ra;
 
+	/**
+	 * The given {@link RandomAccessible} is expected to be defined everywhere.
+	 *
+	 * @param ra
+	 */
 	public RandomAccessibleAsMask( final RandomAccessible< B > ra )
 	{
 		super( ra.numDimensions() );
@@ -65,9 +68,6 @@ public class RandomAccessibleAsMask< B extends BooleanType< B > > extends Abstra
 	@Override
 	public boolean test( final Localizable l )
 	{
-		if ( ra instanceof Interval )
-			if ( !Intervals.contains( ( Interval ) ra, l ) )
-				return false;
 		final RandomAccess< B > accessor = ra.randomAccess();
 		accessor.setPosition( l );
 		return accessor.get().get();
