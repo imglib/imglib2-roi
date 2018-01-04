@@ -166,13 +166,13 @@ public class GeomMasks
 	}
 
 	/** Creates an {@link OpenPolygon2D}. */
-	public static Polygon2D< RealPoint > OpenPolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static Polygon2D< RealPoint > openPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new OpenPolygon2D( vertices );
 	}
 
 	/** Creates an {@link OpenPolygon2D}. */
-	public static Polygon2D< RealPoint > OpenPolygon2D( final double[] x, final double[] y )
+	public static Polygon2D< RealPoint > openPolygon2D( final double[] x, final double[] y )
 	{
 		return new OpenPolygon2D( x, y );
 	}
@@ -226,7 +226,7 @@ public class GeomMasks
 	}
 
 	/** Creates an {@link OpenSphere}. */
-	public static Sphere< RealPoint > OpenSphere( final double[] center, final double radius )
+	public static Sphere< RealPoint > openSphere( final double[] center, final double radius )
 	{
 		return new OpenSphere( center, radius );
 	}
