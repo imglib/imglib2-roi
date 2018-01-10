@@ -1214,16 +1214,22 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void applyInverse( final double[] source, final double[] target ) {}
+		public void applyInverse( final double[] source, final double[] target )
+		{}
 
 		@Override
-		public void applyInverse( final float[] source, final float[] target ) {}
+		public void applyInverse( final float[] source, final float[] target )
+		{}
 
 		@Override
-		public void applyInverse( final RealPositionable source, final RealLocalizable target ) {}
+		public void applyInverse( final RealPositionable source, final RealLocalizable target )
+		{}
 
 		@Override
-		public InvertibleRealTransform copy() { return null; }
+		public InvertibleRealTransform copy()
+		{
+			return null;
+		}
 
 		@Override
 		public int numSourceDimensions()
@@ -1238,17 +1244,17 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void apply( double[] source, double[] target )
+		public void apply( final double[] source, final double[] target )
 		{
-			for( int i = 0; i < numSourceDimensions(); i++ )
+			for ( int i = 0; i < numSourceDimensions(); i++ )
 				target[ i ] = source[ i ];
 			target[ numSourceDimensions() ] = 2;
 		}
 
 		@Override
-		public void apply( float[] source, float[] target )
+		public void apply( final float[] source, final float[] target )
 		{
-			for( int i = 0; i < numSourceDimensions(); i++ )
+			for ( int i = 0; i < numSourceDimensions(); i++ )
 				target[ i ] = source[ i ];
 			target[ numSourceDimensions() ] = 2;
 		}
@@ -1256,26 +1262,38 @@ public class OperatorsTest
 		@Override
 		public void apply( final RealLocalizable source, final RealPositionable target )
 		{
-			for( int i = 0; i < numSourceDimensions(); i++ )
+			for ( int i = 0; i < numSourceDimensions(); i++ )
 				target.setPosition( source.getDoublePosition( i ), i );
 			target.setPosition( 2, numSourceDimensions() );
 		}
 
 		@Override
-		public int numDimensions() { return 0; }
+		public int numDimensions()
+		{
+			return 0;
+		}
 
 		@Override
-		public double get( final int row, final int column ) { return 0; }
+		public double get( final int row, final int column )
+		{
+			return 0;
+		}
 
 		@Override
-		public double[] getRowPackedCopy() { return null; }
+		public double[] getRowPackedCopy()
+		{
+			return null;
+		}
 
 		@Override
-		public RealLocalizable d( final int d ) { return null; }
+		public RealLocalizable d( final int d )
+		{
+			return null;
+		}
 
 		@Override
 		public AffineGet inverse()
-		{ 
+		{
 			return new TestTransformInverse( numTargetDimensions() );
 		}
 	}
@@ -1292,16 +1310,22 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void applyInverse( final double[] source, final double[] target ) {}
+		public void applyInverse( final double[] source, final double[] target )
+		{}
 
 		@Override
-		public void applyInverse( final float[] source, final float[] target ) {}
+		public void applyInverse( final float[] source, final float[] target )
+		{}
 
 		@Override
-		public void applyInverse( final RealPositionable source, final RealLocalizable target ) {}
+		public void applyInverse( final RealPositionable source, final RealLocalizable target )
+		{}
 
 		@Override
-		public InvertibleRealTransform copy() { return null; }
+		public InvertibleRealTransform copy()
+		{
+			return null;
+		}
 
 		@Override
 		public int numSourceDimensions()
@@ -1316,41 +1340,53 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void apply( double[] source, double[] target )
+		public void apply( final double[] source, final double[] target )
 		{
-			for( int i = 0; i < numTargetDimensions(); i++ )
+			for ( int i = 0; i < numTargetDimensions(); i++ )
 				target[ i ] = source[ i ];
 		}
 
 		@Override
-		public void apply( float[] source, float[] target )
+		public void apply( final float[] source, final float[] target )
 		{
-			for( int i = 0; i < numTargetDimensions(); i++ )
+			for ( int i = 0; i < numTargetDimensions(); i++ )
 				target[ i ] = source[ i ];
 		}
 
 		@Override
 		public void apply( final RealLocalizable source, final RealPositionable target )
 		{
-			for( int i = 0; i < numTargetDimensions(); i++ )
+			for ( int i = 0; i < numTargetDimensions(); i++ )
 				target.setPosition( source.getDoublePosition( i ), i );
 		}
 
 		@Override
-		public int numDimensions() { return 0; }
+		public int numDimensions()
+		{
+			return 0;
+		}
 
 		@Override
-		public double get( final int row, final int column ) { return 0; }
+		public double get( final int row, final int column )
+		{
+			return 0;
+		}
 
 		@Override
-		public double[] getRowPackedCopy() { return null; }
+		public double[] getRowPackedCopy()
+		{
+			return null;
+		}
 
 		@Override
-		public RealLocalizable d( final int d ) { return null; }
+		public RealLocalizable d( final int d )
+		{
+			return null;
+		}
 
 		@Override
 		public AffineGet inverse()
-		{ 
+		{
 			return new TestTransform( numTargetDimensions() );
 		}
 	}
