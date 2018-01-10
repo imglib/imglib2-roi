@@ -45,7 +45,7 @@ import net.imglib2.roi.util.AbstractRealMaskPoint;
  *
  * @author Alison Walter
  */
-public abstract class AbstractBox extends AbstractRealInterval implements Box< RealPoint >
+public abstract class AbstractBox extends AbstractRealInterval implements Box
 {
 	/**
 	 * Creates an n-d rectangular {@link RealMask}. The dimensionality is
@@ -98,7 +98,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 		if ( !( obj instanceof Box ) )
 			return false;
 
-		final Box< ? > b = ( Box< ? > ) obj;
+		final Box b = ( Box ) obj;
 		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
 			return false;
 

@@ -57,7 +57,7 @@ import org.junit.Test;
  */
 public class RealMaskAsRealRandomAccessibleTest
 {
-	private static Box< RealPoint > b;
+	private static Box b;
 
 	private static RealRandomAccessible< BoolType > mrra;
 

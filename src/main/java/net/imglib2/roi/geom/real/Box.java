@@ -43,13 +43,13 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Box< T extends RealLocalizable & RealPositionable > extends RealMaskRealInterval
+public interface Box extends RealMaskRealInterval
 {
 	/** Returns side length of Box in dimension d. */
 	double sideLength( int d );
 
 	/** Returns the center of the Box. */
-	T center();
+	< T extends RealLocalizable & RealPositionable > T center();
 
 	/** Updates the length of the side in dimension d. */
 	void setSideLength( int d, double length );

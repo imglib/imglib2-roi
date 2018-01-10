@@ -88,8 +88,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedAndBounded()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertEquals( rm.numDimensions(), 2 );
@@ -117,8 +117,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedAndUnbounded()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
@@ -141,8 +141,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedAndUnbounded()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMask rm = b1.negate().and( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -158,8 +158,8 @@ public class OperatorsTest
 	@Test
 	public void testAndMovingOperands()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 5, 7.5 }, new double[] { 12, 20 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 5.5, 10 }, new double[] { 11.25, 30.25 } );
+		final Box b1 = new ClosedBox( new double[] { 5, 7.5 }, new double[] { 12, 20 } );
+		final Box b2 = new ClosedBox( new double[] { 5.5, 10 }, new double[] { 11.25, 30.25 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 6, 11 } ) ) );
@@ -199,8 +199,8 @@ public class OperatorsTest
 	@Test
 	public void testAndResultingInEmpty()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
+		final Box b1 = new ClosedBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
+		final Box b2 = new OpenBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertFalse( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
@@ -217,8 +217,8 @@ public class OperatorsTest
 	@Test
 	public void testAndWithEmpty()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -242,8 +242,8 @@ public class OperatorsTest
 	@Test
 	public void testAndWithAll()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -269,8 +269,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedMinusBounded()
 	{
-		final Box< RealPoint > b1 = new OpenBox( new double[] { 1, 4 }, new double[] { 10, 11 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 2, 3 }, new double[] { 9, 16 } );
+		final Box b1 = new OpenBox( new double[] { 1, 4 }, new double[] { 10, 11 } );
+		final Box b2 = new OpenBox( new double[] { 2, 3 }, new double[] { 9, 16 } );
 		final RealMaskRealInterval rm = b1.minus( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
@@ -295,7 +295,7 @@ public class OperatorsTest
 	@Test
 	public void testBoundedMinusUnbounded()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 18.25, -6 }, new double[] { 35, 15.5 } );
+		final Box b = new ClosedBox( new double[] { 18.25, -6 }, new double[] { 35, 15.5 } );
 		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 25, 0 }, 4 );
 		final RealMaskRealInterval rm = b.minus( s.negate() );
 
@@ -388,8 +388,8 @@ public class OperatorsTest
 	@Test
 	public void testMinusWithEmpty()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -413,8 +413,8 @@ public class OperatorsTest
 	@Test
 	public void testMinusWithAll()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -457,7 +457,7 @@ public class OperatorsTest
 	@Test
 	public void testNegate()
 	{
-		final Box< RealPoint > b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
+		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
 		final RealMask rm = b.negate();
 
 		assertTrue( rm.test( new RealPoint( new double[] { 19, 19 } ) ) );
@@ -498,8 +498,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedOrBounded()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
+		final Box b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
+		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
 		final RealMaskRealInterval rm = b.or( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 4, 8 } ) ) );
@@ -520,8 +520,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedOrUnbounded()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
+		final Box b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
+		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
 		final RealMask rm = b.or( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -591,8 +591,8 @@ public class OperatorsTest
 	@Test
 	public void testOrWithEmpty()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -616,8 +616,8 @@ public class OperatorsTest
 	@Test
 	public void testOrWithAll()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -651,7 +651,7 @@ public class OperatorsTest
 
 		final double[][] rotationMatrix = { { Math.cos( angle ), -Math.sin( angle ) }, { Math.sin( angle ), Math.cos( angle ) } };
 
-		final Box< RealPoint > b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
+		final Box b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
 		final AffineGet transformToSource = createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 );
 		final RealMaskRealInterval rm = b.transform( transformToSource );
 
@@ -740,7 +740,7 @@ public class OperatorsTest
 
 		final double[][] rotationMatrix = { { Math.cos( angle ), 0, Math.sin( angle ) }, { 0, 1, 0 }, { -Math.sin( angle ), 0, Math.cos( angle ) } };
 
-		final Box< RealPoint > b = new ClosedBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
+		final Box b = new ClosedBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
 		final RealMaskRealInterval rm = b.transform( createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
 
 		// inside both
@@ -769,7 +769,7 @@ public class OperatorsTest
 	@Test
 	public void test2DShearedBox()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 1, 3 }, new double[] { 4, 9 } );
+		final Box b = new ClosedBox( new double[] { 1, 3 }, new double[] { 4, 9 } );
 		final AffineTransform2D transform = new AffineTransform2D();
 		transform.set( 1, 2, 0, 0, 1, 0 );
 
@@ -823,7 +823,7 @@ public class OperatorsTest
 	@Test
 	public void testTransformDecreaseDimsandBounded()
 	{
-		final Box< RealPoint > b = new OpenBox( new double[] { 0.5, 1.5, 1 }, new double[] { 8, 7, 6 } );
+		final Box b = new OpenBox( new double[] { 0.5, 1.5, 1 }, new double[] { 8, 7, 6 } );
 		final AffineGet transformToSource = new TestTransform( 2 );
 		final RealMaskRealInterval rmri = b.transform( transformToSource );
 
@@ -843,7 +843,7 @@ public class OperatorsTest
 	@Test
 	public void testTransformIncreaseDimsandBounded()
 	{
-		final Box< RealPoint > b = new OpenBox( new double[] { 0.5, 1 }, new double[] { 8, 7 } );
+		final Box b = new OpenBox( new double[] { 0.5, 1 }, new double[] { 8, 7 } );
 		final AffineGet transformToSource = new TestTransformInverse( 3 );
 		final RealMaskRealInterval rmri = b.transform( transformToSource );
 
@@ -867,8 +867,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedXorBounded()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 3, 3 }, new double[] { 10, 10 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 7 } );
+		final Box b1 = new ClosedBox( new double[] { 3, 3 }, new double[] { 10, 10 } );
+		final Box b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 7 } );
 		final RealMaskRealInterval rm = b1.xor( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 3, 8 } ) ) );
@@ -956,8 +956,8 @@ public class OperatorsTest
 	@Test
 	public void testXorWithEmpty()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -985,8 +985,8 @@ public class OperatorsTest
 	@Test
 	public void testXorWithAll()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -1020,8 +1020,8 @@ public class OperatorsTest
 	@Test
 	public void testBinaryCompositeMaskPredicate()
 	{
-		final Box< RealPoint > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealPoint > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertTrue( rm instanceof BinaryCompositeMaskPredicate );
@@ -1034,7 +1034,7 @@ public class OperatorsTest
 	@Test
 	public void testUnaryCompositeMaskPredicate()
 	{
-		final Box< RealPoint > b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
+		final Box b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
 		final RealMask rm = b.negate();
 
 		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
@@ -1045,7 +1045,7 @@ public class OperatorsTest
 	@Test
 	public void testUnaryCompositeMaskPredicateTransform()
 	{
-		final Box< RealPoint > b = new OpenBox( new double[] { 0, 1 }, new double[] { 12, 19 } );
+		final Box b = new OpenBox( new double[] { 0, 1 }, new double[] { 12, 19 } );
 		final AffineTransform2D t = new AffineTransform2D();
 		t.translate( 1, 5 );
 		final AffineTransform2D i = t.inverse();
@@ -1072,8 +1072,8 @@ public class OperatorsTest
 	@Test
 	public void testSimpleCompositeEquals()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 
 		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
@@ -1093,14 +1093,14 @@ public class OperatorsTest
 	@Test
 	public void testCompositeEquals()
 	{
-		final Box< RealPoint > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
 		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Box< RealPoint > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
-		final Box< RealPoint > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
 
 		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
 		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );
@@ -1116,8 +1116,8 @@ public class OperatorsTest
 	@Test
 	public void testSimpleCompositeHashCode()
 	{
-		final Box< RealPoint > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealPoint > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 
 		final Sphere< RealPoint > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Sphere< RealPoint > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
@@ -1137,14 +1137,14 @@ public class OperatorsTest
 	@Test
 	public void testCompositeHashCode()
 	{
-		final Box< RealPoint > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealPoint > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 		final Sphere< RealPoint > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Sphere< RealPoint > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
 		final Ellipsoid< RealPoint > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
 		final Ellipsoid< RealPoint > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Box< RealPoint > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
-		final Box< RealPoint > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
 
 		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
 		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );
@@ -1237,7 +1237,7 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void apply( double[] source, double[] target )
+		public void apply( final double[] source, final double[] target )
 		{
 			for( int i = 0; i < numSourceDimensions(); i++ )
 				target[ i ] = source[ i ];
@@ -1245,7 +1245,7 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void apply( float[] source, float[] target )
+		public void apply( final float[] source, final float[] target )
 		{
 			for( int i = 0; i < numSourceDimensions(); i++ )
 				target[ i ] = source[ i ];
@@ -1274,7 +1274,7 @@ public class OperatorsTest
 
 		@Override
 		public AffineGet inverse()
-		{ 
+		{
 			return new TestTransformInverse( numTargetDimensions() );
 		}
 	}
@@ -1315,14 +1315,14 @@ public class OperatorsTest
 		}
 
 		@Override
-		public void apply( double[] source, double[] target )
+		public void apply( final double[] source, final double[] target )
 		{
 			for( int i = 0; i < numTargetDimensions(); i++ )
 				target[ i ] = source[ i ];
 		}
 
 		@Override
-		public void apply( float[] source, float[] target )
+		public void apply( final float[] source, final float[] target )
 		{
 			for( int i = 0; i < numTargetDimensions(); i++ )
 				target[ i ] = source[ i ];
@@ -1349,7 +1349,7 @@ public class OperatorsTest
 
 		@Override
 		public AffineGet inverse()
-		{ 
+		{
 			return new TestTransform( numTargetDimensions() );
 		}
 	}

@@ -86,13 +86,13 @@ public class GeomMasks
 	// -- Box --
 
 	/** Creates a {@link ClosedBox}. */
-	public static Box< RealPoint > closedBox( final double[] min, final double[] max )
+	public static Box closedBox( final double[] min, final double[] max )
 	{
 		return new ClosedBox( min, max );
 	}
 
 	/** Creates an {@link OpenBox}. */
-	public static Box< RealPoint > openBox( final double[] min, final double[] max )
+	public static Box openBox( final double[] min, final double[] max )
 	{
 		return new OpenBox( min, max );
 	}
