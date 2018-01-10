@@ -34,8 +34,6 @@
 
 package net.imglib2.roi.geom.real;
 
-import java.util.Objects;
-
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;

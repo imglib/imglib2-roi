@@ -44,8 +44,6 @@ import net.imglib2.RealRandomAccessible;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.OpenBox;
-import net.imglib2.roi.mask.real.RealMaskAsRealRandomAccessible;
-import net.imglib2.roi.mask.real.RealMaskRealIntervalAsRealRandomAccessibleRealInterval;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.logic.BoolType;
 

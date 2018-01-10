@@ -194,7 +194,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		return this.or( that );
 	}
 
-	@SuppressWarnings( { "unchecked", "unused" } )
+	@SuppressWarnings( { "unchecked" } )
 	public B minus( final B that )
 	{
 		return ( B ) this;

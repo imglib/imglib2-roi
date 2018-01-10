@@ -37,8 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.imglib2.roi.Operators.BinaryMaskOperator;
-
 /**
  * A {@link CompositeMaskPredicate} with a binary operator and two operands.
  *

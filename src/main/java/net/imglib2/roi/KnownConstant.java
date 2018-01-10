@@ -1,7 +1,5 @@
 package net.imglib2.roi;
 
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 public enum KnownConstant
