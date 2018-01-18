@@ -39,7 +39,6 @@ import java.util.List;
 
 import net.imglib2.KDTree;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.RealPointSampleList;
 import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.geom.real.Box;
@@ -101,13 +100,13 @@ public class GeomMasks
 	// -- Ellipsoid --
 
 	/** Creates a {@link ClosedEllipsoid}. */
-	public static Ellipsoid< RealPoint > closedEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public static Ellipsoid< RealLocalizableRealPositionable > closedEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new ClosedEllipsoid( center, semiAxisLengths );
 	}
 
 	/** Creates an {@link OpenEllipsoid}. */
-	public static Ellipsoid< RealPoint > openEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public static Ellipsoid< RealLocalizableRealPositionable > openEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new OpenEllipsoid( center, semiAxisLengths );
 	}
@@ -221,13 +220,13 @@ public class GeomMasks
 	// -- Sphere --
 
 	/** Creates a {@link ClosedSphere}. */
-	public static Sphere< RealPoint > closedSphere( final double[] center, final double radius )
+	public static Sphere< RealLocalizableRealPositionable > closedSphere( final double[] center, final double radius )
 	{
 		return new ClosedSphere( center, radius );
 	}
 
 	/** Creates an {@link OpenSphere}. */
-	public static Sphere< RealPoint > openSphere( final double[] center, final double radius )
+	public static Sphere< RealLocalizableRealPositionable > openSphere( final double[] center, final double radius )
 	{
 		return new OpenSphere( center, radius );
 	}
@@ -235,7 +234,7 @@ public class GeomMasks
 	// -- SuperEllipsoid --
 
 	/** Creates a {@link ClosedSuperEllipsoid}. */
-	public static SuperEllipsoid< RealPoint > closedSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public static SuperEllipsoid< RealLocalizableRealPositionable > closedSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
 			return new ClosedEllipsoid( center, semiAxisLengths );
@@ -243,7 +242,7 @@ public class GeomMasks
 	}
 
 	/** Creates an {@link OpenSuperEllipsoid}. */
-	public static SuperEllipsoid< RealPoint > openSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public static SuperEllipsoid< RealLocalizableRealPositionable > openSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
 			return new OpenEllipsoid( center, semiAxisLengths );

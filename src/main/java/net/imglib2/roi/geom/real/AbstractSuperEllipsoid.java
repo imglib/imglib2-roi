@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,15 +35,16 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.util.AbstractRealMaskPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
  * Abstract base class for {@link SuperEllipsoid} implementations.
  *
  * @author Alison Walter
  */
-public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid< RealPoint >
+public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid< RealLocalizableRealPositionable >
 {
 	protected double exponent;
 
@@ -114,9 +115,9 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	 * superellipsoid.
 	 */
 	@Override
-	public RealPoint center()
+	public RealLocalizableRealPositionable center()
 	{
-		return RealPoint.wrap( center );
+		return new SuperEllipsoidCenter( center );
 	}
 
 	@Override
@@ -191,5 +192,23 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 			distancePowered += Math.pow( Math.abs( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] ), exponent );
 
 		return distancePowered;
+	}
+
+	// -- Helper classes --
+
+	private class SuperEllipsoidCenter extends AbstractRealMaskPoint
+	{
+
+		public SuperEllipsoidCenter( final double[] pos )
+		{
+			super( pos );
+		}
+
+		@Override
+		public void updateBounds()
+		{
+			// Not needed, bounds are simple enough to compute
+		}
+
 	}
 }
