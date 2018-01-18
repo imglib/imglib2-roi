@@ -37,10 +37,10 @@ import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -59,7 +59,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D< RealPoint >
+public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D< RealLocalizableRealPositionable >
 {
 	protected final TDoubleArrayList x;
 
@@ -125,7 +125,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D<
 
 	/** Return a copy of the vertex */
 	@Override
-	public RealPoint vertex( final int pos )
+	public RealLocalizableRealPositionable vertex( final int pos )
 	{
 		return new Polygon2DVertex( pos );
 	}

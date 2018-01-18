@@ -69,6 +69,7 @@ import net.imglib2.roi.geom.real.RealPointCollection;
 import net.imglib2.roi.geom.real.RealPointSampleListRealPointCollection;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
  * Utility class for creating {@link MaskPredicate}s.
@@ -86,13 +87,13 @@ public class GeomMasks
 	// -- Box --
 
 	/** Creates a {@link ClosedBox}. */
-	public static Box< RealPoint > closedBox( final double[] min, final double[] max )
+	public static Box< RealLocalizableRealPositionable > closedBox( final double[] min, final double[] max )
 	{
 		return new ClosedBox( min, max );
 	}
 
 	/** Creates an {@link OpenBox}. */
-	public static Box< RealPoint > openBox( final double[] min, final double[] max )
+	public static Box< RealLocalizableRealPositionable > openBox( final double[] min, final double[] max )
 	{
 		return new OpenBox( min, max );
 	}
@@ -114,13 +115,13 @@ public class GeomMasks
 	// -- Line --
 
 	/** Creates a {@link DefaultLine}. */
-	public static Line< RealPoint > line( final RealLocalizable pointOne, final RealLocalizable pointTwo )
+	public static Line< RealLocalizableRealPositionable > line( final RealLocalizable pointOne, final RealLocalizable pointTwo )
 	{
 		return new DefaultLine( pointOne, pointTwo );
 	}
 
 	/** Creates a {@link DefaultLine}. */
-	public static Line< RealPoint > line( final double[] pointOne, final double[] pointTwo, final boolean copy )
+	public static Line< RealLocalizableRealPositionable > line( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
 		return new DefaultLine( pointOne, pointTwo, copy );
 	}
@@ -142,37 +143,37 @@ public class GeomMasks
 	// -- Polygon2D --
 
 	/** Creates a {@link DefaultPolygon2D}. */
-	public static Polygon2D< RealPoint > polygon2D( final List< ? extends RealLocalizable > vertices )
+	public static Polygon2D< RealLocalizableRealPositionable > polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultPolygon2D( vertices );
 	}
 
 	/** Creates a {@link DefaultPolygon2D}. */
-	public static Polygon2D< RealPoint > polygon2D( final double[] x, final double[] y )
+	public static Polygon2D< RealLocalizableRealPositionable > polygon2D( final double[] x, final double[] y )
 	{
 		return new DefaultPolygon2D( x, y );
 	}
 
 	/** Creates a {@link ClosedPolygon2D}. */
-	public static Polygon2D< RealPoint > closedPolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static Polygon2D< RealLocalizableRealPositionable > closedPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new ClosedPolygon2D( vertices );
 	}
 
 	/** Creates a {@link ClosedPolygon2D}. */
-	public static Polygon2D< RealPoint > closedPolygon2D( final double[] x, final double[] y )
+	public static Polygon2D< RealLocalizableRealPositionable > closedPolygon2D( final double[] x, final double[] y )
 	{
 		return new ClosedPolygon2D( x, y );
 	}
 
 	/** Creates an {@link OpenPolygon2D}. */
-	public static Polygon2D< RealPoint > openPolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static Polygon2D< RealLocalizableRealPositionable > openPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new OpenPolygon2D( vertices );
 	}
 
 	/** Creates an {@link OpenPolygon2D}. */
-	public static Polygon2D< RealPoint > openPolygon2D( final double[] x, final double[] y )
+	public static Polygon2D< RealLocalizableRealPositionable > openPolygon2D( final double[] x, final double[] y )
 	{
 		return new OpenPolygon2D( x, y );
 	}
@@ -180,7 +181,7 @@ public class GeomMasks
 	// -- Polyline --
 
 	/** Creates a {@link DefaultPolyline}. */
-	public static Polyline< RealPoint > polyline( final List< ? extends RealLocalizable > vertices )
+	public static Polyline< RealLocalizableRealPositionable > polyline( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultPolyline( vertices );
 	}

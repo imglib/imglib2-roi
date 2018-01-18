@@ -33,11 +33,11 @@
  */
 package net.imglib2.roi.util;
 
+import net.imglib2.AbstractRealLocalizable;
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 
-public abstract class AbstractRealMaskPoint extends RealPoint
+public abstract class AbstractRealMaskPoint extends AbstractRealLocalizable implements RealLocalizableRealPositionable
 {
 	public AbstractRealMaskPoint( final int n )
 	{
@@ -45,11 +45,6 @@ public abstract class AbstractRealMaskPoint extends RealPoint
 	}
 
 	public AbstractRealMaskPoint( final double[] pos )
-	{
-		super( pos, false );
-	}
-
-	public AbstractRealMaskPoint( final RealLocalizable pos )
 	{
 		super( pos );
 	}
@@ -59,154 +54,169 @@ public abstract class AbstractRealMaskPoint extends RealPoint
 	@Override
 	public void move( final float distance, final int d )
 	{
-		super.move( distance, d );
+		position[ d ] += distance;
 		updateBounds();
 	}
 
 	@Override
 	public void move( final double distance, final int d )
 	{
-		super.move( distance, d );
+		position[ d ] += distance;
 		updateBounds();
 	}
 
 	@Override
 	public void move( final RealLocalizable distance )
 	{
-		super.move( distance );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += distance.getDoublePosition( d );
 		updateBounds();
 	}
 
 	@Override
 	public void move( final float[] distance )
 	{
-		super.move( distance );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += distance[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void move( final double[] distance )
 	{
-		super.move( distance );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += distance[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final RealLocalizable position )
 	{
-		super.setPosition( position );
+		for ( int d = 0; d < n; d++ )
+			this.position[ d ] = position.getDoublePosition( d );
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final float[] position )
 	{
-		super.setPosition( position );
+		for ( int d = 0; d < n; d++ )
+			this.position[ d ] = position[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final double[] position )
 	{
-		super.setPosition( position );
+		for ( int d = 0; d < n; d++ )
+			this.position[ d ] = position[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final float position, final int d )
 	{
-		super.setPosition( position, d );
+		this.position[ d ] = position;
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final double position, final int d )
 	{
-		super.setPosition( position, d );
+		this.position[ d ] = position;
 		updateBounds();
 	}
 
 	@Override
 	public void fwd( final int d )
 	{
-		super.fwd( d );
+		++position[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void bck( final int d )
 	{
-		super.bck( d );
+		--position[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void move( final int distance, final int d )
 	{
-		super.move( distance, d );
+		position[ d ] += distance;
 		updateBounds();
 	}
 
 	@Override
 	public void move( final long distance, final int d )
 	{
-		super.move( distance, d );
+		position[ d ] += distance;
 		updateBounds();
 	}
 
 	@Override
 	public void move( final Localizable localizable )
 	{
-		super.move( localizable );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += localizable.getDoublePosition( d );
 		updateBounds();
 	}
 
 	@Override
 	public void move( final int[] distance )
 	{
-		super.move( distance );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += distance[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void move( final long[] distance )
 	{
-		super.move( distance );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] += distance[ d ];
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final Localizable localizable )
 	{
-		super.setPosition( localizable );
+		for ( int d = 0; d < n; d++ )
+			position[ d ] = localizable.getDoublePosition( d );
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final int[] position )
 	{
-		super.setPosition( position );
+		for ( int d = 0; d < n; d++ )
+			this.position[ d ] = position[ d ];
 		updateBounds();
+
 	}
 
 	@Override
 	public void setPosition( final long[] position )
 	{
-		super.setPosition( position );
+		for ( int d = 0; d < n; d++ )
+			this.position[ d ] = position[ d ];
 		updateBounds();
+
 	}
 
 	@Override
 	public void setPosition( final int position, final int d )
 	{
-		super.setPosition( position, d );
+		this.position[ d ] = position;
 		updateBounds();
 	}
 
 	@Override
 	public void setPosition( final long position, final int d )
 	{
-		super.setPosition( position, d );
+		this.position[ d ] = position;
 		updateBounds();
 	}
+
 }

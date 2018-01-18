@@ -37,9 +37,9 @@ import java.util.Arrays;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 import net.imglib2.util.Intervals;
 
 /**
@@ -48,7 +48,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Alison Walter
  */
-public class DefaultLine extends AbstractRealInterval implements Line< RealPoint >
+public class DefaultLine extends AbstractRealInterval implements Line< RealLocalizableRealPositionable >
 {
 	private double[] pointOne;
 
@@ -117,21 +117,21 @@ public class DefaultLine extends AbstractRealInterval implements Line< RealPoint
 	}
 
 	/**
-	 * Returns a {@link RealPoint} positioned at the same location as the first
-	 * location passed to the constructor.
+	 * Returns a {@link RealLocalizableRealPositionable} positioned at the same
+	 * location as the first location passed to the constructor.
 	 */
 	@Override
-	public RealPoint endpointOne()
+	public RealLocalizableRealPositionable endpointOne()
 	{
 		return new LineEndPoint( pointOne );
 	}
 
 	/**
-	 * Returns a {@link RealPoint} positioned at the same location as the second
-	 * location passed to the constructor.
+	 * Returns a {@link RealLocalizableRealPositionable} positioned at the same
+	 * location as the second location passed to the constructor.
 	 */
 	@Override
-	public RealPoint endpointTwo()
+	public RealLocalizableRealPositionable endpointTwo()
 	{
 		return new LineEndPoint( pointTwo );
 	}

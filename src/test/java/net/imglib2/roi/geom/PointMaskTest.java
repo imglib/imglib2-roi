@@ -45,6 +45,7 @@ import net.imglib2.roi.geom.real.DefaultLine;
 import net.imglib2.roi.geom.real.DefaultPointMask;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.PointMask;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -161,7 +162,7 @@ public class PointMaskTest
 		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealPoint > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertTrue( pm.equals( pm2 ) );
 
@@ -177,7 +178,7 @@ public class PointMaskTest
 		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealPoint > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertEquals( pm.hashCode(), pm2.hashCode() );
 

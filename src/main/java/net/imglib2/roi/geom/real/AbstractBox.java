@@ -35,17 +35,17 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMask;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
  * Abstract base class for implementations of {@link Box}.
  *
  * @author Alison Walter
  */
-public abstract class AbstractBox extends AbstractRealInterval implements Box< RealPoint >
+public abstract class AbstractBox extends AbstractRealInterval implements Box< RealLocalizableRealPositionable >
 {
 	/**
 	 * Creates an n-d rectangular {@link RealMask}. The dimensionality is
@@ -72,7 +72,7 @@ public abstract class AbstractBox extends AbstractRealInterval implements Box< R
 	}
 
 	@Override
-	public RealPoint center()
+	public RealLocalizableRealPositionable center()
 	{
 		final double[] center = new double[ n ];
 		for ( int d = 0; d < n; d++ )

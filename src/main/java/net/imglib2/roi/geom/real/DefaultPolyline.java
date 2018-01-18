@@ -39,16 +39,16 @@ import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
  * A polyline, which can be embedded in n-dimensional space.
  *
  * @author Alison Walter
  */
-public class DefaultPolyline extends AbstractRealInterval implements Polyline< RealPoint >
+public class DefaultPolyline extends AbstractRealInterval implements Polyline< RealLocalizableRealPositionable >
 {
 	private final List< double[] > vertices;
 
@@ -97,7 +97,7 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline< R
 	 * have been added/removed.
 	 */
 	@Override
-	public RealPoint vertex( final int pos )
+	public RealLocalizableRealPositionable vertex( final int pos )
 	{
 		return new PolylineVertex( vertices.get( pos ) );
 	}
