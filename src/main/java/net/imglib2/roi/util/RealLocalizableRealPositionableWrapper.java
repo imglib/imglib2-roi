@@ -1,0 +1,217 @@
+/*
+ * #%L
+ * ImgLib2: a general-purpose, multidimensional image processing library.
+ * %%
+ * Copyright (C) 2009 - 2017 Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
+ * John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
+ * Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
+ * Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
+ * Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
+ * Jean-Yves Tinevez and Michael Zinsmaier.
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+package net.imglib2.roi.util;
+
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
+
+/**
+ * Wraps objects which implement {@link RealLocalizable} and
+ * {@link RealPositionable} as {@link RealLocalizableRealPositionable}.
+ *
+ * @author Alison Walter
+ */
+public class RealLocalizableRealPositionableWrapper extends AbstractEuclideanSpace implements RealLocalizableRealPositionable
+{
+
+	private final RealLocalizable localizableSource;
+
+	private final RealPositionable positionableSource;
+
+	public < T extends RealLocalizable & RealPositionable > RealLocalizableRealPositionableWrapper( final T source )
+	{
+		super( source.numDimensions() );
+		localizableSource = source;
+		positionableSource = source;
+	}
+
+	@Override
+	public void localize( final float[] position )
+	{
+		localizableSource.localize( position );
+	}
+
+	@Override
+	public void localize( final double[] position )
+	{
+		localizableSource.localize( position );
+	}
+
+	@Override
+	public float getFloatPosition( final int d )
+	{
+		return localizableSource.getFloatPosition( d );
+	}
+
+	@Override
+	public double getDoublePosition( final int d )
+	{
+		return localizableSource.getDoublePosition( d );
+	}
+
+	@Override
+	public void move( final float distance, final int d )
+	{
+		positionableSource.move( distance, d );
+	}
+
+	@Override
+	public void move( final double distance, final int d )
+	{
+		positionableSource.move( distance, d );
+	}
+
+	@Override
+	public void move( final RealLocalizable distance )
+	{
+		positionableSource.move( distance );
+	}
+
+	@Override
+	public void move( final float[] distance )
+	{
+		positionableSource.move( distance );
+	}
+
+	@Override
+	public void move( final double[] distance )
+	{
+		positionableSource.move( distance );
+	}
+
+	@Override
+	public void setPosition( final RealLocalizable position )
+	{
+		positionableSource.setPosition( position );
+	}
+
+	@Override
+	public void setPosition( final float[] position )
+	{
+		positionableSource.setPosition( position );
+	}
+
+	@Override
+	public void setPosition( final double[] position )
+	{
+		positionableSource.setPosition( position );
+	}
+
+	@Override
+	public void setPosition( final float position, final int d )
+	{
+		positionableSource.setPosition( position, d );
+	}
+
+	@Override
+	public void setPosition( final double position, final int d )
+	{
+		positionableSource.setPosition( position, d );
+	}
+
+	@Override
+	public void fwd( final int d )
+	{
+		positionableSource.fwd( d );
+	}
+
+	@Override
+	public void bck( final int d )
+	{
+		positionableSource.bck( d );
+	}
+
+	@Override
+	public void move( final int distance, final int d )
+	{
+		positionableSource.move( distance, d );
+	}
+
+	@Override
+	public void move( final long distance, final int d )
+	{
+		positionableSource.move( distance, d );
+	}
+
+	@Override
+	public void move( final Localizable localizable )
+	{
+		positionableSource.move( localizable );
+	}
+
+	@Override
+	public void move( final int[] distance )
+	{
+		positionableSource.move( distance );
+	}
+
+	@Override
+	public void move( final long[] distance )
+	{
+		positionableSource.move( distance );
+	}
+
+	@Override
+	public void setPosition( final Localizable localizable )
+	{
+		positionableSource.setPosition( localizable );
+	}
+
+	@Override
+	public void setPosition( final int[] position )
+	{
+		positionableSource.setPosition( position );
+	}
+
+	@Override
+	public void setPosition( final long[] position )
+	{
+		positionableSource.setPosition( position );
+	}
+
+	@Override
+	public void setPosition( final int position, final int d )
+	{
+		positionableSource.setPosition( position, d );
+	}
+
+	@Override
+	public void setPosition( final long position, final int d )
+	{
+		positionableSource.setPosition( position, d );
+	}
+
+}
