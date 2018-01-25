@@ -48,7 +48,7 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public class DefaultPolyline extends AbstractRealInterval implements Polyline< RealLocalizableRealPositionable >
+public class DefaultPolyline extends AbstractRealInterval implements WritablePolyline
 {
 	private final List< double[] > vertices;
 

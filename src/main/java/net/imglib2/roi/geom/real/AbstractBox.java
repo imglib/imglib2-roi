@@ -41,11 +41,11 @@ import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * Abstract base class for implementations of {@link Box}.
+ * Abstract base class for implementations of {@link WritableBox}.
  *
  * @author Alison Walter
  */
-public abstract class AbstractBox extends AbstractRealInterval implements Box< RealLocalizableRealPositionable >
+public abstract class AbstractBox extends AbstractRealInterval implements WritableBox
 {
 	/**
 	 * Creates an n-d rectangular {@link RealMask}. The dimensionality is

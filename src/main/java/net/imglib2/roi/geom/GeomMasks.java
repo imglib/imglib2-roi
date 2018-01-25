@@ -40,6 +40,7 @@ import java.util.List;
 import net.imglib2.KDTree;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPointSampleList;
+import net.imglib2.RealPositionable;
 import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedBox;
@@ -188,13 +189,13 @@ public class GeomMasks
 	// -- RealPointCollection --
 
 	/** Creates a {@link DefaultRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > realPointCollection( final HashSet< L > points )
+	public static < L extends RealLocalizable & RealPositionable > RealPointCollection< L > realPointCollection( final HashSet< L > points )
 	{
 		return new DefaultRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link DefaultRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > realPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable & RealPositionable > RealPointCollection< L > realPointCollection( final Collection< L > points )
 	{
 		return new DefaultRealPointCollection<>( points );
 	}
@@ -212,7 +213,7 @@ public class GeomMasks
 	}
 
 	/** Creates a {@link RealPointSampleListRealPointCollection}. */
-	public static < L extends RealLocalizable > NNSRealPointCollection< L > realPointSampleListRealPointCollection( final RealPointSampleList< L > points )
+	public static < L extends RealLocalizable & RealPositionable > NNSRealPointCollection< L > realPointSampleListRealPointCollection( final RealPointSampleList< L > points )
 	{
 		return new RealPointSampleListRealPointCollection<>( points );
 	}

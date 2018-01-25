@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.geom.real.DefaultRealPointCollection;
 import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
@@ -56,15 +55,15 @@ import org.junit.rules.TestRule;
 
 public class RealPointCollectionBenchmarkTest
 {
-	private static final List< RealLocalizable > points = new ArrayList<>();
+	private static final List< RealPoint > points = new ArrayList<>();
 
 	private static final RealPoint testPoint = new RealPoint( new double[] { 0, 0 } );
 
-	private static RealPointCollection< RealLocalizable > drpc;
+	private static RealPointCollection< RealPoint > drpc;
 
-	private static RealPointCollection< RealLocalizable > tree;
+	private static RealPointCollection< RealPoint > tree;
 
-	private static RealPointCollection< RealLocalizable > rpsl;
+	private static RealPointCollection< RealPoint > rpsl;
 
 	@Rule
 	public TestRule benchmarkRun = new BenchmarkRule();

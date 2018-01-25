@@ -39,16 +39,16 @@ import net.imglib2.RealPoint;
 import net.imglib2.roi.Mask;
 
 /**
- * A {@link PointMask} specified by the given location.
+ * A {@link WritablePointMask} specified by the given location.
  *
  * @author Alison Walter
  */
-public class DefaultPointMask extends RealPoint implements PointMask
+public class DefaultPointMask extends RealPoint implements WritablePointMask
 {
 	/**
-	 * Creates a {@link PointMask} with the given point, such that only that
-	 * point is contained in the {@link Mask}. The dimensionality of the space
-	 * is determined by the number of dimensions of {@code pt}.
+	 * Creates a {@link WritablePointMask} with the given point, such that only
+	 * that point is contained in the {@link Mask}. The dimensionality of the
+	 * space is determined by the number of dimensions of {@code pt}.
 	 *
 	 * @param pt
 	 *            The point which the mask should contain.
@@ -59,7 +59,7 @@ public class DefaultPointMask extends RealPoint implements PointMask
 	}
 
 	/**
-	 * Creates a {@link PointMask} with given array, such that only that
+	 * Creates a {@link WritablePointMask} with given array, such that only that
 	 * location is contained in the {@link Mask}.
 	 *
 	 * @param pt

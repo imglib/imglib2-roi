@@ -40,11 +40,11 @@ import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * Abstract base class for {@link Sphere} implementations.
+ * Abstract base class for {@link WritableSphere} implementations.
  *
  * @author Alison Walter
  */
-public abstract class AbstractSphere extends AbstractEuclideanSpace implements Sphere< RealLocalizableRealPositionable >
+public abstract class AbstractSphere extends AbstractEuclideanSpace implements WritableSphere
 {
 	protected final double[] center;
 

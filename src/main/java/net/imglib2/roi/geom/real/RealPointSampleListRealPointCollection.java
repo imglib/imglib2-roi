@@ -39,11 +39,12 @@ import java.util.Collection;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealPointSampleList;
+import net.imglib2.RealPositionable;
 import net.imglib2.neighborsearch.NearestNeighborSearch;
 
 /**
- * A {@link RealPointCollection} which checks if points are contained in the
- * collection by performing a {@link NearestNeighborSearch} on the provided
+ * A {@link WritableRealPointCollection} which checks if points are contained in
+ * the collection by performing a {@link NearestNeighborSearch} on the provided
  * {@link RealPointSampleList}.
  *
  * <p>
@@ -53,7 +54,7 @@ import net.imglib2.neighborsearch.NearestNeighborSearch;
  *
  * @author Alison Walter
  */
-public class RealPointSampleListRealPointCollection< L extends RealLocalizable > extends NNSRealPointCollection< L >
+public class RealPointSampleListRealPointCollection< L extends RealLocalizable & RealPositionable > extends NNSRealPointCollection< L > implements WritableRealPointCollection< L >
 {
 
 	/**

@@ -40,11 +40,11 @@ import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * Abstract base class for {@link SuperEllipsoid} implementations.
+ * Abstract base class for {@link WritableSuperEllipsoid} implementations.
  *
  * @author Alison Walter
  */
-public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements SuperEllipsoid< RealLocalizableRealPositionable >
+public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements WritableSuperEllipsoid
 {
 	protected double exponent;
 

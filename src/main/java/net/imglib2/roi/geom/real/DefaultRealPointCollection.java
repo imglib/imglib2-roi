@@ -39,6 +39,7 @@ import java.util.HashMap;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
+import net.imglib2.RealPositionable;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.util.Intervals;
 
@@ -49,7 +50,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author Alison Walter
  */
-public class DefaultRealPointCollection< L extends RealLocalizable > extends AbstractRealInterval implements RealPointCollection< L >
+public class DefaultRealPointCollection< L extends RealLocalizable & RealPositionable > extends AbstractRealInterval implements WritableRealPointCollection< L >
 {
 	private final HashMap< TDoubleArrayList, L > points;
 
@@ -162,7 +163,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable > extends Abs
 	public int hashCode()
 	{
 		int result = 71;
-		for ( L l : points.values() )
+		for ( final L l : points.values() )
 			for ( int d = 0; d < l.numDimensions(); d++ )
 				result += 3 * l.getDoublePosition( d );
 		return result;

@@ -45,8 +45,7 @@ import net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree;
 /**
  * A {@link RealPointCollection} which checks if points are contained in the
  * collection by performing a {@link NearestNeighborSearch} on the provided
- * {@link KDTree}. This implementation of {@link RealPointCollection} is
- * intended to be <b>immutable</b>.
+ * {@link KDTree}.
  *
  * @author Alison Walter
  */

@@ -34,14 +34,13 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * Abstract base class for {@link Ellipsoid} implementations.
+ * Abstract base class for {@link WritableEllipsoid} implementations.
  *
  * @author Alison Walter
  */
-public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implements Ellipsoid< RealLocalizableRealPositionable >
+public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implements WritableEllipsoid
 {
 
 	/**

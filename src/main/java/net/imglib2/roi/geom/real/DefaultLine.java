@@ -48,7 +48,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Alison Walter
  */
-public class DefaultLine extends AbstractRealInterval implements Line< RealLocalizableRealPositionable >
+public class DefaultLine extends AbstractRealInterval implements WritableLine
 {
 	private double[] pointOne;
 

@@ -59,7 +59,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class DefaultPolygon2D extends AbstractRealInterval implements Polygon2D< RealLocalizableRealPositionable >
+public class DefaultPolygon2D extends AbstractRealInterval implements WritablePolygon2D
 {
 	protected final TDoubleArrayList x;
 
