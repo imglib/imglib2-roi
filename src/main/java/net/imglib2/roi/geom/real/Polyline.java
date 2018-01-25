@@ -34,7 +34,6 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -50,12 +49,6 @@ public interface Polyline< T > extends RealMaskRealInterval
 
 	/** Returns the number of vertices which define this polyline. */
 	int numVertices();
-
-	/** Adds a vertex at the given index. */
-	void addVertex( int index, RealLocalizable vertex );
-
-	/** Removes the vertex at the given index. */
-	void removeVertex( int index );
 
 	@Override
 	default BoundaryType boundaryType()

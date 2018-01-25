@@ -48,10 +48,4 @@ public interface Polygon2D< T > extends RealMaskRealInterval
 
 	/** Get the number of vertices */
 	int numVertices();
-
-	/** Adds a vertex at the given index. */
-	void addVertex( int index, double[] vertex );
-
-	/** Removes the vertex at the given index. */
-	void removeVertex( int index );
 }

@@ -49,7 +49,4 @@ public interface Box< T > extends RealMaskRealInterval
 
 	/** Returns the center of the Box. */
 	T center();
-
-	/** Updates the length of the side in dimension d. */
-	void setSideLength( int d, double length );
 }

@@ -48,32 +48,6 @@ public interface RealPointCollection< L extends RealLocalizable > extends RealMa
 	/** Returns the points in the collection. */
 	Iterable< L > points();
 
-	/**
-	 * Optional operation. Adds a point to the collection.
-	 *
-	 * @param point
-	 *            Point to add to collection
-	 * @throws UnsupportedOperationException
-	 *             Not all RealPoinCollections are mutable
-	 */
-	default void addPoint( final L point )
-	{
-		throw new UnsupportedOperationException( "addPoint" );
-	}
-
-	/**
-	 * Optional operation. Removes a point from the collection.
-	 *
-	 * @param point
-	 *            Point to remove from collection
-	 * @throws UnsupportedOperationException
-	 *             Not all RealPoinCollections are mutable
-	 */
-	default void removePoint( final L point )
-	{
-		throw new UnsupportedOperationException( "removePoint" );
-	}
-
 	@Override
 	default BoundaryType boundaryType()
 	{

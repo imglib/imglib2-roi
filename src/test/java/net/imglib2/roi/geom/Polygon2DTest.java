@@ -49,6 +49,7 @@ import net.imglib2.roi.geom.real.ClosedPolygon2D;
 import net.imglib2.roi.geom.real.DefaultPolygon2D;
 import net.imglib2.roi.geom.real.OpenPolygon2D;
 import net.imglib2.roi.geom.real.Polygon2D;
+import net.imglib2.roi.geom.real.WritablePolygon2D;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.BeforeClass;
@@ -212,7 +213,7 @@ public class Polygon2DTest
 	@Test
 	public void testAddVertex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new ClosedPolygon2D( points );
+		final WritablePolygon2D p = new ClosedPolygon2D( points );
 
 		assertFalse( p.test( new RealPoint( new double[] { 20, 6.5 } ) ) );
 
@@ -226,7 +227,7 @@ public class Polygon2DTest
 	@Test
 	public void testRemoveVertex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new OpenPolygon2D( points );
+		final WritablePolygon2D p = new OpenPolygon2D( points );
 
 		assertTrue( p.test( new RealPoint( new double[] { 20.125, 17 } ) ) );
 
@@ -245,7 +246,7 @@ public class Polygon2DTest
 		pts.add( new RealPoint( new double[] { 5, 5 } ) );
 		pts.add( new RealPoint( new double[] { 10, 10 } ) );
 
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( pts );
+		final WritablePolygon2D p = new DefaultPolygon2D( pts );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 0 ), 0, 0 );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 1 ), 0, 0 );
 	}
@@ -258,7 +259,7 @@ public class Polygon2DTest
 		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
 		pts.add( new RealPoint( new double[] { 10, 10 } ) );
 
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( pts );
+		final WritablePolygon2D p = new DefaultPolygon2D( pts );
 
 		assertEquals( p.numVertices(), 3 );
 		assertEquals( p.vertex( 1 ).getDoublePosition( 0 ), 5, 0 );
@@ -283,7 +284,7 @@ public class Polygon2DTest
 		final double[] x = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		final double[] y = new double[] { 1, 2, 3, 4, 5, 6, 7 };
 
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( x, y );
+		final WritablePolygon2D p = new DefaultPolygon2D( x, y );
 
 		assertEquals( p.numVertices(), 7 );
 		assertEquals( p.vertex( 6 ).getDoublePosition( 0 ), 7, 0 );
@@ -301,7 +302,7 @@ public class Polygon2DTest
 		vertices.add( new RealPoint( new double[] { -1, -2, -3 } ) );
 		vertices.add( new RealPoint( new double[] { 10, 9, 8 } ) );
 
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( vertices );
+		final WritablePolygon2D p = new DefaultPolygon2D( vertices );
 		assertEquals( p.numVertices(), 3 );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 0 ), 1, 0 );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 1 ), 2, 0 );
@@ -314,7 +315,7 @@ public class Polygon2DTest
 	@Test
 	public void testSetVertexMoreThanTwo()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		p.vertex( 0 ).setPosition( new double[] { 1, 2, 3 } );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 0 ), 1, 0 );
@@ -324,7 +325,7 @@ public class Polygon2DTest
 	@Test
 	public void testAddVertexMoreThanTwo()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		p.addVertex( 3, new double[] { 1, 2, 3 } );
 		assertEquals( p.vertex( 3 ).getDoublePosition( 0 ), 1, 0 );
@@ -334,7 +335,7 @@ public class Polygon2DTest
 	@Test
 	public void testSetVertexLessThanTwo()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.vertex( 0 ).setPosition( new double[] { 1 } );
@@ -343,7 +344,7 @@ public class Polygon2DTest
 	@Test
 	public void testAddVertexLessThanTwo()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.addVertex( 3, new double[] {} );
@@ -352,7 +353,7 @@ public class Polygon2DTest
 	@Test
 	public void testSetVertexInvalidIndex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.vertex( 6 ).setPosition( new double[] { 1, 2 } );
@@ -361,7 +362,7 @@ public class Polygon2DTest
 	@Test
 	public void testAddVertexInvalidIndex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.addVertex( 6, new double[] { 1, 2 } );
@@ -370,7 +371,7 @@ public class Polygon2DTest
 	@Test
 	public void testRemoveVertexInvalidIndex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.removeVertex( 6 );
@@ -380,7 +381,7 @@ public class Polygon2DTest
 	public void testBounds()
 	{
 		// bounds are the same regardless of boundary type
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( points );
+		final WritablePolygon2D p = new DefaultPolygon2D( points );
 		final double[] max = new double[] { 25, 20 };
 		final double[] min = new double[] { 15, 10 };
 		final double[] pMin = new double[ 2 ];
@@ -418,7 +419,7 @@ public class Polygon2DTest
 	public void testEquals()
 	{
 		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p2 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final WritablePolygon2D p2 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
 		final Polygon2D< RealLocalizableRealPositionable > p3 = new DefaultPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
 		final Polygon2D< RealLocalizableRealPositionable > p4 = new DefaultPolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
 		final Polygon2D< RealLocalizableRealPositionable > cp = new ClosedPolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );

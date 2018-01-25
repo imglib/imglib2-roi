@@ -53,10 +53,4 @@ public interface SuperEllipsoid< T > extends RealMaskRealInterval
 
 	/** Returns the center of the superellipsoid */
 	T center();
-
-	/** Sets the exponent. */
-	void setExponent( double exponent );
-
-	/** Sets the semi-axis length in dimension d. */
-	void setSemiAxisLength( int d, double length );
 }

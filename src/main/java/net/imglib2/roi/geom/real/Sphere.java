@@ -45,7 +45,4 @@ public interface Sphere< T > extends Ellipsoid< T >
 {
 	/** Returns the radius of this sphere. */
 	double radius();
-
-	/** Sets the radius. */
-	void setRadius( double radius );
 }

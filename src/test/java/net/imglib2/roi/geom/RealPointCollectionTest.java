@@ -51,6 +51,7 @@ import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
 import net.imglib2.roi.geom.real.PointMask;
 import net.imglib2.roi.geom.real.RealPointCollection;
 import net.imglib2.roi.geom.real.RealPointSampleListRealPointCollection;
+import net.imglib2.roi.geom.real.WritableRealPointCollection;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -155,7 +156,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCAddPoint()
 	{
-		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -166,7 +167,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCRemovePoint()
 	{
-		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 
 		assertTrue( rpc.test( new RealPoint( new double[] { -13, -13 } ) ) );
 
@@ -175,27 +176,9 @@ public class RealPointCollectionTest
 	}
 
 	@Test
-	public void testKDTreeRPCAddPoint()
-	{
-		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
-
-		exception.expect( UnsupportedOperationException.class );
-		rpc.addPoint( new RealPoint( new double[] { 6, 2 } ) );
-	}
-
-	@Test
-	public void testKDTreeRPCRemovePoint()
-	{
-		final RealPointCollection< RealPoint > rpc = new KDTreeRealPointCollection<>( points );
-
-		exception.expect( UnsupportedOperationException.class );
-		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
-	}
-
-	@Test
 	public void testRealPointSampleListRPCAddPoint()
 	{
-		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -206,7 +189,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCRemovePoint()
 	{
-		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 
 		exception.expect( UnsupportedOperationException.class );
 		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
@@ -215,7 +198,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCBounds()
 	{
-		final RealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
@@ -261,7 +244,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCBounds()
 	{
-		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		final double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
