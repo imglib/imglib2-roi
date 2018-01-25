@@ -46,6 +46,7 @@ import net.imglib2.roi.geom.real.Ellipsoid;
 import net.imglib2.roi.geom.real.OpenEllipsoid;
 import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,7 +65,7 @@ public class EllipsoidTest
 	@Test
 	public void testOpenEllipsoid()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertFalse( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -90,7 +91,7 @@ public class EllipsoidTest
 	@Test
 	public void testClosedEllipsoid()
 	{
-		final Ellipsoid< ? > e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertTrue( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -116,7 +117,7 @@ public class EllipsoidTest
 	@Test
 	public void testEllipsoidSetExponent()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
 
 		exception.expect( UnsupportedOperationException.class );
 		e.setExponent( 3 );
@@ -125,7 +126,7 @@ public class EllipsoidTest
 	@Test
 	public void testMutateOpenEllipsoid()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
 		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
 		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
@@ -157,7 +158,7 @@ public class EllipsoidTest
 	@Test
 	public void testMutateClosedEllipsoid()
 	{
-		final Ellipsoid< ? > e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
 		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
 		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
@@ -203,7 +204,7 @@ public class EllipsoidTest
 	@Test
 	public void testCenterLonger()
 	{
-		final Ellipsoid< ? > e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
 
 		assertEquals( e.numDimensions(), 2 );
 		assertEquals( e.center().numDimensions(), 2 );
@@ -216,7 +217,7 @@ public class EllipsoidTest
 	@Test
 	public void testSemiAxisLengthLonger()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
 
 		assertEquals( e.numDimensions(), 2 );
 		final double[] t = new double[ e.numDimensions() ];
@@ -233,7 +234,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetNegativeSemiAxisLength()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
 
 		exception.expect( IllegalArgumentException.class );
 		e.setSemiAxisLength( 0, -0.125 );
@@ -242,7 +243,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
 
 		exception.expect( ArrayIndexOutOfBoundsException.class );
 		e.center().setPosition( new double[] { 4, 3 } );
@@ -251,7 +252,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final Ellipsoid< ? > e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
 
 		e.center().setPosition( new double[] { 4, 12, 5 } );
 		final double[] c = new double[ e.center().numDimensions() ];
@@ -265,7 +266,7 @@ public class EllipsoidTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open or closed ellipsoids
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 		double[] min = new double[] { 12 - 4, 23 - 9 };
 		double[] max = new double[] { 12 + 4, 23 + 9 };
 		final double[] eMin = new double[ 2 ];
@@ -297,11 +298,11 @@ public class EllipsoidTest
 	@Test
 	public void testEquals()
 	{
-		final Ellipsoid< ? > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final Ellipsoid< ? > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final Ellipsoid< ? > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
-		final Ellipsoid< ? > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final SuperEllipsoid< ? > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final SuperEllipsoid< RealLocalizableRealPositionable > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
 
 		assertTrue( oe.equals( oe2 ) );
 		assertTrue( oe.equals( se ) );
@@ -321,11 +322,11 @@ public class EllipsoidTest
 	@Test
 	public void testHashCode()
 	{
-		final Ellipsoid< ? > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final Ellipsoid< ? > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final Ellipsoid< ? > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
-		final Ellipsoid< ? > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final SuperEllipsoid< ? > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final SuperEllipsoid< RealLocalizableRealPositionable > se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
 
 		assertEquals( oe.hashCode(), oe2.hashCode() );
 		assertEquals( oe.hashCode(), se.hashCode() );

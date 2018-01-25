@@ -137,12 +137,15 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	}
 
 	@Override
+	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof SuperEllipsoid ) )
 			return false;
+		if ( !( ( ( SuperEllipsoid< ? > ) obj ).center() instanceof RealLocalizable ) )
+			return false;
 
-		final SuperEllipsoid< ? > se = ( SuperEllipsoid< ? > ) obj;
+		final SuperEllipsoid< RealLocalizable > se = ( SuperEllipsoid< RealLocalizable > ) obj;
 		if ( se.numDimensions() != n || exponent != se.exponent() || boundaryType() != se.boundaryType() )
 			return false;
 

@@ -104,7 +104,7 @@ public class PolylineTest
 	@Test
 	public void testSimplePolyline()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( simple );
 
 		// check all vertices
 		for ( int i = 0; i < simple.size(); i++ )
@@ -134,7 +134,7 @@ public class PolylineTest
 	@Test
 	public void test4DPolyline()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( fourD );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( fourD );
 
 		// check all vertices
 		for ( int i = 0; i < fourD.size(); i++ )
@@ -161,7 +161,7 @@ public class PolylineTest
 	@Test
 	public void testSelfIntersectingPolyline()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( intersect );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( intersect );
 
 		// check all vertices
 		for ( int i = 0; i < intersect.size(); i++ )
@@ -193,7 +193,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertex()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( polyline );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( polyline );
 
 		assertTrue( assertRealLocalizableEquals( pl.vertex( 1 ), polyline.get( 1 ) ) );
 		assertTrue( pl.test( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
@@ -209,7 +209,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertex()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( polyline );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( polyline );
 
 		assertEquals( pl.numVertices(), 3 );
 		assertFalse( pl.test( new RealPoint( new double[] { 207, 2.45 } ) ) );
@@ -224,7 +224,7 @@ public class PolylineTest
 	@Test
 	public void testRemoveVertex()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( polyline );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( polyline );
 
 		assertEquals( pl.numVertices(), 3 );
 		assertTrue( assertRealLocalizableEquals( pl.vertex( 1 ), polyline.get( 1 ) ) );
@@ -259,7 +259,7 @@ public class PolylineTest
 		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
 		pts.add( new RealPoint( new double[] { 9, 9, 9, 9 } ) );
 
-		final Polyline< ? > p = new DefaultPolyline( pts );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( pts );
 		assertRealLocalizableEquals( p.vertex( 0 ), new double[] { 1, 1 } );
 		assertRealLocalizableEquals( p.vertex( 1 ), new double[] { 5, 5 } );
 		assertRealLocalizableEquals( p.vertex( 2 ), new double[] { 9, 9 } );
@@ -268,7 +268,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertexNotN()
 	{
-		final Polyline< ? > p = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( simple );
 
 		p.vertex( 0 ).setPosition( new double[] { 1, 2, 3 } );
 		assertEquals( p.vertex( 0 ).numDimensions(), 2 );
@@ -282,7 +282,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertexNotN()
 	{
-		final Polyline< ? > p = new DefaultPolyline( fourD );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( fourD );
 
 		exception.expect( IllegalArgumentException.class );
 		p.addVertex( 3, new RealPoint( new double[] { 1, 2, 3 } ) );
@@ -291,7 +291,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertexInvalidIndex()
 	{
-		final Polyline< ? > p = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.vertex( 6 ).setPosition( new double[] { 1, 2 } );
@@ -300,7 +300,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertexInvalidIndex()
 	{
-		final Polyline< ? > p = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.addVertex( 6, new RealPoint( new double[] { 1, 2 } ) );
@@ -309,7 +309,7 @@ public class PolylineTest
 	@Test
 	public void testRemoveVertexInvalidIndex()
 	{
-		final Polyline< ? > p = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.removeVertex( 6 );
@@ -318,7 +318,7 @@ public class PolylineTest
 	@Test
 	public void testBounds()
 	{
-		final Polyline< ? > pl = new DefaultPolyline( simple );
+		final Polyline< RealLocalizableRealPositionable > pl = new DefaultPolyline( simple );
 		final double[] max = new double[] { 30, 10 };
 		final double[] min = new double[] { 0, 0 };
 		final double[] plMin = new double[ 2 ];
@@ -368,8 +368,8 @@ public class PolylineTest
 		a2.add( rp3 );
 		a2.add( rp2 );
 
-		final Polyline< ? > p = new DefaultPolyline( a );
-		Polyline< ? > o = new DefaultPolyline( a );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( a );
+		Polyline< RealLocalizableRealPositionable > o = new DefaultPolyline( a );
 
 		assertTrue( p.equals( o ) );
 
@@ -396,8 +396,8 @@ public class PolylineTest
 		a2.add( rp3 );
 		a2.add( rp2 );
 
-		final Polyline< ? > p = new DefaultPolyline( a );
-		Polyline< ? > o = new DefaultPolyline( a );
+		final Polyline< RealLocalizableRealPositionable > p = new DefaultPolyline( a );
+		Polyline< RealLocalizableRealPositionable > o = new DefaultPolyline( a );
 
 		assertEquals( p.hashCode(), o.hashCode() );
 

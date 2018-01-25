@@ -94,7 +94,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocation()
 	{
-		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
@@ -108,7 +108,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocationTooLong()
 	{
-		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
@@ -125,7 +125,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocationTooShort()
 	{
-		final PointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { -3, 9 } ) ) );
@@ -138,7 +138,7 @@ public class PointMaskTest
 	public void testBounds()
 	{
 		double[] loc = new double[] { 0.5, -7.125 };
-		final PointMask pt = new DefaultPointMask( loc );
+		final DefaultPointMask pt = new DefaultPointMask( loc );
 		final double[] ptMin = new double[ 2 ];
 		final double[] ptMax = new double[ 2 ];
 		pt.realMin( ptMin );
@@ -160,7 +160,7 @@ public class PointMaskTest
 	public void testEquals()
 	{
 		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final DefaultPointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
 		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
@@ -176,7 +176,7 @@ public class PointMaskTest
 	public void testHashCode()
 	{
 		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final PointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
+		final DefaultPointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
 		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 

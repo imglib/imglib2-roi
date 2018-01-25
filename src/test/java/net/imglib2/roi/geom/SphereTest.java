@@ -48,6 +48,7 @@ import net.imglib2.roi.geom.real.Ellipsoid;
 import net.imglib2.roi.geom.real.OpenSphere;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class SphereTest
 	@Test
 	public void testOpenCircle()
 	{
-		final Sphere< ? > s = new OpenSphere( new double[] { 10, 10 }, 8 );
+		final Sphere< RealLocalizableRealPositionable > s = new OpenSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertFalse( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -93,7 +94,7 @@ public class SphereTest
 	@Test
 	public void testClosedCircle()
 	{
-		final Sphere< ? > s = new ClosedSphere( new double[] { 10, 10 }, 8 );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertTrue( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -120,7 +121,7 @@ public class SphereTest
 	@Test
 	public void testSphereSetExponent()
 	{
-		final Sphere< ? > s = new OpenSphere( new double[] { 1, 1 }, 4 );
+		final Sphere< RealLocalizableRealPositionable > s = new OpenSphere( new double[] { 1, 1 }, 4 );
 
 		exception.expect( UnsupportedOperationException.class );
 		s.setExponent( 0.25 );
@@ -129,7 +130,7 @@ public class SphereTest
 	@Test
 	public void testMutateOpenSphere()
 	{
-		final Sphere< ? > s = new OpenSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s = new OpenSphere( new double[] { 3, 2 }, 5 );
 
 		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
 		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
@@ -160,7 +161,7 @@ public class SphereTest
 	@Test
 	public void testMutateClosedSphere()
 	{
-		final Sphere< ? > s = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 3, 2 }, 5 );
 
 		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
 		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
@@ -198,7 +199,7 @@ public class SphereTest
 	@Test
 	public void testSetNegativeRadius()
 	{
-		final Sphere< ? > cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
 
 		exception.expect( IllegalArgumentException.class );
 		cs.setRadius( -2 );
@@ -207,7 +208,7 @@ public class SphereTest
 	@Test
 	public void testSetTooShortCenter()
 	{
-		final Sphere< ? > cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		cs.center().setPosition( new double[] { 1, 1 } );
@@ -216,7 +217,7 @@ public class SphereTest
 	@Test
 	public void testSetTooLongCenter()
 	{
-		final Sphere< ? > os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
 
 		os.center().setPosition( new double[] { 1, 2, 3, 4 } );
 
@@ -232,7 +233,7 @@ public class SphereTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open and closed spheres
-		final Sphere< ? > s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
 		double[] min = new double[] { 3 - 5, 2 - 5, 1 - 5 };
 		double[] max = new double[] { 3 + 5, 2 + 5, 1 + 5 };
 		final double[] sMin = new double[ 3 ];
@@ -264,12 +265,12 @@ public class SphereTest
 	@Test
 	public void testEquals()
 	{
-		final Sphere< ? > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final Sphere< ? > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< ? > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< ? > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
-		final Sphere< ? > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final Sphere< ? > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealLocalizableRealPositionable > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
 
 		assertTrue( cs.equals( cs2 ) );
 		assertTrue( cs.equals( cse ) );
@@ -284,12 +285,12 @@ public class SphereTest
 	@Test
 	public void testHashCode()
 	{
-		final Sphere< ? > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final Sphere< ? > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< ? > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< ? > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
-		final Sphere< ? > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final Sphere< ? > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealLocalizableRealPositionable > os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere< RealLocalizableRealPositionable > cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
 
 		assertEquals( cs.hashCode(), cs2.hashCode() );
 		assertEquals( cs.hashCode(), cse.hashCode() );

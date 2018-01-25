@@ -34,16 +34,15 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * A {@link RealMaskRealInterval} which defines an n-d box, cuboid, hyperrectangle, etc.
+ * A {@link RealMaskRealInterval} which defines an n-d box, cuboid,
+ * hyperrectangle, etc.
  *
  * @author Alison Walter
  */
-public interface Box< T extends RealLocalizable & RealPositionable > extends RealMaskRealInterval
+public interface Box< T > extends RealMaskRealInterval
 {
 	/** Returns side length of Box in dimension d. */
 	double sideLength( int d );

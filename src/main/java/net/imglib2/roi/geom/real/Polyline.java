@@ -35,7 +35,6 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -44,7 +43,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Polyline< T extends RealLocalizable & RealPositionable > extends RealMaskRealInterval
+public interface Polyline< T > extends RealMaskRealInterval
 {
 	/** Returns the vertex at the specified position. */
 	T vertex( final int pos );

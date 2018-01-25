@@ -128,12 +128,15 @@ public class DefaultPolyline extends AbstractRealInterval implements Polyline< R
 	}
 
 	@Override
+	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof Polyline ) )
 			return false;
+		if ( !( ( ( Polyline< ? > ) obj ).vertex( 0 ) instanceof RealLocalizableRealPositionable ) )
+			return false;
 
-		final Polyline< ? > p = ( Polyline< ? > ) obj;
+		final Polyline< RealLocalizable > p = ( Polyline< RealLocalizable > ) obj;
 		if ( numVertices() != p.numVertices() || boundaryType() != p.boundaryType() || n != p.numDimensions() )
 			return false;
 

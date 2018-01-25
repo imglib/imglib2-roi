@@ -35,7 +35,6 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -44,7 +43,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface PointMask extends RealMaskRealInterval, RealLocalizable, RealPositionable
+public interface PointMask extends RealMaskRealInterval, RealLocalizable
 {
 	@Override
 	default BoundaryType boundaryType()

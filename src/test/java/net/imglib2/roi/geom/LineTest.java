@@ -45,6 +45,7 @@ import net.imglib2.roi.geom.real.DefaultLine;
 import net.imglib2.roi.geom.real.DefaultPointMask;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.PointMask;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class LineTest
 	@Test
 	public void testLine()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
 
 		assertEquals( l.numDimensions(), 2 );
 
@@ -89,7 +90,7 @@ public class LineTest
 	@Test
 	public void testHigherDimSpaceLine()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1, 1, 1, 1 }, new double[] { 10, 10, 10, 10, 10 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1, 1, 1, 1 }, new double[] { 10, 10, 10, 10, 10 }, false );
 
 		assertEquals( l.numDimensions(), 5 );
 
@@ -117,7 +118,7 @@ public class LineTest
 	@Test
 	public void testHorizontalLine()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1 }, new double[] { 12, 1 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1 }, new double[] { 12, 1 }, false );
 
 		// On line
 		assertTrue( l.test( new RealPoint( new double[] { 6.25, 1 } ) ) );
@@ -141,7 +142,7 @@ public class LineTest
 	@Test
 	public void testVerticalLine()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1 }, new double[] { 1, 17 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1 }, new double[] { 1, 17 }, false );
 
 		// On line
 		assertTrue( l.test( new RealPoint( new double[] { 1, 14.125 } ) ) );
@@ -165,7 +166,7 @@ public class LineTest
 	@Test
 	public void testMutatedLine()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 2, 3 }, new double[] { 4, 7 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 2, 3 }, new double[] { 4, 7 }, false );
 
 		assertEquals( l.endpointOne().getDoublePosition( 0 ), 2, 0 );
 		assertEquals( l.endpointOne().getDoublePosition( 1 ), 3, 0 );
@@ -201,7 +202,7 @@ public class LineTest
 	@Test
 	public void testPointOneArraysLonger()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1, 1, 1 }, new double[] { 10, 10 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1, 1, 1 }, new double[] { 10, 10 }, false );
 
 		assertEquals( l.numDimensions(), 2 );
 
@@ -217,7 +218,7 @@ public class LineTest
 	@Test
 	public void testPointTwoArraysLonger()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1 }, new double[] { 101, 1, 2, 3 }, true );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1 }, new double[] { 101, 1, 2, 3 }, true );
 
 		assertEquals( l.numDimensions(), 1 );
 
@@ -233,7 +234,7 @@ public class LineTest
 	@Test
 	public void testUnequalLengthRealLocalizables()
 	{
-		final Line< ? > l = new DefaultLine( new RealPoint( new double[] { 1, 1, 1 } ), new RealPoint( new double[] { 20, 20 } ) );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new RealPoint( new double[] { 1, 1, 1 } ), new RealPoint( new double[] { 20, 20 } ) );
 
 		assertEquals( l.numDimensions(), 2 );
 
@@ -249,7 +250,7 @@ public class LineTest
 	@Test
 	public void testSetFirstEndPointTooShort()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		l.endpointOne().setPosition( new double[] { 0.0625, -5, 0 } );
@@ -258,7 +259,7 @@ public class LineTest
 	@Test
 	public void testSetSecondEndPointTooLong()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 10.125, -6, 8.5 }, new double[] { 101, 1, 2, 3 }, true );
 
 		l.endpointTwo().setPosition( new double[] { 1.0625, -0.0325, 10.5, 12.25, 5 } );
 		final double[] ptTwo = new double[ l.endpointTwo().numDimensions() ];
@@ -270,7 +271,7 @@ public class LineTest
 	@Test
 	public void testBounds()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 3 }, new double[] { 6, 0 }, false );
 		double[] min = new double[] { 1, 0 };
 		double[] max = new double[] { 6, 3 };
 		final double[] lMin = new double[ 2 ];
@@ -301,10 +302,10 @@ public class LineTest
 	@Test
 	public void testEquals()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
-		final Line< ? > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
-		final Line< ? > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
-		final Line< ? > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
 		final PointMask p = new DefaultPointMask( new double[] { 1, 1, 1 } );
 
 		assertTrue( l.equals( l2 ) );
@@ -319,10 +320,10 @@ public class LineTest
 	@Test
 	public void testHashCode()
 	{
-		final Line< ? > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
-		final Line< ? > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
-		final Line< ? > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
-		final Line< ? > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
+		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l2 = new DefaultLine( new double[] { 1, 1, 1 }, new double[] { 9, 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l3 = new DefaultLine( new double[] { 1, 1 }, new double[] { 9, 9 }, false );
+		final Line< RealLocalizableRealPositionable > l4 = new DefaultLine( new double[] { 9, 9, 9 }, new double[] { 1, 1, 1 }, false );
 		final PointMask p = new DefaultPointMask( new double[] { 1, 1, 1 } );
 
 		assertEquals( l.hashCode(), l2.hashCode() );
