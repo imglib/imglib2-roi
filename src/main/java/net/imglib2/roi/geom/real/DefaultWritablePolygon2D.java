@@ -45,13 +45,13 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
- * A {@link DefaultPolygon2D} defined by the given vertices. The resulting
+ * A {@link DefaultWritablePolygon2D} defined by the given vertices. The resulting
  * polygon may contain some edge points, all edge points, or no edge points
  * depending on the specified shape.
  *
  * <p>
  * If consistent edge point inclusion/exclusion is needed see
- * {@link OpenPolygon2D} or {@link ClosedPolygon2D}. These implementations will
+ * {@link OpenWritablePolygon2D} or {@link ClosedWritablePolygon2D}. These implementations will
  * be less efficient but have consistent edge behavior.
  * </p>
  *
@@ -59,7 +59,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  * @author Daniel Seebacher, University of Konstanz
  * @author Christian Dietz, University of Konstanz
  */
-public class DefaultPolygon2D extends AbstractRealInterval implements WritablePolygon2D
+public class DefaultWritablePolygon2D extends AbstractRealInterval implements WritablePolygon2D
 {
 	protected final TDoubleArrayList x;
 
@@ -72,7 +72,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements WritablePo
 	 *            List of vertices which will be copied. Each vertex should have
 	 *            a position in 2D space, positions beyond 2D will be ignored.
 	 */
-	public DefaultPolygon2D( final List< ? extends RealLocalizable > vertices )
+	public DefaultWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		// Regions.getBoundsReal(...) could create an interval with n > 2, if
 		// the first vertex had n > 2. Instead create 2D interval, and then set
@@ -95,7 +95,7 @@ public class DefaultPolygon2D extends AbstractRealInterval implements WritablePo
 	 * @param y
 	 *            Y coordinates of the vertices which will be copied
 	 */
-	public DefaultPolygon2D( final double[] x, final double[] y )
+	public DefaultWritablePolygon2D( final double[] x, final double[] y )
 	{
 		super( GeomMaths.getBoundsReal( x, y ) );
 		if ( x.length == y.length )

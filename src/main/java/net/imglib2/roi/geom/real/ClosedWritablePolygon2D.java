@@ -41,7 +41,7 @@ import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
 
 /**
- * A {@link Polygon2D} which contains no boundary points, and is defined by the
+ * A {@link Polygon2D} which contains all boundary points, and is defined by the
  * provided vertices.
  *
  * <p>
@@ -52,14 +52,15 @@ import net.imglib2.roi.geom.GeomMaths;
  *
  * @author Alison Walter
  */
-public class OpenPolygon2D extends DefaultPolygon2D
+public class ClosedWritablePolygon2D extends DefaultWritablePolygon2D
 {
-	public OpenPolygon2D( final List< ? extends RealLocalizable > vertices )
+
+	public ClosedWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		super( vertices );
 	}
 
-	public OpenPolygon2D( final double[] x, final double[] y )
+	public ClosedWritablePolygon2D( final double[] x, final double[] y )
 	{
 		super( x, y );
 	}
@@ -77,6 +78,7 @@ public class OpenPolygon2D extends DefaultPolygon2D
 			pt1[ 0 ] = x.get( i );
 			pt1[ 1 ] = y.get( i );
 
+			// 1e-15 is for error caused by double precision
 			if ( i == x.size() - 1 )
 			{
 				pt2[ 0 ] = x.get( 0 );
@@ -91,16 +93,14 @@ public class OpenPolygon2D extends DefaultPolygon2D
 			edge = GeomMaths.lineContains( pt1, pt2, localizable, 2 );
 
 			if ( edge )
-				return false;
+				return true;
 		}
-
-		// not on edge, check inside
 		return GeomMaths.pnpoly( x, y, localizable );
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
-		return BoundaryType.OPEN;
+		return BoundaryType.CLOSED;
 	}
 }

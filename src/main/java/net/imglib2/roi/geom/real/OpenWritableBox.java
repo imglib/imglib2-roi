@@ -31,65 +31,56 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * Abstract base class for {@link WritableEllipsoid} implementations.
+ * A {@link Box} which contains <b>no</b> edge points defined by the min and max
+ * values in each dimension.
  *
  * @author Alison Walter
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
+ *         rhaase@mpi-cbg.de
  */
-public abstract class AbstractEllipsoid extends AbstractSuperEllipsoid implements WritableEllipsoid
+public class OpenWritableBox extends AbstractWritableBox
 {
 
 	/**
-	 * Creates an n-d ellipsoid, where n is determined by the length of the
-	 * smaller array.
+	 * Creates an n-d rectangular {@link RealMaskRealInterval} in real space.
+	 * The dimensionality is dictated by the length of the min array.
 	 *
-	 * @param center
-	 *            Array containing the positions in each dimension at which the
-	 *            ellipsoid is centered. A copy of this array is stored.
-	 * @param semiAxisLengths
-	 *            Array containing the lengths of the semi-axes in each
-	 *            dimension. A copy of this array is stored.
+	 * @param min
+	 *            An array containing the minimum position in each dimension. A
+	 *            copy of this array is stored.
+	 * @param max
+	 *            An array containing maximum position in each dimension. A copy
+	 *            of this array is stored.
 	 */
-	public AbstractEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public OpenWritableBox( final double[] min, final double[] max )
 	{
-		super( center, semiAxisLengths, 2 );
+		super( min, max );
 	}
 
-	/**
-	 * Ellipsoids have exponents of 2.
-	 *
-	 * @throws UnsupportedOperationException
-	 *             Ellipsoids, by definition, have an exponent of 2
-	 */
 	@Override
-	public void setExponent( final double exponent )
+	public boolean test( final RealLocalizable l )
 	{
-		throw new UnsupportedOperationException( "setExponent: can only have an exponent of 2" );
+		boolean isInside = true;
+		for ( int d = 0; d < n && isInside; d++ )
+		{
+			final double x = l.getDoublePosition( d );
+			isInside &= x > min[ d ] && x < max[ d ];
+		}
+
+		return isInside;
 	}
 
-	// -- Helper methods --
-
-	/**
-	 * Computes the unit distance squared between a given location and the
-	 * center of the ellipsoid.
-	 *
-	 * @param l
-	 *            location to check
-	 * @return squared unit distance
-	 */
 	@Override
-	protected double distancePowered( final RealLocalizable l )
+	public BoundaryType boundaryType()
 	{
-		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
-
-		double distancePowered = 0;
-		for ( int d = 0; d < n; d++ )
-			distancePowered += ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] ) * ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] );
-
-		return distancePowered;
+		return BoundaryType.OPEN;
 	}
 }

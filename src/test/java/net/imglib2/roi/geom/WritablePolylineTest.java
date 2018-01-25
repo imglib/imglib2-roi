@@ -45,8 +45,8 @@ import java.util.List;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.DefaultLine;
-import net.imglib2.roi.geom.real.DefaultPolyline;
+import net.imglib2.roi.geom.real.DefaultWritableLine;
+import net.imglib2.roi.geom.real.DefaultWritablePolyline;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.Polyline;
 import net.imglib2.roi.geom.real.WritablePolyline;
@@ -62,7 +62,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class PolylineTest
+public class WritablePolylineTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -105,7 +105,7 @@ public class PolylineTest
 	@Test
 	public void testSimplePolyline()
 	{
-		final WritablePolyline pl = new DefaultPolyline( simple );
+		final WritablePolyline pl = new DefaultWritablePolyline( simple );
 
 		// check all vertices
 		for ( int i = 0; i < simple.size(); i++ )
@@ -135,7 +135,7 @@ public class PolylineTest
 	@Test
 	public void test4DPolyline()
 	{
-		final WritablePolyline pl = new DefaultPolyline( fourD );
+		final WritablePolyline pl = new DefaultWritablePolyline( fourD );
 
 		// check all vertices
 		for ( int i = 0; i < fourD.size(); i++ )
@@ -162,7 +162,7 @@ public class PolylineTest
 	@Test
 	public void testSelfIntersectingPolyline()
 	{
-		final WritablePolyline pl = new DefaultPolyline( intersect );
+		final WritablePolyline pl = new DefaultWritablePolyline( intersect );
 
 		// check all vertices
 		for ( int i = 0; i < intersect.size(); i++ )
@@ -194,7 +194,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertex()
 	{
-		final WritablePolyline pl = new DefaultPolyline( polyline );
+		final WritablePolyline pl = new DefaultWritablePolyline( polyline );
 
 		assertTrue( assertRealLocalizableEquals( pl.vertex( 1 ), polyline.get( 1 ) ) );
 		assertTrue( pl.test( new RealPoint( new double[] { 1.3, -3.05 } ) ) );
@@ -210,7 +210,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertex()
 	{
-		final WritablePolyline pl = new DefaultPolyline( polyline );
+		final WritablePolyline pl = new DefaultWritablePolyline( polyline );
 
 		assertEquals( pl.numVertices(), 3 );
 		assertFalse( pl.test( new RealPoint( new double[] { 207, 2.45 } ) ) );
@@ -225,7 +225,7 @@ public class PolylineTest
 	@Test
 	public void testRemoveVertex()
 	{
-		final WritablePolyline pl = new DefaultPolyline( polyline );
+		final WritablePolyline pl = new DefaultWritablePolyline( polyline );
 
 		assertEquals( pl.numVertices(), 3 );
 		assertTrue( assertRealLocalizableEquals( pl.vertex( 1 ), polyline.get( 1 ) ) );
@@ -249,7 +249,7 @@ public class PolylineTest
 		pts.add( new RealPoint( new double[] { 9, 9, 9, 9 } ) );
 
 		exception.expect( ArrayIndexOutOfBoundsException.class );
-		new DefaultPolyline( pts );
+		new DefaultWritablePolyline( pts );
 	}
 
 	@Test
@@ -260,7 +260,7 @@ public class PolylineTest
 		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
 		pts.add( new RealPoint( new double[] { 9, 9, 9, 9 } ) );
 
-		final WritablePolyline p = new DefaultPolyline( pts );
+		final WritablePolyline p = new DefaultWritablePolyline( pts );
 		assertRealLocalizableEquals( p.vertex( 0 ), new double[] { 1, 1 } );
 		assertRealLocalizableEquals( p.vertex( 1 ), new double[] { 5, 5 } );
 		assertRealLocalizableEquals( p.vertex( 2 ), new double[] { 9, 9 } );
@@ -269,7 +269,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertexNotN()
 	{
-		final WritablePolyline p = new DefaultPolyline( simple );
+		final WritablePolyline p = new DefaultWritablePolyline( simple );
 
 		p.vertex( 0 ).setPosition( new double[] { 1, 2, 3 } );
 		assertEquals( p.vertex( 0 ).numDimensions(), 2 );
@@ -283,7 +283,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertexNotN()
 	{
-		final WritablePolyline p = new DefaultPolyline( fourD );
+		final WritablePolyline p = new DefaultWritablePolyline( fourD );
 
 		exception.expect( IllegalArgumentException.class );
 		p.addVertex( 3, new RealPoint( new double[] { 1, 2, 3 } ) );
@@ -292,7 +292,7 @@ public class PolylineTest
 	@Test
 	public void testSetVertexInvalidIndex()
 	{
-		final WritablePolyline p = new DefaultPolyline( simple );
+		final WritablePolyline p = new DefaultWritablePolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.vertex( 6 ).setPosition( new double[] { 1, 2 } );
@@ -301,7 +301,7 @@ public class PolylineTest
 	@Test
 	public void testAddVertexInvalidIndex()
 	{
-		final WritablePolyline p = new DefaultPolyline( simple );
+		final WritablePolyline p = new DefaultWritablePolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.addVertex( 6, new RealPoint( new double[] { 1, 2 } ) );
@@ -310,7 +310,7 @@ public class PolylineTest
 	@Test
 	public void testRemoveVertexInvalidIndex()
 	{
-		final WritablePolyline p = new DefaultPolyline( simple );
+		final WritablePolyline p = new DefaultWritablePolyline( simple );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		p.removeVertex( 6 );
@@ -319,7 +319,7 @@ public class PolylineTest
 	@Test
 	public void testBounds()
 	{
-		final WritablePolyline pl = new DefaultPolyline( simple );
+		final WritablePolyline pl = new DefaultWritablePolyline( simple );
 		final double[] max = new double[] { 30, 10 };
 		final double[] min = new double[] { 0, 0 };
 		final double[] plMin = new double[ 2 ];
@@ -369,13 +369,13 @@ public class PolylineTest
 		a2.add( rp3 );
 		a2.add( rp2 );
 
-		final WritablePolyline p = new DefaultPolyline( a );
-		WritablePolyline o = new DefaultPolyline( a );
+		final WritablePolyline p = new DefaultWritablePolyline( a );
+		WritablePolyline o = new DefaultWritablePolyline( a );
 
 		assertTrue( p.equals( o ) );
 
-		o = new DefaultPolyline( a2 );
-		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
+		o = new DefaultWritablePolyline( a2 );
+		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
 		assertFalse( p.equals( o ) );
 		assertFalse( p.equals( l ) );
 	}
@@ -397,13 +397,13 @@ public class PolylineTest
 		a2.add( rp3 );
 		a2.add( rp2 );
 
-		final WritablePolyline p = new DefaultPolyline( a );
-		WritablePolyline o = new DefaultPolyline( a );
+		final WritablePolyline p = new DefaultWritablePolyline( a );
+		WritablePolyline o = new DefaultWritablePolyline( a );
 
 		assertEquals( p.hashCode(), o.hashCode() );
 
-		o = new DefaultPolyline( a2 );
-		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
+		o = new DefaultWritablePolyline( a2 );
+		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
 		assertNotEquals( p.hashCode(), o.hashCode() );
 		assertNotEquals( p.hashCode(), l.hashCode() );
 	}

@@ -34,22 +34,23 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.AbstractRealInterval;
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMask;
-import net.imglib2.roi.util.AbstractRealMaskPoint;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * Abstract base class for implementations of {@link WritableBox}.
+ * A {@link Box} which contains <b>all</b> edge points defined by the min and
+ * max values in each dimension.
  *
  * @author Alison Walter
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
+ *         rhaase@mpi-cbg.de
  */
-public abstract class AbstractBox extends AbstractRealInterval implements WritableBox
+public class ClosedWritableBox extends AbstractWritableBox
 {
 	/**
-	 * Creates an n-d rectangular {@link RealMask}. The dimensionality is
-	 * dictated by the length of the min array.
+	 * Creates an n-d rectangular {@link RealMask} in real space. The dimensionality
+	 * is dictated by the length of the min array.
 	 *
 	 * @param min
 	 *            An array containing the minimum position in each dimension. A
@@ -58,91 +59,26 @@ public abstract class AbstractBox extends AbstractRealInterval implements Writab
 	 *            An array containing maximum position in each dimension. A copy
 	 *            of this array is stored.
 	 */
-	public AbstractBox( final double[] min, final double[] max )
+	public ClosedWritableBox( final double[] min, final double[] max )
 	{
 		super( min, max );
-		if ( max.length < min.length )
-			throw new IllegalArgumentException( "Max array cannot be smaller than the min array" );
 	}
 
 	@Override
-	public double sideLength( final int d )
+	public boolean test( final RealLocalizable l )
 	{
-		return Math.abs( max[ d ] - min[ d ] );
-	}
-
-	@Override
-	public RealLocalizableRealPositionable center()
-	{
-		final double[] center = new double[ n ];
-		for ( int d = 0; d < n; d++ )
+		boolean isInside = true;
+		for ( int d = 0; d < n && isInside; d++ )
 		{
-			center[ d ] = ( max[ d ] + min[ d ] ) / 2.0;
+			final double x = l.getDoublePosition( d );
+			isInside &= x >= min[ d ] && x <= max[ d ];
 		}
-		return new BoxCenter( center );
+		return isInside;
 	}
 
 	@Override
-	public void setSideLength( final int d, final double length )
+	public BoundaryType boundaryType()
 	{
-		if ( length < 0 )
-			throw new IllegalArgumentException( "Cannot have negative edge lengths " );
-		final double center = ( max[ d ] + min[ d ] ) / 2.0;
-		max[ d ] = center + length / 2.0;
-		min[ d ] = center - length / 2.0;
-	}
-
-	@Override
-	public boolean equals( final Object obj )
-	{
-		if ( !( obj instanceof Box ) )
-			return false;
-
-		final Box< ? > b = ( Box< ? > ) obj;
-		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < n; i++ )
-		{
-			if ( min[ i ] != b.realMin( i ) || max[ i ] != b.realMax( i ) )
-				return false;
-		}
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int result = 17;
-		for ( int i = 0; i < n; i++ )
-			result += 31 * min[ i ] + 31 * max[ i ];
-		if ( BoundaryType.CLOSED == boundaryType() )
-			result += 5;
-		else if ( BoundaryType.OPEN == boundaryType() )
-			result += 8;
-		else
-			result += 0;
-		return result;
-	}
-
-	// -- Helper classes --
-
-	private class BoxCenter extends AbstractRealMaskPoint
-	{
-		protected BoxCenter( final double[] center )
-		{
-			super( center );
-		}
-
-		@Override
-		public void updateBounds()
-		{
-			for ( int d = 0; d < n; d++ )
-			{
-				final double halfSideLength = sideLength( d ) / 2.0;
-				max[ d ] = position[ d ] + halfSideLength;
-				min[ d ] = position[ d ] - halfSideLength;
-			}
-		}
+		return BoundaryType.CLOSED;
 	}
 }

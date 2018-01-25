@@ -54,7 +54,7 @@ import net.imglib2.neighborsearch.NearestNeighborSearch;
  *
  * @author Alison Walter
  */
-public class RealPointSampleListRealPointCollection< L extends RealLocalizable & RealPositionable > extends NNSRealPointCollection< L > implements WritableRealPointCollection< L >
+public class RealPointSampleListWritableRealPointCollection< L extends RealLocalizable & RealPositionable > extends NNSRealPointCollection< L > implements WritableRealPointCollection< L >
 {
 
 	/**
@@ -65,7 +65,7 @@ public class RealPointSampleListRealPointCollection< L extends RealLocalizable &
 	 *            Points which should be included in this point collection. This
 	 *            Collection will be used to create a RealPointSampleList.
 	 */
-	public RealPointSampleListRealPointCollection( final Collection< L > points )
+	public RealPointSampleListWritableRealPointCollection( final Collection< L > points )
 	{
 		this( createRPSL( points ) );
 	}
@@ -80,7 +80,7 @@ public class RealPointSampleListRealPointCollection< L extends RealLocalizable &
 	 *            those positions will be ignored. The first point determines
 	 *            the dimensionality of the collection.
 	 */
-	public RealPointSampleListRealPointCollection( final RealPointSampleList< L > points )
+	public RealPointSampleListWritableRealPointCollection( final RealPointSampleList< L > points )
 	{
 		super( points );
 	}

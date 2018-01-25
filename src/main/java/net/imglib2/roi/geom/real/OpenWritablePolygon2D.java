@@ -34,51 +34,73 @@
 
 package net.imglib2.roi.geom.real;
 
+import java.util.List;
+
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.RealMask;
+import net.imglib2.roi.geom.GeomMaths;
 
 /**
- * A {@link Box} which contains <b>all</b> edge points defined by the min and
- * max values in each dimension.
+ * A {@link Polygon2D} which contains no boundary points, and is defined by the
+ * provided vertices.
+ *
+ * <p>
+ * This implementation of a polygon does not support creating a single polygon
+ * object which is actually multiple polygons. It does support self-intersecting
+ * polygons with even-odd winding.
+ * </p>
  *
  * @author Alison Walter
- * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
- *         rhaase@mpi-cbg.de
  */
-public class ClosedBox extends AbstractBox
+public class OpenWritablePolygon2D extends DefaultWritablePolygon2D
 {
-	/**
-	 * Creates an n-d rectangular {@link RealMask} in real space. The dimensionality
-	 * is dictated by the length of the min array.
-	 *
-	 * @param min
-	 *            An array containing the minimum position in each dimension. A
-	 *            copy of this array is stored.
-	 * @param max
-	 *            An array containing maximum position in each dimension. A copy
-	 *            of this array is stored.
-	 */
-	public ClosedBox( final double[] min, final double[] max )
+	public OpenWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
-		super( min, max );
+		super( vertices );
+	}
+
+	public OpenWritablePolygon2D( final double[] x, final double[] y )
+	{
+		super( x, y );
 	}
 
 	@Override
-	public boolean test( final RealLocalizable l )
+	public boolean test( final RealLocalizable localizable )
 	{
-		boolean isInside = true;
-		for ( int d = 0; d < n && isInside; d++ )
+		// check edges, this needs to be done first because pnpoly has
+		// unknown edge behavior
+		boolean edge = false;
+		final double[] pt1 = new double[ 2 ];
+		final double[] pt2 = new double[ 2 ];
+		for ( int i = 0; i < x.size(); i++ )
 		{
-			final double x = l.getDoublePosition( d );
-			isInside &= x >= min[ d ] && x <= max[ d ];
+			pt1[ 0 ] = x.get( i );
+			pt1[ 1 ] = y.get( i );
+
+			if ( i == x.size() - 1 )
+			{
+				pt2[ 0 ] = x.get( 0 );
+				pt2[ 1 ] = y.get( 0 );
+			}
+			else
+			{
+				pt2[ 0 ] = x.get( i + 1 );
+				pt2[ 1 ] = y.get( i + 1 );
+			}
+
+			edge = GeomMaths.lineContains( pt1, pt2, localizable, 2 );
+
+			if ( edge )
+				return false;
 		}
-		return isInside;
+
+		// not on edge, check inside
+		return GeomMaths.pnpoly( x, y, localizable );
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
-		return BoundaryType.CLOSED;
+		return BoundaryType.OPEN;
 	}
 }

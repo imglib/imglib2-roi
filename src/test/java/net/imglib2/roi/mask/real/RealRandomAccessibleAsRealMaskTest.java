@@ -45,7 +45,7 @@ import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.RealMask;
 import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.roi.geom.real.Ellipsoid;
-import net.imglib2.roi.geom.real.OpenEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableEllipsoid;
 import net.imglib2.roi.mask.real.RealMaskAsRealRandomAccessible;
 import net.imglib2.roi.mask.real.RealMaskRealIntervalAsRealRandomAccessibleRealInterval;
 import net.imglib2.roi.mask.real.RealRandomAccessibleAsRealMask;
@@ -77,7 +77,7 @@ public class RealRandomAccessibleAsRealMaskTest
 	@BeforeClass
 	public static void setup()
 	{
-		final Ellipsoid< ? > e = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 4, 7 } );
+		final Ellipsoid< ? > e = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 4, 7 } );
 		rra = new RealMaskAsRealRandomAccessible<>( e, new BoolType() );
 		access = rra.realRandomAccess();
 		m = new RealRandomAccessibleAsRealMask<>( rra );

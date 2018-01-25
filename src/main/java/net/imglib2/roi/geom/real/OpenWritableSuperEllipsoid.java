@@ -45,7 +45,7 @@ import net.imglib2.roi.BoundaryType;
  * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
  *         rhaase@mpi-cbg.de
  */
-public class OpenSuperEllipsoid extends AbstractSuperEllipsoid
+public class OpenWritableSuperEllipsoid extends AbstractWritableSuperEllipsoid
 {
 
 	/**
@@ -61,7 +61,7 @@ public class OpenSuperEllipsoid extends AbstractSuperEllipsoid
 	 * @param exponent
 	 *            exponent of the superellipsoid
 	 */
-	public OpenSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public OpenWritableSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		super( center, semiAxisLengths, exponent );
 	}

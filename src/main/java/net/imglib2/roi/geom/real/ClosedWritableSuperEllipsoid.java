@@ -38,39 +38,43 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 
 /**
- * A {@link Ellipsoid} which does not contain any edge points, defined by a
- * center and semi-axis lengths.
+ * A {@link SuperEllipsoid} which contains <b>all</b> edge points. It is defined
+ * by a center, semi-axis lengths, and an exponent.
  *
  * @author Alison Walter
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
+ *         rhaase@mpi-cbg.de
  */
-public class OpenEllipsoid extends AbstractEllipsoid
+public class ClosedWritableSuperEllipsoid extends AbstractWritableSuperEllipsoid
 {
 
 	/**
-	 * Creates an n-d ellipsoid, where n is determined by the length of the
-	 * smaller array.
+	 * Creates an n-d super ellipsoid, where n is determined by the length of
+	 * the smaller array
 	 *
 	 * @param center
-	 *            Array containing the positions in each dimension at which the
-	 *            ellipsoid is centered. A copy of this array is stored.
+	 *            position of the superellipsoid in space, given in pixel
+	 *            coordinates
 	 * @param semiAxisLengths
-	 *            Array containing the lengths of the semi-axes in each
-	 *            dimension. A copy of this array is stored.
+	 *            array containing n elements representing half values of
+	 *            width/height/depth/...
+	 * @param exponent
+	 *            exponent of the superellipsoid
 	 */
-	public OpenEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public ClosedWritableSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
-		super( center, semiAxisLengths );
+		super( center, semiAxisLengths, exponent );
 	}
 
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		return distancePowered( l ) < 1.0;
+		return distancePowered( l ) <= 1.0;
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
-		return BoundaryType.OPEN;
+		return BoundaryType.CLOSED;
 	}
 }

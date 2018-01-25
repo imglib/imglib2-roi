@@ -45,12 +45,12 @@ import java.util.List;
 
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.DefaultPointMask;
-import net.imglib2.roi.geom.real.DefaultRealPointCollection;
+import net.imglib2.roi.geom.real.DefaultWritablePointMask;
+import net.imglib2.roi.geom.real.DefaultWritableRealPointCollection;
 import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
 import net.imglib2.roi.geom.real.PointMask;
 import net.imglib2.roi.geom.real.RealPointCollection;
-import net.imglib2.roi.geom.real.RealPointSampleListRealPointCollection;
+import net.imglib2.roi.geom.real.RealPointSampleListWritableRealPointCollection;
 import net.imglib2.roi.geom.real.WritableRealPointCollection;
 
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPC()
 	{
-		final RealPointCollection< ? > rpc = new DefaultRealPointCollection<>( points );
+		final RealPointCollection< ? > rpc = new DefaultWritableRealPointCollection<>( points );
 
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
@@ -132,7 +132,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPC()
 	{
-		final RealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final RealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
@@ -156,7 +156,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCAddPoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -167,7 +167,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCRemovePoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
 
 		assertTrue( rpc.test( new RealPoint( new double[] { -13, -13 } ) ) );
 
@@ -178,7 +178,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCAddPoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -189,7 +189,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCRemovePoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		exception.expect( UnsupportedOperationException.class );
 		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
@@ -198,7 +198,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCBounds()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
@@ -244,7 +244,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCBounds()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListRealPointCollection<>( points );
+		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		final double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
@@ -275,9 +275,9 @@ public class RealPointCollectionTest
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
 		l.add( new RealPoint( new double[] { 83, 4 } ) );
 
-		final RealPointCollection< ? > d = new DefaultRealPointCollection<>( l );
+		final RealPointCollection< ? > d = new DefaultWritableRealPointCollection<>( l );
 		final RealPointCollection< ? > k = new KDTreeRealPointCollection<>( l );
-		final RealPointCollection< ? > r = new RealPointSampleListRealPointCollection<>( l );
+		final RealPointCollection< ? > r = new RealPointSampleListWritableRealPointCollection<>( l );
 
 		assertTrue( d.equals( k ) );
 		assertTrue( d.equals( r ) );
@@ -292,9 +292,9 @@ public class RealPointCollectionTest
 		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
 
-		final RealPointCollection< ? > d2 = new DefaultRealPointCollection<>( l2 );
+		final RealPointCollection< ? > d2 = new DefaultWritableRealPointCollection<>( l2 );
 		final RealPointCollection< ? > k2 = new KDTreeRealPointCollection<>( l2 );
-		final RealPointCollection< ? > r2 = new RealPointSampleListRealPointCollection<>( l2 );
+		final RealPointCollection< ? > r2 = new RealPointSampleListWritableRealPointCollection<>( l2 );
 
 		assertFalse( d.equals( d2 ) );
 		assertFalse( d2.equals( d ) );
@@ -312,9 +312,9 @@ public class RealPointCollectionTest
 		l3.add( new RealPoint( new double[] { -1, 0 } ) );
 		l3.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 
-		final RealPointCollection< ? > d3 = new DefaultRealPointCollection<>( l3 );
+		final RealPointCollection< ? > d3 = new DefaultWritableRealPointCollection<>( l3 );
 		final RealPointCollection< ? > k3 = new KDTreeRealPointCollection<>( l3 );
-		final RealPointCollection< ? > r3 = new RealPointSampleListRealPointCollection<>( l3 );
+		final RealPointCollection< ? > r3 = new RealPointSampleListWritableRealPointCollection<>( l3 );
 
 		assertTrue( d3.equals( d ) );
 		assertTrue( d.equals( d3 ) );
@@ -327,7 +327,7 @@ public class RealPointCollectionTest
 		assertTrue( k.equals( r3 ) );
 
 		// Different shape
-		final PointMask pm = new DefaultPointMask( new double[] { 83, 4 } );
+		final PointMask pm = new DefaultWritablePointMask( new double[] { 83, 4 } );
 		assertFalse( d.equals( pm ) );
 	}
 
@@ -341,9 +341,9 @@ public class RealPointCollectionTest
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
 		l.add( new RealPoint( new double[] { 83, 4 } ) );
 
-		final RealPointCollection< ? > d = new DefaultRealPointCollection<>( l );
+		final RealPointCollection< ? > d = new DefaultWritableRealPointCollection<>( l );
 		final RealPointCollection< ? > k = new KDTreeRealPointCollection<>( l );
-		final RealPointCollection< ? > r = new RealPointSampleListRealPointCollection<>( l );
+		final RealPointCollection< ? > r = new RealPointSampleListWritableRealPointCollection<>( l );
 
 		assertEquals( d.hashCode(), k.hashCode() );
 		assertEquals( d.hashCode(), r.hashCode() );
@@ -358,9 +358,9 @@ public class RealPointCollectionTest
 		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
 
-		final RealPointCollection< ? > d2 = new DefaultRealPointCollection<>( l2 );
+		final RealPointCollection< ? > d2 = new DefaultWritableRealPointCollection<>( l2 );
 		final RealPointCollection< ? > k2 = new KDTreeRealPointCollection<>( l2 );
-		final RealPointCollection< ? > r2 = new RealPointSampleListRealPointCollection<>( l2 );
+		final RealPointCollection< ? > r2 = new RealPointSampleListWritableRealPointCollection<>( l2 );
 
 		assertNotEquals( d.hashCode(), d2.hashCode() );
 		assertNotEquals( d2.hashCode(), d.hashCode() );
@@ -378,9 +378,9 @@ public class RealPointCollectionTest
 		l3.add( new RealPoint( new double[] { -1, 0 } ) );
 		l3.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 
-		final RealPointCollection< ? > d3 = new DefaultRealPointCollection<>( l3 );
+		final RealPointCollection< ? > d3 = new DefaultWritableRealPointCollection<>( l3 );
 		final RealPointCollection< ? > k3 = new KDTreeRealPointCollection<>( l3 );
-		final RealPointCollection< ? > r3 = new RealPointSampleListRealPointCollection<>( l3 );
+		final RealPointCollection< ? > r3 = new RealPointSampleListWritableRealPointCollection<>( l3 );
 
 		assertEquals( d3.hashCode(), d.hashCode() );
 		assertEquals( d.hashCode(), d3.hashCode() );
@@ -393,7 +393,7 @@ public class RealPointCollectionTest
 		assertEquals( k.hashCode(), r3.hashCode() );
 
 		// Different shape
-		final PointMask pm = new DefaultPointMask( new double[] { 83, 4 } );
+		final PointMask pm = new DefaultWritablePointMask( new double[] { 83, 4 } );
 		assertNotEquals( d.hashCode(), pm.hashCode() );
 	}
 }

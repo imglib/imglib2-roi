@@ -34,73 +34,39 @@
 
 package net.imglib2.roi.geom.real;
 
-import java.util.List;
-
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.GeomMaths;
 
 /**
- * A {@link Polygon2D} which contains all boundary points, and is defined by the
- * provided vertices.
- *
- * <p>
- * This implementation of a polygon does not support creating a single polygon
- * object which is actually multiple polygons. It does support self-intersecting
- * polygons with even-odd winding.
- * </p>
+ * A {@link Sphere} which does <b>not</b> contain any boundary points.
  *
  * @author Alison Walter
  */
-public class ClosedPolygon2D extends DefaultPolygon2D
+public class OpenWritableSphere extends AbstractWritableSphere
 {
-
-	public ClosedPolygon2D( final List< ? extends RealLocalizable > vertices )
+	/**
+	 * Creates an n-d sphere.
+	 *
+	 * @param center
+	 *            Point where the sphere is centered
+	 * @param radius
+	 *            Radius of the sphere, must be positive and non-zero. A zero
+	 *            radius would result in an empty region.
+	 */
+	public OpenWritableSphere( final double[] center, final double radius )
 	{
-		super( vertices );
-	}
-
-	public ClosedPolygon2D( final double[] x, final double[] y )
-	{
-		super( x, y );
+		super( center, radius );
 	}
 
 	@Override
-	public boolean test( final RealLocalizable localizable )
+	public boolean test( final RealLocalizable l )
 	{
-		// check edges, this needs to be done first because pnpoly has
-		// unknown edge behavior
-		boolean edge = false;
-		final double[] pt1 = new double[ 2 ];
-		final double[] pt2 = new double[ 2 ];
-		for ( int i = 0; i < x.size(); i++ )
-		{
-			pt1[ 0 ] = x.get( i );
-			pt1[ 1 ] = y.get( i );
-
-			// 1e-15 is for error caused by double precision
-			if ( i == x.size() - 1 )
-			{
-				pt2[ 0 ] = x.get( 0 );
-				pt2[ 1 ] = y.get( 0 );
-			}
-			else
-			{
-				pt2[ 0 ] = x.get( i + 1 );
-				pt2[ 1 ] = y.get( i + 1 );
-			}
-
-			edge = GeomMaths.lineContains( pt1, pt2, localizable, 2 );
-
-			if ( edge )
-				return true;
-		}
-		return GeomMaths.pnpoly( x, y, localizable );
+		return distancePowered( l ) < radius * radius;
 	}
 
 	@Override
 	public BoundaryType boundaryType()
 	{
-		return BoundaryType.CLOSED;
+		return BoundaryType.OPEN;
 	}
 }

@@ -48,7 +48,7 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public class DefaultPolyline extends AbstractRealInterval implements WritablePolyline
+public class DefaultWritablePolyline extends AbstractRealInterval implements WritablePolyline
 {
 	private final List< double[] > vertices;
 
@@ -61,7 +61,7 @@ public class DefaultPolyline extends AbstractRealInterval implements WritablePol
 	 * @param vertices
 	 *            Vertices which define the polyline in the desired order.
 	 */
-	public DefaultPolyline( final List< ? extends RealLocalizable > vertices )
+	public DefaultWritablePolyline( final List< ? extends RealLocalizable > vertices )
 	{
 		super( GeomMaths.getBoundsReal( vertices ) );
 		this.vertices = new ArrayList<>( vertices.size() );

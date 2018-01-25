@@ -44,7 +44,7 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace implements WritableSuperEllipsoid
+public abstract class AbstractWritableSuperEllipsoid extends AbstractEuclideanSpace implements WritableSuperEllipsoid
 {
 	protected double exponent;
 
@@ -65,7 +65,7 @@ public abstract class AbstractSuperEllipsoid extends AbstractEuclideanSpace impl
 	 * @param exponent
 	 *            exponent of the superellipsoid
 	 */
-	public AbstractSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public AbstractWritableSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		super( Math.min( center.length, semiAxisLengths.length ) );
 

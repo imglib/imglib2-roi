@@ -35,72 +35,37 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
-import net.imglib2.roi.Mask;
+import net.imglib2.roi.BoundaryType;
 
 /**
- * A {@link WritablePointMask} specified by the given location.
+ * A {@link Sphere} which contains <b>all</b> boundary points.
  *
  * @author Alison Walter
  */
-public class DefaultPointMask extends RealPoint implements WritablePointMask
+public class ClosedWritableSphere extends AbstractWritableSphere
 {
 	/**
-	 * Creates a {@link WritablePointMask} with the given point, such that only
-	 * that point is contained in the {@link Mask}. The dimensionality of the
-	 * space is determined by the number of dimensions of {@code pt}.
+	 * Creates an n-d sphere.
 	 *
-	 * @param pt
-	 *            The point which the mask should contain.
+	 * @param center
+	 *            Point where the sphere is centered
+	 * @param radius
+	 *            Radius of the sphere
 	 */
-	public DefaultPointMask( final RealLocalizable pt )
+	public ClosedWritableSphere( final double[] center, final double radius )
 	{
-		super( pt );
-	}
-
-	/**
-	 * Creates a {@link WritablePointMask} with given array, such that only that
-	 * location is contained in the {@link Mask}.
-	 *
-	 * @param pt
-	 *            Array containing the location of the point in n-d space, where
-	 *            n is the array length. A copy of this array is stored.
-	 */
-	public DefaultPointMask( final double[] pt )
-	{
-		super( pt );
+		super( center, radius );
 	}
 
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		for ( int d = 0; d < n; d++ )
-		{
-			if ( l.getDoublePosition( d ) != position[ d ] )
-				return false;
-		}
-		return true;
+		return distancePowered( l ) <= radius * radius;
 	}
 
 	@Override
-	public boolean equals( final Object obj )
+	public BoundaryType boundaryType()
 	{
-		if ( !( obj instanceof PointMask ) )
-			return false;
-
-		final PointMask pm = ( PointMask ) obj;
-		if ( pm.numDimensions() != n || pm.boundaryType() != boundaryType() )
-			return false;
-
-		return test( pm );
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int result = 301;
-		for ( int i = 0; i < n; i++ )
-			result += 43 * position[ i ];
-		return result;
+		return BoundaryType.CLOSED;
 	}
 }

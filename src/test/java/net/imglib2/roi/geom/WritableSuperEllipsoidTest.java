@@ -41,11 +41,11 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.ClosedEllipsoid;
-import net.imglib2.roi.geom.real.ClosedSphere;
-import net.imglib2.roi.geom.real.ClosedSuperEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableSphere;
+import net.imglib2.roi.geom.real.ClosedWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.Ellipsoid;
-import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
@@ -60,7 +60,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class SuperEllipsoidTest
+public class WritableSuperEllipsoidTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -68,7 +68,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testOpen2DSuperEllipse()
 	{
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
 		assertFalse( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
@@ -96,7 +96,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testClosed2DSuperEllipse()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 10, 10 }, new double[] { 8, 8 }, 0.5 );
 
 		// vertices
 		assertTrue( se.test( new RealPoint( new double[] { 10, 2 } ) ) );
@@ -124,7 +124,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testOpen3DSuperEllipsoid()
 	{
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
 		assertFalse( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
@@ -155,7 +155,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testClosed3DSuperEllipsoid()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 
 		// vertices
 		assertTrue( se.test( new RealPoint( new double[] { 1, 7, 2 } ) ) );
@@ -186,7 +186,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testMutateOpenSuperEllipsoid()
 	{
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
 
 		assertEquals( se.exponent(), 2, 0 );
 		assertEquals( se.center().getDoublePosition( 0 ), 2, 0 );
@@ -231,7 +231,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testMutateClosedSuperEllipsoid()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 2, 2 }, new double[] { 0.25, 2 }, 2 );
 
 		assertEquals( se.exponent(), 2, 0 );
 		assertEquals( se.center().getDoublePosition( 0 ), 2, 0 );
@@ -276,7 +276,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testCenterLonger()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0, 3 }, new double[] { 3, 2 }, 2 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 0, 0, 3 }, new double[] { 3, 2 }, 2 );
 
 		final double[] c = new double[ se.numDimensions() ];
 		se.center().localize( c );
@@ -288,7 +288,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSemiAxisLonger()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4, 6 }, 2 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4, 6 }, 2 );
 
 		assertEquals( se.numDimensions(), 2 );
 		assertEquals( se.semiAxisLength( 0 ), 3, 0 );
@@ -302,20 +302,20 @@ public class SuperEllipsoidTest
 	public void testNegativeSemiAxisLength()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, -4 }, 5 );
+		new ClosedWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, -4 }, 5 );
 	}
 
 	@Test
 	public void testNegativeExponent()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4 }, -0.5 );
+		new ClosedWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 3, 4 }, -0.5 );
 	}
 
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		se.center().setPosition( new double[] { 3, 3, 3, 3 } );
 		final double[] c = new double[ se.numDimensions() ];
@@ -330,7 +330,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		se.center().setPosition( new double[] { 1, 1 } );
@@ -339,7 +339,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetNegativeSemiAxisLength()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		exception.expect( IllegalArgumentException.class );
 		se.setSemiAxisLength( 0, -0.01 );
@@ -348,7 +348,7 @@ public class SuperEllipsoidTest
 	@Test
 	public void testSetZeroExponent()
 	{
-		final WritableSuperEllipsoid se = new ClosedSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
+		final WritableSuperEllipsoid se = new ClosedWritableSuperEllipsoid( new double[] { 1, 2, 3 }, new double[] { 3, 2, 1 }, 3 );
 
 		exception.expect( IllegalArgumentException.class );
 		se.setExponent( 0 );
@@ -358,7 +358,7 @@ public class SuperEllipsoidTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open and closed super ellipsoids
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 4, 7, 2 }, new double[] { 3, 10, 1.5 }, 6 );
 		double[] min = new double[] { 4 - 3, 7 - 10, 2 - 1.5 };
 		double[] max = new double[] { 4 + 3, 7 + 10, 2 + 1.5 };
 		final double[] seMin = new double[ 3 ];
@@ -396,11 +396,11 @@ public class SuperEllipsoidTest
 	@Test
 	public void testEquals()
 	{
-		final WritableSuperEllipsoid ose = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid cse = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid ose2 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid ose3 = new OpenSuperEllipsoid( new double[] { 0, 0, 0 }, new double[] { 0.5, 3, 2 }, 4 );
-		final WritableSuperEllipsoid ose4 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 1 );
+		final WritableSuperEllipsoid ose = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid cse = new ClosedWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid ose2 = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid ose3 = new OpenWritableSuperEllipsoid( new double[] { 0, 0, 0 }, new double[] { 0.5, 3, 2 }, 4 );
+		final WritableSuperEllipsoid ose4 = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 1 );
 
 		assertTrue( ose.equals( ose2 ) );
 
@@ -410,9 +410,9 @@ public class SuperEllipsoidTest
 		assertFalse( ose.equals( ose3 ) );
 		assertFalse( ose.equals( ose4 ) );
 
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSuperEllipsoid cse2 = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSuperEllipsoid cse2 = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 
 		assertTrue( cse2.equals( cs ) );
 		assertTrue( cse2.equals( ce ) );
@@ -421,11 +421,11 @@ public class SuperEllipsoidTest
 	@Test
 	public void testHashCode()
 	{
-		final WritableSuperEllipsoid ose = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid cse = new ClosedSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid ose2 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
-		final WritableSuperEllipsoid ose3 = new OpenSuperEllipsoid( new double[] { 0, 0, 0 }, new double[] { 0.5, 3, 2 }, 4 );
-		final WritableSuperEllipsoid ose4 = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 1 );
+		final WritableSuperEllipsoid ose = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid cse = new ClosedWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid ose2 = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 4 );
+		final WritableSuperEllipsoid ose3 = new OpenWritableSuperEllipsoid( new double[] { 0, 0, 0 }, new double[] { 0.5, 3, 2 }, 4 );
+		final WritableSuperEllipsoid ose4 = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 0.5, 3 }, 1 );
 
 		assertEquals( ose.hashCode(), ose2.hashCode() );
 
@@ -435,9 +435,9 @@ public class SuperEllipsoidTest
 		assertNotEquals( ose.hashCode(), ose3.hashCode() );
 		assertNotEquals( ose.hashCode(), ose4.hashCode() );
 
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSuperEllipsoid cse2 = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSuperEllipsoid cse2 = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 
 		assertEquals( cse2.hashCode(), cs.hashCode() );
 		assertEquals( cse2.hashCode(), ce.hashCode() );

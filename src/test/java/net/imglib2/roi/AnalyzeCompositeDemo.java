@@ -4,16 +4,16 @@ import java.util.function.Predicate;
 
 import net.imglib2.roi.Operators.MaskOperator;
 import net.imglib2.roi.composite.CompositeMaskPredicate;
-import net.imglib2.roi.geom.real.ClosedSphere;
+import net.imglib2.roi.geom.real.ClosedWritableSphere;
 import net.imglib2.roi.geom.real.Sphere;
 
 public class AnalyzeCompositeDemo
 {
 	public static void main( final String[] args )
 	{
-		final Sphere< ? > s1 = new ClosedSphere( new double[] { 0, 0, 0 }, 3.5 );
-		final Sphere< ? > s2 = new ClosedSphere( new double[] { 1, 2, 0 }, 1.5 );
-		final Sphere< ? > s3 = new ClosedSphere( new double[] { 2, 2, 0 }, 1.5 );
+		final Sphere< ? > s1 = new ClosedWritableSphere( new double[] { 0, 0, 0 }, 3.5 );
+		final Sphere< ? > s2 = new ClosedWritableSphere( new double[] { 1, 2, 0 }, 1.5 );
+		final Sphere< ? > s3 = new ClosedWritableSphere( new double[] { 2, 2, 0 }, 1.5 );
 		final RealMaskRealInterval composite = s1.and( s2.minus( s3 ) ).and( s3 ).or( s1.minus( s3.negate() ) );
 
 		printComposite( s1, "", "" );

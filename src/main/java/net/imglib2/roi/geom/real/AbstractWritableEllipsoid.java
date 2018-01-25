@@ -31,19 +31,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.BoundaryType;
 
 /**
- * A {@link Ellipsoid} which does not contain any edge points, defined by a
- * center and semi-axis lengths.
+ * Abstract base class for {@link WritableEllipsoid} implementations.
  *
  * @author Alison Walter
  */
-public class ClosedEllipsoid extends AbstractEllipsoid
+public abstract class AbstractWritableEllipsoid extends AbstractWritableSuperEllipsoid implements WritableEllipsoid
 {
 
 	/**
@@ -57,20 +54,42 @@ public class ClosedEllipsoid extends AbstractEllipsoid
 	 *            Array containing the lengths of the semi-axes in each
 	 *            dimension. A copy of this array is stored.
 	 */
-	public ClosedEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public AbstractWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
-		super( center, semiAxisLengths );
+		super( center, semiAxisLengths, 2 );
 	}
 
+	/**
+	 * Ellipsoids have exponents of 2.
+	 *
+	 * @throws UnsupportedOperationException
+	 *             Ellipsoids, by definition, have an exponent of 2
+	 */
 	@Override
-	public boolean test( final RealLocalizable l )
+	public void setExponent( final double exponent )
 	{
-		return distancePowered( l ) <= 1.0;
+		throw new UnsupportedOperationException( "setExponent: can only have an exponent of 2" );
 	}
 
+	// -- Helper methods --
+
+	/**
+	 * Computes the unit distance squared between a given location and the
+	 * center of the ellipsoid.
+	 *
+	 * @param l
+	 *            location to check
+	 * @return squared unit distance
+	 */
 	@Override
-	public BoundaryType boundaryType()
+	protected double distancePowered( final RealLocalizable l )
 	{
-		return BoundaryType.CLOSED;
+		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
+
+		double distancePowered = 0;
+		for ( int d = 0; d < n; d++ )
+			distancePowered += ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] ) * ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] );
+
+		return distancePowered;
 	}
 }

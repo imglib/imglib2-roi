@@ -44,7 +44,7 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public abstract class AbstractSphere extends AbstractEuclideanSpace implements WritableSphere
+public abstract class AbstractWritableSphere extends AbstractEuclideanSpace implements WritableSphere
 {
 	protected final double[] center;
 
@@ -58,7 +58,7 @@ public abstract class AbstractSphere extends AbstractEuclideanSpace implements W
 	 * @param radius
 	 *            Radius of the sphere
 	 */
-	public AbstractSphere( final double[] center, final double radius )
+	public AbstractWritableSphere( final double[] center, final double radius )
 	{
 		super( center.length );
 

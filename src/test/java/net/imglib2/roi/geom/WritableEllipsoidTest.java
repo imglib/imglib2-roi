@@ -41,10 +41,10 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.ClosedEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
 import net.imglib2.roi.geom.real.Ellipsoid;
-import net.imglib2.roi.geom.real.OpenEllipsoid;
-import net.imglib2.roi.geom.real.OpenSuperEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableEllipsoid;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -58,7 +58,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class EllipsoidTest
+public class WritableEllipsoidTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -66,7 +66,7 @@ public class EllipsoidTest
 	@Test
 	public void testOpenEllipsoid()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertFalse( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -92,7 +92,7 @@ public class EllipsoidTest
 	@Test
 	public void testClosedEllipsoid()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertTrue( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -118,7 +118,7 @@ public class EllipsoidTest
 	@Test
 	public void testEllipsoidSetExponent()
 	{
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 1, 1 }, new double[] { 0.25, 3 } );
 
 		exception.expect( UnsupportedOperationException.class );
 		e.setExponent( 3 );
@@ -127,7 +127,7 @@ public class EllipsoidTest
 	@Test
 	public void testMutateOpenEllipsoid()
 	{
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
 		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
 		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
@@ -159,7 +159,7 @@ public class EllipsoidTest
 	@Test
 	public void testMutateClosedEllipsoid()
 	{
-		final WritableEllipsoid e = new ClosedEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
+		final WritableEllipsoid e = new ClosedWritableEllipsoid( new double[] { 0, 6.25 }, new double[] { 1, 2.25 } );
 
 		assertEquals( e.center().getDoublePosition( 0 ), 0, 0 );
 		assertEquals( e.center().getDoublePosition( 1 ), 6.25, 0 );
@@ -192,20 +192,20 @@ public class EllipsoidTest
 	public void testNegativeSemiAxisLength()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, -6 } );
+		new ClosedWritableEllipsoid( new double[] { 0, 0 }, new double[] { 3, -6 } );
 	}
 
 	@Test
 	public void testZeroSemiAxisLength()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 0, 4 } );
+		new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 0, 4 } );
 	}
 
 	@Test
 	public void testCenterLonger()
 	{
-		final WritableEllipsoid e = new ClosedEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
+		final WritableEllipsoid e = new ClosedWritableEllipsoid( new double[] { 0, 0, 0, 0 }, new double[] { 3, 7 } );
 
 		assertEquals( e.numDimensions(), 2 );
 		assertEquals( e.center().numDimensions(), 2 );
@@ -218,7 +218,7 @@ public class EllipsoidTest
 	@Test
 	public void testSemiAxisLengthLonger()
 	{
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6, 9 } );
 
 		assertEquals( e.numDimensions(), 2 );
 		final double[] t = new double[ e.numDimensions() ];
@@ -235,7 +235,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetNegativeSemiAxisLength()
 	{
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 3, 6 } );
 
 		exception.expect( IllegalArgumentException.class );
 		e.setSemiAxisLength( 0, -0.125 );
@@ -244,7 +244,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 0, 0, 0 }, new double[] { 3, 6, 9 } );
 
 		exception.expect( ArrayIndexOutOfBoundsException.class );
 		e.center().setPosition( new double[] { 4, 3 } );
@@ -253,7 +253,7 @@ public class EllipsoidTest
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final WritableEllipsoid e = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
+		final WritableEllipsoid e = new ClosedWritableEllipsoid( new double[] { 0, 0 }, new double[] { 3, 7 } );
 
 		e.center().setPosition( new double[] { 4, 12, 5 } );
 		final double[] c = new double[ e.center().numDimensions() ];
@@ -267,7 +267,7 @@ public class EllipsoidTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open or closed ellipsoids
-		final WritableEllipsoid e = new OpenEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final WritableEllipsoid e = new OpenWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 		double[] min = new double[] { 12 - 4, 23 - 9 };
 		double[] max = new double[] { 12 + 4, 23 + 9 };
 		final double[] eMin = new double[ 2 ];
@@ -299,11 +299,11 @@ public class EllipsoidTest
 	@Test
 	public void testEquals()
 	{
-		final WritableEllipsoid oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableEllipsoid oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableEllipsoid oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
-		final WritableEllipsoid ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+		final WritableEllipsoid oe = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableEllipsoid oe2 = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableEllipsoid oe3 = new OpenWritableEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final WritableEllipsoid ce = new ClosedWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
 
 		assertTrue( oe.equals( oe2 ) );
 		assertTrue( oe.equals( se ) );
@@ -323,11 +323,11 @@ public class EllipsoidTest
 	@Test
 	public void testHashCode()
 	{
-		final WritableEllipsoid oe = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableEllipsoid oe2 = new OpenEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableEllipsoid oe3 = new OpenEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
-		final WritableEllipsoid ce = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
-		final WritableSuperEllipsoid se = new OpenSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
+		final WritableEllipsoid oe = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableEllipsoid oe2 = new OpenWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableEllipsoid oe3 = new OpenWritableEllipsoid( new double[] { 0, 0, 0 }, new double[] { 2.5, 6, 7 } );
+		final WritableEllipsoid ce = new ClosedWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 } );
+		final WritableSuperEllipsoid se = new OpenWritableSuperEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6 }, 2 );
 
 		assertEquals( oe.hashCode(), oe2.hashCode() );
 		assertEquals( oe.hashCode(), se.hashCode() );

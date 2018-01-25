@@ -43,7 +43,7 @@ import net.imglib2.RealRandomAccess;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.RealRandomAccessibleRealInterval;
 import net.imglib2.roi.geom.real.Box;
-import net.imglib2.roi.geom.real.OpenBox;
+import net.imglib2.roi.geom.real.OpenWritableBox;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.logic.BoolType;
@@ -71,7 +71,7 @@ public class RealMaskAsRealRandomAccessibleTest
 	@BeforeClass
 	public static void setup()
 	{
-		b = new OpenBox( new double[] { 0, 0 }, new double[] { 6, 6 } );
+		b = new OpenWritableBox( new double[] { 0, 0 }, new double[] { 6, 6 } );
 		mrra = new RealMaskAsRealRandomAccessible<>( b, new BoolType() );
 		rra = mrra.realRandomAccess();
 

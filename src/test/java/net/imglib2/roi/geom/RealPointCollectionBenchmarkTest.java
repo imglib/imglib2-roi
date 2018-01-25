@@ -43,10 +43,10 @@ import java.util.List;
 import java.util.Random;
 
 import net.imglib2.RealPoint;
-import net.imglib2.roi.geom.real.DefaultRealPointCollection;
+import net.imglib2.roi.geom.real.DefaultWritableRealPointCollection;
 import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
 import net.imglib2.roi.geom.real.RealPointCollection;
-import net.imglib2.roi.geom.real.RealPointSampleListRealPointCollection;
+import net.imglib2.roi.geom.real.RealPointSampleListWritableRealPointCollection;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -82,9 +82,9 @@ public class RealPointCollectionBenchmarkTest
 			points.add( new RealPoint( new double[] { rand.nextDouble() * 100 - 50, rand.nextDouble() * 100 - 50 } ) );
 		}
 
-		drpc = new DefaultRealPointCollection<>( points );
+		drpc = new DefaultWritableRealPointCollection<>( points );
 		tree = new KDTreeRealPointCollection<>( points );
-		rpsl = new RealPointSampleListRealPointCollection<>( points );
+		rpsl = new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
 	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )

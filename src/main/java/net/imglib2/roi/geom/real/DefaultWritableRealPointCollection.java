@@ -50,7 +50,7 @@ import gnu.trove.list.array.TDoubleArrayList;
  *
  * @author Alison Walter
  */
-public class DefaultRealPointCollection< L extends RealLocalizable & RealPositionable > extends AbstractRealInterval implements WritableRealPointCollection< L >
+public class DefaultWritableRealPointCollection< L extends RealLocalizable & RealPositionable > extends AbstractRealInterval implements WritableRealPointCollection< L >
 {
 	private final HashMap< TDoubleArrayList, L > points;
 
@@ -64,7 +64,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable & RealPositio
 	 *            the map should be {@code TDoubleArrayList}s which correspond
 	 *            to the position of the points.
 	 */
-	public DefaultRealPointCollection( final HashMap< TDoubleArrayList, L > points )
+	public DefaultWritableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
 		super( GeomMaths.getBoundsReal( points.values() ) );
 		this.points = points;
@@ -78,7 +78,7 @@ public class DefaultRealPointCollection< L extends RealLocalizable & RealPositio
 	 *            points to include in the collection, the first point
 	 *            determines the dimensionality of the collection
 	 */
-	public DefaultRealPointCollection( final Collection< L > points )
+	public DefaultWritableRealPointCollection( final Collection< L > points )
 	{
 		this( createHashMap( points ) );
 	}

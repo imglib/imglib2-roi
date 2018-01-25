@@ -60,14 +60,14 @@ import net.imglib2.roi.composite.BinaryCompositeMaskPredicate;
 import net.imglib2.roi.composite.DefaultBinaryCompositeRealMaskRealInterval;
 import net.imglib2.roi.composite.UnaryCompositeMaskPredicate;
 import net.imglib2.roi.geom.real.Box;
-import net.imglib2.roi.geom.real.ClosedBox;
-import net.imglib2.roi.geom.real.ClosedEllipsoid;
-import net.imglib2.roi.geom.real.ClosedSphere;
-import net.imglib2.roi.geom.real.DefaultPolygon2D;
+import net.imglib2.roi.geom.real.ClosedWritableBox;
+import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableSphere;
+import net.imglib2.roi.geom.real.DefaultWritablePolygon2D;
 import net.imglib2.roi.geom.real.Ellipsoid;
-import net.imglib2.roi.geom.real.OpenBox;
-import net.imglib2.roi.geom.real.OpenEllipsoid;
-import net.imglib2.roi.geom.real.OpenSphere;
+import net.imglib2.roi.geom.real.OpenWritableBox;
+import net.imglib2.roi.geom.real.OpenWritableEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableSphere;
 import net.imglib2.roi.geom.real.Polygon2D;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -89,8 +89,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedAndBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertEquals( rm.numDimensions(), 2 );
@@ -118,8 +118,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedAndUnbounded()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
@@ -142,8 +142,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedAndUnbounded()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMask rm = b1.negate().and( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -159,8 +159,8 @@ public class OperatorsTest
 	@Test
 	public void testAndMovingOperands()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 5, 7.5 }, new double[] { 12, 20 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 5.5, 10 }, new double[] { 11.25, 30.25 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 5, 7.5 }, new double[] { 12, 20 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 5.5, 10 }, new double[] { 11.25, 30.25 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 6, 11 } ) ) );
@@ -200,8 +200,8 @@ public class OperatorsTest
 	@Test
 	public void testAndResultingInEmpty()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 1.25, 0.5 }, new double[] { 3.125, 7.5 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 1, 8.5 }, new double[] { 4, 10 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertFalse( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
@@ -218,8 +218,8 @@ public class OperatorsTest
 	@Test
 	public void testAndWithEmpty()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -243,8 +243,8 @@ public class OperatorsTest
 	@Test
 	public void testAndWithAll()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -270,8 +270,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedMinusBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new OpenBox( new double[] { 1, 4 }, new double[] { 10, 11 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 2, 3 }, new double[] { 9, 16 } );
+		final Box< RealLocalizableRealPositionable > b1 = new OpenWritableBox( new double[] { 1, 4 }, new double[] { 10, 11 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 2, 3 }, new double[] { 9, 16 } );
 		final RealMaskRealInterval rm = b1.minus( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 2, 5 } ) ) );
@@ -296,8 +296,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedMinusUnbounded()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 18.25, -6 }, new double[] { 35, 15.5 } );
-		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 25, 0 }, 4 );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 18.25, -6 }, new double[] { 35, 15.5 } );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedWritableSphere( new double[] { 25, 0 }, 4 );
 		final RealMaskRealInterval rm = b.minus( s.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.CLOSED );
@@ -316,8 +316,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedMinusBounded()
 	{
-		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 25, 0 }, 4 );
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( new double[] { 5, 10, 15 }, new double[] { 0, 5, 0 } );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedWritableSphere( new double[] { 25, 0 }, 4 );
+		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultWritablePolygon2D( new double[] { 5, 10, 15 }, new double[] { 0, 5, 0 } );
 		final RealMask rm = s.negate().minus( p );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -331,8 +331,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedMinusUnbounded()
 	{
-		final Sphere< RealLocalizableRealPositionable > s1 = new ClosedSphere( new double[] { 6, 7 }, 2 );
-		final Sphere< RealLocalizableRealPositionable > s2 = new OpenSphere( new double[] { 0, 0 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s1 = new ClosedWritableSphere( new double[] { 6, 7 }, 2 );
+		final Sphere< RealLocalizableRealPositionable > s2 = new OpenWritableSphere( new double[] { 0, 0 }, 5 );
 		final RealMask rm = s1.negate().minus( s2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.OPEN );
@@ -346,8 +346,8 @@ public class OperatorsTest
 	@Test
 	public void testMinusMovingOperands()
 	{
-		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 10, 2 }, 5.5 );
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultPolygon2D( new double[] { 5, 10, 15 }, new double[] { 0, 5, 0 } );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedWritableSphere( new double[] { 10, 2 }, 5.5 );
+		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultWritablePolygon2D( new double[] { 5, 10, 15 }, new double[] { 0, 5, 0 } );
 		final RealMaskRealInterval rm = s.minus( p );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 14, 1.5 } ) ) );
@@ -389,8 +389,8 @@ public class OperatorsTest
 	@Test
 	public void testMinusWithEmpty()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -414,8 +414,8 @@ public class OperatorsTest
 	@Test
 	public void testMinusWithAll()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -458,7 +458,7 @@ public class OperatorsTest
 	@Test
 	public void testNegate()
 	{
-		final Box< RealLocalizableRealPositionable > b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
+		final Box< RealLocalizableRealPositionable > b = new OpenWritableBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
 		final RealMask rm = b.negate();
 
 		assertTrue( rm.test( new RealPoint( new double[] { 19, 19 } ) ) );
@@ -499,8 +499,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedOrBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
 		final RealMaskRealInterval rm = b.or( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 4, 8 } ) ) );
@@ -521,8 +521,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedOrUnbounded()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 3, 3 }, new double[] { 7, 7 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 4, 4 }, new double[] { 8, 8 } );
 		final RealMask rm = b.or( b2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -537,8 +537,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedOrUnbounded()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > t = new DefaultPolygon2D( new double[] { -1, 3, 12 }, new double[] { 5, -10, 5 } );
-		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 3, -5.5 }, new double[] { 2, 3 } );
+		final Polygon2D< RealLocalizableRealPositionable > t = new DefaultWritablePolygon2D( new double[] { -1, 3, 12 }, new double[] { 5, -10, 5 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenWritableEllipsoid( new double[] { 3, -5.5 }, new double[] { 2, 3 } );
 		final RealMask rm = t.negate().or( e.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -553,8 +553,8 @@ public class OperatorsTest
 	@Test
 	public void testOrMovingOperands()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 6, 4 }, new double[] { 5, 2 } );
-		final Sphere< RealLocalizableRealPositionable > s = new OpenSphere( new double[] { -2, 4.5 }, 2.5 );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenWritableEllipsoid( new double[] { 6, 4 }, new double[] { 5, 2 } );
+		final Sphere< RealLocalizableRealPositionable > s = new OpenWritableSphere( new double[] { -2, 4.5 }, 2.5 );
 		final RealMaskRealInterval rm = e.or( s );
 
 		assertTrue( rm.boundaryType() == BoundaryType.OPEN );
@@ -592,8 +592,8 @@ public class OperatorsTest
 	@Test
 	public void testOrWithEmpty()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -617,8 +617,8 @@ public class OperatorsTest
 	@Test
 	public void testOrWithAll()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -652,7 +652,7 @@ public class OperatorsTest
 
 		final double[][] rotationMatrix = { { Math.cos( angle ), -Math.sin( angle ) }, { Math.sin( angle ), Math.cos( angle ) } };
 
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 2.5, 1.5 }, new double[] { 6.5, 7.5 } );
 		final AffineGet transformToSource = createAffineRotationMatrix( new double[] { 4.5, 4.5 }, rotationMatrix, 2 );
 		final RealMaskRealInterval rm = b.transform( transformToSource );
 
@@ -692,7 +692,7 @@ public class OperatorsTest
 	@Test
 	public void testTranslate()
 	{
-		final Sphere< RealLocalizableRealPositionable > s = new OpenSphere( new double[] { -2.5, 6, 80 }, 2 );
+		final Sphere< RealLocalizableRealPositionable > s = new OpenWritableSphere( new double[] { -2.5, 6, 80 }, 2 );
 		final AffineTransform3D transformFromSource = new AffineTransform3D();
 		transformFromSource.translate( new double[] { 5, 6.25, -63 } );
 		final AffineTransform3D transformToSource = transformFromSource.inverse();
@@ -741,7 +741,7 @@ public class OperatorsTest
 
 		final double[][] rotationMatrix = { { Math.cos( angle ), 0, Math.sin( angle ) }, { 0, 1, 0 }, { -Math.sin( angle ), 0, Math.cos( angle ) } };
 
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 1, 5.75, -4 }, new double[] { 5, 8.25, 6 } );
 		final RealMaskRealInterval rm = b.transform( createAffineRotationMatrix( new double[] { 3, 7, 1 }, rotationMatrix, 3 ) );
 
 		// inside both
@@ -770,7 +770,7 @@ public class OperatorsTest
 	@Test
 	public void test2DShearedBox()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 1, 3 }, new double[] { 4, 9 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 1, 3 }, new double[] { 4, 9 } );
 		final AffineTransform2D transform = new AffineTransform2D();
 		transform.set( 1, 2, 0, 0, 1, 0 );
 
@@ -796,7 +796,7 @@ public class OperatorsTest
 	@Test
 	public void testNonInvertibleTransform()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenWritableEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
 		final RandomAccessibleInterval< DoubleType > def = ConstantUtils.constantRandomAccessibleInterval( new DoubleType( -10.0 ), 3, new FinalInterval( 4, 4, 2 ) );
 		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def );
 		final RealMask rm = e.transform( transformToSource );
@@ -825,7 +825,7 @@ public class OperatorsTest
 	@Test
 	public void testTransformDecreaseDimsandBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b = new OpenBox( new double[] { 0.5, 1.5, 1 }, new double[] { 8, 7, 6 } );
+		final Box< RealLocalizableRealPositionable > b = new OpenWritableBox( new double[] { 0.5, 1.5, 1 }, new double[] { 8, 7, 6 } );
 		final AffineGet transformToSource = new TestTransform( 2 );
 		final RealMaskRealInterval rmri = b.transform( transformToSource );
 
@@ -845,7 +845,7 @@ public class OperatorsTest
 	@Test
 	public void testTransformIncreaseDimsandBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b = new OpenBox( new double[] { 0.5, 1 }, new double[] { 8, 7 } );
+		final Box< RealLocalizableRealPositionable > b = new OpenWritableBox( new double[] { 0.5, 1 }, new double[] { 8, 7 } );
 		final AffineGet transformToSource = new TestTransformInverse( 3 );
 		final RealMaskRealInterval rmri = b.transform( transformToSource );
 
@@ -869,8 +869,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedXorBounded()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 3, 3 }, new double[] { 10, 10 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 4, 4 }, new double[] { 8, 7 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 3, 3 }, new double[] { 10, 10 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 4, 4 }, new double[] { 8, 7 } );
 		final RealMaskRealInterval rm = b1.xor( b2 );
 
 		assertTrue( rm.test( new RealPoint( new double[] { 3, 8 } ) ) );
@@ -891,8 +891,8 @@ public class OperatorsTest
 	@Test
 	public void testBoundedXorUnbounded()
 	{
-		final Sphere< RealLocalizableRealPositionable > s1 = new OpenSphere( new double[] { 0, -1.75, 84 }, 2.25 );
-		final Sphere< RealLocalizableRealPositionable > s2 = new OpenSphere( new double[] { 0, -1.75, 84 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s1 = new OpenWritableSphere( new double[] { 0, -1.75, 84 }, 2.25 );
+		final Sphere< RealLocalizableRealPositionable > s2 = new OpenWritableSphere( new double[] { 0, -1.75, 84 }, 5 );
 		final RealMask rm = s1.xor( s2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -906,8 +906,8 @@ public class OperatorsTest
 	@Test
 	public void testUnboundedXorUnbounded()
 	{
-		final Sphere< RealLocalizableRealPositionable > s1 = new OpenSphere( new double[] { 0, -1.75, 84 }, 2.25 );
-		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedSphere( new double[] { 0, -1.75, 84 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s1 = new OpenWritableSphere( new double[] { 0, -1.75, 84 }, 2.25 );
+		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedWritableSphere( new double[] { 0, -1.75, 84 }, 5 );
 		final RealMask rm = s1.negate().xor( s2.negate() );
 
 		assertTrue( rm.boundaryType() == BoundaryType.UNSPECIFIED );
@@ -921,8 +921,8 @@ public class OperatorsTest
 	@Test
 	public void testXorMovingOperands()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e1 = new ClosedEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6.25 } );
-		final Ellipsoid< RealLocalizableRealPositionable > e2 = new ClosedEllipsoid( new double[] { 2, 5 }, new double[] { 2.5, 6.25 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e1 = new ClosedWritableEllipsoid( new double[] { 0, 0 }, new double[] { 2.5, 6.25 } );
+		final Ellipsoid< RealLocalizableRealPositionable > e2 = new ClosedWritableEllipsoid( new double[] { 2, 5 }, new double[] { 2.5, 6.25 } );
 		final RealMaskRealInterval rm = e1.xor( e2 );
 
 		assertEquals( -2.5, rm.realMin( 0 ), 0 );
@@ -958,8 +958,8 @@ public class OperatorsTest
 	@Test
 	public void testXorWithEmpty()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMaskRealInterval empty1 = Masks.emptyRealMaskRealInterval( 2 );
 		final RealMaskRealInterval empty2 = Masks.emptyRealMaskRealInterval( 2 );
 
@@ -987,8 +987,8 @@ public class OperatorsTest
 	@Test
 	public void testXorWithAll()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 12, 12 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 10, 10 }, new double[] { 12, 12 } );
 		final RealMask all1 = Masks.allRealMask( 2 );
 		final RealMask all2 = Masks.allRealMask( 2 );
 
@@ -1022,32 +1022,32 @@ public class OperatorsTest
 	@Test
 	public void testBinaryCompositeMaskPredicate()
 	{
-		final Box< RealLocalizableRealPositionable > b1 = new ClosedBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
-		final Box< RealLocalizableRealPositionable > b2 = new OpenBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
+		final Box< RealLocalizableRealPositionable > b1 = new ClosedWritableBox( new double[] { 1, 3 }, new double[] { 7, 10 } );
+		final Box< RealLocalizableRealPositionable > b2 = new OpenWritableBox( new double[] { 3, 3 }, new double[] { 12, 13 } );
 		final RealMaskRealInterval rm = b1.and( b2 );
 
 		assertTrue( rm instanceof BinaryCompositeMaskPredicate );
 		final BinaryCompositeMaskPredicate< ? > bc = ( BinaryCompositeMaskPredicate< ? > ) rm;
-		assertTrue( bc.operand( 0 ) instanceof ClosedBox );
-		assertTrue( bc.operand( 1 ) instanceof OpenBox );
+		assertTrue( bc.operand( 0 ) instanceof ClosedWritableBox );
+		assertTrue( bc.operand( 1 ) instanceof OpenWritableBox );
 		assertTrue( bc.operator() == Operators.AND );
 	}
 
 	@Test
 	public void testUnaryCompositeMaskPredicate()
 	{
-		final Box< RealLocalizableRealPositionable > b = new OpenBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
+		final Box< RealLocalizableRealPositionable > b = new OpenWritableBox( new double[] { 1, 1 }, new double[] { 19, 19 } );
 		final RealMask rm = b.negate();
 
 		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() == Operators.NEGATE );
-		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
+		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenWritableBox );
 	}
 
 	@Test
 	public void testUnaryCompositeMaskPredicateTransform()
 	{
-		final Box< RealLocalizableRealPositionable > b = new OpenBox( new double[] { 0, 1 }, new double[] { 12, 19 } );
+		final Box< RealLocalizableRealPositionable > b = new OpenWritableBox( new double[] { 0, 1 }, new double[] { 12, 19 } );
 		final AffineTransform2D t = new AffineTransform2D();
 		t.translate( 1, 5 );
 		final AffineTransform2D i = t.inverse();
@@ -1055,7 +1055,7 @@ public class OperatorsTest
 
 		assertTrue( rm instanceof UnaryCompositeMaskPredicate );
 		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() instanceof Operators.RealTransformMaskOperator );
-		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenBox );
+		assertTrue( ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operands().get( 0 ) instanceof OpenWritableBox );
 
 		final RealTransform r = ( ( Operators.RealTransformMaskOperator ) ( ( UnaryCompositeMaskPredicate< ? > ) rm ).operator() ).getTransformToSource();
 		assertTrue( r instanceof AffineTransform2D );
@@ -1074,11 +1074,11 @@ public class OperatorsTest
 	@Test
 	public void testSimpleCompositeEquals()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 
-		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
 
 		final RealMaskRealInterval a = b.and( s );
 		final RealMaskRealInterval a2 = b2.and( s2 );
@@ -1095,14 +1095,14 @@ public class OperatorsTest
 	@Test
 	public void testCompositeEquals()
 	{
-		final Box< RealLocalizableRealPositionable > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealLocalizableRealPositionable > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Box< RealLocalizableRealPositionable > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
-		final Box< RealLocalizableRealPositionable > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealLocalizableRealPositionable > cb = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > cb2 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Box< RealLocalizableRealPositionable > ob = new OpenWritableBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealLocalizableRealPositionable > ob2 = new OpenWritableBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
 
 		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
 		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );
@@ -1118,11 +1118,11 @@ public class OperatorsTest
 	@Test
 	public void testSimpleCompositeHashCode()
 	{
-		final Box< RealLocalizableRealPositionable > b = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealLocalizableRealPositionable > b2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > b = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > b2 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
 
-		final Sphere< RealLocalizableRealPositionable > s = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > s2 = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
 
 		final RealMaskRealInterval a = b.and( s );
 		final RealMaskRealInterval a2 = b2.and( s2 );
@@ -1139,14 +1139,14 @@ public class OperatorsTest
 	@Test
 	public void testCompositeHashCode()
 	{
-		final Box< RealLocalizableRealPositionable > cb = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Box< RealLocalizableRealPositionable > cb2 = new ClosedBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedSphere( new double[] { 6, 4 }, 5 );
-		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
-		final Box< RealLocalizableRealPositionable > ob = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
-		final Box< RealLocalizableRealPositionable > ob2 = new OpenBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealLocalizableRealPositionable > cb = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Box< RealLocalizableRealPositionable > cb2 = new ClosedWritableBox( new double[] { 0, 0 }, new double[] { 6, 4 } );
+		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Sphere< RealLocalizableRealPositionable > cs2 = new ClosedWritableSphere( new double[] { 6, 4 }, 5 );
+		final Ellipsoid< RealLocalizableRealPositionable > oe = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Ellipsoid< RealLocalizableRealPositionable > oe2 = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 2.5, 7 } );
+		final Box< RealLocalizableRealPositionable > ob = new OpenWritableBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
+		final Box< RealLocalizableRealPositionable > ob2 = new OpenWritableBox( new double[] { 7, -5 }, new double[] { 13.5, 0.5 } );
 
 		final RealMask rm = ob.xor( oe.or( cb.and( cs ) ).negate() );
 		final RealMask rm2 = ob2.xor( oe2.or( cb2.and( cs2 ) ).negate() );

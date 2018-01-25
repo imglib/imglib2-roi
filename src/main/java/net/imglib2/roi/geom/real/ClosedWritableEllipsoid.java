@@ -38,29 +38,34 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 
 /**
- * A {@link Sphere} which contains <b>all</b> boundary points.
+ * A {@link Ellipsoid} which does not contain any edge points, defined by a
+ * center and semi-axis lengths.
  *
  * @author Alison Walter
  */
-public class ClosedSphere extends AbstractSphere
+public class ClosedWritableEllipsoid extends AbstractWritableEllipsoid
 {
+
 	/**
-	 * Creates an n-d sphere.
+	 * Creates an n-d ellipsoid, where n is determined by the length of the
+	 * smaller array.
 	 *
 	 * @param center
-	 *            Point where the sphere is centered
-	 * @param radius
-	 *            Radius of the sphere
+	 *            Array containing the positions in each dimension at which the
+	 *            ellipsoid is centered. A copy of this array is stored.
+	 * @param semiAxisLengths
+	 *            Array containing the lengths of the semi-axes in each
+	 *            dimension. A copy of this array is stored.
 	 */
-	public ClosedSphere( final double[] center, final double radius )
+	public ClosedWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
-		super( center, radius );
+		super( center, semiAxisLengths );
 	}
 
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		return distancePowered( l ) <= radius * radius;
+		return distancePowered( l ) <= 1.0;
 	}
 
 	@Override

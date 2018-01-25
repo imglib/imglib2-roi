@@ -35,46 +35,72 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.BoundaryType;
+import net.imglib2.RealPoint;
+import net.imglib2.roi.Mask;
 
 /**
- * A {@link SuperEllipsoid} which contains <b>all</b> edge points. It is defined
- * by a center, semi-axis lengths, and an exponent.
+ * A {@link WritablePointMask} specified by the given location.
  *
  * @author Alison Walter
- * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
- *         rhaase@mpi-cbg.de
  */
-public class ClosedSuperEllipsoid extends AbstractSuperEllipsoid
+public class DefaultWritablePointMask extends RealPoint implements WritablePointMask
 {
+	/**
+	 * Creates a {@link WritablePointMask} with the given point, such that only
+	 * that point is contained in the {@link Mask}. The dimensionality of the
+	 * space is determined by the number of dimensions of {@code pt}.
+	 *
+	 * @param pt
+	 *            The point which the mask should contain.
+	 */
+	public DefaultWritablePointMask( final RealLocalizable pt )
+	{
+		super( pt );
+	}
 
 	/**
-	 * Creates an n-d super ellipsoid, where n is determined by the length of
-	 * the smaller array
+	 * Creates a {@link WritablePointMask} with given array, such that only that
+	 * location is contained in the {@link Mask}.
 	 *
-	 * @param center
-	 *            position of the superellipsoid in space, given in pixel
-	 *            coordinates
-	 * @param semiAxisLengths
-	 *            array containing n elements representing half values of
-	 *            width/height/depth/...
-	 * @param exponent
-	 *            exponent of the superellipsoid
+	 * @param pt
+	 *            Array containing the location of the point in n-d space, where
+	 *            n is the array length. A copy of this array is stored.
 	 */
-	public ClosedSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public DefaultWritablePointMask( final double[] pt )
 	{
-		super( center, semiAxisLengths, exponent );
+		super( pt );
 	}
 
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		return distancePowered( l ) <= 1.0;
+		for ( int d = 0; d < n; d++ )
+		{
+			if ( l.getDoublePosition( d ) != position[ d ] )
+				return false;
+		}
+		return true;
 	}
 
 	@Override
-	public BoundaryType boundaryType()
+	public boolean equals( final Object obj )
 	{
-		return BoundaryType.CLOSED;
+		if ( !( obj instanceof PointMask ) )
+			return false;
+
+		final PointMask pm = ( PointMask ) obj;
+		if ( pm.numDimensions() != n || pm.boundaryType() != boundaryType() )
+			return false;
+
+		return test( pm );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = 301;
+		for ( int i = 0; i < n; i++ )
+			result += 43 * position[ i ];
+		return result;
 	}
 }

@@ -41,11 +41,11 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.ClosedEllipsoid;
-import net.imglib2.roi.geom.real.ClosedSphere;
-import net.imglib2.roi.geom.real.ClosedSuperEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
+import net.imglib2.roi.geom.real.ClosedWritableSphere;
+import net.imglib2.roi.geom.real.ClosedWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.Ellipsoid;
-import net.imglib2.roi.geom.real.OpenSphere;
+import net.imglib2.roi.geom.real.OpenWritableSphere;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableSphere;
@@ -60,7 +60,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class SphereTest
+public class WritableSphereTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -68,7 +68,7 @@ public class SphereTest
 	@Test
 	public void testOpenCircle()
 	{
-		final WritableSphere s = new OpenSphere( new double[] { 10, 10 }, 8 );
+		final WritableSphere s = new OpenWritableSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertFalse( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -95,7 +95,7 @@ public class SphereTest
 	@Test
 	public void testClosedCircle()
 	{
-		final WritableSphere s = new ClosedSphere( new double[] { 10, 10 }, 8 );
+		final WritableSphere s = new ClosedWritableSphere( new double[] { 10, 10 }, 8 );
 
 		// vertices
 		assertTrue( s.test( new RealPoint( new double[] { 2, 10 } ) ) );
@@ -122,7 +122,7 @@ public class SphereTest
 	@Test
 	public void testSphereSetExponent()
 	{
-		final WritableSphere s = new OpenSphere( new double[] { 1, 1 }, 4 );
+		final WritableSphere s = new OpenWritableSphere( new double[] { 1, 1 }, 4 );
 
 		exception.expect( UnsupportedOperationException.class );
 		s.setExponent( 0.25 );
@@ -131,7 +131,7 @@ public class SphereTest
 	@Test
 	public void testMutateOpenSphere()
 	{
-		final WritableSphere s = new OpenSphere( new double[] { 3, 2 }, 5 );
+		final WritableSphere s = new OpenWritableSphere( new double[] { 3, 2 }, 5 );
 
 		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
 		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
@@ -162,7 +162,7 @@ public class SphereTest
 	@Test
 	public void testMutateClosedSphere()
 	{
-		final WritableSphere s = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final WritableSphere s = new ClosedWritableSphere( new double[] { 3, 2 }, 5 );
 
 		assertEquals( s.center().getDoublePosition( 0 ), 3, 0 );
 		assertEquals( s.center().getDoublePosition( 1 ), 2, 0 );
@@ -194,13 +194,13 @@ public class SphereTest
 	public void testNegativeRadius()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new OpenSphere( new double[] { 3, 2 }, -5 );
+		new OpenWritableSphere( new double[] { 3, 2 }, -5 );
 	}
 
 	@Test
 	public void testSetNegativeRadius()
 	{
-		final WritableSphere cs = new ClosedSphere( new double[] { 3, 2 }, 5 );
+		final WritableSphere cs = new ClosedWritableSphere( new double[] { 3, 2 }, 5 );
 
 		exception.expect( IllegalArgumentException.class );
 		cs.setRadius( -2 );
@@ -209,7 +209,7 @@ public class SphereTest
 	@Test
 	public void testSetTooShortCenter()
 	{
-		final WritableSphere cs = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final WritableSphere cs = new ClosedWritableSphere( new double[] { 3, 2, 1 }, 5 );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		cs.center().setPosition( new double[] { 1, 1 } );
@@ -218,7 +218,7 @@ public class SphereTest
 	@Test
 	public void testSetTooLongCenter()
 	{
-		final WritableSphere os = new OpenSphere( new double[] { 3, 2, 1 }, 5 );
+		final WritableSphere os = new OpenWritableSphere( new double[] { 3, 2, 1 }, 5 );
 
 		os.center().setPosition( new double[] { 1, 2, 3, 4 } );
 
@@ -234,7 +234,7 @@ public class SphereTest
 	public void testBounds()
 	{
 		// Bounds should be the same for open and closed spheres
-		final WritableSphere s = new ClosedSphere( new double[] { 3, 2, 1 }, 5 );
+		final WritableSphere s = new ClosedWritableSphere( new double[] { 3, 2, 1 }, 5 );
 		double[] min = new double[] { 3 - 5, 2 - 5, 1 - 5 };
 		double[] max = new double[] { 3 + 5, 2 + 5, 1 + 5 };
 		final double[] sMin = new double[ 3 ];
@@ -266,12 +266,12 @@ public class SphereTest
 	@Test
 	public void testEquals()
 	{
-		final WritableSphere cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSphere cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
-		final WritableSphere os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSphere cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+		final WritableSphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSphere cs2 = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final WritableSphere os = new OpenWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSphere cs3 = new ClosedWritableSphere( new double[] { 10, -5 }, 2.5 );
 
 		assertTrue( cs.equals( cs2 ) );
 		assertTrue( cs.equals( cse ) );
@@ -286,12 +286,12 @@ public class SphereTest
 	@Test
 	public void testHashCode()
 	{
-		final WritableSphere cs = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSphere cs2 = new ClosedSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
-		final WritableSphere os = new OpenSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final WritableSphere cs3 = new ClosedSphere( new double[] { 10, -5 }, 2.5 );
+		final WritableSphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSphere cs2 = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final WritableSphere os = new OpenWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final WritableSphere cs3 = new ClosedWritableSphere( new double[] { 10, -5 }, 2.5 );
 
 		assertEquals( cs.hashCode(), cs2.hashCode() );
 		assertEquals( cs.hashCode(), cse.hashCode() );

@@ -43,9 +43,9 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.real.Box;
-import net.imglib2.roi.geom.real.ClosedBox;
-import net.imglib2.roi.geom.real.ClosedEllipsoid;
-import net.imglib2.roi.geom.real.OpenBox;
+import net.imglib2.roi.geom.real.ClosedWritableBox;
+import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
+import net.imglib2.roi.geom.real.OpenWritableBox;
 import net.imglib2.roi.geom.real.WritableBox;
 import net.imglib2.roi.geom.real.WritableEllipsoid;
 
@@ -58,7 +58,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class BoxTest
+public class WritableBoxTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -66,7 +66,7 @@ public class BoxTest
 	@Test
 	public void testTwoDimensionalOpenRectangle()
 	{
-		final WritableBox b = new OpenBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
+		final WritableBox b = new OpenWritableBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
 		assertFalse( b.test( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
@@ -97,7 +97,7 @@ public class BoxTest
 	@Test
 	public void testTwoDimensionalClosedRectangle()
 	{
-		final WritableBox b = new ClosedBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
+		final WritableBox b = new ClosedWritableBox( new double[] { -6.8, -3.2375 }, new double[] { 13.2, 3.2625 } );
 
 		// vertices
 		assertTrue( b.test( new RealPoint( new double[] { -6.8, -3.2375 } ) ) );
@@ -127,7 +127,7 @@ public class BoxTest
 	@Test
 	public void testHighDimensionalOpenBox()
 	{
-		final WritableBox hc = new OpenBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
+		final WritableBox hc = new OpenWritableBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
 		assertFalse( hc.test( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
@@ -174,7 +174,7 @@ public class BoxTest
 	@Test
 	public void testHighDimensionalClosedBox()
 	{
-		final WritableBox hc = new ClosedBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
+		final WritableBox hc = new ClosedWritableBox( new double[] { 3, 3, 3, 3 }, new double[] { 7, 7, 7, 7 } );
 
 		// vertices
 		assertTrue( hc.test( new RealPoint( new double[] { 3, 3, 3, 3 } ) ) );
@@ -221,7 +221,7 @@ public class BoxTest
 	@Test
 	public void testMutatingClosedBox()
 	{
-		final WritableBox b = new ClosedBox( new double[] { 2, 2 }, new double[] { 5, 5 } );
+		final WritableBox b = new ClosedWritableBox( new double[] { 2, 2 }, new double[] { 5, 5 } );
 
 		assertEquals( b.center().getDoublePosition( 0 ), 3.5, 0 );
 		assertEquals( b.sideLength( 1 ), 3, 0 );
@@ -246,7 +246,7 @@ public class BoxTest
 	@Test
 	public void testMutatingOpenBox()
 	{
-		final WritableBox b = new OpenBox( new double[] { 1.25, 2 }, new double[] { 5, 3.5 } );
+		final WritableBox b = new OpenWritableBox( new double[] { 1.25, 2 }, new double[] { 5, 3.5 } );
 
 		assertEquals( b.center().getDoublePosition( 0 ), 3.125, 0 );
 		assertEquals( b.center().getDoublePosition( 1 ), 2.75, 0 );
@@ -280,13 +280,13 @@ public class BoxTest
 	public void testMinGreaterThanMax()
 	{
 		exception.expect( IllegalArgumentException.class );
-		new ClosedBox( new double[] { 1, 2, 3 }, new double[] { 1, 2 } );
+		new ClosedWritableBox( new double[] { 1, 2, 3 }, new double[] { 1, 2 } );
 	}
 
 	@Test
 	public void testMaxGreaterThanMin()
 	{
-		final WritableBox b = new ClosedBox( new double[] { 1, 2, 3 }, new double[] { 3, 4, 5, 6 } );
+		final WritableBox b = new ClosedWritableBox( new double[] { 1, 2, 3 }, new double[] { 3, 4, 5, 6 } );
 
 		assertEquals( b.numDimensions(), 3 );
 		assertEquals( b.sideLength( 2 ), 2, 0 );
@@ -298,7 +298,7 @@ public class BoxTest
 	@Test
 	public void testSetNegativeEdgeLength()
 	{
-		final WritableBox b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+		final WritableBox b = new OpenWritableBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
 
 		exception.expect( IllegalArgumentException.class );
 		b.setSideLength( 1, -2.25 );
@@ -307,7 +307,7 @@ public class BoxTest
 	@Test
 	public void testSetCenterTooShort()
 	{
-		final WritableBox b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+		final WritableBox b = new OpenWritableBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		b.center().setPosition( new double[] { 3 } );
@@ -316,7 +316,7 @@ public class BoxTest
 	@Test
 	public void testSetCenterTooLong()
 	{
-		final WritableBox b = new OpenBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
+		final WritableBox b = new OpenWritableBox( new double[] { 1, 1 }, new double[] { 11, 11 } );
 		b.center().setPosition( new double[] { 7.25, 3.125, 4 } );
 
 		final RealLocalizable c = b.center();
@@ -331,7 +331,7 @@ public class BoxTest
 		// Bounds should be the same for open or closed boxes
 		double[] min = new double[] { 10, 6 };
 		double[] max = new double[] { 12.5, 20 };
-		final WritableBox b = new ClosedBox( min, max );
+		final WritableBox b = new ClosedWritableBox( min, max );
 		final double[] bMax = new double[ 2 ];
 		final double[] bMin = new double[ 2 ];
 		b.realMax( bMax );
@@ -361,13 +361,13 @@ public class BoxTest
 	@Test
 	public void testEquals()
 	{
-		final WritableBox cb = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox cb2 = new ClosedBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox cb3 = new ClosedBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
-		final WritableBox cb4 = new ClosedBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
-		final WritableBox cb5 = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox ob = new OpenBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableEllipsoid e = new ClosedEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
+		final WritableBox cb = new ClosedWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox cb2 = new ClosedWritableBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox cb3 = new ClosedWritableBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
+		final WritableBox cb4 = new ClosedWritableBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
+		final WritableBox cb5 = new ClosedWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox ob = new OpenWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableEllipsoid e = new ClosedWritableEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
 
 		// Same box
 		assertTrue( cb.equals( cb5 ) );
@@ -386,14 +386,14 @@ public class BoxTest
 	@Test
 	public void testHashCode()
 	{
-		final WritableBox cb = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox cb2 = new ClosedBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox cb3 = new ClosedBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
-		final WritableBox cb4 = new ClosedBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
-		final WritableBox cb5 = new ClosedBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableBox ob = new OpenBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
-		final WritableEllipsoid e = new ClosedEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
-		final WritableEllipsoid e2 = new ClosedEllipsoid( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox cb = new ClosedWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox cb2 = new ClosedWritableBox( new double[] { 1, 2.25, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox cb3 = new ClosedWritableBox( new double[] { 1, 2.5, 0, -1 }, new double[] { 6.25, 10, 7.125, 12 } );
+		final WritableBox cb4 = new ClosedWritableBox( new double[] { 1, 2.5 }, new double[] { 6.25, 10 } );
+		final WritableBox cb5 = new ClosedWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableBox ob = new OpenWritableBox( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
+		final WritableEllipsoid e = new ClosedWritableEllipsoid( new double[] { 3.625, 6.25, 3.5625 }, new double[] { 2.625, 3.75, 3.5625 } );
+		final WritableEllipsoid e2 = new ClosedWritableEllipsoid( new double[] { 1, 2.5, 0 }, new double[] { 6.25, 10, 7.125 } );
 
 		assertEquals( cb.hashCode(), cb5.hashCode() );
 		assertNotEquals( cb.hashCode(), cb2.hashCode() );

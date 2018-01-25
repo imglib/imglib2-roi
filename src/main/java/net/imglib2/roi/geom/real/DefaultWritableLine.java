@@ -48,7 +48,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Alison Walter
  */
-public class DefaultLine extends AbstractRealInterval implements WritableLine
+public class DefaultWritableLine extends AbstractRealInterval implements WritableLine
 {
 	private double[] pointOne;
 
@@ -66,7 +66,7 @@ public class DefaultLine extends AbstractRealInterval implements WritableLine
 	 *            and stored as a {@code double[]}. This is the position which
 	 *            will be returned by {@link #endpointTwo()}.
 	 */
-	public DefaultLine( final RealLocalizable pointOne, final RealLocalizable pointTwo )
+	public DefaultWritableLine( final RealLocalizable pointOne, final RealLocalizable pointTwo )
 	{
 		this( createArray( pointOne ), createArray( pointTwo ), false );
 	}
@@ -88,7 +88,7 @@ public class DefaultLine extends AbstractRealInterval implements WritableLine
 	 *            If true, pointOne and pointTwo arrays are copied and stored.
 	 *            If false, copies are not made.
 	 */
-	public DefaultLine( final double[] pointOne, final double[] pointTwo, final boolean copy )
+	public DefaultWritableLine( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
 		super( Math.min( pointOne.length, pointTwo.length ) );
 		if ( copy || pointOne.length != pointTwo.length )

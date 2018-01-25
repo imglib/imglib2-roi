@@ -41,8 +41,8 @@ import static org.junit.Assert.assertTrue;
 
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
-import net.imglib2.roi.geom.real.DefaultLine;
-import net.imglib2.roi.geom.real.DefaultPointMask;
+import net.imglib2.roi.geom.real.DefaultWritableLine;
+import net.imglib2.roi.geom.real.DefaultWritablePointMask;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.PointMask;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -56,7 +56,7 @@ import org.junit.rules.ExpectedException;
  *
  * @author Alison Walter
  */
-public class PointMaskTest
+public class WritablePointMaskTest
 {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -64,7 +64,7 @@ public class PointMaskTest
 	@Test
 	public void testDoubleArrayConstructor()
 	{
-		final PointMask pt = new DefaultPointMask( new double[] { 10.25, -3, 6, 0.01 } );
+		final PointMask pt = new DefaultWritablePointMask( new double[] { 10.25, -3, 6, 0.01 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 10.25, -3, 6, 0.01 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { 10.15, -3, 6, 0.02 } ) ) );
@@ -79,7 +79,7 @@ public class PointMaskTest
 	@Test
 	public void testRealLocalizableConstructor()
 	{
-		final PointMask pt = new DefaultPointMask( new RealPoint( new double[] { -12.125, 6, 0 } ) );
+		final PointMask pt = new DefaultWritablePointMask( new RealPoint( new double[] { -12.125, 6, 0 } ) );
 
 		assertTrue( pt.test( new RealPoint( new double[] { -12.125, 6, 0 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { -12.125, 6.001, 0 } ) ) );
@@ -94,7 +94,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocation()
 	{
-		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultWritablePointMask pt = new DefaultWritablePointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
@@ -108,7 +108,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocationTooLong()
 	{
-		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultWritablePointMask pt = new DefaultWritablePointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { 12, 64 } ) ) );
@@ -125,7 +125,7 @@ public class PointMaskTest
 	@Test
 	public void testSetLocationTooShort()
 	{
-		final DefaultPointMask pt = new DefaultPointMask( new double[] { 0.5, -7.125 } );
+		final DefaultWritablePointMask pt = new DefaultWritablePointMask( new double[] { 0.5, -7.125 } );
 
 		assertTrue( pt.test( new RealPoint( new double[] { 0.5, -7.125 } ) ) );
 		assertFalse( pt.test( new RealPoint( new double[] { -3, 9 } ) ) );
@@ -138,7 +138,7 @@ public class PointMaskTest
 	public void testBounds()
 	{
 		double[] loc = new double[] { 0.5, -7.125 };
-		final DefaultPointMask pt = new DefaultPointMask( loc );
+		final DefaultWritablePointMask pt = new DefaultWritablePointMask( loc );
 		final double[] ptMin = new double[ 2 ];
 		final double[] ptMax = new double[ 2 ];
 		pt.realMin( ptMin );
@@ -159,10 +159,10 @@ public class PointMaskTest
 	@Test
 	public void testEquals()
 	{
-		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final DefaultPointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final PointMask pm = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
+		final DefaultWritablePointMask pm2 = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm3 = new DefaultWritablePointMask( new double[] { 1.5, -12.25, 82 } );
+		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertTrue( pm.equals( pm2 ) );
 
@@ -175,10 +175,10 @@ public class PointMaskTest
 	@Test
 	public void testHashCode()
 	{
-		final PointMask pm = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final DefaultPointMask pm2 = new DefaultPointMask( new double[] { 1.5, -12.125 } );
-		final PointMask pm3 = new DefaultPointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealLocalizableRealPositionable > l = new DefaultLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final PointMask pm = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
+		final DefaultWritablePointMask pm2 = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
+		final PointMask pm3 = new DefaultWritablePointMask( new double[] { 1.5, -12.25, 82 } );
+		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertEquals( pm.hashCode(), pm2.hashCode() );
 
