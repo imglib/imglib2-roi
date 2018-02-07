@@ -77,7 +77,7 @@ public class RealRandomAccessibleAsRealMaskTest
 	@BeforeClass
 	public static void setup()
 	{
-		final Ellipsoid< ? > e = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 4, 7 } );
+		final Ellipsoid e = new OpenWritableEllipsoid( new double[] { 10, 10 }, new double[] { 4, 7 } );
 		rra = new RealMaskAsRealRandomAccessible<>( e, new BoolType() );
 		access = rra.realRandomAccess();
 		m = new RealRandomAccessibleAsRealMask<>( rra );

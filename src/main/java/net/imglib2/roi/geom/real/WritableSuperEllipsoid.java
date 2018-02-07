@@ -41,8 +41,12 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public interface WritableSuperEllipsoid extends SuperEllipsoid< RealLocalizableRealPositionable >
+public interface WritableSuperEllipsoid extends SuperEllipsoid
 {
+
+	@Override
+	RealLocalizableRealPositionable center();
+
 	/** Sets the exponent. */
 	void setExponent( double exponent );
 

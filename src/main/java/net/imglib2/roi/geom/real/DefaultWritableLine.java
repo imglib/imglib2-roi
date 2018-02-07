@@ -137,15 +137,12 @@ public class DefaultWritableLine extends AbstractRealInterval implements Writabl
 	}
 
 	@Override
-	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof Line ) )
 			return false;
-		if ( !( ( ( Line< ? > ) obj ).endpointOne() instanceof RealLocalizable ) )
-			return false;
 
-		final Line< RealLocalizable > l = ( Line< RealLocalizable > ) obj;
+		final Line l = ( Line ) obj;
 		if ( l.numDimensions() != n || boundaryType() != l.boundaryType() )
 			return false;
 

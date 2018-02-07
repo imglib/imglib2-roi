@@ -34,14 +34,12 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
-
 /**
  * A modifiable {@link Ellipsoid}.
  *
  * @author Alison Walter
  */
-public interface WritableEllipsoid extends WritableSuperEllipsoid, Ellipsoid< RealLocalizableRealPositionable >
+public interface WritableEllipsoid extends WritableSuperEllipsoid, Ellipsoid
 {
 	/**
 	 * Ellipsoids have exponents of 2.

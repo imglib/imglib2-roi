@@ -41,7 +41,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Sphere< T > extends Ellipsoid< T >
+public interface Sphere extends Ellipsoid
 {
 	/** Returns the radius of this sphere. */
 	double radius();

@@ -42,8 +42,11 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public interface WritablePolyline extends Polyline< RealLocalizableRealPositionable >
+public interface WritablePolyline extends Polyline
 {
+	@Override
+	RealLocalizableRealPositionable vertex( final int pos );
+
 	/** Adds a vertex at the given index. */
 	void addVertex( int index, RealLocalizable vertex );
 

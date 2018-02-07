@@ -157,15 +157,12 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	}
 
 	@Override
-	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof Polygon2D ) )
 			return false;
-		if ( !( ( ( Polygon2D< ? > ) obj ).vertex( 0 ) instanceof RealLocalizable ) )
-			return false;
 
-		final Polygon2D< RealLocalizable > p = ( Polygon2D< RealLocalizable > ) obj;
+		final Polygon2D p = ( Polygon2D ) obj;
 		if ( numVertices() != p.numVertices() || boundaryType() != p.boundaryType() )
 			return false;
 

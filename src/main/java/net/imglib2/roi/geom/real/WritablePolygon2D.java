@@ -41,8 +41,11 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public interface WritablePolygon2D extends Polygon2D< RealLocalizableRealPositionable >
+public interface WritablePolygon2D extends Polygon2D
 {
+	@Override
+	RealLocalizableRealPositionable vertex( final int pos );
+
 	/** Adds a vertex at the given index. */
 	void addVertex( int index, double[] vertex );
 

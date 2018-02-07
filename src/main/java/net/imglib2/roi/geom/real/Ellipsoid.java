@@ -41,7 +41,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Ellipsoid< T > extends SuperEllipsoid< T >
+public interface Ellipsoid extends SuperEllipsoid
 {
 
 }

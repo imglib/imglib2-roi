@@ -50,7 +50,6 @@ import net.imglib2.roi.geom.real.DefaultWritablePolyline;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.Polyline;
 import net.imglib2.roi.geom.real.WritablePolyline;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -375,7 +374,7 @@ public class WritablePolylineTest
 		assertTrue( p.equals( o ) );
 
 		o = new DefaultWritablePolyline( a2 );
-		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
+		final Line l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
 		assertFalse( p.equals( o ) );
 		assertFalse( p.equals( l ) );
 	}
@@ -403,7 +402,7 @@ public class WritablePolylineTest
 		assertEquals( p.hashCode(), o.hashCode() );
 
 		o = new DefaultWritablePolyline( a2 );
-		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
+		final Line l = new DefaultWritableLine( new double[] { 0, 0, 0 }, new double[] { 4, 4, 4 }, false );
 		assertNotEquals( p.hashCode(), o.hashCode() );
 		assertNotEquals( p.hashCode(), l.hashCode() );
 	}

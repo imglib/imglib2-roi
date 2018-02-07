@@ -34,6 +34,7 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -42,13 +43,13 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Line< T > extends RealMaskRealInterval
+public interface Line extends RealMaskRealInterval
 {
 	/** Returns the first endpoint. */
-	T endpointOne();
+	RealLocalizable endpointOne();
 
 	/** Returns the second endpoint. */
-	T endpointTwo();
+	RealLocalizable endpointTwo();
 
 	@Override
 	default BoundaryType boundaryType()

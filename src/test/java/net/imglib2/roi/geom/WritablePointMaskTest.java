@@ -45,7 +45,6 @@ import net.imglib2.roi.geom.real.DefaultWritableLine;
 import net.imglib2.roi.geom.real.DefaultWritablePointMask;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.PointMask;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -162,7 +161,7 @@ public class WritablePointMaskTest
 		final PointMask pm = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
 		final DefaultWritablePointMask pm2 = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultWritablePointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final Line l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertTrue( pm.equals( pm2 ) );
 
@@ -178,7 +177,7 @@ public class WritablePointMaskTest
 		final PointMask pm = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
 		final DefaultWritablePointMask pm2 = new DefaultWritablePointMask( new double[] { 1.5, -12.125 } );
 		final PointMask pm3 = new DefaultWritablePointMask( new double[] { 1.5, -12.25, 82 } );
-		final Line< RealLocalizableRealPositionable > l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
+		final Line l = new DefaultWritableLine( new double[] { 1.25, -12.5 }, new double[] { 1.5, -12.125 }, false );
 
 		assertEquals( pm.hashCode(), pm2.hashCode() );
 

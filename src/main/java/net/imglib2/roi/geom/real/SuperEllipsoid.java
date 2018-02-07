@@ -34,6 +34,7 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
@@ -41,7 +42,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface SuperEllipsoid< T > extends RealMaskRealInterval
+public interface SuperEllipsoid extends RealMaskRealInterval
 {
 	/** Returns the exponent of this superellipsoid */
 	double exponent();
@@ -52,5 +53,5 @@ public interface SuperEllipsoid< T > extends RealMaskRealInterval
 	double semiAxisLength( int d );
 
 	/** Returns the center of the superellipsoid */
-	T center();
+	RealLocalizable center();
 }

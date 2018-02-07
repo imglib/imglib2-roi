@@ -50,7 +50,6 @@ import net.imglib2.roi.geom.real.DefaultWritablePolygon2D;
 import net.imglib2.roi.geom.real.OpenWritablePolygon2D;
 import net.imglib2.roi.geom.real.Polygon2D;
 import net.imglib2.roi.geom.real.WritablePolygon2D;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -98,7 +97,7 @@ public class WritablePolygon2DTest
 	public void testDefaultPolygon2D()
 	{
 		// test some edges
-		final Polygon2D< RealLocalizableRealPositionable > polygon = new DefaultWritablePolygon2D( points );
+		final Polygon2D polygon = new DefaultWritablePolygon2D( points );
 
 		// vertices
 		assertTrue( polygon.test( points.get( 0 ) ) );
@@ -132,7 +131,7 @@ public class WritablePolygon2DTest
 	public void testOpenPolygon2D()
 	{
 		// test no edges
-		final Polygon2D< RealLocalizableRealPositionable > polygon = new OpenWritablePolygon2D( points );
+		final Polygon2D polygon = new OpenWritablePolygon2D( points );
 
 		// vertices
 		assertFalse( polygon.test( points.get( 0 ) ) );
@@ -166,7 +165,7 @@ public class WritablePolygon2DTest
 	public void testClosedPolygon2D()
 	{
 		// test all edges
-		final Polygon2D< RealLocalizableRealPositionable > polygon = new ClosedWritablePolygon2D( points );
+		final Polygon2D polygon = new ClosedWritablePolygon2D( points );
 
 		// vertices
 		assertTrue( polygon.test( points.get( 0 ) ) );
@@ -199,7 +198,7 @@ public class WritablePolygon2DTest
 	@Test
 	public void testSetVertex()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultWritablePolygon2D( points );
+		final WritablePolygon2D p = new DefaultWritablePolygon2D( points );
 
 		assertFalse( p.test( new RealPoint( new double[] { 30, 11 } ) ) );
 
@@ -418,11 +417,11 @@ public class WritablePolygon2DTest
 	@Test
 	public void testEquals()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D p = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
 		final WritablePolygon2D p2 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p3 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p4 = new DefaultWritablePolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
-		final Polygon2D< RealLocalizableRealPositionable > cp = new ClosedWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D p3 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
+		final Polygon2D p4 = new DefaultWritablePolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
+		final Polygon2D cp = new ClosedWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
 
 		assertTrue( p.equals( p2 ) );
 
@@ -436,11 +435,11 @@ public class WritablePolygon2DTest
 	@Test
 	public void testHashCode()
 	{
-		final Polygon2D< RealLocalizableRealPositionable > p = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p2 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p3 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
-		final Polygon2D< RealLocalizableRealPositionable > p4 = new DefaultWritablePolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
-		final Polygon2D< RealLocalizableRealPositionable > cp = new ClosedWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D p = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final WritablePolygon2D p2 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
+		final Polygon2D p3 = new DefaultWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 10, 0, 10 } );
+		final Polygon2D p4 = new DefaultWritablePolygon2D( new double[] { 0, 10, 20 }, new double[] { 0, 20, 0 } );
+		final Polygon2D cp = new ClosedWritablePolygon2D( new double[] { 0, 10, 10, 0 }, new double[] { 0, 0, 10, 10 } );
 
 		assertEquals( p.hashCode(), p2.hashCode() );
 

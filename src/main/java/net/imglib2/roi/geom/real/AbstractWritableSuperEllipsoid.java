@@ -137,15 +137,12 @@ public abstract class AbstractWritableSuperEllipsoid extends AbstractEuclideanSp
 	}
 
 	@Override
-	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof SuperEllipsoid ) )
 			return false;
-		if ( !( ( ( SuperEllipsoid< ? > ) obj ).center() instanceof RealLocalizable ) )
-			return false;
 
-		final SuperEllipsoid< RealLocalizable > se = ( SuperEllipsoid< RealLocalizable > ) obj;
+		final SuperEllipsoid se = ( SuperEllipsoid ) obj;
 		if ( se.numDimensions() != n || exponent != se.exponent() || boundaryType() != se.boundaryType() )
 			return false;
 

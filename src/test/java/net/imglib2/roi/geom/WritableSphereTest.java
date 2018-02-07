@@ -49,7 +49,6 @@ import net.imglib2.roi.geom.real.OpenWritableSphere;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableSphere;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -268,8 +267,8 @@ public class WritableSphereTest
 	{
 		final WritableSphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSphere cs2 = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final SuperEllipsoid cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 		final WritableSphere os = new OpenWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSphere cs3 = new ClosedWritableSphere( new double[] { 10, -5 }, 2.5 );
 
@@ -288,8 +287,8 @@ public class WritableSphereTest
 	{
 		final WritableSphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSphere cs2 = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
-		final SuperEllipsoid< RealLocalizableRealPositionable > cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final SuperEllipsoid cse = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
+		final Ellipsoid ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 		final WritableSphere os = new OpenWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSphere cs3 = new ClosedWritableSphere( new double[] { 10, -5 }, 2.5 );
 

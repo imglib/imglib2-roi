@@ -34,6 +34,7 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
@@ -41,10 +42,10 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Polygon2D< T > extends RealMaskRealInterval
+public interface Polygon2D extends RealMaskRealInterval
 {
 	/** Return the vertex at the specified position */
-	T vertex( final int pos );
+	RealLocalizable vertex( final int pos );
 
 	/** Get the number of vertices */
 	int numVertices();

@@ -128,15 +128,12 @@ public abstract class AbstractWritableSphere extends AbstractEuclideanSpace impl
 	}
 
 	@Override
-	@SuppressWarnings( "unchecked" )
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof SuperEllipsoid ) )
 			return false;
-		if ( !( ( ( SuperEllipsoid< ? > ) obj ).center() instanceof RealLocalizable ) )
-			return false;
 
-		final SuperEllipsoid< RealLocalizable > se = ( SuperEllipsoid< RealLocalizable > ) obj;
+		final SuperEllipsoid se = ( SuperEllipsoid ) obj;
 		if ( se.numDimensions() != n || 2 != se.exponent() || boundaryType() != se.boundaryType() )
 			return false;
 

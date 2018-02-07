@@ -34,14 +34,12 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
-
 /**
  * A modifiable {@link Sphere}.
  *
  * @author Alison Walter
  */
-public interface WritableSphere extends WritableEllipsoid, Sphere< RealLocalizableRealPositionable >
+public interface WritableSphere extends WritableEllipsoid, Sphere
 {
 	/** Sets the radius. */
 	void setRadius( double radius );

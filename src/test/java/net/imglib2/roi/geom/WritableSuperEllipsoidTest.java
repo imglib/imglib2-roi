@@ -49,7 +49,6 @@ import net.imglib2.roi.geom.real.OpenWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.Sphere;
 import net.imglib2.roi.geom.real.SuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -410,9 +409,9 @@ public class WritableSuperEllipsoidTest
 		assertFalse( ose.equals( ose3 ) );
 		assertFalse( ose.equals( ose4 ) );
 
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSuperEllipsoid cse2 = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Ellipsoid ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 
 		assertTrue( cse2.equals( cs ) );
 		assertTrue( cse2.equals( ce ) );
@@ -435,9 +434,9 @@ public class WritableSuperEllipsoidTest
 		assertNotEquals( ose.hashCode(), ose3.hashCode() );
 		assertNotEquals( ose.hashCode(), ose4.hashCode() );
 
-		final Sphere< RealLocalizableRealPositionable > cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
+		final Sphere cs = new ClosedWritableSphere( new double[] { 10, -5, 6 }, 2.5 );
 		final WritableSuperEllipsoid cse2 = new ClosedWritableSuperEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 }, 2 );
-		final Ellipsoid< RealLocalizableRealPositionable > ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
+		final Ellipsoid ce = new ClosedWritableEllipsoid( new double[] { 10, -5, 6 }, new double[] { 2.5, 2.5, 2.5 } );
 
 		assertEquals( cse2.hashCode(), cs.hashCode() );
 		assertEquals( cse2.hashCode(), ce.hashCode() );

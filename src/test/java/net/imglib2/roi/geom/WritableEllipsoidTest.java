@@ -47,7 +47,6 @@ import net.imglib2.roi.geom.real.OpenWritableEllipsoid;
 import net.imglib2.roi.geom.real.OpenWritableSuperEllipsoid;
 import net.imglib2.roi.geom.real.WritableEllipsoid;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,7 +65,7 @@ public class WritableEllipsoidTest
 	@Test
 	public void testOpenEllipsoid()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new OpenWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid e = new OpenWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertFalse( e.test( new RealPoint( new double[] { 16, 23 } ) ) );
@@ -92,7 +91,7 @@ public class WritableEllipsoidTest
 	@Test
 	public void testClosedEllipsoid()
 	{
-		final Ellipsoid< RealLocalizableRealPositionable > e = new ClosedWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
+		final Ellipsoid e = new ClosedWritableEllipsoid( new double[] { 12, 23 }, new double[] { 4, 9 } );
 
 		// vertices
 		assertTrue( e.test( new RealPoint( new double[] { 16, 23 } ) ) );

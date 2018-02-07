@@ -40,7 +40,11 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public interface WritableLine extends Line< RealLocalizableRealPositionable >
+public interface WritableLine extends Line
 {
-	// NB: Marker interface
+	@Override
+	RealLocalizableRealPositionable endpointOne();
+
+	@Override
+	RealLocalizableRealPositionable endpointTwo();
 }
