@@ -98,7 +98,7 @@ public abstract class AbstractWritableBox extends AbstractRealInterval implement
 		if ( !( obj instanceof Box ) )
 			return false;
 
-		final Box< ? > b = ( Box< ? > ) obj;
+		final Box b = ( Box ) obj;
 		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
 			return false;
 

@@ -34,6 +34,7 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
@@ -42,11 +43,11 @@ import net.imglib2.roi.RealMaskRealInterval;
  *
  * @author Alison Walter
  */
-public interface Box< T > extends RealMaskRealInterval
+public interface Box extends RealMaskRealInterval
 {
 	/** Returns side length of Box in dimension d. */
 	double sideLength( int d );
 
 	/** Returns the center of the Box. */
-	T center();
+	RealLocalizable center();
 }

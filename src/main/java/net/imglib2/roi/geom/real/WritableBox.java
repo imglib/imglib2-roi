@@ -41,8 +41,10 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  *
  * @author Alison Walter
  */
-public interface WritableBox extends Box< RealLocalizableRealPositionable >
+public interface WritableBox extends Box
 {
+	@Override
+	RealLocalizableRealPositionable center();
 
 	/** Updates the length of the side in dimension d. */
 	void setSideLength( int d, double length );
