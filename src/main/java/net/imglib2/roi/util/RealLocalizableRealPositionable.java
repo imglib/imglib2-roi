@@ -43,5 +43,4 @@ import net.imglib2.RealPositionable;
  */
 public interface RealLocalizableRealPositionable extends RealLocalizable, RealPositionable
 {
-	// NB: marker interface
 }
