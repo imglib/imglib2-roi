@@ -44,174 +44,170 @@ import net.imglib2.RealPositionable;
  *
  * @author Alison Walter
  */
-public class RealLocalizableRealPositionableWrapper extends AbstractEuclideanSpace implements RealLocalizableRealPositionable
+public class RealLocalizableRealPositionableWrapper< T extends RealLocalizable & RealPositionable > extends AbstractEuclideanSpace implements RealLocalizableRealPositionable
 {
+	private final T source;
 
-	private final RealLocalizable localizableSource;
-
-	private final RealPositionable positionableSource;
-
-	public < T extends RealLocalizable & RealPositionable > RealLocalizableRealPositionableWrapper( final T source )
+	public RealLocalizableRealPositionableWrapper( final T source )
 	{
 		super( source.numDimensions() );
-		localizableSource = source;
-		positionableSource = source;
+		this.source = source;
 	}
 
 	@Override
 	public void localize( final float[] position )
 	{
-		localizableSource.localize( position );
+		source.localize( position );
 	}
 
 	@Override
 	public void localize( final double[] position )
 	{
-		localizableSource.localize( position );
+		source.localize( position );
 	}
 
 	@Override
 	public float getFloatPosition( final int d )
 	{
-		return localizableSource.getFloatPosition( d );
+		return source.getFloatPosition( d );
 	}
 
 	@Override
 	public double getDoublePosition( final int d )
 	{
-		return localizableSource.getDoublePosition( d );
+		return source.getDoublePosition( d );
 	}
 
 	@Override
 	public void move( final float distance, final int d )
 	{
-		positionableSource.move( distance, d );
+		source.move( distance, d );
 	}
 
 	@Override
 	public void move( final double distance, final int d )
 	{
-		positionableSource.move( distance, d );
+		source.move( distance, d );
 	}
 
 	@Override
 	public void move( final RealLocalizable distance )
 	{
-		positionableSource.move( distance );
+		source.move( distance );
 	}
 
 	@Override
 	public void move( final float[] distance )
 	{
-		positionableSource.move( distance );
+		source.move( distance );
 	}
 
 	@Override
 	public void move( final double[] distance )
 	{
-		positionableSource.move( distance );
+		source.move( distance );
 	}
 
 	@Override
 	public void setPosition( final RealLocalizable position )
 	{
-		positionableSource.setPosition( position );
+		source.setPosition( position );
 	}
 
 	@Override
 	public void setPosition( final float[] position )
 	{
-		positionableSource.setPosition( position );
+		source.setPosition( position );
 	}
 
 	@Override
 	public void setPosition( final double[] position )
 	{
-		positionableSource.setPosition( position );
+		source.setPosition( position );
 	}
 
 	@Override
 	public void setPosition( final float position, final int d )
 	{
-		positionableSource.setPosition( position, d );
+		source.setPosition( position, d );
 	}
 
 	@Override
 	public void setPosition( final double position, final int d )
 	{
-		positionableSource.setPosition( position, d );
+		source.setPosition( position, d );
 	}
 
 	@Override
 	public void fwd( final int d )
 	{
-		positionableSource.fwd( d );
+		source.fwd( d );
 	}
 
 	@Override
 	public void bck( final int d )
 	{
-		positionableSource.bck( d );
+		source.bck( d );
 	}
 
 	@Override
 	public void move( final int distance, final int d )
 	{
-		positionableSource.move( distance, d );
+		source.move( distance, d );
 	}
 
 	@Override
 	public void move( final long distance, final int d )
 	{
-		positionableSource.move( distance, d );
+		source.move( distance, d );
 	}
 
 	@Override
 	public void move( final Localizable localizable )
 	{
-		positionableSource.move( localizable );
+		source.move( localizable );
 	}
 
 	@Override
 	public void move( final int[] distance )
 	{
-		positionableSource.move( distance );
+		source.move( distance );
 	}
 
 	@Override
 	public void move( final long[] distance )
 	{
-		positionableSource.move( distance );
+		source.move( distance );
 	}
 
 	@Override
 	public void setPosition( final Localizable localizable )
 	{
-		positionableSource.setPosition( localizable );
+		source.setPosition( localizable );
 	}
 
 	@Override
 	public void setPosition( final int[] position )
 	{
-		positionableSource.setPosition( position );
+		source.setPosition( position );
 	}
 
 	@Override
 	public void setPosition( final long[] position )
 	{
-		positionableSource.setPosition( position );
+		source.setPosition( position );
 	}
 
 	@Override
 	public void setPosition( final int position, final int d )
 	{
-		positionableSource.setPosition( position, d );
+		source.setPosition( position, d );
 	}
 
 	@Override
 	public void setPosition( final long position, final int d )
 	{
-		positionableSource.setPosition( position, d );
+		source.setPosition( position, d );
 	}
 
 }
