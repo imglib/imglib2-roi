@@ -35,14 +35,13 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
 
 /**
  * A modifiable {@link RealPointCollection}.
  *
  * @author Alison Walter
  */
-public interface WritableRealPointCollection< L extends RealLocalizable & RealPositionable > extends RealPointCollection< L >
+public interface WritableRealPointCollection< L extends RealLocalizable > extends RealPointCollection< L >
 {
 	/**
 	 * Adds a point to the collection.

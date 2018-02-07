@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.real.DefaultWritablePointMask;
@@ -63,7 +64,7 @@ public class RealPointCollectionTest
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
-	private static List< RealPoint > points = new ArrayList<>();
+	private static List< RealLocalizable > points = new ArrayList<>();
 
 	private static final RealPoint testAddPoint = new RealPoint( new double[] { 10.25, 111 } );
 
@@ -132,7 +133,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPC()
 	{
-		final RealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
+		final RealPointCollection< RealLocalizable > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		// all points within region
 		for ( int i = 0; i < rpc.numDimensions(); i++ )
@@ -156,7 +157,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCAddPoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new DefaultWritableRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -167,7 +168,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCRemovePoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new DefaultWritableRealPointCollection<>( points );
 
 		assertTrue( rpc.test( new RealPoint( new double[] { -13, -13 } ) ) );
 
@@ -178,7 +179,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCAddPoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		assertFalse( rpc.test( testAddPoint ) );
 
@@ -189,7 +190,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCRemovePoint()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 
 		exception.expect( UnsupportedOperationException.class );
 		rpc.removePoint( new RealPoint( new double[] { 0.03125, 0.00390625 } ) );
@@ -198,7 +199,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testDefaultRPCBounds()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new DefaultWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new DefaultWritableRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
@@ -244,7 +245,7 @@ public class RealPointCollectionTest
 	@Test
 	public void testRealPointSampleListRPCBounds()
 	{
-		final WritableRealPointCollection< RealPoint > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
+		final WritableRealPointCollection< RealLocalizable > rpc = new RealPointSampleListWritableRealPointCollection<>( points );
 		final double[] max = new double[] { 200, 80 };
 		final double[] min = new double[] { -13, -13 };
 		final double[] rpcMin = new double[ 2 ];
@@ -269,7 +270,7 @@ public class RealPointCollectionTest
 	public void testEquals()
 	{
 		// Contain the same points
-		final List< RealPoint > l = new ArrayList<>();
+		final List< RealLocalizable > l = new ArrayList<>();
 		l.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
@@ -287,7 +288,7 @@ public class RealPointCollectionTest
 		assertTrue( k.equals( r ) );
 
 		// Contain different number of points
-		final List< RealPoint > l2 = new ArrayList<>();
+		final List< RealLocalizable > l2 = new ArrayList<>();
 		l2.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
@@ -306,7 +307,7 @@ public class RealPointCollectionTest
 		assertFalse( r2.equals( d ) );
 
 		// Contain same points in different order
-		final List< RealPoint > l3 = new ArrayList<>();
+		final List< RealLocalizable > l3 = new ArrayList<>();
 		l3.add( new RealPoint( new double[] { 83, 4 } ) );
 		l3.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l3.add( new RealPoint( new double[] { -1, 0 } ) );
@@ -335,7 +336,7 @@ public class RealPointCollectionTest
 	public void testHashCode()
 	{
 		// Contain the same points
-		final List< RealPoint > l = new ArrayList<>();
+		final List< RealLocalizable > l = new ArrayList<>();
 		l.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
@@ -353,7 +354,7 @@ public class RealPointCollectionTest
 		assertEquals( k.hashCode(), r.hashCode() );
 
 		// Contain different number of points
-		final List< RealPoint > l2 = new ArrayList<>();
+		final List< RealLocalizable > l2 = new ArrayList<>();
 		l2.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l2.add( new RealPoint( new double[] { 10.25, 11.125 } ) );
 		l.add( new RealPoint( new double[] { -1, 0 } ) );
@@ -372,7 +373,7 @@ public class RealPointCollectionTest
 		assertNotEquals( r2.hashCode(), d.hashCode() );
 
 		// Contain same points in different order
-		final List< RealPoint > l3 = new ArrayList<>();
+		final List< RealLocalizable > l3 = new ArrayList<>();
 		l3.add( new RealPoint( new double[] { 83, 4 } ) );
 		l3.add( new RealPoint( new double[] { -1.5, 2 } ) );
 		l3.add( new RealPoint( new double[] { -1, 0 } ) );
