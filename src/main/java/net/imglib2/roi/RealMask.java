@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,39 +33,58 @@
  */
 package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import static net.imglib2.roi.Operators.AND;
+import static net.imglib2.roi.Operators.MINUS;
+import static net.imglib2.roi.Operators.NEGATE;
+import static net.imglib2.roi.Operators.OR;
+import static net.imglib2.roi.Operators.XOR;
 
-public class Regions
+import java.util.function.Predicate;
+
+import net.imglib2.RealLocalizable;
+import net.imglib2.realtransform.RealTransform;
+
+/**
+ * A {@link MaskPredicate} for {@link RealLocalizable}. Results of operations
+ * ({@code and, or, negate}, etc) are also {@code RealMask}s.
+ *
+ * @author Tobias Pietzsch
+ */
+public interface RealMask extends MaskPredicate< RealLocalizable >
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	@Override
+	default RealMask and( final Predicate< ? super RealLocalizable > other )
 	{
-		return SamplingIterableInterval.create( region, img );
+		return AND.applyReal( this, other );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	default RealMask or( final Predicate< ? super RealLocalizable > other )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return OR.applyReal( this, other );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	default RealMask negate()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return NEGATE.applyReal( this );
+	}
+
+	@Override
+	default RealMask minus( final Predicate< ? super RealLocalizable > other )
+	{
+		return MINUS.applyReal( this, other );
+	}
+
+	@Override
+	default RealMask xor( final Predicate< ? super RealLocalizable > other )
+	{
+
+		return XOR.applyReal( this, other );
+	}
+
+	default RealMask transform( final RealTransform transformToSource )
+	{
+		return new Operators.RealTransformMaskOperator( transformToSource ).applyReal( this );
 	}
 }

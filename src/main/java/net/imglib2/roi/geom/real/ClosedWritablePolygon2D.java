@@ -31,41 +31,76 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+package net.imglib2.roi.geom.real;
 
-public class Regions
+import java.util.List;
+
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.geom.GeomMaths;
+
+/**
+ * A {@link Polygon2D} which contains all boundary points, and is defined by the
+ * provided vertices.
+ *
+ * <p>
+ * This implementation of a polygon does not support creating a single polygon
+ * object which is actually multiple polygons. It does support self-intersecting
+ * polygons with even-odd winding.
+ * </p>
+ *
+ * @author Alison Walter
+ */
+public class ClosedWritablePolygon2D extends DefaultWritablePolygon2D
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	public ClosedWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( vertices );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	public ClosedWritablePolygon2D( final double[] x, final double[] y )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		super( x, y );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final RealLocalizable localizable )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		// check edges, this needs to be done first because pnpoly has
+		// unknown edge behavior
+		boolean edge = false;
+		final double[] pt1 = new double[ 2 ];
+		final double[] pt2 = new double[ 2 ];
+		for ( int i = 0; i < x.size(); i++ )
+		{
+			pt1[ 0 ] = x.get( i );
+			pt1[ 1 ] = y.get( i );
+
+			// 1e-15 is for error caused by double precision
+			if ( i == x.size() - 1 )
+			{
+				pt2[ 0 ] = x.get( 0 );
+				pt2[ 1 ] = y.get( 0 );
+			}
+			else
+			{
+				pt2[ 0 ] = x.get( i + 1 );
+				pt2[ 1 ] = y.get( i + 1 );
+			}
+
+			edge = GeomMaths.lineContains( pt1, pt2, localizable, 2 );
+
+			if ( edge )
+				return true;
+		}
+		return GeomMaths.pnpoly( x, y, localizable );
+	}
+
+	@Override
+	public BoundaryType boundaryType()
+	{
+		return BoundaryType.CLOSED;
 	}
 }

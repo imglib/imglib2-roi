@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -31,41 +31,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.composite;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import java.util.List;
+import java.util.function.Predicate;
 
-public class Regions
+import net.imglib2.roi.MaskPredicate;
+import net.imglib2.roi.Operators.MaskOperator;
+
+/**
+ * A composite {@link MaskPredicate} that knows the operator and operands that
+ * are used to create it.
+ *
+ * @param <T>
+ *            location in N-space; typically a {@code RealLocalizable} or
+ *            {@code Localizable}).
+ *
+ * @author Tobias Pietzsch
+ */
+public interface CompositeMaskPredicate< T > extends MaskPredicate< T >
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	/** Returns the operation which lead to this mask. */
+	MaskOperator operator();
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
-	{
-		return SamplingIterableInterval.create( region, img );
-	}
+	Predicate< ? super T > operand( final int index );
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
-	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
-	}
-
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
-	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
-	}
+	/**
+	 * Returns the list of operands, which were used to compute this Mask.
+	 */
+	List< Predicate< ? > > operands();
 }

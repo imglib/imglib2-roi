@@ -31,41 +31,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.labeling;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
 import net.imglib2.view.Views;
 
-public class Regions
+/**
+ * Utility class for labeling tasks.
+ *
+ * @author Alison Walter
+ *
+ */
+public class Labelings
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	public static < T > LabelingMapping< T > getLabelingMapping( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
-		return SamplingIterableInterval.create( region, img );
-	}
-
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
-	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
-	}
-
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
-	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return Views.iterable( labeling ).firstElement().getMapping();
 	}
 }

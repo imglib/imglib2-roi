@@ -31,41 +31,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.integer;
 
-import net.imglib2.IterableInterval;
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.roi.Mask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
 
-public class Regions
+/**
+ * Wraps a {@link RandomAccessible} as a {@link Mask}.
+ *
+ * @author Alison Walter
+ */
+public class RandomAccessibleAsMask< B extends BooleanType< B > > extends AbstractEuclideanSpace implements Mask
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	private final RandomAccessible< B > ra;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * The given {@link RandomAccessible} is expected to be defined everywhere.
+	 *
+	 * @param ra
+	 */
+	public RandomAccessibleAsMask( final RandomAccessible< B > ra )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( ra.numDimensions() );
+		this.ra = ra;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	public RandomAccessible< B > getSource()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return ra;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final Localizable l )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		final RandomAccess< B > accessor = ra.randomAccess();
+		accessor.setPosition( l );
+		return accessor.get().get();
 	}
+
 }

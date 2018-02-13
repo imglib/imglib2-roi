@@ -31,41 +31,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+package net.imglib2.roi.geom.real;
 
-public class Regions
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+
+/**
+ * A {@link Sphere} which contains <b>all</b> boundary points.
+ *
+ * @author Alison Walter
+ */
+public class ClosedWritableSphere extends AbstractWritableSphere
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * Creates an n-d sphere.
+	 *
+	 * @param center
+	 *            Point where the sphere is centered
+	 * @param radius
+	 *            Radius of the sphere
+	 */
+	public ClosedWritableSphere( final double[] center, final double radius )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( center, radius );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return distancePowered( l ) <= radius * radius;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public BoundaryType boundaryType()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return BoundaryType.CLOSED;
 	}
 }

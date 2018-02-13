@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,41 +31,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.integer;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import java.util.function.Predicate;
 
-public class Regions
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
+import net.imglib2.roi.Mask;
+
+/**
+ * @author Tobias Pietzsch
+ */
+public class DefaultMask extends AbstractEuclideanSpace implements Mask
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	private final BoundaryType boundaryType;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	private final Predicate< ? super Localizable > predicate;
+
+	private final KnownConstant knownConstant;
+
+	/**
+	 * @param n
+	 * 		number of dimensions.
+	 */
+	public DefaultMask(
+			final int n,
+			final BoundaryType boundaryType,
+			final Predicate< ? super Localizable > predicate,
+			final KnownConstant knownConstant )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( n );
+		this.boundaryType = boundaryType;
+		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public BoundaryType boundaryType()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return boundaryType;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final Localizable localizable )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return predicate.test( localizable );
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }

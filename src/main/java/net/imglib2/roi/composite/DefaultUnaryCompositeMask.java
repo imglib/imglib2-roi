@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,91 +31,95 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util;
+package net.imglib2.roi.composite;
 
-import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-import net.imglib2.AbstractWrappedInterval;
-import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.IterableRegion;
-import net.imglib2.roi.Regions;
-import net.imglib2.type.BooleanType;
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
+import net.imglib2.roi.Mask;
+import net.imglib2.roi.Operators.UnaryMaskOperator;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
- *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
+ * A {@link Mask} which is the result of an operation on a {@link Predicate}.
  *
  * @author Tobias Pietzsch
  */
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class DefaultUnaryCompositeMask
+		extends AbstractEuclideanSpace
+		implements UnaryCompositeMaskPredicate< Localizable >, Mask
 {
-	final long size;
+	private final UnaryMaskOperator operator;
 
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
-	{
-		return new IterableRandomAccessibleRegion< T >( interval, Regions.countTrue( interval ) );
-	}
+	private final Predicate< ? super Localizable > arg0;
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
-	{
-		super( interval );
-		this.size = size;
-	}
+	private final BoundaryType boundaryType;
 
-	@Override
-	public long size()
-	{
-		return size;
-	}
+	private final Predicate< ? super Localizable > predicate;
 
-	@Override
-	public Void firstElement()
-	{
-		return cursor().next();
-	}
+	private final UnaryOperator< KnownConstant > knownConstantOp;
 
-	@Override
-	public Object iterationOrder()
+	public DefaultUnaryCompositeMask(
+			final UnaryMaskOperator operator,
+			final Predicate< ? super Localizable > arg0,
+			final int numDimensions,
+			final BoundaryType boundaryType,
+			final UnaryOperator< KnownConstant > knownConstantOp )
 	{
-		return this;
+		super( numDimensions );
+		this.operator = operator;
+		this.arg0 = arg0;
+		this.boundaryType = boundaryType;
+		this.predicate = operator.predicate( arg0 );
+		this.knownConstantOp = knownConstantOp;
 	}
 
 	@Override
-	public Iterator< Void > iterator()
+	public BoundaryType boundaryType()
 	{
-		return cursor();
+		return boundaryType;
 	}
 
 	@Override
-	public Cursor< Void > cursor()
+	public KnownConstant knownConstant()
 	{
-		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
+		return knownConstantOp.apply( KnownConstant.of( arg0 ) );
 	}
 
 	@Override
-	public Cursor< Void > localizingCursor()
+	public boolean test( final Localizable localizable )
 	{
-		return cursor();
+		return predicate.test( localizable );
 	}
 
 	@Override
-	public RandomAccess< T > randomAccess()
+	public UnaryMaskOperator operator()
 	{
-		return sourceInterval.randomAccess();
+		return operator;
 	}
 
 	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
+	public Predicate< ? super Localizable > arg0()
 	{
-		return sourceInterval.randomAccess( interval );
+		return arg0;
+	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof UnaryCompositeMaskPredicate ) || !( obj instanceof Mask ) )
+			return false;
+
+		final UnaryCompositeMaskPredicate< ? > u = ( UnaryCompositeMaskPredicate< ? > ) obj;
+		return u.operator() == operator && arg0.equals( u.arg0() );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return arg0.hashCode() + operator.hashCode() * 71;
 	}
 }

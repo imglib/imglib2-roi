@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -33,39 +33,69 @@
  */
 package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import static net.imglib2.roi.Operators.AND;
+import static net.imglib2.roi.Operators.MINUS;
+import static net.imglib2.roi.Operators.OR;
+import static net.imglib2.roi.Operators.XOR;
 
-public class Regions
+import java.util.function.Predicate;
+
+import net.imglib2.Interval;
+import net.imglib2.Localizable;
+import net.imglib2.util.Intervals;
+
+/**
+ * A bounded {@link Mask}, that is, the mask predicate evaluates to
+ * {@code false} outside the bounds interval. Results of operations are
+ * {@code MaskInterval}s where this is guaranteed. For example {@code and()} of
+ * a {@code MaskInterval} with any predicate will always have bounds (smaller or
+ * equal to the {@code MaskInterval}).
+ *
+ * @author Tobias Pietzsch
+ */
+public interface MaskInterval extends Mask, Interval
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>
+	 * If this {@link Interval} is empty (i.e. min &gt; max), then {@link #test}
+	 * should always return {@code false}.
+	 * </p>
+	 */
+	@Override
+	default boolean isEmpty()
 	{
-		return SamplingIterableInterval.create( region, img );
+		return Intervals.isEmpty( this ) || knownConstant() == KnownConstant.ALL_TRUE;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	default MaskInterval and( final Predicate< ? super Localizable > other )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return AND.applyInterval( this, other );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	/*
+	 * Note: *NOT* overriding Mask.or(), just specializing for MaskInterval
+	 * argument.
+	 */
+	default MaskInterval or( final MaskInterval other )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return OR.applyInterval( this, other );
+	}
+
+	@Override
+	default MaskInterval minus( final Predicate< ? super Localizable > other )
+	{
+		return MINUS.applyInterval( this, other );
+	}
+
+	/*
+	 * Note: *NOT* overriding Mask.xor(), just specializing for MaskInterval
+	 * argument.
+	 */
+	default MaskInterval xor( final MaskInterval other )
+	{
+		return XOR.applyInterval( this, other );
 	}
 }

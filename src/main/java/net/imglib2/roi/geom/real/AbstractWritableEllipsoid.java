@@ -31,41 +31,65 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.geom.real;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import net.imglib2.RealLocalizable;
 
-public class Regions
+/**
+ * Abstract base class for {@link WritableEllipsoid} implementations.
+ *
+ * @author Alison Walter
+ */
+public abstract class AbstractWritableEllipsoid extends AbstractWritableSuperEllipsoid implements WritableEllipsoid
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * Creates an n-d ellipsoid, where n is determined by the length of the
+	 * smaller array.
+	 *
+	 * @param center
+	 *            Array containing the positions in each dimension at which the
+	 *            ellipsoid is centered. A copy of this array is stored.
+	 * @param semiAxisLengths
+	 *            Array containing the lengths of the semi-axes in each
+	 *            dimension. A copy of this array is stored.
+	 */
+	public AbstractWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( center, semiAxisLengths, 2 );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	/**
+	 * Ellipsoids have exponents of 2.
+	 *
+	 * @throws UnsupportedOperationException
+	 *             Ellipsoids, by definition, have an exponent of 2
+	 */
+	@Override
+	public void setExponent( final double exponent )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		throw new UnsupportedOperationException( "setExponent: can only have an exponent of 2" );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	// -- Helper methods --
+
+	/**
+	 * Computes the unit distance squared between a given location and the
+	 * center of the ellipsoid.
+	 *
+	 * @param l
+	 *            location to check
+	 * @return squared unit distance
+	 */
+	@Override
+	protected double distancePowered( final RealLocalizable l )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		assert ( l.numDimensions() >= n ): "l must have no less than " + n + " dimensions";
+
+		double distancePowered = 0;
+		for ( int d = 0; d < n; d++ )
+			distancePowered += ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] ) * ( ( l.getDoublePosition( d ) - center[ d ] ) / semiAxisLengths[ d ] );
+
+		return distancePowered;
 	}
 }

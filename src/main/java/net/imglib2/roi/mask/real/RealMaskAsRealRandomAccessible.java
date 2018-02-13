@@ -31,41 +31,54 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.real;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.RealInterval;
+import net.imglib2.RealRandomAccess;
+import net.imglib2.RealRandomAccessible;
+import net.imglib2.roi.RealMask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
 
-public class Regions
+/**
+ * This class takes a {@link RealMask} and wraps it as a
+ * {@link RealRandomAccessible}.
+ *
+ * @author Alison Walter
+ *
+ * @param <B>
+ *            {@link BooleanType} of RealRandomAccessible
+ */
+public class RealMaskAsRealRandomAccessible< B extends BooleanType< B > > extends AbstractEuclideanSpace implements RealRandomAccessible< B >
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	private final RealMask mask;
+
+	private final B type;
+
+	public RealMaskAsRealRandomAccessible( final RealMask mask, final B type )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( mask.numDimensions() );
+		this.mask = mask;
+		this.type = type;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	// TODO: Consider making an interface (Wrapped?) which has getSource() method
+	public RealMask getSource()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return mask;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public RealRandomAccess< B > realRandomAccess()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return new MaskPredicateRealRandomAccess<>( mask, type );
 	}
+
+	@Override
+	public RealRandomAccess< B > realRandomAccess( final RealInterval interval )
+	{
+		return realRandomAccess();
+	}
+
 }

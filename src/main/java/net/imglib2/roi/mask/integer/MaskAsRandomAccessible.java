@@ -31,41 +31,61 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.integer;
 
-import net.imglib2.IterableInterval;
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.Interval;
+import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.roi.Mask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
 
-public class Regions
+/**
+ * This class takes a {@link Mask} of {@link Localizable} and wraps it as a
+ * {@link RandomAccessible}.
+ *
+ * @author Alison Walter
+ *
+ * @param <B>
+ *            {@link BooleanType} of RealRandomAccessible
+ */
+public class MaskAsRandomAccessible< B extends BooleanType< B > > extends AbstractEuclideanSpace implements RandomAccessible< B >
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	private final Mask mask;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	private final B type;
+
+	/**
+	 * Wraps a {@link Mask} as a {@link RandomAccessible}.
+	 *
+	 * @param mask
+	 *            Mask to be wrapped
+	 * @param type
+	 *            {@link BooleanType} the RandomAccess should return
+	 */
+	public MaskAsRandomAccessible( final Mask mask, final B type )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( mask.numDimensions() );
+		this.mask = mask;
+		this.type = type;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	public Mask getSource()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return mask;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public RandomAccess< B > randomAccess()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return new MaskPredicateRandomAccess<>( mask, type );
 	}
+
+	@Override
+	public RandomAccess< B > randomAccess( final Interval interval )
+	{
+		return randomAccess();
+	}
+
 }

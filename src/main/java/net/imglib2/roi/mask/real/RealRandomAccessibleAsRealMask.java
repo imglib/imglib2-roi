@@ -31,41 +31,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.real;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealRandomAccess;
+import net.imglib2.RealRandomAccessible;
+import net.imglib2.roi.RealMask;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
 
-public class Regions
+/**
+ * Wraps a {@link RealRandomAccessible} as a {@link RealMask}.
+ *
+ * @author Alison Walter
+ */
+public class RealRandomAccessibleAsRealMask< B extends BooleanType< B > > extends AbstractEuclideanSpace implements RealMask
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	private final RealRandomAccessible< B > rra;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * The given {@link RealRandomAccessible} is expected to be defined
+	 * everywhere.
+	 * 
+	 * @param rra
+	 */
+	public RealRandomAccessibleAsRealMask( final RealRandomAccessible< B > rra )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( rra.numDimensions() );
+		this.rra = rra;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	// TODO: Consider making an interface (Wrapped?) which has getSource() method
+	public RealRandomAccessible< B > getSource()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return rra;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		final RealRandomAccess< B > accessor = rra.realRandomAccess();
+		accessor.setPosition( l );
+		return accessor.get().get();
 	}
+
 }

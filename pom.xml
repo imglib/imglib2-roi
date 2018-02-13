@@ -175,6 +175,11 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 		<dependency>
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2</artifactId>
+			<version>4.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-realtransform</artifactId>
 		</dependency>
 
 		<!-- Other dependencies -->
@@ -188,6 +193,11 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>junit-benchmarks</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

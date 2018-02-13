@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,39 +33,55 @@
  */
 package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import java.util.function.Predicate;
 
-public class Regions
+/**
+ * Defines the edge behavior of the Mask.
+ * <ul>
+ * <li>CLOSED: contains all points on the boundary</li>
+ * <li>OPEN: contains no points on the boundary</li>
+ * <li>UNSPECIFIED: boundary behavior is unclear</li>
+ * </ul>
+ *
+ * Also provides unary and binary operations on (masks having specific) edge
+ * behaviours.
+ *
+ * @author Tobias Pietzsch
+ * @author Alison Walter
+ */
+public enum BoundaryType
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	CLOSED, OPEN, UNSPECIFIED;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	public BoundaryType and( final BoundaryType that )
 	{
-		return SamplingIterableInterval.create( region, img );
+		return this == that ? this : UNSPECIFIED;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	public BoundaryType or( final BoundaryType that )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return this == that ? this : UNSPECIFIED;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	public BoundaryType negate()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return this == OPEN ? CLOSED : this == CLOSED ? OPEN : UNSPECIFIED;
+	}
+
+	public BoundaryType minus( final BoundaryType that )
+	{
+		return this != that && that != UNSPECIFIED ? this : UNSPECIFIED;
+	}
+
+	public BoundaryType xor( final BoundaryType that )
+	{
+		return UNSPECIFIED;
+	}
+
+	public static BoundaryType of( final Predicate< ? > predicate )
+	{
+		if ( predicate instanceof MaskPredicate )
+			return ( (net.imglib2.roi.MaskPredicate< ? > ) predicate ).boundaryType();
+		return UNSPECIFIED;
 	}
 }

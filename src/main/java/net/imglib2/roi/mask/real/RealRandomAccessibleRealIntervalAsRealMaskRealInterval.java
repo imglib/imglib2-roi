@@ -31,41 +31,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.real;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.AbstractWrappedRealInterval;
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealRandomAccess;
+import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import net.imglib2.util.Intervals;
 
-public class Regions
+/**
+ * Wraps a {@link RealRandomAccessibleRealInterval} as a
+ * {@link RealMaskRealInterval}.
+ *
+ * @author Alison Walter
+ */
+public class RealRandomAccessibleRealIntervalAsRealMaskRealInterval< B extends BooleanType< B > > extends AbstractWrappedRealInterval< RealRandomAccessibleRealInterval< B > > implements RealMaskRealInterval
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	public RealRandomAccessibleRealIntervalAsRealMaskRealInterval( final RealRandomAccessibleRealInterval< B > rrari )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( rrari );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
-	}
-
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
-	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		if ( Intervals.contains( this, l ) )
+		{
+			final RealRandomAccess< B > accessor = sourceInterval.realRandomAccess();
+			accessor.setPosition( l );
+			return accessor.get().get();
+		}
+		return false;
 	}
 }

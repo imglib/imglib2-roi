@@ -31,41 +31,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.integer;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
+import net.imglib2.AbstractWrappedInterval;
+import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
+import net.imglib2.roi.MaskInterval;
 import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import net.imglib2.util.Intervals;
 
-public class Regions
+/**
+ * Wraps a {@link RandomAccessibleInterval} as a {@link MaskInterval}.
+ *
+ * @author Alison Walter
+ */
+public class RandomAccessibleIntervalAsMaskInterval< B extends BooleanType< B > > extends AbstractWrappedInterval< RandomAccessibleInterval< B > > implements MaskInterval
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	public RandomAccessibleIntervalAsMaskInterval( final RandomAccessibleInterval< B > rai )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( rai );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public boolean test( final Localizable l )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
-	}
-
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
-	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		if ( Intervals.contains( this, l ) )
+		{
+			final RandomAccess< B > accessor = sourceInterval.randomAccess();
+			accessor.setPosition( l );
+			return accessor.get().get();
+		}
+		return false;
 	}
 }

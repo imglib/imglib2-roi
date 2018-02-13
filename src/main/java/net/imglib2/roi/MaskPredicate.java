@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,41 +31,72 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+
 package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import static net.imglib2.roi.BoundaryType.UNSPECIFIED;
+import static net.imglib2.roi.KnownConstant.ALL_FALSE;
+import static net.imglib2.roi.KnownConstant.ALL_TRUE;
+import static net.imglib2.roi.KnownConstant.UNKNOWN;
 
-public class Regions
+import java.util.function.Predicate;
+
+import net.imglib2.EuclideanSpace;
+
+/**
+ * Base interface for all things that divide an N-space into two parts.
+ *
+ * @param <T>
+ *            location in N-space; typically a {@code RealLocalizable} or
+ *            {@code Localizable}).
+ *
+ * @author Alison Walter
+ * @author Curtis Rueden
+ * @author Tobias Pietzsch
+ * @author Christian Dietz
+ */
+public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/** Returns the boundary behavior of this Mask. */
+	default BoundaryType boundaryType()
 	{
-		return SamplingIterableInterval.create( region, img );
+		return UNSPECIFIED;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	default KnownConstant knownConstant()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return UNKNOWN;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	/**
+	 * Returns true if {@link MaskPredicate#test} is known to always return
+	 * false.
+	 */
+	default boolean isEmpty() // TODO: remove ???
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return knownConstant() == ALL_FALSE;
 	}
+
+	/**
+	 * Returns true if {@link MaskPredicate#test} is known to always return
+	 * true.
+	 */
+	default boolean isAll() // TODO: remove ???
+	{
+		return knownConstant() == ALL_TRUE;
+	}
+
+	@Override
+	public MaskPredicate< T > and( Predicate< ? super T > other );
+
+	@Override
+	public MaskPredicate< T > or( Predicate< ? super T > other );
+
+	@Override
+	public MaskPredicate< T > negate();
+
+	public MaskPredicate< T > minus( Predicate< ? super T > other );
+
+	public MaskPredicate< T > xor( Predicate< ? super T > other );
 }

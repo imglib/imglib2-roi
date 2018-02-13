@@ -31,41 +31,76 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+package net.imglib2.roi.geom.real;
 
-public class Regions
+import net.imglib2.RealLocalizable;
+import net.imglib2.RealPoint;
+import net.imglib2.roi.Mask;
+
+/**
+ * A {@link WritablePointMask} specified by the given location.
+ *
+ * @author Alison Walter
+ */
+public class DefaultWritablePointMask extends RealPoint implements WritablePointMask
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * Creates a {@link WritablePointMask} with the given point, such that only
+	 * that point is contained in the {@link Mask}. The dimensionality of the
+	 * space is determined by the number of dimensions of {@code pt}.
+	 *
+	 * @param pt
+	 *            The point which the mask should contain.
+	 */
+	public DefaultWritablePointMask( final RealLocalizable pt )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( pt );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	/**
+	 * Creates a {@link WritablePointMask} with given array, such that only that
+	 * location is contained in the {@link Mask}.
+	 *
+	 * @param pt
+	 *            Array containing the location of the point in n-d space, where
+	 *            n is the array length. A copy of this array is stored.
+	 */
+	public DefaultWritablePointMask( final double[] pt )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		super( pt );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		for ( int d = 0; d < n; d++ )
+		{
+			if ( l.getDoublePosition( d ) != position[ d ] )
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if ( !( obj instanceof PointMask ) )
+			return false;
+
+		final PointMask pm = ( PointMask ) obj;
+		if ( pm.numDimensions() != n || pm.boundaryType() != boundaryType() )
+			return false;
+
+		return test( pm );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = 301;
+		for ( int i = 0; i < n; i++ )
+			result += 43 * position[ i ];
+		return result;
 	}
 }

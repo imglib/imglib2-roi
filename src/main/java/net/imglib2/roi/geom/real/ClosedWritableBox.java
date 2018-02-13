@@ -31,41 +31,54 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+package net.imglib2.roi.geom.real;
 
-public class Regions
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.RealMask;
+
+/**
+ * A {@link Box} which contains <b>all</b> edge points defined by the min and
+ * max values in each dimension.
+ *
+ * @author Alison Walter
+ * @author Robert Haase, Scientific Computing Facility, MPI-CBG,
+ *         rhaase@mpi-cbg.de
+ */
+public class ClosedWritableBox extends AbstractWritableBox
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * Creates an n-d rectangular {@link RealMask} in real space. The dimensionality
+	 * is dictated by the length of the min array.
+	 *
+	 * @param min
+	 *            An array containing the minimum position in each dimension. A
+	 *            copy of this array is stored.
+	 * @param max
+	 *            An array containing maximum position in each dimension. A copy
+	 *            of this array is stored.
+	 */
+	public ClosedWritableBox( final double[] min, final double[] max )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( min, max );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		boolean isInside = true;
+		for ( int d = 0; d < n && isInside; d++ )
+		{
+			final double x = l.getDoublePosition( d );
+			isInside &= x >= min[ d ] && x <= max[ d ];
+		}
+		return isInside;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public BoundaryType boundaryType()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return BoundaryType.CLOSED;
 	}
 }

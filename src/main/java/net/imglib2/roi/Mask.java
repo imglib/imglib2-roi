@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -33,39 +33,61 @@
  */
 package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import static net.imglib2.roi.Operators.AND;
+import static net.imglib2.roi.Operators.MINUS;
+import static net.imglib2.roi.Operators.NEGATE;
+import static net.imglib2.roi.Operators.OR;
+import static net.imglib2.roi.Operators.XOR;
 
-public class Regions
+import java.util.function.Predicate;
+
+import net.imglib2.Localizable;
+import net.imglib2.transform.Transform;
+
+/**
+ * A {@link MaskPredicate} for integral {@link Localizable}. Results of
+ * operations ({@code and, or, negate}, etc) are also {@code Mask}s.
+ *
+ * @author Tobias Pietzsch
+ */
+public interface Mask extends MaskPredicate< Localizable >
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
-
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	@Override
+	default Mask and( final Predicate< ? super Localizable > other )
 	{
-		return SamplingIterableInterval.create( region, img );
+		return AND.apply( this, other );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	default Mask or( final Predicate< ? super Localizable > other )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return OR.apply( this, other );
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	default Mask negate()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return NEGATE.apply( this );
+	}
+
+	@Override
+	default Mask minus( final Predicate< ? super Localizable > other )
+	{
+		return MINUS.apply( this, other );
+	}
+
+	@Override
+	default Mask xor( final Predicate< ? super Localizable > other )
+	{
+		return XOR.apply( this, other );
+	}
+
+	/*
+	 * TODO: transformFromSource or transformToSource? TODO: should this really
+	 * be a method in the interface?
+	 */
+	default Mask transform( final Transform transformToSource )
+	{
+		throw new UnsupportedOperationException( "TODO, not yet implemented" );
 	}
 }

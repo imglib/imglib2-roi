@@ -31,41 +31,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+package net.imglib2.roi.geom.real;
 
-public class Regions
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+
+/**
+ * A {@link Ellipsoid} which does not contain any edge points, defined by a
+ * center and semi-axis lengths.
+ *
+ * @author Alison Walter
+ */
+public class OpenWritableEllipsoid extends AbstractWritableEllipsoid
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	/**
+	 * Creates an n-d ellipsoid, where n is determined by the length of the
+	 * smaller array.
+	 *
+	 * @param center
+	 *            Array containing the positions in each dimension at which the
+	 *            ellipsoid is centered. A copy of this array is stored.
+	 * @param semiAxisLengths
+	 *            Array containing the lengths of the semi-axes in each
+	 *            dimension. A copy of this array is stored.
+	 */
+	public OpenWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( center, semiAxisLengths );
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public boolean test( final RealLocalizable l )
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return distancePowered( l ) < 1.0;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public BoundaryType boundaryType()
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		return BoundaryType.OPEN;
 	}
 }

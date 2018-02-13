@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -31,41 +31,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.mask.real;
 
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.roi.util.SamplingIterableInterval;
-import net.imglib2.type.BooleanType;
-import net.imglib2.view.Views;
+import java.util.function.Predicate;
 
-public class Regions
+import net.imglib2.AbstractRealInterval;
+import net.imglib2.RealInterval;
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.KnownConstant;
+import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Intervals;
+
+/**
+ * @author Tobias Pietzsch
+ */
+public class DefaultRealMaskRealInterval extends AbstractRealInterval implements RealMaskRealInterval
 {
-	// TODO: make Positionable and Localizable
-	// TODO: bind to (respectively sample from) RandomAccessible
-	// TODO: out-of-bounds / clipping
+	private final BoundaryType boundaryType;
 
-	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
+	private final Predicate< ? super RealLocalizable > predicate;
+
+	private final KnownConstant knownConstant;
+
+	public DefaultRealMaskRealInterval(
+			final RealInterval interval,
+			final BoundaryType boundaryType,
+			final Predicate< ? super RealLocalizable > predicate,
+			final KnownConstant knownConstant )
 	{
-		return SamplingIterableInterval.create( region, img );
+		super( interval );
+		this.boundaryType = boundaryType;
+		this.predicate = predicate;
+		this.knownConstant = knownConstant;
 	}
 
-	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
+	@Override
+	public BoundaryType boundaryType()
 	{
-		if ( region instanceof IterableRegion )
-			return ( IterableRegion< B > ) region;
-		else
-			return IterableRandomAccessibleRegion.create( region );
+		return boundaryType;
 	}
 
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	@Override
+	public boolean test( final RealLocalizable localizable )
 	{
-		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
-			if ( t.get() )
-				++sum;
-		return sum;
+		if ( Intervals.contains( this, localizable ) )
+			return predicate.test( localizable );
+		return false;
+	}
+
+	@Override
+	public KnownConstant knownConstant()
+	{
+		return knownConstant;
 	}
 }
