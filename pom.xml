@@ -5,8 +5,7 @@
 	<parent>
 		<groupId>net.imglib2</groupId>
 		<artifactId>pom-imglib2</artifactId>
-		<version>9.0.0</version>
-		<relativePath />
+		<version>10.0.1</version>
 	</parent>
 
 	<artifactId>imglib2-roi</artifactId>
@@ -48,6 +47,21 @@
 		<system>Travis CI</system>
 		<url>https://travis-ci.org/imglib/imglib2-roi</url>
 	</ciManagement>
+
+	<properties>
+		<package-name>net.imglib2.roi</package-name>
+
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.projectName>ImgLib2: a general-purpose, multidimensional image processing library.</license.projectName>
+		<license.organizationName>ImgLib2 authors</license.organizationName>
+		<license.copyrightOwners>Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
+John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
+Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
+Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
+Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
+Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
+
+	</properties>
 
 	<developers>
 		<developer>
@@ -152,23 +166,6 @@
 			<url>https://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
-
-	<properties>
-		<package-name>net.imglib2.roi</package-name>
-
-		<license.licenseName>bsd_2</license.licenseName>
-		<license.projectName>ImgLib2: a general-purpose, multidimensional image processing library.</license.projectName>
-		<license.organizationName>ImgLib2 authors</license.organizationName>
-		<license.copyrightOwners>Tobias Pietzsch, Stephan Preibisch, Stephan Saalfeld,
-John Bogovic, Albert Cardona, Barry DeZonia, Christian Dietz, Jan Funke,
-Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
-Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
-Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
-Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
-
-		<!-- TEMP: Until pom-imglib2 extends pom-scijava 15.0.0 or later. -->
-		<imglib2.version>4.3.0</imglib2.version>
-	</properties>
 
 	<dependencies>
 		<!-- ImgLib2 dependencies -->
