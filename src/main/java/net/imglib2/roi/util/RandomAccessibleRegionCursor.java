@@ -89,6 +89,8 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 	@Override
 	public void fwd()
 	{
+		if ( maxIndex == 0 )
+			return;
 		do
 		{
 			randomAccess.fwd( 0 );
