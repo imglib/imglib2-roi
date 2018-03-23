@@ -52,20 +52,20 @@ import net.imglib2.roi.geom.real.DefaultWritablePolygon2D;
 import net.imglib2.roi.geom.real.DefaultWritablePolyline;
 import net.imglib2.roi.geom.real.DefaultWritableRealPointCollection;
 import net.imglib2.roi.geom.real.KDTreeRealPointCollection;
-import net.imglib2.roi.geom.real.NNSRealPointCollection;
 import net.imglib2.roi.geom.real.OpenWritableBox;
 import net.imglib2.roi.geom.real.OpenWritableEllipsoid;
 import net.imglib2.roi.geom.real.OpenWritablePolygon2D;
 import net.imglib2.roi.geom.real.OpenWritableSphere;
 import net.imglib2.roi.geom.real.OpenWritableSuperEllipsoid;
-import net.imglib2.roi.geom.real.PointMask;
 import net.imglib2.roi.geom.real.RealPointCollection;
 import net.imglib2.roi.geom.real.RealPointSampleListWritableRealPointCollection;
 import net.imglib2.roi.geom.real.WritableBox;
 import net.imglib2.roi.geom.real.WritableEllipsoid;
 import net.imglib2.roi.geom.real.WritableLine;
+import net.imglib2.roi.geom.real.WritablePointMask;
 import net.imglib2.roi.geom.real.WritablePolygon2D;
 import net.imglib2.roi.geom.real.WritablePolyline;
+import net.imglib2.roi.geom.real.WritableRealPointCollection;
 import net.imglib2.roi.geom.real.WritableSphere;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
 
@@ -129,13 +129,13 @@ public class GeomMasks
 	// -- Point --
 
 	/** Creates a {@link DefaultWritablePointMask}. */
-	public static PointMask writablePointMask( final double[] point )
+	public static WritablePointMask writablePointMask( final double[] point )
 	{
 		return new DefaultWritablePointMask( point );
 	}
 
 	/** Creates a {@link DefaultWritablePointMask}. */
-	public static PointMask writablePointMask( final RealLocalizable point )
+	public static WritablePointMask writablePointMask( final RealLocalizable point )
 	{
 		return new DefaultWritablePointMask( point );
 	}
@@ -189,37 +189,37 @@ public class GeomMasks
 	// -- RealPointCollection --
 
 	/** Creates a {@link DefaultWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > writableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > writableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link DefaultWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > writableRealPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > writableRealPointCollection( final Collection< L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link KDTreeRealPointCollection}. */
-	public static < L extends RealLocalizable > NNSRealPointCollection< L > kDTreeRealPointCollection( final KDTree< L > tree )
+	public static < L extends RealLocalizable > RealPointCollection< L > kDTreeRealPointCollection( final KDTree< L > tree )
 	{
 		return new KDTreeRealPointCollection<>( tree );
 	}
 
 	/** Creates a {@link KDTreeRealPointCollection}. */
-	public static < L extends RealLocalizable > NNSRealPointCollection< L > kDTreeRealPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable > RealPointCollection< L > kDTreeRealPointCollection( final Collection< L > points )
 	{
 		return new KDTreeRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > NNSRealPointCollection< L > realPointSampleListWritableRealPointCollection( final RealPointSampleList< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListWritableRealPointCollection( final RealPointSampleList< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > NNSRealPointCollection< L > realPointSampleListWritableRealPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListWritableRealPointCollection( final Collection< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
