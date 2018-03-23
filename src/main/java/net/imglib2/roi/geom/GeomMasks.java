@@ -218,6 +218,12 @@ public class GeomMasks
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
+	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
+	public static < L extends RealLocalizable > NNSRealPointCollection< L > realPointSampleListWritableRealPointCollection( final Collection< L > points )
+	{
+		return new RealPointSampleListWritableRealPointCollection<>( points );
+	}
+
 	// -- Sphere --
 
 	/** Creates a {@link ClosedWritableSphere}. */
