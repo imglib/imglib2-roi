@@ -34,7 +34,7 @@
 package net.imglib2.roi.geom;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 
 import net.imglib2.KDTree;
@@ -68,6 +68,8 @@ import net.imglib2.roi.geom.real.WritablePolygon2D;
 import net.imglib2.roi.geom.real.WritablePolyline;
 import net.imglib2.roi.geom.real.WritableSphere;
 import net.imglib2.roi.geom.real.WritableSuperEllipsoid;
+
+import gnu.trove.list.array.TDoubleArrayList;
 
 /**
  * Utility class for creating {@link MaskPredicate}s.
@@ -187,7 +189,7 @@ public class GeomMasks
 	// -- RealPointCollection --
 
 	/** Creates a {@link DefaultWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > writableRealPointCollection( final HashSet< L > points )
+	public static < L extends RealLocalizable > RealPointCollection< L > writableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
