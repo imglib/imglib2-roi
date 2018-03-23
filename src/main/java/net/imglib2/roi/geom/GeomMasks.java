@@ -87,13 +87,13 @@ public class GeomMasks
 	// -- Box --
 
 	/** Creates a {@link ClosedWritableBox}. */
-	public static WritableBox closedWritableBox( final double[] min, final double[] max )
+	public static WritableBox closedBox( final double[] min, final double[] max )
 	{
 		return new ClosedWritableBox( min, max );
 	}
 
 	/** Creates an {@link OpenWritableBox}. */
-	public static WritableBox openWritableBox( final double[] min, final double[] max )
+	public static WritableBox openBox( final double[] min, final double[] max )
 	{
 		return new OpenWritableBox( min, max );
 	}
@@ -101,13 +101,13 @@ public class GeomMasks
 	// -- Ellipsoid --
 
 	/** Creates a {@link ClosedWritableEllipsoid}. */
-	public static WritableEllipsoid closedWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public static WritableEllipsoid closedEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new ClosedWritableEllipsoid( center, semiAxisLengths );
 	}
 
 	/** Creates an {@link OpenWritableEllipsoid}. */
-	public static WritableEllipsoid openWritableEllipsoid( final double[] center, final double[] semiAxisLengths )
+	public static WritableEllipsoid openEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new OpenWritableEllipsoid( center, semiAxisLengths );
 	}
@@ -115,13 +115,13 @@ public class GeomMasks
 	// -- Line --
 
 	/** Creates a {@link DefaultWritableLine}. */
-	public static WritableLine writableLine( final RealLocalizable pointOne, final RealLocalizable pointTwo )
+	public static WritableLine line( final RealLocalizable pointOne, final RealLocalizable pointTwo )
 	{
 		return new DefaultWritableLine( pointOne, pointTwo );
 	}
 
 	/** Creates a {@link DefaultWritableLine}. */
-	public static WritableLine writableLine( final double[] pointOne, final double[] pointTwo, final boolean copy )
+	public static WritableLine line( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
 		return new DefaultWritableLine( pointOne, pointTwo, copy );
 	}
@@ -129,13 +129,13 @@ public class GeomMasks
 	// -- Point --
 
 	/** Creates a {@link DefaultWritablePointMask}. */
-	public static WritablePointMask writablePointMask( final double[] point )
+	public static WritablePointMask pointMask( final double[] point )
 	{
 		return new DefaultWritablePointMask( point );
 	}
 
 	/** Creates a {@link DefaultWritablePointMask}. */
-	public static WritablePointMask writablePointMask( final RealLocalizable point )
+	public static WritablePointMask pointMask( final RealLocalizable point )
 	{
 		return new DefaultWritablePointMask( point );
 	}
@@ -143,37 +143,37 @@ public class GeomMasks
 	// -- Polygon2D --
 
 	/** Creates a {@link DefaultWritablePolygon2D}. */
-	public static WritablePolygon2D writablePolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static WritablePolygon2D polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultWritablePolygon2D( vertices );
 	}
 
 	/** Creates a {@link DefaultWritablePolygon2D}. */
-	public static WritablePolygon2D writablePolygon2D( final double[] x, final double[] y )
+	public static WritablePolygon2D polygon2D( final double[] x, final double[] y )
 	{
 		return new DefaultWritablePolygon2D( x, y );
 	}
 
 	/** Creates a {@link ClosedWritablePolygon2D}. */
-	public static WritablePolygon2D closedWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static WritablePolygon2D closedPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new ClosedWritablePolygon2D( vertices );
 	}
 
 	/** Creates a {@link ClosedWritablePolygon2D}. */
-	public static WritablePolygon2D closedWritablePolygon2D( final double[] x, final double[] y )
+	public static WritablePolygon2D closedPolygon2D( final double[] x, final double[] y )
 	{
 		return new ClosedWritablePolygon2D( x, y );
 	}
 
 	/** Creates an {@link OpenWritablePolygon2D}. */
-	public static WritablePolygon2D openWritablePolygon2D( final List< ? extends RealLocalizable > vertices )
+	public static WritablePolygon2D openPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new OpenWritablePolygon2D( vertices );
 	}
 
 	/** Creates an {@link OpenWritablePolygon2D}. */
-	public static WritablePolygon2D openWritablePolygon2D( final double[] x, final double[] y )
+	public static WritablePolygon2D openPolygon2D( final double[] x, final double[] y )
 	{
 		return new OpenWritablePolygon2D( x, y );
 	}
@@ -181,7 +181,7 @@ public class GeomMasks
 	// -- Polyline --
 
 	/** Creates a {@link DefaultWritablePolyline}. */
-	public static WritablePolyline writablePolyline( final List< ? extends RealLocalizable > vertices )
+	public static WritablePolyline polyline( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultWritablePolyline( vertices );
 	}
@@ -189,13 +189,13 @@ public class GeomMasks
 	// -- RealPointCollection --
 
 	/** Creates a {@link DefaultWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > WritableRealPointCollection< L > writableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link DefaultWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > WritableRealPointCollection< L > writableRealPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointCollection( final Collection< L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
@@ -213,13 +213,13 @@ public class GeomMasks
 	}
 
 	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListWritableRealPointCollection( final RealPointSampleList< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListRealPointCollection( final RealPointSampleList< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
 	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListWritableRealPointCollection( final Collection< L > points )
+	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListRealPointCollection( final Collection< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
@@ -227,13 +227,13 @@ public class GeomMasks
 	// -- Sphere --
 
 	/** Creates a {@link ClosedWritableSphere}. */
-	public static WritableSphere closedWritableSphere( final double[] center, final double radius )
+	public static WritableSphere closedSphere( final double[] center, final double radius )
 	{
 		return new ClosedWritableSphere( center, radius );
 	}
 
 	/** Creates an {@link OpenWritableSphere}. */
-	public static WritableSphere openWritableSphere( final double[] center, final double radius )
+	public static WritableSphere openSphere( final double[] center, final double radius )
 	{
 		return new OpenWritableSphere( center, radius );
 	}
@@ -241,7 +241,7 @@ public class GeomMasks
 	// -- SuperEllipsoid --
 
 	/** Creates a {@link ClosedWritableSuperEllipsoid}. */
-	public static WritableSuperEllipsoid closedWritableSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public static WritableSuperEllipsoid closedSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
 			return new ClosedWritableEllipsoid( center, semiAxisLengths );
@@ -249,7 +249,7 @@ public class GeomMasks
 	}
 
 	/** Creates an {@link OpenWritableSuperEllipsoid}. */
-	public static WritableSuperEllipsoid openWritableSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
+	public static WritableSuperEllipsoid openSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
 			return new OpenWritableEllipsoid( center, semiAxisLengths );
