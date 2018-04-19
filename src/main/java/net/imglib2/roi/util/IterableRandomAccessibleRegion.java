@@ -34,6 +34,7 @@
 package net.imglib2.roi.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
@@ -80,6 +81,8 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	@Override
 	public Void firstElement()
 	{
+		if ( size() == 0 )
+			throw new NoSuchElementException();
 		return cursor().next();
 	}
 
