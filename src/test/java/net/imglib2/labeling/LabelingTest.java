@@ -69,7 +69,7 @@ public class LabelingTest
 {
 	protected < T extends Comparable< T >> Labeling< T > makeLabeling( final T exemplar, final long[] dimensions )
 	{
-		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new ArrayImgFactory<>( new IntType() ).create( dimensions ) );
 		return labeling;
 	}
 
@@ -120,7 +120,7 @@ public class LabelingTest
 	public void testDefaultConstructor()
 	{
 		final long[] dimensions = { 5, 6, 7 };
-		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new ArrayImgFactory<>( new IntType() ).create( dimensions ) );
 		assertEquals( 3, labeling.numDimensions() );
 	}
 
@@ -129,7 +129,7 @@ public class LabelingTest
 	{
 		final long[] dimensions = { 5, 6, 7 };
 
-		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new DefaultROIStrategyFactory< String >(), new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< String > labeling = new NativeImgLabeling< String, IntType >( new DefaultROIStrategyFactory< String >(), new ArrayImgFactory<>( new IntType() ).create( dimensions ) );
 
 		assertEquals( 3, labeling.numDimensions() );
 	}
@@ -253,7 +253,7 @@ public class LabelingTest
 		final String[] labels = { "Foo" };
 		final long[] dimensions = new long[] { 5, 6, 7 };
 		final Labeling< String > labeling = makeLabeling( coordinates, labels, dimensions );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( dimensions, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( dimensions );
 		final RandomAccess< IntType > a = img.randomAccess();
 		for ( int i = 0; i < dimensions[ 0 ]; i++ )
 		{
@@ -307,7 +307,7 @@ public class LabelingTest
 		assertTrue( labeling.getArea( "Foo" ) > expectedVolumeLow );
 		assertTrue( labeling.getArea( "Foo" ) < expectedVolumeHigh );
 		final RandomAccess< LabelingType< String >> a = labeling.randomAccess();
-		final Img< DoubleType > img = new ArrayImgFactory< DoubleType >().create( dimensions, new DoubleType() );
+		final Img< DoubleType > img = new ArrayImgFactory<>( new DoubleType() ).create( dimensions );
 		final RandomAccess< DoubleType > img_a = img.randomAccess();
 		for ( int i = 0; i < dimensions[ 0 ]; i++ )
 		{
