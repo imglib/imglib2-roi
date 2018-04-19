@@ -53,6 +53,8 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 
 	private final long maxLineIndex;
 
+	private final boolean empty;
+
 	public RandomAccessibleRegionCursor( final RandomAccessibleInterval< T > interval, final long size )
 	{
 		super( interval );
@@ -60,6 +62,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 		n = numDimensions();
 		maxLineIndex = dimension( 0 ) - 1;
 		maxIndex = size;
+		empty = size == 0;
 		reset();
 	}
 
@@ -71,6 +74,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 		lineIndex = cursor.lineIndex;
 		maxIndex = cursor.maxIndex;
 		maxLineIndex = cursor.maxLineIndex;
+		empty = cursor.empty;
 	}
 
 	@Override
@@ -89,7 +93,7 @@ public class RandomAccessibleRegionCursor< T extends BooleanType< T > > extends 
 	@Override
 	public void fwd()
 	{
-		if ( maxIndex == 0 )
+		if ( empty )
 			return;
 		do
 		{
