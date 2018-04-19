@@ -35,37 +35,33 @@ package net.imglib2.roi;
 
 import static org.junit.Assume.assumeTrue;
 
-import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import com.carrotsearch.junitbenchmarks.BenchmarkRule;
-
+import java.util.ArrayList;
 import java.util.Random;
-
-import net.imglib2.Cursor;
-import net.imglib2.FinalInterval;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.type.logic.BitType;
-import net.imglib2.util.ConstantUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
+import com.carrotsearch.junitbenchmarks.BenchmarkRule;
+
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.type.logic.BitType;
+
 /**
  * Benchmarks for {@link IterableRandomAccessibleRegion} iteration.
  *
  * @author Alison Walter
- *
+ * @author Tobias Pietzsch
  */
 public class IterableRandomAccessibleRegionBenchmarkTest
 {
 
-	private static IterableRegion< BitType > emptyII;
-
-	private static IterableRegion< BitType > notEmptyII;
+	private static ArrayList< IterableRegion< BitType > > regions = new ArrayList<>();
 
 	@Rule
 	public TestRule benchmarkRun = new BenchmarkRule();
@@ -76,35 +72,35 @@ public class IterableRandomAccessibleRegionBenchmarkTest
 		// comment out assumeTrue to actually run benchmark
 		assumeTrue( false );
 
-		final int maxOne = 100;
-		final int maxTwo = 500;
-		final RandomAccessibleInterval< BitType > empty = ConstantUtils.constantRandomAccessibleInterval( new BitType( false ), 2, new FinalInterval( new long[] { 0, 0 }, new long[] { maxOne, maxTwo } ) );
-
-		final Img< BitType > notEmpty = ArrayImgs.bits( maxOne, maxTwo );
-		final Random rand = new Random( 12 );
-		final Cursor< BitType > c = notEmpty.cursor();
-		while ( c.hasNext() )
-			c.next().set( rand.nextBoolean() );
-
-		emptyII = Regions.iterable( empty );
-		notEmptyII = Regions.iterable( notEmpty );
+		final long[] dimensions = { 500, 250, 100 };
+		for ( double ratioFalseToTrue = 0.2; ratioFalseToTrue < 1.0; ratioFalseToTrue += 0.2 )
+		{
+			regions.add( Regions.iterable( createRandomMask( ratioFalseToTrue, dimensions ) ) );
+		}
 	}
 
-//	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )
-//	@Test
-//	public void testIteratingEmpty()
-//	{
-//		final Cursor< Void > c = emptyII.cursor();
-//		for ( int i = 0; i < emptyII.dimension( 0 ) * emptyII.dimension( 1 ); i++ )
-//			c.fwd();
-//	}
-
-	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 2 )
-	@Test
-	public void testIteratingNotEmpty()
+	private static Img< BitType > createRandomMask( final double ratioFalseToTrue, final long... dim )
 	{
-		final Cursor< Void > c = notEmptyII.cursor();
-		for ( int i = 0; i < notEmptyII.dimension( 0 ) * notEmptyII.dimension( 1 ); i++ )
-			c.fwd();
+		final Img< BitType > mask = ArrayImgs.bits( dim );
+		final Random rand = new Random( 12 );
+		if ( ratioFalseToTrue < 1.0 )
+		{
+			final Cursor< BitType > c = mask.cursor();
+			while ( c.hasNext() )
+				c.next().set( rand.nextDouble() > ratioFalseToTrue );
+		}
+		return mask;
+	}
+
+	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 20 )
+	@Test
+	public void testIterating()
+	{
+		for ( final IterableRegion< BitType > region : regions )
+		{
+			final Cursor< Void > cursor = region.cursor();
+			while ( cursor.hasNext() )
+				cursor.fwd();
+		}
 	}
 }
