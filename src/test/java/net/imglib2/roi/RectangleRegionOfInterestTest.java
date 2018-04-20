@@ -145,7 +145,7 @@ public class RectangleRegionOfInterestTest
 		final int width = 27;
 		final int height = 16;
 		final int depth = 17;
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height, depth }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( width, height, depth );
 		final RandomAccess< IntType > a = img.randomAccess();
 		for ( int i = 0; i < width; i++ )
 		{
@@ -396,7 +396,7 @@ public class RectangleRegionOfInterestTest
 		final int width = 27;
 		final int height = 16;
 		final int depth = 17;
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height, depth }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( width, height, depth );
 		assertEquals( r.getIterableIntervalOverROI( img ).size(), 6 * 2 * 3 );
 		final double[] test = new double[] { 10, 11, 12 };
 		r.setExtent( test );
@@ -414,7 +414,7 @@ public class RectangleRegionOfInterestTest
 		final int width = 27;
 		final int height = 16;
 		final int depth = 17;
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height, depth }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( width, height, depth );
 		assertEquals( r.getIterableIntervalOverROI( img ).size(), 6 * 2 * 3 );
 		final double[] test = new double[] { 10, 11, 12 };
 		for ( int i = 0; i < 3; i++ )

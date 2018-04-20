@@ -62,7 +62,7 @@ public class LabelingOutOfBoundsTest
 
 	private < T extends Comparable< T >> OutOfBounds< LabelingType< T >> makeOOB( final long[] dimensions, final long[][] coordinates, final List< T > values )
 	{
-		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new ArrayImgFactory< IntType >().create( dimensions, new IntType() ) );
+		final Labeling< T > labeling = new NativeImgLabeling< T, IntType >( new ArrayImgFactory<>( new IntType() ).create( dimensions ) );
 		final LabelingOutOfBoundsRandomAccessFactory< T, Labeling< T >> oobFactory = new LabelingOutOfBoundsRandomAccessFactory< T, Labeling< T >>();
 		final OutOfBounds< LabelingType< T >> result = oobFactory.create( labeling );
 		final RandomAccess< LabelingType< T >> ra = labeling.randomAccess();

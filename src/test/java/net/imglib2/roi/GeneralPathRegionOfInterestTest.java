@@ -102,7 +102,7 @@ public class GeneralPathRegionOfInterestTest
 		final long width = ( int ) Math.ceil( x0 + radius + 10 );
 		final long height = ( int ) Math.ceil( y0 + radius + 10 );
 
-		final RandomAccessible< BitType > randomAccessible = new ArrayImgFactory< BitType >().create( new long[] { width, height }, new BitType() );
+		final RandomAccessible< BitType > randomAccessible = new ArrayImgFactory<>( new BitType() ).create( width, height );
 		final IterableInterval< BitType > interval = roi.getIterableIntervalOverROI( randomAccessible );
 		final Cursor< BitType > cursor = interval.localizingCursor();
 
@@ -140,7 +140,7 @@ public class GeneralPathRegionOfInterestTest
 		final long imgHeight = ( int ) Math.ceil( x0 + 1 + 5 );
 		final long imgWidth = ( int ) Math.ceil( y0 + height + 5 );
 
-		final RandomAccessible< BitType > randomAccessible = new ArrayImgFactory< BitType >().create( new long[] { imgWidth, imgHeight }, new BitType() );
+		final RandomAccessible< BitType > randomAccessible = new ArrayImgFactory<>( new BitType() ).create( imgWidth, imgHeight );
 		final IterableInterval< BitType > interval = roi.getIterableIntervalOverROI( randomAccessible );
 		final Cursor< BitType > cursor = interval.localizingCursor();
 

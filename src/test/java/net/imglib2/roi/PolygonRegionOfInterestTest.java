@@ -294,7 +294,7 @@ public class PolygonRegionOfInterestTest
 
 	private Img< IntType > makeNumberedArray( final int width, final int height )
 	{
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( new long[] { width, height } );
 		final RandomAccess< IntType > a = img.randomAccess();
 		for ( int i = 0; i < width; i++ )
 		{

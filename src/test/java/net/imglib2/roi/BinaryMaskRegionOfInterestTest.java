@@ -91,7 +91,7 @@ public class BinaryMaskRegionOfInterestTest
 
 	static Img< BitType > getMask( final long[] dim, final MaskValue mv )
 	{
-		final Img< BitType > img = new ArrayImgFactory< BitType >().create( dim, new BitType() );
+		final Img< BitType > img = new ArrayImgFactory<>( new BitType() ).create( dim );
 		final Cursor< BitType > c = img.localizingCursor();
 		while ( c.hasNext() )
 		{
@@ -213,7 +213,7 @@ public class BinaryMaskRegionOfInterestTest
 	public void testFirstElement()
 	{
 		final long[] dims = { 10, 11, 12 };
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( dims, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( dims );
 		final RandomAccess< IntType > raImg = img.randomAccess();
 		raImg.setPosition( new long[] { 2, 3, 4 } );
 		raImg.get().set( 1234 );
@@ -231,7 +231,7 @@ public class BinaryMaskRegionOfInterestTest
 		final long[] dims = { 10, 11, 12 };
 		final Img< BitType > mask = getMask( dims, new RandomValue() );
 		final BinaryMaskRegionOfInterest< BitType, Img< BitType >> x = new BinaryMaskRegionOfInterest< BitType, Img< BitType >>( mask );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( dims, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( dims );
 		final Cursor< BitType > c1 = mask.localizingCursor();
 		final RandomAccess< IntType > ra = img.randomAccess();
 		int index = 1;
@@ -270,7 +270,7 @@ public class BinaryMaskRegionOfInterestTest
 		final long[] dims = { 10, 11, 12 };
 		final Img< BitType > mask = getMask( dims, new RandomValue() );
 		final BinaryMaskRegionOfInterest< BitType, Img< BitType >> x = new BinaryMaskRegionOfInterest< BitType, Img< BitType >>( mask );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( dims, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( dims );
 		int index = 0;
 		for ( final BitType t : mask )
 		{

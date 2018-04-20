@@ -145,7 +145,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 1 ), 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 6.6, 0 );
 
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 6.6, 0 );
@@ -166,7 +166,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 0 ), 4.4, 0 );
 		assertEquals( r.getOrigin( 1 ), 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 6.6, 0 );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 6.6, 0 );
@@ -191,7 +191,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 0 ), 4.4, 0 );
 		assertEquals( r.getOrigin( 1 ), 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 6.6, 0 );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 6.6, 0 );
@@ -210,7 +210,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getOrigin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 3.3 + 6.6, 0 );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 3.3 + 6.6, 0 );
@@ -228,7 +228,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getOrigin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 3.3 + 6.6, 0 );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 3.3 + 6.6, 0 );
@@ -248,7 +248,7 @@ public class EllipseRegionOfInterestTest
 		assertEquals( r.getOrigin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getOrigin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getOrigin( 2 ), 3.3 + 6.6, 0 );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 10, 10, 10 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 10, 10, 10 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 0 ), 1.1 + 4.4, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 1 ), 2.2 + 5.5, 0 );
 		assertEquals( r.getIterableIntervalOverROI( img ).realMin( 2 ), 3.3 + 6.6, 0 );
@@ -365,7 +365,7 @@ public class EllipseRegionOfInterestTest
 		final double[] origin = new double[] { 4.4, 5.5, 6.6 };
 		final double[] radii = new double[] { 2.2, 3.3, 4.4 };
 		final EllipseRegionOfInterest r = new EllipseRegionOfInterest( new RealPoint( origin ), radii );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { 12, 12, 12 }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( 12, 12, 12 );
 		final IterableInterval< IntType > ii = r.getIterableIntervalOverROI( img );
 		final boolean mask[][][] = new boolean[ 12 ][ 12 ][ 12 ];
 		long size = 0;
@@ -488,7 +488,7 @@ public class EllipseRegionOfInterestTest
 		for ( int i = 0; i < eMax.length; i++ )
 			eMax[ i ]++;
 
-		final Img< BitType > img = new ArrayImgFactory< BitType >().create( eMax, new BitType() );
+		final Img< BitType > img = new ArrayImgFactory<>( new BitType() ).create( eMax );
 
 		final RandomAccess< BitType > randomAccess = img.randomAccess();
 

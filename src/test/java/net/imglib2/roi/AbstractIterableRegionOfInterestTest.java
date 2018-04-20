@@ -65,7 +65,7 @@ public class AbstractIterableRegionOfInterestTest
 		final int width = 27;
 		final int height = 16;
 		final int depth = 17;
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height, depth }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( width, height, depth );
 		final double dimensions[][][] = {
 				{ { 1.0, 2.0, 3.0 }, { 28.5, 6.0, 7.0 } },
 				{ { 1.0, 2.0, 3.0 }, { 5.0, 17.5, 7.0 } },
@@ -101,7 +101,7 @@ public class AbstractIterableRegionOfInterestTest
 		final int width = 27;
 		final int height = 16;
 		final int depth = 17;
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( new long[] { width, height, depth }, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( width, height, depth );
 		final double dimensions[][][] = {
 				{ { 1.0, 2.0, 3.0 }, { 28.5, 6.0, 7.0 } },
 				{ { 1.0, 2.0, 3.0 }, { 5.0, 17.5, 7.0 } },

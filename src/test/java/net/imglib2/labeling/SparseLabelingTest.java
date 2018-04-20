@@ -252,7 +252,7 @@ public class SparseLabelingTest
 		final String[] labels = { "Foo" };
 		final long[] dimensions = new long[] { 5, 6, 7 };
 		final Labeling< String > labeling = makeLabeling( coordinates, labels, dimensions );
-		final Img< IntType > img = new ArrayImgFactory< IntType >().create( dimensions, new IntType() );
+		final Img< IntType > img = new ArrayImgFactory<>( new IntType() ).create( dimensions );
 		final RandomAccess< IntType > a = img.randomAccess();
 		for ( int i = 0; i < dimensions[ 0 ]; i++ )
 		{
@@ -306,7 +306,7 @@ public class SparseLabelingTest
 		assertTrue( labeling.getArea( "Foo" ) > expectedVolumeLow );
 		assertTrue( labeling.getArea( "Foo" ) < expectedVolumeHigh );
 		final RandomAccess< LabelingType< String >> a = labeling.randomAccess();
-		final Img< DoubleType > img = new ArrayImgFactory< DoubleType >().create( dimensions, new DoubleType() );
+		final Img< DoubleType > img = new ArrayImgFactory<>( new DoubleType() ).create( dimensions );
 		final RandomAccess< DoubleType > img_a = img.randomAccess();
 		for ( int i = 0; i < dimensions[ 0 ]; i++ )
 		{
@@ -515,7 +515,7 @@ public class SparseLabelingTest
 	public void testSparseImgRndAccess()
 	{
 		final long[] dimensions = new long[] { 1000, 1000, 40 };
-		final Img< IntType > tree = new NtreeImgFactory< IntType >().create( dimensions, new IntType() );
+		final Img< IntType > tree = new NtreeImgFactory<>( new IntType() ).create( dimensions );
 
 		final long[] posA = new long[] { 1, 1, 1 };
 		final long[] posB = new long[] { 5, 5, 5 };

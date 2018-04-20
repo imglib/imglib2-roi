@@ -333,7 +333,7 @@ public class AbstractRegionOfInterestTest
 	public final void testIterableInterval()
 	{
 		final RectangleRegionOfInterest r = new RectangleRegionOfInterest( new Rectangle( 0, 0, 1, 1 ) );
-		final RandomAccessible< DoubleType > src = new ArrayImgFactory< DoubleType >().create( new long[] { 11, 14 }, new DoubleType() );
+		final RandomAccessible< DoubleType > src = new ArrayImgFactory<>( new  DoubleType() ).create( 11, 14 );
 		@SuppressWarnings( "unused" )
 		final IterableInterval< DoubleType > ii = r.getIterableIntervalOverROI( src );
 	}
@@ -356,7 +356,7 @@ public class AbstractRegionOfInterestTest
 	{
 
 		final RectangleRegionOfInterest r = new RectangleRegionOfInterest( roiRect );
-		final RandomAccessible< DoubleType > src = new ArrayImgFactory< DoubleType >().create( dims, new DoubleType() );
+		final RandomAccessible< DoubleType > src = new ArrayImgFactory<>( new DoubleType() ).create( dims );
 		final RandomAccess< DoubleType > a = src.randomAccess();
 		final Random random = new Random( 143 );
 		for ( int x = 0; x < 11; x++ )
@@ -442,9 +442,9 @@ public class AbstractRegionOfInterestTest
 	public final void testEqualIterationOrder()
 	{
 		final RectangleRegionOfInterest r = new RectangleRegionOfInterest( new Rectangle( 0, 0, 3, 5 ) );
-		final RandomAccessible< DoubleType > src_double = new ArrayImgFactory< DoubleType >().create( new long[] { 15, 13 }, new DoubleType() );
+		final RandomAccessible< DoubleType > src_double = new ArrayImgFactory<>( new DoubleType() ).create( 15, 13 );
 		final IterableInterval< DoubleType > ii_double = r.getIterableIntervalOverROI( src_double );
-		final RandomAccessible< IntType > src_int = new ArrayImgFactory< IntType >().create( new long[] { 15, 13 }, new IntType() );
+		final RandomAccessible< IntType > src_int = new ArrayImgFactory<>( new IntType() ).create( 15, 13 );
 		final IterableInterval< IntType > ii_int = r.getIterableIntervalOverROI( src_int );
 
 		final RectangleRegionOfInterest r_alt = new RectangleRegionOfInterest( new Rectangle( 1, 3, 3, 5 ) );

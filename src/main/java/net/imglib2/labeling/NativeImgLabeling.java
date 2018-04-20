@@ -128,7 +128,7 @@ public class NativeImgLabeling< T extends Comparable< T >, I extends IntegerType
 	@Override
 	public Labeling< T > copy()
 	{
-		final NativeImgLabeling< T, I > result = new NativeImgLabeling< T, I >( img.factory().create( img, img.firstElement().createVariable() ) );
+		final NativeImgLabeling< T, I > result = new NativeImgLabeling<>( img.factory().create( img ) );
 		final Cursor< LabelingType< T > > srcCursor = cursor();
 		final Cursor< LabelingType< T > > resCursor = result.cursor();
 
