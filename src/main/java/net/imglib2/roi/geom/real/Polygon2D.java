@@ -49,4 +49,10 @@ public interface Polygon2D extends RealMaskRealInterval
 
 	/** Get the number of vertices */
 	int numVertices();
+
+	@Override
+	default int numDimensions()
+	{
+		return 2;
+	}
 }
