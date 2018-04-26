@@ -216,7 +216,7 @@ public class WritablePolygon2DTest
 
 		assertFalse( p.test( new RealPoint( 20, 6.5 ) ) );
 
-		p.addVertex( 4, new double[] { 20, 5 } );
+		p.addVertex( 4, new RealPoint( 20, 5 ) );
 		assertEquals( 6, p.numVertices() );
 		assertEquals( p.vertex( 4 ).getDoublePosition( 0 ), 20, 0 );
 		assertEquals( p.vertex( 4 ).getDoublePosition( 1 ), 5, 0 );
@@ -326,7 +326,7 @@ public class WritablePolygon2DTest
 	{
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( points );
 
-		p.addVertex( 3, new double[] { 1, 2, 3 } );
+		p.addVertex( 3, new RealPoint( 1, 2, 3 ) );
 		assertEquals( 1, p.vertex( 3 ).getDoublePosition( 0 ), 0 );
 		assertEquals( 2, p.vertex( 3 ).getDoublePosition( 1 ), 0 );
 	}
@@ -346,7 +346,7 @@ public class WritablePolygon2DTest
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
-		p.addVertex( 3, new double[] {} );
+		p.addVertex( 3, new RealPoint() );
 	}
 
 	@Test
@@ -364,7 +364,7 @@ public class WritablePolygon2DTest
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( points );
 
 		exception.expect( IndexOutOfBoundsException.class );
-		p.addVertex( 6, new double[] { 1, 2 } );
+		p.addVertex( 6, new RealPoint( 1, 2 ) );
 	}
 
 	@Test
@@ -405,7 +405,7 @@ public class WritablePolygon2DTest
 		assertArrayEquals( min, pMin, 0 );
 		assertArrayEquals( max, pMax, 0 );
 
-		p.addVertex( 1, new double[] { -10, 100 } );
+		p.addVertex( 1, new RealPoint( -10, 100 ) );
 		min[ 0 ] = -10;
 		max[ 1 ] = 100;
 		p.realMin( pMin );
