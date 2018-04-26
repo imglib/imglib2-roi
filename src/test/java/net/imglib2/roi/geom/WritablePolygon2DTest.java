@@ -70,9 +70,9 @@ public class WritablePolygon2DTest
 
 	private static List< RealLocalizable > edge = new ArrayList<>();
 
-	private static RealPoint inside = new RealPoint( new double[] { 20, 14 } );
+	private static RealPoint inside = new RealPoint( 20, 14 );
 
-	private static RealPoint outside = new RealPoint( new double[] { 26, 30 } );
+	private static RealPoint outside = new RealPoint( 26, 30 );
 
 	@BeforeClass
 	public static void initTest()
@@ -200,13 +200,13 @@ public class WritablePolygon2DTest
 	{
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( points );
 
-		assertFalse( p.test( new RealPoint( new double[] { 30, 11 } ) ) );
+		assertFalse( p.test( new RealPoint( 30, 11 ) ) );
 
 		p.vertex( 3 ).setPosition( new double[] { 40, 10 } );
 		assertEquals( p.numVertices(), 5, 0 );
 		assertEquals( p.vertex( 3 ).getDoublePosition( 0 ), 40, 0 );
 		assertEquals( p.vertex( 3 ).getDoublePosition( 1 ), 10, 1 );
-		assertTrue( p.test( new RealPoint( new double[] { 30, 11 } ) ) );
+		assertTrue( p.test( new RealPoint( 30, 11 ) ) );
 	}
 
 	@Test
@@ -214,13 +214,13 @@ public class WritablePolygon2DTest
 	{
 		final WritablePolygon2D p = new ClosedWritablePolygon2D( points );
 
-		assertFalse( p.test( new RealPoint( new double[] { 20, 6.5 } ) ) );
+		assertFalse( p.test( new RealPoint( 20, 6.5 ) ) );
 
 		p.addVertex( 4, new double[] { 20, 5 } );
 		assertEquals( p.numVertices(), 6, 0 );
 		assertEquals( p.vertex( 4 ).getDoublePosition( 0 ), 20, 0 );
 		assertEquals( p.vertex( 4 ).getDoublePosition( 1 ), 5, 0 );
-		assertTrue( p.test( new RealPoint( new double[] { 20, 6.5 } ) ) );
+		assertTrue( p.test( new RealPoint( 20, 6.5 ) ) );
 	}
 
 	@Test
@@ -228,22 +228,22 @@ public class WritablePolygon2DTest
 	{
 		final WritablePolygon2D p = new OpenWritablePolygon2D( points );
 
-		assertTrue( p.test( new RealPoint( new double[] { 20.125, 17 } ) ) );
+		assertTrue( p.test( new RealPoint( 20.125, 17 ) ) );
 
 		p.removeVertex( 1 );
 		assertEquals( p.numVertices(), 4, 0 );
 		assertEquals( p.vertex( 1 ).getDoublePosition( 0 ), 25, 0 );
 		assertEquals( p.vertex( 1 ).getDoublePosition( 1 ), 15, 0 );
-		assertFalse( p.test( new RealPoint( new double[] { 20.125, 17 } ) ) );
+		assertFalse( p.test( new RealPoint( 20.125, 17 ) ) );
 	}
 
 	@Test
 	public void testFirstRealLocalizableHigherDim()
 	{
 		final List< RealLocalizable > pts = new ArrayList<>();
-		pts.add( new RealPoint( new double[] { 0, 0, 0 } ) );
-		pts.add( new RealPoint( new double[] { 5, 5 } ) );
-		pts.add( new RealPoint( new double[] { 10, 10 } ) );
+		pts.add( new RealPoint( 0, 0, 0 ) );
+		pts.add( new RealPoint( 5, 5 ) );
+		pts.add( new RealPoint( 10, 10 ) );
 
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( pts );
 		assertEquals( p.vertex( 0 ).getDoublePosition( 0 ), 0, 0 );
@@ -254,9 +254,9 @@ public class WritablePolygon2DTest
 	public void testLaterRealLocalizableHigherDim()
 	{
 		final List< RealLocalizable > pts = new ArrayList<>();
-		pts.add( new RealPoint( new double[] { 0, 0 } ) );
-		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
-		pts.add( new RealPoint( new double[] { 10, 10 } ) );
+		pts.add( new RealPoint( 0, 0 ) );
+		pts.add( new RealPoint( 5, 5, 5 ) );
+		pts.add( new RealPoint( 10, 10 ) );
 
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( pts );
 
@@ -269,9 +269,9 @@ public class WritablePolygon2DTest
 	public void testRealLocalizableSmallerDim()
 	{
 		final List< RealLocalizable > pts = new ArrayList<>();
-		pts.add( new RealPoint( new double[] { 0, 0 } ) );
-		pts.add( new RealPoint( new double[] { 5, 5, 5 } ) );
-		pts.add( new RealPoint( new double[] { 10 } ) );
+		pts.add( new RealPoint( 0, 0 ) );
+		pts.add( new RealPoint( 5, 5, 5 ) );
+		pts.add( new RealPoint( 10.0 ) );
 
 		exception.expect( IndexOutOfBoundsException.class );
 		new DefaultWritablePolygon2D( pts );
@@ -297,9 +297,9 @@ public class WritablePolygon2DTest
 	public void testDimGreaterThanTwo()
 	{
 		final List< RealPoint > vertices = new ArrayList<>();
-		vertices.add( new RealPoint( new double[] { 1, 2, 3 } ) );
-		vertices.add( new RealPoint( new double[] { -1, -2, -3 } ) );
-		vertices.add( new RealPoint( new double[] { 10, 9, 8 } ) );
+		vertices.add( new RealPoint( 1, 2, 3 ) );
+		vertices.add( new RealPoint( -1, -2, -3 ) );
+		vertices.add( new RealPoint( 10, 9, 8 ) );
 
 		final WritablePolygon2D p = new DefaultWritablePolygon2D( vertices );
 		assertEquals( p.numVertices(), 3 );
