@@ -233,26 +233,26 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 
 	private void updateMinMax()
 	{
-		double maxX = x.get( 0 );
-		double minX = x.get( 0 );
-		double maxY = y.get( 0 );
-		double minY = y.get( 0 );
-		for ( int i = 1; i < numVertices(); i++ )
+		min[ 0 ] = min[ 1 ] = Double.POSITIVE_INFINITY;
+		max[ 0 ] = max[ 1 ] = Double.NEGATIVE_INFINITY;
+		for ( int i = 0; i < numVertices(); i++ )
 		{
-			if ( x.get( i ) > maxX )
-				maxX = x.get( i );
-			if ( x.get( i ) < minX )
-				minX = x.get( i );
-			if ( y.get( i ) > maxY )
-				maxY = y.get( i );
-			if ( y.get( i ) < minY )
-				minY = y.get( i );
+			final double px = x.get( i );
+			final double py = y.get( i );
+			expandMinMax( px, py, px, py );
 		}
+	}
 
-		max[ 0 ] = maxX;
-		max[ 1 ] = maxY;
-		min[ 0 ] = minX;
-		min[ 1 ] = minY;
+	private void expandMinMax( final double xMin, final double yMin, final double xMax, final double yMax )
+	{
+		if ( xMax > max[ 0 ] )
+			max[ 0 ] = xMax;
+		if ( yMax > max[ 1 ] )
+			max[ 1 ] = yMax;
+		if ( xMin < min[ 0 ] )
+			min[ 0 ] = xMin;
+		if ( yMin < min[ 1 ] )
+			min[ 1 ] = yMin;
 	}
 
 	// -- Helper classes --
