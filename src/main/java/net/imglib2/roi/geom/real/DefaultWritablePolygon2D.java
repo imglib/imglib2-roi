@@ -33,9 +33,11 @@
  */
 package net.imglib2.roi.geom.real;
 
+import java.util.Collection;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
@@ -61,9 +63,9 @@ import gnu.trove.list.array.TDoubleArrayList;
  */
 public class DefaultWritablePolygon2D extends AbstractRealInterval implements WritablePolygon2D
 {
-	protected final TDoubleArrayList x;
+	protected final VertexList x;
 
-	protected final TDoubleArrayList y;
+	protected final VertexList y;
 
 	/**
 	 * Creates a 2D polygon with the provided vertices.
@@ -79,8 +81,8 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		// min/max.
 		super( 2 );
 
-		x = new TDoubleArrayList( vertices.size() );
-		y = new TDoubleArrayList( vertices.size() );
+		x = new VertexList( vertices.size() );
+		y = new VertexList( vertices.size() );
 
 		populateXY( vertices );
 	}
@@ -100,15 +102,15 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		super( GeomMaths.getBoundsReal( x, y ) );
 		if ( x.length == y.length )
 		{
-			this.x = new TDoubleArrayList( x );
-			this.y = new TDoubleArrayList( y );
+			this.x = new VertexList( x );
+			this.y = new VertexList( y );
 		}
 		else
 		{
 			final int l = x.length < y.length ? x.length : y.length;
-			this.x = new TDoubleArrayList( l );
+			this.x = new VertexList( l );
 			this.x.add( x, 0, l );
-			this.y = new TDoubleArrayList( l );
+			this.y = new VertexList( l );
 			this.y.add( y, 0, l );
 		}
 	}
@@ -156,6 +158,23 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		x.removeAt( index );
 		y.removeAt( index );
 		updateMinMax();
+	}
+
+	@Override
+	public void addVertices( int index, Collection< RealLocalizable > vertices )
+	{
+		x.makeRoom( index, vertices.size() );
+		y.makeRoom( index, vertices.size() );
+		int offset = index;
+		for ( final RealLocalizable vertex : vertices )
+		{
+			x.setQuick( offset, vertex.getDoublePosition( 0 ) );
+			y.setQuick( offset, vertex.getDoublePosition( 1 ) );
+			offset++;
+		}
+
+		final RealInterval bounds = GeomMaths.getBoundsReal( vertices );
+		expandMinMax( bounds.realMin( 0 ), bounds.realMin( 1 ), bounds.realMax( 0 ), bounds.realMax( 1 ) );
 	}
 
 	@Override
@@ -276,6 +295,26 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 			y.set( pos, position[ 1 ] );
 
 			updateMinMax();
+		}
+	}
+
+	protected class VertexList extends TDoubleArrayList
+	{
+		public VertexList( final int size )
+		{
+			super( size );
+		}
+
+		public VertexList( final double[] x )
+		{
+			super( x );
+		}
+
+		protected void makeRoom( final int offset, final int count )
+		{
+			ensureCapacity( size() + count );
+			System.arraycopy( _data, offset, _data, offset + count, size() - offset );
+			_pos += count;
 		}
 	}
 }

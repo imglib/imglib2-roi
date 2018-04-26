@@ -34,6 +34,8 @@
 
 package net.imglib2.roi.geom.real;
 
+import java.util.Collection;
+
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
@@ -53,4 +55,7 @@ public interface WritablePolyshape extends Polyshape
 
 	/** Removes the vertex at the given index. */
 	void removeVertex( int index );
+
+	/** Adds vertices starting at the given index. */
+	void addVertices( int index, Collection< RealLocalizable > vertices );
 }
