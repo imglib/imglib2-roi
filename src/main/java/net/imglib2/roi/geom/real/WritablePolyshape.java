@@ -35,20 +35,22 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
+import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
 /**
- * A modifiable {@link Polygon2D}.
+ * A modifiable {@link Polyshape}.
  *
  * @author Alison Walter
  * @author Curtis Rueden
  */
-public interface WritablePolygon2D extends Polygon2D, WritablePolyshape
+public interface WritablePolyshape extends Polyshape
 {
-	/** @deprecated Use {@link #addVertex(int, RealLocalizable)} instead. */
-	@Deprecated
-	default void addVertex( int index, double[] vertex )
-	{
-		addVertex( index, RealPoint.wrap( vertex ) );
-	}
+	@Override
+	RealLocalizableRealPositionable vertex( final int pos );
+
+	/** Adds a vertex at the given index. */
+	void addVertex( int index, RealLocalizable vertex );
+
+	/** Removes the vertex at the given index. */
+	void removeVertex( int index );
 }

@@ -141,10 +141,10 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	 * will be ignored.
 	 */
 	@Override
-	public void addVertex( final int index, final double[] vertex )
+	public void addVertex( final int index, final RealLocalizable vertex )
 	{
-		x.insert( index, vertex[ 0 ] );
-		y.insert( index, vertex[ 1 ] );
+		x.insert( index, vertex.getDoublePosition( 0 ) );
+		y.insert( index, vertex.getDoublePosition( 1 ) );
 		updateMinMax();
 	}
 
