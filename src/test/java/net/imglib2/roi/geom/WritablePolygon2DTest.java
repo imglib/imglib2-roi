@@ -41,6 +41,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
@@ -50,6 +51,7 @@ import net.imglib2.roi.geom.real.DefaultWritablePolygon2D;
 import net.imglib2.roi.geom.real.OpenWritablePolygon2D;
 import net.imglib2.roi.geom.real.Polygon2D;
 import net.imglib2.roi.geom.real.WritablePolygon2D;
+import net.imglib2.util.Util;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -235,6 +237,32 @@ public class WritablePolygon2DTest
 		assertEquals( 25, p.vertex( 1 ).getDoublePosition( 0 ), 0 );
 		assertEquals( 15, p.vertex( 1 ).getDoublePosition( 1 ), 0 );
 		assertFalse( p.test( new RealPoint( 20.125, 17 ) ) );
+	}
+
+	@Test
+	public void testAddVertices()
+	{
+		final WritablePolygon2D p = new ClosedWritablePolygon2D( points );
+
+		// Generate a bunch of random points.
+		final Random r = new Random(0xdeadbeef);
+		final int extraCount = 99;
+		final List < RealLocalizable > extra = new ArrayList<>();
+		for ( int i = 0; i < extraCount; i++ )
+			extra.add( new RealPoint( r.nextDouble(), r.nextDouble() ) );
+
+		// Add the random points.
+		final int offset = 3;
+		p.addVertices( offset, extra );
+
+		// Check that they match.
+		assertEquals( 5 + extraCount, p.numVertices() );
+		int index = offset;
+		for ( final RealLocalizable expected : extra )
+		{
+			final RealLocalizable actual = p.vertex( index );
+			assertTrue( "Index #" + index++, Util.locationsEqual( expected, actual ) );
+		}
 	}
 
 	@Test
