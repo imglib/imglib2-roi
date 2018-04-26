@@ -118,7 +118,7 @@ public class DefaultWritablePolyline extends AbstractRealInterval implements Wri
 		for ( int d = 0; d < n; d++ )
 			p[ d ] = vertex.getDoublePosition( d );
 		vertices.add( index, p );
-		updateMinMax();
+		expandMinMax( p, p );
 	}
 
 	@Override

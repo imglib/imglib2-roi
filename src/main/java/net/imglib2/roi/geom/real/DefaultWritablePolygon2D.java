@@ -143,9 +143,11 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	@Override
 	public void addVertex( final int index, final RealLocalizable vertex )
 	{
-		x.insert( index, vertex.getDoublePosition( 0 ) );
-		y.insert( index, vertex.getDoublePosition( 1 ) );
-		updateMinMax();
+		final double px = vertex.getDoublePosition( 0 );
+		final double py = vertex.getDoublePosition( 1 );
+		x.insert( index, px );
+		y.insert( index, py );
+		expandMinMax(px, py, px, py);
 	}
 
 	@Override
