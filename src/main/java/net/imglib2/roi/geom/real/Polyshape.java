@@ -34,18 +34,20 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * A {@link RealMaskRealInterval} which defines a real space 2D polygon.
+ * A {@link RealMaskRealInterval} which defines a polygonal shape in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
-public interface Polygon2D extends Polyshape
+public interface Polyshape extends RealMaskRealInterval
 {
-	@Override
-	default int numDimensions()
-	{
-		return 2;
-	}
+	/** Returns the vertex at the specified position. */
+	RealLocalizable vertex( final int pos );
+
+	/** Returns the number of vertices in the shape. */
+	int numVertices();
 }
