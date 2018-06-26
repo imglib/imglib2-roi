@@ -40,7 +40,9 @@ import java.util.List;
 import net.imglib2.KDTree;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPointSampleList;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.MaskPredicate;
+import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedWritableBox;
 import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
 import net.imglib2.roi.geom.real.ClosedWritablePolygon2D;
@@ -86,13 +88,19 @@ public class GeomMasks
 
 	// -- Box --
 
-	/** Creates a {@link ClosedWritableBox}. */
+	/**
+	 * Creates a {@link WritableBox} with {@link BoundaryType#CLOSED closed}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableBox closedBox( final double[] min, final double[] max )
 	{
 		return new ClosedWritableBox( min, max );
 	}
 
-	/** Creates an {@link OpenWritableBox}. */
+	/**
+	 * Creates a {@link WritableBox} with {@link BoundaryType#OPEN open}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableBox openBox( final double[] min, final double[] max )
 	{
 		return new OpenWritableBox( min, max );
@@ -100,13 +108,19 @@ public class GeomMasks
 
 	// -- Ellipsoid --
 
-	/** Creates a {@link ClosedWritableEllipsoid}. */
+	/**
+	 * Creates a {@link WritableEllipsoid} with {@link BoundaryType#CLOSED
+	 * closed} {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableEllipsoid closedEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new ClosedWritableEllipsoid( center, semiAxisLengths );
 	}
 
-	/** Creates an {@link OpenWritableEllipsoid}. */
+	/**
+	 * Creates a {@link WritableEllipsoid} with {@link BoundaryType#OPEN
+	 * open} {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableEllipsoid openEllipsoid( final double[] center, final double[] semiAxisLengths )
 	{
 		return new OpenWritableEllipsoid( center, semiAxisLengths );
@@ -114,13 +128,13 @@ public class GeomMasks
 
 	// -- Line --
 
-	/** Creates a {@link DefaultWritableLine}. */
+	/** Creates a {@link WritableLine} from two {@link RealLocalizable} points. */
 	public static WritableLine line( final RealLocalizable pointOne, final RealLocalizable pointTwo )
 	{
 		return new DefaultWritableLine( pointOne, pointTwo );
 	}
 
-	/** Creates a {@link DefaultWritableLine}. */
+	/** Creates a {@link WritableLine} from two {@code double[]} points. */
 	public static WritableLine line( final double[] pointOne, final double[] pointTwo, final boolean copy )
 	{
 		return new DefaultWritableLine( pointOne, pointTwo, copy );
@@ -128,13 +142,17 @@ public class GeomMasks
 
 	// -- Point --
 
-	/** Creates a {@link DefaultWritablePointMask}. */
+	/**
+	 * Creates a {@link WritablePointMask} from {@code double[]} coordinates.
+	 */
 	public static WritablePointMask pointMask( final double[] point )
 	{
 		return new DefaultWritablePointMask( point );
 	}
 
-	/** Creates a {@link DefaultWritablePointMask}. */
+	/**
+	 * Creates a {@link WritablePointMask} from a {@link RealLocalizable} point.
+	 */
 	public static WritablePointMask pointMask( final RealLocalizable point )
 	{
 		return new DefaultWritablePointMask( point );
@@ -142,37 +160,61 @@ public class GeomMasks
 
 	// -- Polygon2D --
 
-	/** Creates a {@link DefaultWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of vertices, with
+	 * {@link BoundaryType#UNSPECIFIED unspecified}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritablePolygon2D polygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultWritablePolygon2D( vertices );
 	}
 
-	/** Creates a {@link DefaultWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of (x, y) coordinates,
+	 * with {@link BoundaryType#UNSPECIFIED unspecified}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritablePolygon2D polygon2D( final double[] x, final double[] y )
 	{
 		return new DefaultWritablePolygon2D( x, y );
 	}
 
-	/** Creates a {@link ClosedWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of vertices, with
+	 * {@link BoundaryType#CLOSED closed} {@link MaskPredicate#boundaryType()
+	 * boundaries}.
+	 */
 	public static WritablePolygon2D closedPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new ClosedWritablePolygon2D( vertices );
 	}
 
-	/** Creates a {@link ClosedWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of (x, y) coordinates,
+	 * with {@link BoundaryType#CLOSED closed}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritablePolygon2D closedPolygon2D( final double[] x, final double[] y )
 	{
 		return new ClosedWritablePolygon2D( x, y );
 	}
 
-	/** Creates an {@link OpenWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of vertices, with
+	 * {@link BoundaryType#OPEN open} {@link MaskPredicate#boundaryType()
+	 * boundaries}.
+	 */
 	public static WritablePolygon2D openPolygon2D( final List< ? extends RealLocalizable > vertices )
 	{
 		return new OpenWritablePolygon2D( vertices );
 	}
 
-	/** Creates an {@link OpenWritablePolygon2D}. */
+	/**
+	 * Creates a {@link WritablePolygon2D} from a list of (x, y) coordinates,
+	 * with {@link BoundaryType#OPEN open} {@link MaskPredicate#boundaryType()
+	 * boundaries}.
+	 */
 	public static WritablePolygon2D openPolygon2D( final double[] x, final double[] y )
 	{
 		return new OpenWritablePolygon2D( x, y );
@@ -180,7 +222,7 @@ public class GeomMasks
 
 	// -- Polyline --
 
-	/** Creates a {@link DefaultWritablePolyline}. */
+	/** Creates a {@link WritablePolyline} from a list of vertices. */
 	public static WritablePolyline polyline( final List< ? extends RealLocalizable > vertices )
 	{
 		return new DefaultWritablePolyline( vertices );
@@ -188,51 +230,66 @@ public class GeomMasks
 
 	// -- RealPointCollection --
 
-	/** Creates a {@link DefaultWritableRealPointCollection}. */
+	/** Creates a {@link WritableRealPointCollection} from a map of points. */
 	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointCollection( final HashMap< TDoubleArrayList, L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
 
-	/** Creates a {@link DefaultWritableRealPointCollection}. */
+	/** Creates a {@link WritableRealPointCollection} from a collection of points. */
 	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointCollection( final Collection< L > points )
 	{
 		return new DefaultWritableRealPointCollection<>( points );
 	}
 
-	/** Creates a {@link KDTreeRealPointCollection}. */
+	/** Creates a {@link RealPointCollection} from a {@link KDTree}. */
 	public static < L extends RealLocalizable > RealPointCollection< L > kDTreeRealPointCollection( final KDTree< L > tree )
 	{
 		return new KDTreeRealPointCollection<>( tree );
 	}
 
-	/** Creates a {@link KDTreeRealPointCollection}. */
-	public static < L extends RealLocalizable > RealPointCollection< L > kDTreeRealPointCollection( final Collection< L > points )
+	/**
+	 * Creates a {@link KDTree}-based {@link RealPointCollection} from a
+	 * collection of points.
+	 */
+	public static < L extends RealLocalizable > KDTreeRealPointCollection< L > kDTreeRealPointCollection( final Collection< L > points )
 	{
 		return new KDTreeRealPointCollection<>( points );
 	}
 
-	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
+	/**
+	 * Creates a {@link WritableRealPointCollection} from a
+	 * {@Link RealPointSampleList}.
+	 */
 	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListRealPointCollection( final RealPointSampleList< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
-	/** Creates a {@link RealPointSampleListWritableRealPointCollection}. */
-	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListRealPointCollection( final Collection< L > points )
+	/**
+	 * Creates a {@link RealPointSampleList}-based
+	 * {@link WritableRealPointCollection} from a collection of points.
+	 */
+	public static < L extends RealLocalizable > RealPointSampleListWritableRealPointCollection< L > realPointSampleListRealPointCollection( final Collection< L > points )
 	{
 		return new RealPointSampleListWritableRealPointCollection<>( points );
 	}
 
 	// -- Sphere --
 
-	/** Creates a {@link ClosedWritableSphere}. */
+	/**
+	 * Creates a {@link WritableSphere} with {@link BoundaryType#CLOSED closed}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableSphere closedSphere( final double[] center, final double radius )
 	{
 		return new ClosedWritableSphere( center, radius );
 	}
 
-	/** Creates an {@link OpenWritableSphere}. */
+	/**
+	 * Creates a {@link WritableSphere} with {@link BoundaryType#OPEN open}
+	 * {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableSphere openSphere( final double[] center, final double radius )
 	{
 		return new OpenWritableSphere( center, radius );
@@ -240,7 +297,10 @@ public class GeomMasks
 
 	// -- SuperEllipsoid --
 
-	/** Creates a {@link ClosedWritableSuperEllipsoid}. */
+	/**
+	 * Creates a {@link WritableSuperEllipsoid} with {@link BoundaryType#CLOSED
+	 * closed} {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableSuperEllipsoid closedSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
@@ -248,7 +308,10 @@ public class GeomMasks
 		return new ClosedWritableSuperEllipsoid( center, semiAxisLengths, exponent );
 	}
 
-	/** Creates an {@link OpenWritableSuperEllipsoid}. */
+	/**
+	 * Creates a {@link WritableSuperEllipsoid} with {@link BoundaryType#OPEN
+	 * open} {@link MaskPredicate#boundaryType() boundaries}.
+	 */
 	public static WritableSuperEllipsoid openSuperEllipsoid( final double[] center, final double[] semiAxisLengths, final double exponent )
 	{
 		if ( exponent == 2 )
