@@ -176,7 +176,7 @@ public class LabelingMapping< T > extends AbstractList< Set< T > >
 
 		public InternedSet( final Set< T > set, final int index )
 		{
-			this.set = set;
+			this.set = Collections.unmodifiableSet( new HashSet<>( set ) );
 			this.hashCode = set.hashCode();
 			this.index = index;
 		}
@@ -239,12 +239,11 @@ public class LabelingMapping< T > extends AbstractList< Set< T > >
 			if ( intIndex > maxNumLabelSets )
 				throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", intIndex ) );
 
-			final HashSet< T > srcCopy = new HashSet< T >( src );
-			interned = new InternedSet< T >( srcCopy, intIndex );
+			interned = new InternedSet< T >( src, intIndex );
 			setsByIndex.add( interned );
 			addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
 			subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
-			internedSets.put( srcCopy, interned );
+			internedSets.put( interned.getSet(), interned );
 			return interned;
 		}
 	}
@@ -310,10 +309,9 @@ public class LabelingMapping< T > extends AbstractList< Set< T > >
 	/**
 	 * Returns the (unmodifiable) set of labels for the given index value.
 	 */
-	// TODO: cache unmodifiable sets (in InternedSet)?
 	public Set< T > labelsAtIndex( final int index )
 	{
-		return Collections.unmodifiableSet( setsByIndex.get( index ).set );
+		return setsByIndex.get( index ).set;
 	}
 
 	/**
