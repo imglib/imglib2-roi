@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,20 +35,19 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPoint;
+import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * A modifiable {@link Polygon2D}.
+ * A {@link RealMaskRealInterval} which defines a polygonal shape in n-d space.
  *
  * @author Alison Walter
  * @author Curtis Rueden
  */
-public interface WritablePolygon2D extends Polygon2D, WritablePolyshape
+public interface Polyshape extends RealMaskRealInterval
 {
-	/** @deprecated Use {@link #addVertex(int, RealLocalizable)} instead. */
-	@Deprecated
-	default void addVertex( int index, double[] vertex )
-	{
-		addVertex( index, RealPoint.wrap( vertex ) );
-	}
+	/** Returns the vertex at the specified position. */
+	RealLocalizable vertex( final int pos );
+
+	/** Returns the number of vertices in the shape. */
+	int numVertices();
 }

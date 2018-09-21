@@ -35,7 +35,10 @@
 package net.imglib2.roi.geom.real;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealLocalizable;
@@ -50,7 +53,7 @@ import net.imglib2.roi.util.RealLocalizableRealPositionable;
  */
 public class DefaultWritablePolyline extends AbstractRealInterval implements WritablePolyline
 {
-	private final List< double[] > vertices;
+	private final ArrayList< double[] > vertices;
 
 	/**
 	 * Creates a polyline with the specified vertices. The dimensionality of the
@@ -117,7 +120,7 @@ public class DefaultWritablePolyline extends AbstractRealInterval implements Wri
 		for ( int d = 0; d < n; d++ )
 			p[ d ] = vertex.getDoublePosition( d );
 		vertices.add( index, p );
-		updateMinMax();
+		expandMinMax( p, p );
 	}
 
 	@Override
@@ -125,6 +128,28 @@ public class DefaultWritablePolyline extends AbstractRealInterval implements Wri
 	{
 		vertices.remove( index );
 		updateMinMax();
+	}
+
+	@Override
+	public void addVertices( int index, Collection< RealLocalizable > newVertices )
+	{
+		// add the vertices
+		vertices.addAll( index, newVertices.stream().map( vertex -> {
+			if ( vertex.numDimensions() < n )
+				throw new IllegalArgumentException( "Vertex must have at least" + n + " dimensions" );
+			final double[] p = new double[ n ];
+			for ( int d = 0; d < n; d++ )
+				p[ d ] = vertex.getDoublePosition( d );
+			return p;
+		} ).collect( Collectors.toList() ) );
+
+		// expand the bounds
+		int offset = index;
+		for ( int i = 0; i < newVertices.size(); i++ )
+		{
+			final double[] vertex = vertices.get( offset++ );
+			expandMinMax( vertex, vertex );
+		}
 	}
 
 	@Override
@@ -168,19 +193,21 @@ public class DefaultWritablePolyline extends AbstractRealInterval implements Wri
 
 	private void updateMinMax()
 	{
-		for ( int d = 0; d < n; d++ )
+		Arrays.fill( min, Double.POSITIVE_INFINITY );
+		Arrays.fill( max, Double.NEGATIVE_INFINITY );
+		for ( double[] vertex : vertices ) {
+			expandMinMax( vertex, vertex );
+		}
+	}
+
+	private void expandMinMax( final double[] mn, final double[] mx )
+	{
+		for ( int d = 0; d < numDimensions(); d++ )
 		{
-			double minD = vertices.get( 0 )[ d ];
-			double maxD = vertices.get( 0 )[ d ];
-			for ( int i = 1; i < numVertices(); i++ )
-			{
-				if ( vertices.get( i )[ d ] < minD )
-					minD = vertices.get( i )[ d ];
-				if ( vertices.get( i )[ d ] > maxD )
-					maxD = vertices.get( i )[ d ];
-			}
-			min[ d ] = minD;
-			max[ d ] = maxD;
+			if ( mx[ d ] > max[ d ] )
+				max[ d ] = mx[ d ];
+			if ( mn[ d ] < min[ d ] )
+				min[ d ] = mn[ d ];
 		}
 	}
 

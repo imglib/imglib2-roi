@@ -33,9 +33,11 @@
  */
 package net.imglib2.roi.geom.real;
 
+import java.util.Collection;
 import java.util.List;
 
 import net.imglib2.AbstractRealInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
@@ -61,9 +63,9 @@ import gnu.trove.list.array.TDoubleArrayList;
  */
 public class DefaultWritablePolygon2D extends AbstractRealInterval implements WritablePolygon2D
 {
-	protected final TDoubleArrayList x;
+	protected final VertexList x;
 
-	protected final TDoubleArrayList y;
+	protected final VertexList y;
 
 	/**
 	 * Creates a 2D polygon with the provided vertices.
@@ -79,8 +81,8 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		// min/max.
 		super( 2 );
 
-		x = new TDoubleArrayList( vertices.size() );
-		y = new TDoubleArrayList( vertices.size() );
+		x = new VertexList( vertices.size() );
+		y = new VertexList( vertices.size() );
 
 		populateXY( vertices );
 	}
@@ -100,15 +102,15 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		super( GeomMaths.getBoundsReal( x, y ) );
 		if ( x.length == y.length )
 		{
-			this.x = new TDoubleArrayList( x );
-			this.y = new TDoubleArrayList( y );
+			this.x = new VertexList( x );
+			this.y = new VertexList( y );
 		}
 		else
 		{
 			final int l = x.length < y.length ? x.length : y.length;
-			this.x = new TDoubleArrayList( l );
+			this.x = new VertexList( l );
 			this.x.add( x, 0, l );
-			this.y = new TDoubleArrayList( l );
+			this.y = new VertexList( l );
 			this.y.add( y, 0, l );
 		}
 	}
@@ -141,11 +143,13 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	 * will be ignored.
 	 */
 	@Override
-	public void addVertex( final int index, final double[] vertex )
+	public void addVertex( final int index, final RealLocalizable vertex )
 	{
-		x.insert( index, vertex[ 0 ] );
-		y.insert( index, vertex[ 1 ] );
-		updateMinMax();
+		final double px = vertex.getDoublePosition( 0 );
+		final double py = vertex.getDoublePosition( 1 );
+		x.insert( index, px );
+		y.insert( index, py );
+		expandMinMax(px, py, px, py);
 	}
 
 	@Override
@@ -154,6 +158,23 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 		x.removeAt( index );
 		y.removeAt( index );
 		updateMinMax();
+	}
+
+	@Override
+	public void addVertices( int index, Collection< RealLocalizable > vertices )
+	{
+		x.makeRoom( index, vertices.size() );
+		y.makeRoom( index, vertices.size() );
+		int offset = index;
+		for ( final RealLocalizable vertex : vertices )
+		{
+			x.setQuick( offset, vertex.getDoublePosition( 0 ) );
+			y.setQuick( offset, vertex.getDoublePosition( 1 ) );
+			offset++;
+		}
+
+		final RealInterval bounds = GeomMaths.getBoundsReal( vertices );
+		expandMinMax( bounds.realMin( 0 ), bounds.realMin( 1 ), bounds.realMax( 0 ), bounds.realMax( 1 ) );
 	}
 
 	@Override
@@ -233,26 +254,26 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 
 	private void updateMinMax()
 	{
-		double maxX = x.get( 0 );
-		double minX = x.get( 0 );
-		double maxY = y.get( 0 );
-		double minY = y.get( 0 );
-		for ( int i = 1; i < numVertices(); i++ )
+		min[ 0 ] = min[ 1 ] = Double.POSITIVE_INFINITY;
+		max[ 0 ] = max[ 1 ] = Double.NEGATIVE_INFINITY;
+		for ( int i = 0; i < numVertices(); i++ )
 		{
-			if ( x.get( i ) > maxX )
-				maxX = x.get( i );
-			if ( x.get( i ) < minX )
-				minX = x.get( i );
-			if ( y.get( i ) > maxY )
-				maxY = y.get( i );
-			if ( y.get( i ) < minY )
-				minY = y.get( i );
+			final double px = x.get( i );
+			final double py = y.get( i );
+			expandMinMax( px, py, px, py );
 		}
+	}
 
-		max[ 0 ] = maxX;
-		max[ 1 ] = maxY;
-		min[ 0 ] = minX;
-		min[ 1 ] = minY;
+	private void expandMinMax( final double xMin, final double yMin, final double xMax, final double yMax )
+	{
+		if ( xMax > max[ 0 ] )
+			max[ 0 ] = xMax;
+		if ( yMax > max[ 1 ] )
+			max[ 1 ] = yMax;
+		if ( xMin < min[ 0 ] )
+			min[ 0 ] = xMin;
+		if ( yMin < min[ 1 ] )
+			min[ 1 ] = yMin;
 	}
 
 	// -- Helper classes --
@@ -274,6 +295,26 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 			y.set( pos, position[ 1 ] );
 
 			updateMinMax();
+		}
+	}
+
+	protected class VertexList extends TDoubleArrayList
+	{
+		public VertexList( final int size )
+		{
+			super( size );
+		}
+
+		public VertexList( final double[] x )
+		{
+			super( x );
+		}
+
+		protected void makeRoom( final int offset, final int count )
+		{
+			ensureCapacity( size() + count );
+			System.arraycopy( _data, offset, _data, offset + count, size() - offset );
+			_pos += count;
 		}
 	}
 }

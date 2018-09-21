@@ -116,7 +116,14 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 		point.localize( l );
 		points.put( new TDoubleArrayList( l ), point );
 
-		updateMinMax();
+		// Update bounds.
+		for ( int d = 0; d < numDimensions(); d++ )
+		{
+			if ( l[ d ] > max[ d ] )
+				max[ d ] = l[ d ];
+			if ( l[ d ] < min[ d ] )
+				min[ d ] = l[ d ];
+		}
 	}
 
 	/**

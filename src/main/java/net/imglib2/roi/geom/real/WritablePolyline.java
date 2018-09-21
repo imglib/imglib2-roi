@@ -34,22 +34,12 @@
 
 package net.imglib2.roi.geom.real;
 
-import net.imglib2.RealLocalizable;
-import net.imglib2.roi.util.RealLocalizableRealPositionable;
-
 /**
  * A modifiable {@link Polyline}.
  *
  * @author Alison Walter
  */
-public interface WritablePolyline extends Polyline
+public interface WritablePolyline extends Polyline, WritablePolyshape
 {
-	@Override
-	RealLocalizableRealPositionable vertex( final int pos );
-
-	/** Adds a vertex at the given index. */
-	void addVertex( int index, RealLocalizable vertex );
-
-	/** Removes the vertex at the given index. */
-	void removeVertex( int index );
+	// NB: Marker interface.
 }

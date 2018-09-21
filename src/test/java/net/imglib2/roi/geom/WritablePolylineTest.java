@@ -41,6 +41,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
@@ -50,6 +51,7 @@ import net.imglib2.roi.geom.real.DefaultWritablePolyline;
 import net.imglib2.roi.geom.real.Line;
 import net.imglib2.roi.geom.real.Polyline;
 import net.imglib2.roi.geom.real.WritablePolyline;
+import net.imglib2.util.Util;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -237,6 +239,32 @@ public class WritablePolylineTest
 		assertEquals( pl.numVertices(), 2 );
 		assertTrue( assertRealLocalizableEquals( pl.vertex( 1 ), beforeRemove ) );
 		assertTrue( pl.test( new RealPoint( new double[] { 13, 3.125 } ) ) );
+	}
+
+	@Test
+	public void testAddVertices()
+	{
+		final WritablePolyline pl = new DefaultWritablePolyline( polyline );
+
+		// Generate a bunch of random points.
+		final Random r = new Random(0xdeadbeef);
+		final int extraCount = 99;
+		final List < RealLocalizable > extra = new ArrayList<>();
+		for ( int i = 0; i < extraCount; i++ )
+			extra.add( new RealPoint( r.nextDouble(), r.nextDouble() ) );
+
+		// Add the random points.
+		final int offset = 1;
+		pl.addVertices( offset, extra );
+
+		// Check that they match.
+		assertEquals( 3 + extraCount, pl.numVertices() );
+		int index = offset;
+		for ( final RealLocalizable expected : extra )
+		{
+			final RealLocalizable actual = pl.vertex( index );
+			assertTrue( "Index #" + index++, Util.locationsEqual( expected, actual ) );
+		}
 	}
 
 	@Test
