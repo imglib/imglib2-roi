@@ -259,7 +259,7 @@ public class GeomMasks
 
 	/**
 	 * Creates a {@link WritableRealPointCollection} from a
-	 * {@Link RealPointSampleList}.
+	 * {@link RealPointSampleList}.
 	 */
 	public static < L extends RealLocalizable > WritableRealPointCollection< L > realPointSampleListRealPointCollection( final RealPointSampleList< L > points )
 	{
