@@ -34,6 +34,8 @@
 
 package net.imglib2.roi.geom.real;
 
+import java.util.AbstractList;
+import java.util.List;
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -50,4 +52,19 @@ public interface Polyshape extends RealMaskRealInterval
 
 	/** Returns the number of vertices in the shape. */
 	int numVertices();
+
+	default List<RealLocalizable> vertices() {
+		return new AbstractList<RealLocalizable>() {
+
+			@Override
+			public RealLocalizable get(int index) {
+				return vertex(index);
+			}
+
+			@Override
+			public int size() {
+				return numVertices();
+			}
+		};
+	}
 }
