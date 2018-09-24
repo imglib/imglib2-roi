@@ -123,7 +123,9 @@ public class WritablePolygon2DTest
 
 		// 2D polygon characteristics
 		assertEquals( 5, polygon.numVertices() );
+		assertEquals( 5, polygon.vertices().size());
 		assertTrue( assertRealLocalizableEquals( polygon.vertex( 0 ), points.get( 0 ) ) );
+		assertTrue( assertRealLocalizableEquals( polygon.vertices().get( 0 ), points.get( 0 ) ) );
 		assertTrue( assertRealLocalizableEquals( polygon.vertex( 2 ), points.get( 2 ) ) );
 		assertTrue( assertRealLocalizableEquals( polygon.vertex( 4 ), points.get( 4 ) ) );
 		assertTrue( polygon.boundaryType() == BoundaryType.UNSPECIFIED );
