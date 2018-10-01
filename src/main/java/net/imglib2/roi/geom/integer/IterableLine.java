@@ -2,13 +2,12 @@ package net.imglib2.roi.geom.integer;
 
 import java.util.Iterator;
 
+import net.imglib2.AbstractInterval;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
-import net.imglib2.Positionable;
 import net.imglib2.RealPoint;
-import net.imglib2.RealPositionable;
 import net.imglib2.Sampler;
 
 /**
@@ -31,13 +30,8 @@ import net.imglib2.Sampler;
  * @author Jean-Yves Tinevez
  *
  */
-public class IterableLine implements IterableInterval< Void >
+public class IterableLine extends AbstractInterval implements IterableInterval< Void >
 {
-
-	/**
-	 * N dimensions.
-	 */
-	private final int n;
 
 	/**
 	 * Number of points this line will be sampled on.
@@ -64,14 +58,16 @@ public class IterableLine implements IterableInterval< Void >
 	 */
 	public IterableLine( final Localizable start, final Localizable end )
 	{
+		super( start.numDimensions());
 		this.start = new Point( start );
 		this.end = new Point( end );
-		this.n = start.numDimensions();
-
+		
 		final Point diff = new Point( n );
 		long maxDiff = -1;
 		for ( int d = 0; d < n; d++ )
 		{
+			min[d] = Math.min( start.getLongPosition( d ), end.getLongPosition( d ) );
+			max[d] = Math.max( start.getLongPosition( d ), end.getLongPosition( d ) );
 			final long dx = end.getLongPosition( d ) - start.getLongPosition( d );
 			diff.setPosition( dx, d );
 			if ( Math.abs( dx ) > maxDiff )
@@ -117,108 +113,9 @@ public class IterableLine implements IterableInterval< Void >
 	}
 
 	@Override
-	public double realMin( final int d )
-	{
-		return min( d );
-	}
-
-	@Override
-	public void realMin( final double[] min )
-	{
-		for ( int d = 0; d < n; d++ )
-			min[ d ] = realMin( d );
-	}
-
-	@Override
-	public void realMin( final RealPositionable min )
-	{
-		for ( int d = 0; d < n; d++ )
-			min.setPosition( realMin( d ), d );
-	}
-
-	@Override
-	public double realMax( final int d )
-	{
-		return max( d );
-	}
-
-	@Override
-	public void realMax( final double[] max )
-	{
-		for ( int d = 0; d < n; d++ )
-			max[ d ] = realMax( d );
-	}
-
-	@Override
-	public void realMax( final RealPositionable max )
-	{
-		for ( int d = 0; d < n; d++ )
-			max.setPosition( realMax( d ), d );
-	}
-
-	@Override
-	public int numDimensions()
-	{
-		return n;
-	}
-
-	@Override
 	public Iterator< Void > iterator()
 	{
 		return cursor();
-	}
-
-	@Override
-	public long min( final int d )
-	{
-		return Math.min( start.getLongPosition( d ), end.getLongPosition( d ) );
-	}
-
-	@Override
-	public void min( final long[] min )
-	{
-		for ( int d = 0; d < n; d++ )
-			min[ d ] = min( d );
-	}
-
-	@Override
-	public void min( final Positionable min )
-	{
-		for ( int d = 0; d < n; d++ )
-			min.setPosition( min( d ), d );
-	}
-
-	@Override
-	public long max( final int d )
-	{
-		return Math.max( start.getLongPosition( d ), end.getLongPosition( d ) );
-	}
-
-	@Override
-	public void max( final long[] max )
-	{
-		for ( int d = 0; d < n; d++ )
-			max[ d ] = max( d );
-	}
-
-	@Override
-	public void max( final Positionable max )
-	{
-		for ( int d = 0; d < n; d++ )
-			max.setPosition( max( d ), d );
-	}
-
-	@Override
-	public void dimensions( final long[] dimensions )
-	{
-		for ( int d = 0; d < n; d++ )
-			dimensions[ d ] = max( d ) - min( d );
-	}
-
-	@Override
-	public long dimension( final int d )
-	{
-		return max( d ) - min( d );
 	}
 
 	@Override
