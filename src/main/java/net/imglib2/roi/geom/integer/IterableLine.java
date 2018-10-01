@@ -31,7 +31,7 @@ import net.imglib2.Sampler;
  * @author Jean-Yves Tinevez
  *
  */
-public class Line implements IterableInterval< Void >
+public class IterableLine implements IterableInterval< Void >
 {
 
 	/**
@@ -62,7 +62,7 @@ public class Line implements IterableInterval< Void >
 	 * @param end
 	 *            the location of the end point.
 	 */
-	public Line( final Localizable start, final Localizable end )
+	public IterableLine( final Localizable start, final Localizable end )
 	{
 		this.start = new Point( start );
 		this.end = new Point( end );
@@ -84,8 +84,8 @@ public class Line implements IterableInterval< Void >
 	public boolean equals( final Object o )
 	{
 		if ( o == this ) { return true; }
-		if ( !( o instanceof Line ) ) { return false; }
-		final Line ol = ( Line ) o;
+		if ( !( o instanceof IterableLine ) ) { return false; }
+		final IterableLine ol = ( IterableLine ) o;
 		return locationsEqual( start, ol.start ) && locationsEqual( end, ol.end );
 	}
 

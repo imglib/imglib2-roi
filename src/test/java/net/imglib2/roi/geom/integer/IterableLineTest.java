@@ -19,7 +19,7 @@ import net.imglib2.roi.Regions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.util.Util;
 
-public class LineTest
+public class IterableLineTest
 {
 
 	@Test
@@ -34,8 +34,8 @@ public class LineTest
 		final Point e1 = new Point( new long[] { 12, 37, 60 } );
 		final Point e2 = new Point( new long[] { 12, 37, 60 } );
 		
-		final Line line1 = new Line( s1, e1 );
-		final Line line2 = new Line( ra, e2 );
+		final IterableLine line1 = new IterableLine( s1, e1 );
+		final IterableLine line2 = new IterableLine( ra, e2 );
 		assertTrue( "The two lines should be equal.", line1.equals( line2 ) );
 		assertTrue( "The two lines should be equal.", line2.equals( line1 ) );
 		assertTrue( "The line should be equal to itself.", line1.equals( line1 ) );
@@ -45,10 +45,10 @@ public class LineTest
 		ra.fwd( 0 );
 		assertTrue( "The two lines should still be equal.", line1.equals( line2 ) );
 		// But after instantiation with this point, it should.
-		assertFalse( "The two lines should not be equal.", line1.equals( new Line( ra, e2 ) ) );
+		assertFalse( "The two lines should not be equal.", line1.equals( new IterableLine( ra, e2 ) ) );
 		
 		// Permute order. It matters.
-		final Line line1reverse = new Line( e1, s1 );
+		final IterableLine line1reverse = new IterableLine( e1, s1 );
 		assertFalse( "The two lines should not be equal.", line1.equals( line1reverse ) );
 		
 		// What about iteration order?
@@ -60,7 +60,7 @@ public class LineTest
 	public void testVoidLine()
 	{
 		final Point P1 = new Point( new long[] { 12, 37, 6 } );
-		final Line line = new Line( P1, P1 );
+		final IterableLine line = new IterableLine( P1, P1 );
 		int count = 0;
 		final Cursor< Void > cursor = line.cursor();
 		while ( cursor.hasNext() )
@@ -109,7 +109,7 @@ public class LineTest
 		final Img< UnsignedByteType > image = imgFactory.create( 50, 50, 50 );
 
 		long count = 0;
-		final Line line = new Line( P1, P2 );
+		final IterableLine line = new IterableLine( P1, P2 );
 		final Cursor< UnsignedByteType > cursorLine = Regions.sample( line, image ).cursor();
 		while ( cursorLine.hasNext() )
 		{
@@ -155,7 +155,7 @@ public class LineTest
 	{
 		final Point p1 = new Point( 0l, 0L );
 		final Point p2 = new Point( 21474836480L, 1L );
-		final Line line = new Line( p1, p2 );
+		final IterableLine line = new IterableLine( p1, p2 );
 		final Cursor< Void > cursor = line.localizingCursor();
 		while(cursor.hasNext())
 			cursor.fwd();
