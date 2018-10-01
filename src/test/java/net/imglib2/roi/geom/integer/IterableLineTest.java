@@ -103,8 +103,6 @@ public class IterableLineTest
 		// and have this much steps.
 		final long nsteps = 35;
 
-		final int targetIntensity = 1;
-
 		final ImgFactory< UnsignedByteType > imgFactory = new ArrayImgFactory<>( new UnsignedByteType() );
 		final Img< UnsignedByteType > image = imgFactory.create( 50, 50, 50 );
 
@@ -113,7 +111,7 @@ public class IterableLineTest
 		final Cursor< UnsignedByteType > cursorLine = Regions.sample( line, image ).cursor();
 		while ( cursorLine.hasNext() )
 		{
-			cursorLine.next().set( targetIntensity );
+			cursorLine.next().inc();
 			count++;
 		}
 		
@@ -123,14 +121,13 @@ public class IterableLineTest
 		// Test if all the target points are traversed
 		final RandomAccess< UnsignedByteType > ra = image.randomAccess();
 		int totalIntensity = 0;
-		int val;
 		for ( int i = 0; i < Z.length; i++ )
 		{
 			ra.setPosition( X[ i ], 0 );
 			ra.setPosition( Y[ i ], 1 );
 			ra.setPosition( Z[ i ], 2 );
-			val = ra.get().get();
-			assertEquals( "Point not iterated: " + Util.printCoordinates( ra ), targetIntensity, val );
+			final int val = ra.get().get();
+			assertEquals( "Point not iterated: " + Util.printCoordinates( ra ), 1, val );
 			totalIntensity += val;
 		}
 
