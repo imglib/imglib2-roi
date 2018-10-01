@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
@@ -22,6 +23,52 @@ import net.imglib2.util.Util;
 public class IterableLineTest
 {
 
+	@Test
+	public void testVerticalLine()
+	{
+		final Point P1 = new Point( new long[] { 0, 0 } );
+		final Point P2 = new Point( new long[] { 10, 0 } );
+		final IterableLine line = new IterableLine( P1, P2 );
+		
+		final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes( 100, 100 );
+		final IterableInterval< UnsignedByteType > sample = Regions.sample( line, img );
+		for ( final UnsignedByteType p : sample )
+			p.inc();
+
+		final RandomAccess< UnsignedByteType > ra = img.randomAccess();
+		for ( int x = 0; x < P2.getIntPosition( 1 ); x++ )
+			assertEquals( "Unexpected pixel value at " + Util.printCoordinates( ra ), 1, ra.get().get() );
+
+		int sum = 0;
+		for ( final UnsignedByteType p : img )
+			sum += p.get();
+		
+		assertEquals( "Iterated over unexpected pixels.", line.size(), sum );
+	}
+	
+	@Test
+	public void testHorizontalLine()
+	{
+		final Point P1 = new Point( new long[] { 0, 0 } );
+		final Point P2 = new Point( new long[] { 0, 10 } );
+		final IterableLine line = new IterableLine( P1, P2 );
+		
+		final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes( 100, 100 );
+		final IterableInterval< UnsignedByteType > sample = Regions.sample( line, img );
+		for ( final UnsignedByteType p : sample )
+			p.inc();
+
+		final RandomAccess< UnsignedByteType > ra = img.randomAccess();
+		for ( int y = 0; y < P2.getIntPosition( 0 ); y++ )
+			assertEquals( "Unexpected pixel value at " + Util.printCoordinates( ra ), 1, ra.get().get() );
+
+		int sum = 0;
+		for ( final UnsignedByteType p : img )
+			sum += p.get();
+		
+		assertEquals( "Iterated over unexpected pixels.", line.size(), sum );
+	}
+	
 	@Test
 	public void testEqual()
 	{
@@ -71,6 +118,7 @@ public class IterableLineTest
 				assertEquals( "Unexpected position.", P1.getLongPosition( d ), cursor.getLongPosition( d ) );
 		}
 		assertEquals( "Should have iterated over a single point.", 1, count );
+		assertEquals( "Size should be 1.", 1, line.size());
 	}
 
 	@Test
@@ -101,7 +149,7 @@ public class IterableLineTest
 				29, 30, 31, 32, 32, 33, 34, 35 };
 
 		// and have this much steps.
-		final long nsteps = 35;
+		final long nsteps = X.length;
 
 		final ImgFactory< UnsignedByteType > imgFactory = new ArrayImgFactory<>( new UnsignedByteType() );
 		final Img< UnsignedByteType > image = imgFactory.create( 50, 50, 50 );
@@ -140,6 +188,7 @@ public class IterableLineTest
 		}
 
 		assertEquals( totalIntensity, imageSum );
+		assertEquals( "Unexpected size.", 35, line.size());
 	}
 
 	/*
