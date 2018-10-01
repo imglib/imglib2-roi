@@ -97,7 +97,8 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 	@Override
 	public long size()
 	{
-		return nPoints;
+		// Include start and end points in the count.
+		return 1 + nPoints;
 	}
 
 	@Override
