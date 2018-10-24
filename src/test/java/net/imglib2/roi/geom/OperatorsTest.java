@@ -1230,7 +1230,7 @@ public class OperatorsTest
 		{}
 
 		@Override
-		public InvertibleRealTransform copy()
+		public TestTransform copy()
 		{
 			return null;
 		}
@@ -1326,7 +1326,7 @@ public class OperatorsTest
 		{}
 
 		@Override
-		public InvertibleRealTransform copy()
+		public TestTransformInverse copy()
 		{
 			return null;
 		}
