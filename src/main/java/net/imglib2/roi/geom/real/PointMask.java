@@ -36,7 +36,9 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} representing a single point in n-d real space.
@@ -68,5 +70,26 @@ public interface PointMask extends RealMaskRealInterval, RealLocalizable
 	default double realMax( final int d )
 	{
 		return getDoublePosition( d );
+	}
+
+	/**
+	 * Determines whether two points describe the same region.
+	 * <p>
+	 * Two points are equal iff they have the same dimensionality and position.
+	 * </p>
+	 * 
+	 * @param pointMask1
+	 *            The first point to compare.
+	 * @param pointMask2
+	 *            The second point to compare.
+	 * @return True iff the points describe the same region.
+	 */
+	public static boolean equals( final PointMask pointMask1, final PointMask pointMask2 )
+	{
+		if ( pointMask1 == null && pointMask2 == null )
+			return true;
+		if ( pointMask1 == null || pointMask2 == null || !Masks.sameTypesAndDimensions( pointMask1, pointMask2 ) )
+			return false;
+		return Util.locationsEqual( pointMask1, pointMask2 );
 	}
 }

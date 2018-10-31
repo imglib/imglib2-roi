@@ -42,7 +42,6 @@ import net.imglib2.RealLocalizable;
 import net.imglib2.RealPointSampleList;
 import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.MaskPredicate;
-import net.imglib2.roi.geom.real.Box;
 import net.imglib2.roi.geom.real.ClosedWritableBox;
 import net.imglib2.roi.geom.real.ClosedWritableEllipsoid;
 import net.imglib2.roi.geom.real.ClosedWritablePolygon2D;

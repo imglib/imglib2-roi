@@ -35,7 +35,9 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines an n-d box, cuboid,
@@ -56,5 +58,30 @@ public interface Box extends RealMaskRealInterval
 	default Class<?> maskType()
 	{
 		return Box.class;
+	}
+
+	/**
+	 * Determines whether two boxes describe the same region.
+	 * <p>
+	 * Two boxes are equal iff they have the same dimensionality, boundary type,
+	 * lengths and position.
+	 * </p>
+	 * 
+	 * @param box1
+	 *            The first box to compare.
+	 * @param box2
+	 *            The second box to compare.
+	 * @return True iff the boxes describe the same region.
+	 */
+	static boolean equals( final Box box1, final Box box2 )
+	{
+		if ( box1 == null && box2 == null )
+			return true;
+		if ( box1 == null || box2 == null || !Masks.sameTypesAndDimensions( box1, box2 ) )
+			return false;
+		for ( int d = 0; d < box1.numDimensions(); d++ )
+			if ( box1.sideLength( d ) != box2.sideLength( d ) )
+				return false;
+		return Util.locationsEqual( box1.center(), box2.center() );
 	}
 }

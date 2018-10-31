@@ -36,7 +36,9 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines a line defined in n-d space.
@@ -62,5 +64,26 @@ public interface Line extends RealMaskRealInterval
 	default BoundaryType boundaryType()
 	{
 		return BoundaryType.CLOSED;
+	}
+
+	/**
+	 * Determines whether two lines describe the same region.
+	 * <p>
+	 * Two lines are equal iff they have the same dimensionality and endpoints.
+	 * </p>
+	 * 
+	 * @param line1
+	 *            The first line to compare.
+	 * @param line2
+	 *            The second line to compare.
+	 * @return True iff the lines describe the same region.
+	 */
+	public static boolean equals( final Line line1, final Line line2 )
+	{
+		if ( line1 == null && line2 == null )
+			return true;
+		return line1 != null && line2 != null && Masks.sameTypesAndDimensions( line1, line2 ) && //
+				Util.locationsEqual( line1.endpointOne(), line2.endpointOne() ) && //
+				Util.locationsEqual( line1.endpointTwo(), line2.endpointTwo() );
 	}
 }

@@ -35,7 +35,9 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines an n-d superellipsoid.
@@ -60,5 +62,31 @@ public interface SuperEllipsoid extends RealMaskRealInterval
 	default Class<?> maskType()
 	{
 		return SuperEllipsoid.class;
+	}
+
+	/**
+	 * Determines whether two superellipsoid describe the same region.
+	 * <p>
+	 * Two superellipsoids are equal iff they have the same dimensionality,
+	 * boundary type, exponent, semi-axis lengths and positions.
+	 * </p>
+	 * 
+	 * @param ellipsoid1
+	 *            The first superellipsoid to compare.
+	 * @param ellipsoid2
+	 *            The second superellipsoid to compare.
+	 * @return True iff the superellipsoids describe the same region.
+	 */
+	static boolean equals( final SuperEllipsoid ellipsoid1, final SuperEllipsoid ellipsoid2 )
+	{
+		if ( ellipsoid1 == null && ellipsoid2 == null )
+			return true;
+		if ( ellipsoid1 == null || ellipsoid2 == null || !Masks.sameTypesAndDimensions( ellipsoid1, ellipsoid2 ) || //
+				ellipsoid1.exponent() != ellipsoid2.exponent() )
+			return false;
+		for ( int d = 0; d < ellipsoid1.numDimensions(); d++ )
+			if ( ellipsoid1.semiAxisLength( d ) != ellipsoid2.semiAxisLength( d ) )
+				return false;
+		return Util.locationsEqual( ellipsoid1.center(), ellipsoid2.center() );
 	}
 }
