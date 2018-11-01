@@ -35,6 +35,7 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.util.Util;
@@ -63,6 +64,19 @@ public interface SuperEllipsoid extends RealMaskRealInterval
 	{
 		return SuperEllipsoid.class;
 	}
+
+	/**
+	 * Determines whether this superellipsoid describes the same region as
+	 * another one.
+	 * 
+	 * @param obj
+	 *            The superellipsoid to compare with this one.
+	 * @return True iff the superellipsoids describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(SuperEllipsoid, SuperEllipsoid)
+	 */
+	@Override
+	boolean equals( Object obj );
 
 	/**
 	 * Determines whether two superellipsoid describe the same region.

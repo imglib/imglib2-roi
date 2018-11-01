@@ -35,6 +35,7 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.util.Util;
@@ -59,6 +60,18 @@ public interface Box extends RealMaskRealInterval
 	{
 		return Box.class;
 	}
+
+	/**
+	 * Determines whether this box describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The box to compare with this one.
+	 * @return True iff the boxes describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(Box, Box)
+	 */
+	@Override
+	boolean equals( Object obj );
 
 	/**
 	 * Determines whether two boxes describe the same region.

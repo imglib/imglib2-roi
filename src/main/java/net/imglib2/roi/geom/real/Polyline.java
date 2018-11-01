@@ -35,6 +35,7 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
@@ -56,4 +57,16 @@ public interface Polyline extends Polyshape
 	{
 		return BoundaryType.CLOSED;
 	}
+
+	/**
+	 * Determines whether this polyline describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The polyline to compare with this one.
+	 * @return True iff the polylines describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see Polyshape#equals(Polyshape, Polyshape)
+	 */
+	@Override
+	boolean equals( Object obj );
 }

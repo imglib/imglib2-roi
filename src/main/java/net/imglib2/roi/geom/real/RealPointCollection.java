@@ -36,6 +36,7 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -64,6 +65,19 @@ public interface RealPointCollection< L extends RealLocalizable > extends RealMa
 	{
 		return BoundaryType.CLOSED;
 	}
+
+	/**
+	 * Determines whether this point collection describes the same region as
+	 * another one.
+	 * 
+	 * @param obj
+	 *            The point collection to compare with this one.
+	 * @return True iff the point collections describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(RealPointCollection, RealPointCollection)
+	 */
+	@Override
+	boolean equals( Object obj );
 
 	/**
 	 * Determines whether two point collections describe the same region.

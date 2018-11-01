@@ -36,6 +36,7 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
 import net.imglib2.util.Util;
@@ -65,6 +66,18 @@ public interface Line extends RealMaskRealInterval
 	{
 		return BoundaryType.CLOSED;
 	}
+
+	/**
+	 * Determines whether this line describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The line to compare with this one.
+	 * @return True iff the lines describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(Line, Line)
+	 */
+	@Override
+	boolean equals( Object obj );
 
 	/**
 	 * Determines whether two lines describe the same region.

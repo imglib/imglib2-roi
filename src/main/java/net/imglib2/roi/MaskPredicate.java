@@ -97,6 +97,24 @@ public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 		return knownConstant() == ALL_TRUE;
 	}
 
+	/**
+	 * Determines whether two masks describe the same region in the same way.
+	 * Each {@link #maskType() kind} of mask has its own semantics:
+	 * <ul>
+	 * <li>Two masks of the same kind describe the same region when they have
+	 * the same attributes; for example, two
+	 * {@link net.imglib2.roi.geom.real.Polygon2D polygon} objects are equal if
+	 * they have the same vertices in the same order at the same locations.</li>
+	 * <li>Two masks of different kinds are never considered to be describing
+	 * the same region. For example, a {@link net.imglib2.roi.geom.real.Box box}
+	 * is not considered "equal" to a {@link net.imglib2.roi.geom.real.Polygon2D
+	 * polygon} even if the polygon's vertices are the four corners of the box,
+	 * and the two masks have the same boundary type.</li>
+	 * </ul>
+	 */
+	@Override
+	boolean equals( Object obj );
+
 	@Override
 	public MaskPredicate< T > and( Predicate< ? super T > other );
 
