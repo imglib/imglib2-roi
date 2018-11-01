@@ -135,7 +135,7 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	}
 
 	@Override
-	public Iterable< L > points()
+	public IterableRealInterval< L > points()
 	{
 		return interval;
 	}
