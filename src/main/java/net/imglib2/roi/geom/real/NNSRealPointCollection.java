@@ -141,6 +141,12 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	}
 
 	@Override
+	public long size()
+	{
+		return interval.size();
+	}
+
+	@Override
 	public boolean equals( final Object obj )
 	{
 		if ( !( obj instanceof RealPointCollection ) )

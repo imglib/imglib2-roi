@@ -108,6 +108,12 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	}
 
 	@Override
+	public long size()
+	{
+		return points.size();
+	}
+
+	@Override
 	public void addPoint( final L point )
 	{
 		if ( point.numDimensions() != n )

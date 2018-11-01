@@ -48,6 +48,9 @@ public interface RealPointCollection< L extends RealLocalizable > extends RealMa
 	/** Returns the points in the collection. */
 	Iterable< L > points();
 
+	/** Returns the number of points in the collection. */
+	long size();
+
 	@Override
 	default BoundaryType boundaryType()
 	{
