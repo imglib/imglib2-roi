@@ -36,7 +36,6 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.IterableRealInterval;
-import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 import net.imglib2.neighborsearch.NearestNeighborSearch;
@@ -149,21 +148,7 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof RealPointCollection ) )
-			return false;
-
-		final RealPointCollection< ? extends RealLocalizable > rpc = ( RealPointCollection< ? > ) obj;
-		if ( rpc.numDimensions() != n || boundaryType() != rpc.boundaryType() )
-			return false;
-
-		final RealCursor< L > c = interval.cursor();
-		for ( final RealLocalizable l : rpc.points() )
-		{
-			if ( !c.hasNext() || !test( l ) )
-				return false;
-			c.next();
-		}
-		return !c.hasNext();
+		return obj instanceof RealPointCollection && RealPointCollection.equals( this, ( RealPointCollection< ? > ) obj );
 	}
 
 	@Override

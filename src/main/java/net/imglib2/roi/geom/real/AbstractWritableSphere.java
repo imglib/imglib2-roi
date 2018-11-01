@@ -130,19 +130,7 @@ public abstract class AbstractWritableSphere extends AbstractEuclideanSpace impl
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof SuperEllipsoid ) )
-			return false;
-
-		final SuperEllipsoid se = ( SuperEllipsoid ) obj;
-		if ( se.numDimensions() != n || 2 != se.exponent() || boundaryType() != se.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < n; i++ )
-		{
-			if ( center[ i ] != se.center().getDoublePosition( i ) || radius != se.semiAxisLength( i ) )
-				return false;
-		}
-		return true;
+		return obj instanceof SuperEllipsoid && SuperEllipsoid.equals( this, ( SuperEllipsoid ) obj );
 	}
 
 	@Override

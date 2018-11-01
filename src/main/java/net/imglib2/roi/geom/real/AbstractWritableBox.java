@@ -95,19 +95,7 @@ public abstract class AbstractWritableBox extends AbstractRealInterval implement
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Box ) )
-			return false;
-
-		final Box b = ( Box ) obj;
-		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < n; i++ )
-		{
-			if ( min[ i ] != b.realMin( i ) || max[ i ] != b.realMax( i ) )
-				return false;
-		}
-		return true;
+		return obj instanceof Box && Box.equals( this, ( Box ) obj );
 	}
 
 	@Override

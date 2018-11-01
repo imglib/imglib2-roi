@@ -81,14 +81,7 @@ public class DefaultWritablePointMask extends RealPoint implements WritablePoint
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof PointMask ) )
-			return false;
-
-		final PointMask pm = ( PointMask ) obj;
-		if ( pm.numDimensions() != n || pm.boundaryType() != boundaryType() )
-			return false;
-
-		return test( pm );
+		return obj instanceof PointMask && PointMask.equals( this, (PointMask) obj );
 	}
 
 	@Override

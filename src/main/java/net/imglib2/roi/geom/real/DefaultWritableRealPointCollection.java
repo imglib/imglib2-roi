@@ -153,23 +153,7 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof RealPointCollection ) )
-			return false;
-
-		final RealPointCollection< ? extends RealLocalizable > rpc = ( RealPointCollection< ? > ) obj;
-		if ( n != rpc.numDimensions() || boundaryType() != rpc.boundaryType() )
-			return false;
-
-		int count = 0;
-		for ( final RealLocalizable l : rpc.points() )
-		{
-			final double[] t = new double[ l.numDimensions() ];
-			l.localize( t );
-			if ( points.get( new TDoubleArrayList( t ) ) == null )
-				return false;
-			count++;
-		}
-		return count == points.size();
+		return obj instanceof RealPointCollection && RealPointCollection.equals( this, ( RealPointCollection< ? > ) obj );
 	}
 
 	@Override

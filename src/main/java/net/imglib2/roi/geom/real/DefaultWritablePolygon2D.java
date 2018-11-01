@@ -180,20 +180,7 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Polygon2D ) )
-			return false;
-
-		final Polygon2D p = ( Polygon2D ) obj;
-		if ( numVertices() != p.numVertices() || boundaryType() != p.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			if ( x.get( i ) != p.vertex( i ).getDoublePosition( 0 ) || y.get( i ) != p.vertex( i ).getDoublePosition( 1 ) )
-				return false;
-		}
-
-		return true;
+		return obj instanceof Polygon2D && Polyshape.equals( this, ( Polygon2D ) obj );
 	}
 
 	@Override

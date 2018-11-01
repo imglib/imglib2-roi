@@ -139,19 +139,7 @@ public class DefaultWritableLine extends AbstractRealInterval implements Writabl
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Line ) )
-			return false;
-
-		final Line l = ( Line ) obj;
-		if ( l.numDimensions() != n || boundaryType() != l.boundaryType() )
-			return false;
-
-		for ( int d = 0; d < n; d++ )
-		{
-			if ( pointOne[ d ] != l.endpointOne().getDoublePosition( d ) || pointTwo[ d ] != l.endpointTwo().getDoublePosition( d ) )
-				return false;
-		}
-		return true;
+		return obj instanceof Line && Line.equals( this, ( Line ) obj );
 	}
 
 	@Override
