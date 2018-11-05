@@ -37,7 +37,8 @@ package net.imglib2.roi.geom.real;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * A {@link RealMaskRealInterval} which defines an n-d ellipsoid.
+ * A {@link RealMaskRealInterval} which defines an n-d ellipsoid. An ellipsoid
+ * is a special case of {@link SuperEllipsoid} with an exponent of 2.
  *
  * @author Alison Walter
  */
