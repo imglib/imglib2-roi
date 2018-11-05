@@ -37,6 +37,7 @@ package net.imglib2.roi.geom.real;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.roi.Mask;
+import net.imglib2.util.Util;
 
 /**
  * A {@link WritablePointMask} specified by the given location.
@@ -74,12 +75,7 @@ public class DefaultWritablePointMask extends RealPoint implements WritablePoint
 	@Override
 	public boolean test( final RealLocalizable l )
 	{
-		for ( int d = 0; d < n; d++ )
-		{
-			if ( l.getDoublePosition( d ) != position[ d ] )
-				return false;
-		}
-		return true;
+		return Util.locationsEqual( this, l );
 	}
 
 	@Override
