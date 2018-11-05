@@ -42,6 +42,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} which defines a collection of real space points in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface RealPointCollection< L extends RealLocalizable > extends RealMaskRealInterval
 {
@@ -50,6 +51,12 @@ public interface RealPointCollection< L extends RealLocalizable > extends RealMa
 
 	/** Returns the number of points in the collection. */
 	long size();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return RealPointCollection.class;
+	}
 
 	@Override
 	default BoundaryType boundaryType()

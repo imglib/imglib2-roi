@@ -42,6 +42,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  * hyperrectangle, etc.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Box extends RealMaskRealInterval
 {
@@ -50,4 +51,10 @@ public interface Box extends RealMaskRealInterval
 
 	/** Returns the center of the Box. */
 	RealLocalizable center();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return Box.class;
+	}
 }

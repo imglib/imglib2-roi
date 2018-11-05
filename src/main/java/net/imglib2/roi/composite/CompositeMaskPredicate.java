@@ -60,4 +60,10 @@ public interface CompositeMaskPredicate< T > extends MaskPredicate< T >
 	 * Returns the list of operands, which were used to compute this Mask.
 	 */
 	List< Predicate< ? > > operands();
+
+	@Override
+	default Class< ? > maskType()
+	{
+		return CompositeMaskPredicate.class;
+	}
 }

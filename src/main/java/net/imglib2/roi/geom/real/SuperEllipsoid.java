@@ -41,6 +41,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} which defines an n-d superellipsoid.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface SuperEllipsoid extends RealMaskRealInterval
 {
@@ -54,4 +55,10 @@ public interface SuperEllipsoid extends RealMaskRealInterval
 
 	/** Returns the center of the superellipsoid */
 	RealLocalizable center();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return SuperEllipsoid.class;
+	}
 }

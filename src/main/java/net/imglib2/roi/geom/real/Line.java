@@ -42,6 +42,7 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} which defines a line defined in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Line extends RealMaskRealInterval
 {
@@ -50,6 +51,12 @@ public interface Line extends RealMaskRealInterval
 
 	/** Returns the second endpoint. */
 	RealLocalizable endpointTwo();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return Line.class;
+	}
 
 	@Override
 	default BoundaryType boundaryType()

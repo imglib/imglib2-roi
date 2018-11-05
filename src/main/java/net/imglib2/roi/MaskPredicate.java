@@ -58,6 +58,16 @@ import net.imglib2.EuclideanSpace;
 public interface MaskPredicate< T > extends Predicate< T >, EuclideanSpace
 {
 
+	/**
+	 * Returns the type of the mask. Each type of mask has distinct behavior
+	 * regarding characteristics like {@link #equals(Object) equality} and
+	 * {@link Object#hashCode() hashing}.
+	 */
+	default Class< ? > maskType()
+	{
+		return getClass();
+	}
+
 	/** Returns the boundary behavior of this Mask. */
 	default BoundaryType boundaryType()
 	{

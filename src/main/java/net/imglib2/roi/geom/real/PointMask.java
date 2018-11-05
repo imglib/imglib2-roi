@@ -42,9 +42,16 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} representing a single point in n-d real space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface PointMask extends RealMaskRealInterval, RealLocalizable
 {
+	@Override
+	default Class<?> maskType()
+	{
+		return PointMask.class;
+	}
+
 	@Override
 	default BoundaryType boundaryType()
 	{

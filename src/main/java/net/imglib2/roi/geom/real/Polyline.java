@@ -41,9 +41,16 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} which defines a polyline in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Polyline extends Polyshape
 {
+	@Override
+	default Class<?> maskType()
+	{
+		return Polyline.class;
+	}
+
 	@Override
 	default BoundaryType boundaryType()
 	{

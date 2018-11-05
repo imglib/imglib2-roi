@@ -40,9 +40,16 @@ import net.imglib2.roi.RealMaskRealInterval;
  * A {@link RealMaskRealInterval} which defines a real space 2D polygon.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Polygon2D extends Polyshape
 {
+	@Override
+	default Class<?> maskType()
+	{
+		return Polygon2D.class;
+	}
+
 	@Override
 	default int numDimensions()
 	{
