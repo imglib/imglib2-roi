@@ -38,18 +38,27 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.BooleanType;
 
 /**
- * Iteration of only the true pixels of a region (instead of all pixels in
- * bounding box).
- *
+ * A region that allows to iterate only the pixels contained in the region
+ * (instead of all pixels in bounding box).
  * <p>
- * We put interfaces {@link RandomAccessibleInterval
- * RandomAccessibleInterval&lt;BooleanType&gt;}, {@link IterableRegion
- * IterableRegion&lt;BooleanType&gt;}, {@link PositionableIterableRegion
- * PositionableIterableRegion&lt;BooleanType&gt;} into this sequence such that
+ * Specifically, a region is a {@code RandomAccessibleInterval} of some
+ * {@code BooleanType} having value {@code true} for all pixels contained in the
+ * region. The interval is a (not necessarily tight) bounding box of the region,
+ * i.e., it is assumed that all pixels outside the interval have value
+ * {@code false}.
+ * <p>
+ * Iterating only the pixels contained in the region is indicated by
+ * {@code IterableInterval<Void>}, i.e., when iterating, only the coordinates
+ * that are visited are interesting. There is no associated value.
+ * <p>
+ * We put interfaces {@code RandomAccessibleInterval<BooleanType>}, extended by
+ * {@code IterableRegion<BooleanType>}, extended by
+ * {@code PositionableIterableRegion<BooleanType>} into this sequence such that
  * the {@link Regions} methods that "add capabilities" (being iterable,
  * positionable) can have appropriate result types.
  *
  * @param <T>
+ *            some {@code BooleanType} indicating containment in region
  *
  * @author Tobias Pietzsch
  */
