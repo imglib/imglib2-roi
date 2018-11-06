@@ -63,7 +63,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 
 	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
 	{
-		return new IterableRandomAccessibleRegion< T >( interval, Regions.countTrue( interval ) );
+		return new IterableRandomAccessibleRegion<>( interval, Regions.countTrue( interval ) );
 	}
 
 	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
@@ -101,7 +101,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	@Override
 	public Cursor< Void > cursor()
 	{
-		return new RandomAccessibleRegionCursor< T >( sourceInterval, size );
+		return new RandomAccessibleRegionCursor<>( sourceInterval, size );
 	}
 
 	@Override
