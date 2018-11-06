@@ -128,6 +128,10 @@ public class Regions
 	/**
 	 * Obtains an {@link IterableRegion} whose iteration consists of only the
 	 * true pixels of a region (instead of all pixels in bounding box).
+	 * <p>
+	 * If {@code region} already is an {@code IterableRegion}, return it.
+	 * Otherwise, wrap it. This is potentially expensive, because it requires
+	 * iterating {@code region} once.
 	 *
 	 * @param <B>
 	 *     The {@link BooleanType} of the region.
@@ -145,6 +149,20 @@ public class Regions
 			return IterableRandomAccessibleRegion.create( region );
 	}
 
+	/**
+	 * Make any {@code RandomAccessibleInterval<BooleanType>} into an
+	 * {@code PositionableIterableRegion}.
+	 * <p>
+	 * If {@code region} already is a {@code PositionableIterableRegion}, return
+	 * it. Otherwise, wrap it. This is potentially expensive, because it
+	 * requires iterating {@code region} once, unless it already is an
+	 * {@code IterableRegion}.
+	 *
+	 * @param region
+	 *            the region to make iterable and positionable
+	 *
+	 * @return {@code region} as an {@code PositionableIterableRegion}
+	 */
 	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof PositionableIterableRegion )
@@ -171,14 +189,4 @@ public class Regions
 				++sum;
 		return sum;
 	}
-
-	// TODO make Positionable and Localizable: given a RandomAccessibleInterval<B>, return a PositionableIterableRegion<B>
-//	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final RandomAccessibleInterval< B > region )
-//	{
-//		return positionable( iterable( region ) );
-//	}
-//	public static < B extends BooleanType< B > > PositionableIterableRegion< B > positionable( final IterableRegion< B > region )
-//	{
-//		...
-//	}
 }
