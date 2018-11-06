@@ -57,7 +57,7 @@ import net.imglib2.EuclideanSpace;
  * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
  * current starting position in dimensions 1, ..., n.
  *
- * [dim, p1, ..., p(-dim)] modifies dimensions p1, ..., p(-dim) of the current
+ * [-dim, p1, ..., p(dim)] modifies dimensions p1, ..., p(dim) of the current
  * starting position.
  * }
  * </pre>
