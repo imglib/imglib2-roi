@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,25 +33,54 @@
  */
 package net.imglib2.roi;
 
-import net.imglib2.type.BooleanType;
+import net.imglib2.IterableInterval;
+import net.imglib2.Localizable;
+import net.imglib2.Positionable;
+import net.imglib2.roi.util.PositionableLocalizable;
+import net.imglib2.type.logic.BitType;
 
 /**
- * An {@link IterableRegion} that can be moved around.
+ * An {@link IterableInterval} that can be moved around.
  * <p>
- * We put interfaces {@code RandomAccessibleInterval<BooleanType>}, extended by
- * {@code IterableRegion<BooleanType>}, extended by
- * {@code PositionableIterableRegion<BooleanType>} into this sequence such that
- * the {@link Regions} methods that "add capabilities" (being iterable,
- * positionable) can have appropriate result types.
+ * {@code PositionableIterableInterval} is mainly intended as a return type. It
+ * is discouraged to take {@code PositionableIterableInterval} as a method
+ * parameter. {@code IterableInterval<T> & Localizable & Positionable} should be
+ * preferred where possible.
  *
  * @param <T>
- *            some {@code BooleanType} indicating containment in region
+ *            pixel type
  *
  * @author Tobias Pietzsch
  */
-public interface PositionableIterableRegion< T extends BooleanType< T > >
-	extends IterableRegion< T >, PositionableIterableInterval< Void >
+public interface PositionableIterableInterval< T > extends IterableInterval< T >, Localizable, Positionable
 {
-	@Override
-	public PositionableIterableRegion< T > copy();
+	/**
+	 * Get the {@link Positionable}, {@link Localizable} origin of this
+	 * interval.
+	 * <p>
+	 * The origin is the relative offset of the position to the minimum. For
+	 * example if a positionable (bitmask) region is made from a {@link BitType}
+	 * image with a circular pattern, then it is more natural if the region
+	 * position refers to the center of the pattern instead of the upper left
+	 * corner of the {@link BitType} image. This can be achieved by positioning
+	 * the origin.
+	 * <p>
+	 * Assume a region is created from a 9x9 bitmask. The region initially has
+	 * min=(0,0), max=(8,8), position=(0,0). Because both position and min are
+	 * (0,0), initially origin=(0,0). Now assume the origin is moved to the
+	 * center of the bitmask using
+	 * <code>origin().setPosition(new int[]{4,4})</code>. After this,
+	 * min=(-4,-4), max=(4,4), position=(0,0), and origin=(4,4).
+	 *
+	 * @return the origin to which the interval is relative.
+	 */
+	public PositionableLocalizable origin();
+
+	/**
+	 * Make a copy of this {@link PositionableIterableInterval} which can be
+	 * positioned independently.
+	 *
+	 * @return a copy with an independent position
+	 */
+	public PositionableIterableInterval< T > copy();
 }
