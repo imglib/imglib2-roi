@@ -56,6 +56,7 @@ import net.imglib2.type.BooleanType;
  *
  * @author Tobias Pietzsch
  */
+@Deprecated
 public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
 {

@@ -60,6 +60,7 @@ import net.imglib2.type.logic.BitType;
  * @author Alison Walter
  * @author Tobias Pietzsch
  */
+@Deprecated
 public class IterableRandomAccessibleRegionBenchmarkTest
 {
 
