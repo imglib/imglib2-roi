@@ -31,13 +31,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.util;
 
 import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

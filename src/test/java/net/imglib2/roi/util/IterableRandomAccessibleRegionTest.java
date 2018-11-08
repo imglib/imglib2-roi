@@ -32,7 +32,7 @@
  * #L%
  */
 
-package net.imglib2.roi;
+package net.imglib2.roi.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +45,8 @@ import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import net.imglib2.roi.util.IterableRandomAccessibleRegion;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.util.ConstantUtils;
