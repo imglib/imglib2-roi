@@ -35,6 +35,7 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
@@ -72,6 +73,26 @@ public interface Box extends RealMaskRealInterval
 	 */
 	@Override
 	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a box. The hash code value is based on the
+	 * position, lengths and boundary type.
+	 * 
+	 * @param box
+	 *            The box for which to compute the hash code.
+	 * @return Hash code of the box.
+	 */
+	static int hashCode( final Box box )
+	{
+		int result = 17;
+		for ( int d = 0; d < box.numDimensions(); d++ )
+			result += 31 * box.realMin( d ) + 31 * box.realMax( d );
+		if ( box.boundaryType() == BoundaryType.CLOSED )
+			result += 5;
+		else if ( box.boundaryType() == BoundaryType.OPEN )
+			result += 8;
+		return result;
+	}
 
 	/**
 	 * Determines whether two boxes describe the same region.

@@ -80,6 +80,23 @@ public interface RealPointCollection< L extends RealLocalizable > extends RealMa
 	boolean equals( Object obj );
 
 	/**
+	 * Computes a hash code for a point collection. The hash code value is based
+	 * on the point positions.
+	 * 
+	 * @param points
+	 *            The point collection for which to compute the hash code.
+	 * @return Hash code of the point collection.
+	 */
+	static int hashCode( final RealPointCollection< ? > points )
+	{
+		int result = 71;
+		for ( RealLocalizable l : points.points() )
+			for ( int d = 0; d < l.numDimensions(); d++ )
+				result += 3 * l.getDoublePosition( d );
+		return result;
+	}
+
+	/**
 	 * Determines whether two point collections describe the same region.
 	 * <p>
 	 * Two point collections are equal iff they have the same dimensionality and

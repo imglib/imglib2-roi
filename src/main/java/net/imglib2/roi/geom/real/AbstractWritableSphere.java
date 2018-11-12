@@ -35,7 +35,6 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
 
@@ -136,20 +135,7 @@ public abstract class AbstractWritableSphere extends AbstractEuclideanSpace impl
 	@Override
 	public int hashCode()
 	{
-		int result = 22;
-		for ( int i = 0; i < n; i++ )
-			result += 13 * center[ i ] + 13 * radius;
-
-		result += 2; // for exponent
-
-		if ( BoundaryType.CLOSED == boundaryType() )
-			result += 5;
-		else if ( BoundaryType.OPEN == boundaryType() )
-			result += 8;
-		else
-			result += 0;
-
-		return result;
+		return SuperEllipsoid.hashCode( this );
 	}
 
 	// -- Helper methods --

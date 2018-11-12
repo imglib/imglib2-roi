@@ -80,6 +80,22 @@ public interface Line extends RealMaskRealInterval
 	boolean equals( Object obj );
 
 	/**
+	 * Computes a hash code for a line. The hash code value is based on the
+	 * endpoint positions.
+	 * 
+	 * @param line
+	 *            The line for which to compute the hash code.
+	 * @return Hash code of the line.
+	 */
+	static int hashCode( final Line line )
+	{
+		int result = 119;
+		for ( int i = 0; i < line.numDimensions(); i++ )
+			result += 53 * line.endpointOne().getDoublePosition( i ) + 91 * line.endpointTwo().getDoublePosition( i );
+		return result + 5;
+	}
+
+	/**
 	 * Determines whether two lines describe the same region.
 	 * <p>
 	 * Two lines are equal iff they have the same dimensionality and endpoints.

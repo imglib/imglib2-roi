@@ -154,10 +154,6 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	@Override
 	public int hashCode()
 	{
-		int result = 71;
-		for ( RealLocalizable l : interval )
-			for ( int d = 0; d < l.numDimensions(); d++ )
-				result += 3 * l.getDoublePosition( d );
-		return result;
+		return RealPointCollection.hashCode( this );
 	}
 }

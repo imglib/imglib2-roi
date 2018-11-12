@@ -159,11 +159,7 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	@Override
 	public int hashCode()
 	{
-		int result = 71;
-		for ( final L l : points.values() )
-			for ( int d = 0; d < l.numDimensions(); d++ )
-				result += 3 * l.getDoublePosition( d );
-		return result;
+		return RealPointCollection.hashCode( this );
 	}
 
 	// -- Helper methods --

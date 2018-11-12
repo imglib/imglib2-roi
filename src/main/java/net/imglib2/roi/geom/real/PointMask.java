@@ -86,6 +86,22 @@ public interface PointMask extends RealMaskRealInterval, RealLocalizable
 	boolean equals( Object obj );
 
 	/**
+	 * Computes a hash code for a point. The hash code value is based on the
+	 * position.
+	 * 
+	 * @param point
+	 *            The point for which to compute the hash code.
+	 * @return Hash code of the point.
+	 */
+	static int hashCode( final PointMask point )
+	{
+		int result = 301;
+		for ( int i = 0; i < point.numDimensions(); i++ )
+			result += 43 * point.getDoublePosition( i );
+		return result;
+	}
+
+	/**
 	 * Determines whether two points describe the same region.
 	 * <p>
 	 * Two points are equal iff they have the same dimensionality and position.

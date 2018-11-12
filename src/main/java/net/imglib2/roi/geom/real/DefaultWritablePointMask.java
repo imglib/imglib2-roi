@@ -87,9 +87,6 @@ public class DefaultWritablePointMask extends RealPoint implements WritablePoint
 	@Override
 	public int hashCode()
 	{
-		int result = 301;
-		for ( int i = 0; i < n; i++ )
-			result += 43 * position[ i ];
-		return result;
+		return PointMask.hashCode( this );
 	}
 }

@@ -39,7 +39,6 @@ import java.util.List;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -186,22 +185,7 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	@Override
 	public int hashCode()
 	{
-		int result = 203;
-		int t = 5;
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			result += ( x.get( i ) * x.get( i ) ) + ( y.get( i ) * t );
-			t += 7;
-		}
-
-		if ( BoundaryType.CLOSED == boundaryType() )
-			result += 21;
-		else if ( BoundaryType.OPEN == boundaryType() )
-			result += 61;
-		else
-			result += 3;
-
-		return result;
+		return Polygon2D.hashCode( this );
 	}
 
 	// -- Helper methods --

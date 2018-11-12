@@ -34,6 +34,8 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.RealMaskRealInterval;
 
@@ -68,4 +70,31 @@ public interface Polygon2D extends Polyshape
 	 */
 	@Override
 	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a polygon. The hash code value is based on the
+	 * vertex positions and boundary type.
+	 * 
+	 * @param polygon
+	 *            The polygon for which to compute the hash code.
+	 * @return Hash code of the polygon.
+	 */
+	static int hashCode( final Polygon2D polygon )
+	{
+		int result = 203;
+		int t = 5;
+		for (final RealLocalizable v : polygon.vertices()) {
+			final double x = v.getDoublePosition( 0 );
+			final double y = v.getDoublePosition( 1 );
+			result += ( x * x ) + ( y * t );
+			t += 7;
+		}
+		if ( polygon.boundaryType() == BoundaryType.CLOSED )
+			result += 21;
+		else if ( polygon.boundaryType() == BoundaryType.OPEN )
+			result += 61;
+		else
+			result += 3;
+		return result;
+	}
 }

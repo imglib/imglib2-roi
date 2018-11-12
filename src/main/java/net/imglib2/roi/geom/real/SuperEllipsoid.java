@@ -35,6 +35,7 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
@@ -77,6 +78,28 @@ public interface SuperEllipsoid extends RealMaskRealInterval
 	 */
 	@Override
 	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a superellipsoid. The hash code value is based
+	 * on the superellipsoid's position, semi-axis lengths, exponent and
+	 * boundary type.
+	 * 
+	 * @param ellipsoid
+	 *            The superellipsoid for which to compute the hash code.
+	 * @return Hash code of the superellipsoid.
+	 */
+	static int hashCode( final SuperEllipsoid ellipsoid )
+	{
+		int result = 22;
+		for ( int i = 0; i < ellipsoid.numDimensions(); i++ )
+			result += 13 * ellipsoid.center().getDoublePosition( i ) + 13 * ellipsoid.semiAxisLength( i );
+		result += ellipsoid.exponent();
+		if ( ellipsoid.boundaryType() == BoundaryType.CLOSED )
+			result += 5;
+		else if ( ellipsoid.boundaryType() == BoundaryType.OPEN )
+			result += 8;
+		return result;
+	}
 
 	/**
 	 * Determines whether two superellipsoid describe the same region.
