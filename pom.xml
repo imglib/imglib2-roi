@@ -63,9 +63,6 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
 		<releaseProfiles>deploy-to-imagej</releaseProfiles>
-
-		<imglib2.version>5.5.0</imglib2.version>
-		<trove4j.version>3.0.3</trove4j.version>
 	</properties>
 
 	<developers>
