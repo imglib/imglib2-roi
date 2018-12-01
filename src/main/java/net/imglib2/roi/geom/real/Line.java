@@ -36,12 +36,16 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines a line defined in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Line extends RealMaskRealInterval
 {
@@ -52,8 +56,63 @@ public interface Line extends RealMaskRealInterval
 	RealLocalizable endpointTwo();
 
 	@Override
+	default Class<?> maskType()
+	{
+		return Line.class;
+	}
+
+	@Override
 	default BoundaryType boundaryType()
 	{
 		return BoundaryType.CLOSED;
+	}
+
+	/**
+	 * Determines whether this line describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The line to compare with this one.
+	 * @return True iff the lines describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(Line, Line)
+	 */
+	@Override
+	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a line. The hash code value is based on the
+	 * endpoint positions.
+	 * 
+	 * @param line
+	 *            The line for which to compute the hash code.
+	 * @return Hash code of the line.
+	 */
+	static int hashCode( final Line line )
+	{
+		int result = 119;
+		for ( int i = 0; i < line.numDimensions(); i++ )
+			result += 53 * line.endpointOne().getDoublePosition( i ) + 91 * line.endpointTwo().getDoublePosition( i );
+		return result + 5;
+	}
+
+	/**
+	 * Determines whether two lines describe the same region.
+	 * <p>
+	 * Two lines are equal iff they have the same dimensionality and endpoints.
+	 * </p>
+	 * 
+	 * @param line1
+	 *            The first line to compare.
+	 * @param line2
+	 *            The second line to compare.
+	 * @return True iff the lines describe the same region.
+	 */
+	public static boolean equals( final Line line1, final Line line2 )
+	{
+		if ( line1 == null && line2 == null )
+			return true;
+		return line1 != null && line2 != null && Masks.sameTypesAndDimensions( line1, line2 ) && //
+				Util.locationsEqual( line1.endpointOne(), line2.endpointOne() ) && //
+				Util.locationsEqual( line1.endpointTwo(), line2.endpointTwo() );
 	}
 }

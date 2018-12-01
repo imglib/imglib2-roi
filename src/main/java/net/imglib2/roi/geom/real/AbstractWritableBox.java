@@ -35,7 +35,6 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractRealInterval;
-import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.RealMask;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -95,34 +94,13 @@ public abstract class AbstractWritableBox extends AbstractRealInterval implement
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Box ) )
-			return false;
-
-		final Box b = ( Box ) obj;
-		if ( b.numDimensions() != n || boundaryType() != b.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < n; i++ )
-		{
-			if ( min[ i ] != b.realMin( i ) || max[ i ] != b.realMax( i ) )
-				return false;
-		}
-		return true;
+		return obj instanceof Box && Box.equals( this, ( Box ) obj );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = 17;
-		for ( int i = 0; i < n; i++ )
-			result += 31 * min[ i ] + 31 * max[ i ];
-		if ( BoundaryType.CLOSED == boundaryType() )
-			result += 5;
-		else if ( BoundaryType.OPEN == boundaryType() )
-			result += 8;
-		else
-			result += 0;
-		return result;
+		return Box.hashCode( this );
 	}
 
 	// -- Helper classes --

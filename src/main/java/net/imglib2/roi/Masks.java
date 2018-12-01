@@ -62,7 +62,7 @@ import net.imglib2.type.BooleanType;
 import net.imglib2.type.logic.BoolType;
 
 /**
- * Utility class for working with {@link Mask}s.
+ * Utility class for working with {@link Mask}s and {@link RealMask}s.
  *
  * @author Curtis Rueden
  * @author Alison Walter
@@ -421,5 +421,22 @@ public class Masks
 	public static RealMask allRealMask( final int numDims )
 	{
 		return new DefaultRealMask( numDims, BoundaryType.UNSPECIFIED, t -> true, KnownConstant.ALL_TRUE );
+	}
+
+	/**
+	 * Returns true iff the two masks have the same mask type, boundary type and
+	 * dimensionality.
+	 * 
+	 * @param mask1
+	 *            The first mask to compare.
+	 * @param mask2
+	 *            The second mask to compare.
+	 * @return True iff mask types and dimensionality match.
+	 */
+	public static < T, M extends MaskPredicate< T > > boolean sameTypesAndDimensions( final M mask1, final M mask2 )
+	{
+		return mask1.maskType() == mask2.maskType() && //
+				mask1.boundaryType() == mask2.boundaryType() && //
+				mask1.numDimensions() == mask2.numDimensions();
 	}
 }

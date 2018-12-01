@@ -35,6 +35,7 @@ package net.imglib2.roi.geom.real;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
@@ -45,17 +46,17 @@ import net.imglib2.util.Intervals;
 import gnu.trove.list.array.TDoubleArrayList;
 
 /**
- * {@link RealPointCollection} backed by a {@code HashMap}.
+ * {@link RealPointCollection} backed by a {@code Map}.
  *
  * @author Alison Walter
  */
 public class DefaultWritableRealPointCollection< L extends RealLocalizable > extends AbstractRealInterval implements WritableRealPointCollection< L >
 {
-	private final HashMap< TDoubleArrayList, L > points;
+	private final Map< TDoubleArrayList, L > points;
 
 	/**
 	 * Creates a point collection which includes points in the given
-	 * {@code HashMap}.
+	 * {@code Map}.
 	 *
 	 * @param points
 	 *            points to include in the collection, the first point
@@ -63,7 +64,7 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	 *            the map should be {@code TDoubleArrayList}s which correspond
 	 *            to the position of the points.
 	 */
-	public DefaultWritableRealPointCollection( final HashMap< TDoubleArrayList, L > points )
+	public DefaultWritableRealPointCollection( final Map< TDoubleArrayList, L > points )
 	{
 		super( GeomMaths.getBoundsReal( points.values() ) );
 		this.points = points;
@@ -107,6 +108,12 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	}
 
 	@Override
+	public long size()
+	{
+		return points.size();
+	}
+
+	@Override
 	public void addPoint( final L point )
 	{
 		if ( point.numDimensions() != n )
@@ -146,33 +153,13 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof RealPointCollection ) )
-			return false;
-
-		final RealPointCollection< ? extends RealLocalizable > rpc = ( RealPointCollection< ? > ) obj;
-		if ( n != rpc.numDimensions() || boundaryType() != rpc.boundaryType() )
-			return false;
-
-		int count = 0;
-		for ( final RealLocalizable l : rpc.points() )
-		{
-			final double[] t = new double[ l.numDimensions() ];
-			l.localize( t );
-			if ( points.get( new TDoubleArrayList( t ) ) == null )
-				return false;
-			count++;
-		}
-		return count == points.size();
+		return obj instanceof RealPointCollection && RealPointCollection.equals( this, ( RealPointCollection< ? > ) obj );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = 71;
-		for ( final L l : points.values() )
-			for ( int d = 0; d < l.numDimensions(); d++ )
-				result += 3 * l.getDoublePosition( d );
-		return result;
+		return RealPointCollection.hashCode( this );
 	}
 
 	// -- Helper methods --

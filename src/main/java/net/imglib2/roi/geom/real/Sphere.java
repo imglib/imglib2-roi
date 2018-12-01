@@ -37,7 +37,8 @@ package net.imglib2.roi.geom.real;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
- * A {@link RealMaskRealInterval} which defines an n-d sphere.
+ * A {@link RealMaskRealInterval} which defines an n-d sphere. A sphere is a
+ * special case of {@link Ellipsoid} with equal semi-axis lengths.
  *
  * @author Alison Walter
  */

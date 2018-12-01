@@ -34,19 +34,64 @@
 
 package net.imglib2.roi.geom.real;
 
+import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
  * A {@link RealMaskRealInterval} which defines a polyline in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Polyline extends Polyshape
 {
 	@Override
+	default Class<?> maskType()
+	{
+		return Polyline.class;
+	}
+
+	@Override
 	default BoundaryType boundaryType()
 	{
 		return BoundaryType.CLOSED;
+	}
+
+	/**
+	 * Determines whether this polyline describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The polyline to compare with this one.
+	 * @return True iff the polylines describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see Polyshape#equals(Polyshape, Polyshape)
+	 */
+	@Override
+	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a polyline. The hash code value is based on the
+	 * vertex positions.
+	 * 
+	 * @param polyline
+	 *            The polyline for which to compute the hash code.
+	 * @return Hash code of the polyline.
+	 */
+	static int hashCode( final Polyline polyline )
+	{
+		int result = 777;
+		int t = 11;
+		for (final RealLocalizable v : polyline.vertices())
+		{
+			for ( int d = 0; d < v.numDimensions(); d++ )
+			{
+				final double p = v.getDoublePosition( d );
+				result += t * ( p * p );
+			}
+			t += 3;
+		}
+		return result;
 	}
 }

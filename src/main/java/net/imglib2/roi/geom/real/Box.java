@@ -35,13 +35,18 @@
 package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines an n-d box, cuboid,
  * hyperrectangle, etc.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface Box extends RealMaskRealInterval
 {
@@ -50,4 +55,67 @@ public interface Box extends RealMaskRealInterval
 
 	/** Returns the center of the Box. */
 	RealLocalizable center();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return Box.class;
+	}
+
+	/**
+	 * Determines whether this box describes the same region as another one.
+	 * 
+	 * @param obj
+	 *            The box to compare with this one.
+	 * @return True iff the boxes describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(Box, Box)
+	 */
+	@Override
+	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a box. The hash code value is based on the
+	 * position, lengths and boundary type.
+	 * 
+	 * @param box
+	 *            The box for which to compute the hash code.
+	 * @return Hash code of the box.
+	 */
+	static int hashCode( final Box box )
+	{
+		int result = 17;
+		for ( int d = 0; d < box.numDimensions(); d++ )
+			result += 31 * box.realMin( d ) + 31 * box.realMax( d );
+		if ( box.boundaryType() == BoundaryType.CLOSED )
+			result += 5;
+		else if ( box.boundaryType() == BoundaryType.OPEN )
+			result += 8;
+		return result;
+	}
+
+	/**
+	 * Determines whether two boxes describe the same region.
+	 * <p>
+	 * Two boxes are equal iff they have the same dimensionality, boundary type,
+	 * lengths and position.
+	 * </p>
+	 * 
+	 * @param box1
+	 *            The first box to compare.
+	 * @param box2
+	 *            The second box to compare.
+	 * @return True iff the boxes describe the same region.
+	 */
+	static boolean equals( final Box box1, final Box box2 )
+	{
+		if ( box1 == null && box2 == null )
+			return true;
+		if ( box1 == null || box2 == null || !Masks.sameTypesAndDimensions( box1, box2 ) )
+			return false;
+		for ( int d = 0; d < box1.numDimensions(); d++ )
+			if ( box1.sideLength( d ) != box2.sideLength( d ) )
+				return false;
+		return Util.locationsEqual( box1.center(), box2.center() );
+	}
 }

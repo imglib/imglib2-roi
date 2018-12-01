@@ -155,38 +155,13 @@ public class DefaultWritablePolyline extends AbstractRealInterval implements Wri
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Polyline ) )
-			return false;
-
-		final Polyline p = ( Polyline ) obj;
-		if ( numVertices() != p.numVertices() || boundaryType() != p.boundaryType() || n != p.numDimensions() )
-			return false;
-
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			for ( int d = 0; d < n; d++ )
-			{
-				if ( vertices.get( i )[ d ] != p.vertex( i ).getDoublePosition( d ) )
-					return false;
-			}
-		}
-		return true;
+		return obj instanceof Polyline && Polyshape.equals( this, ( Polyline ) obj );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = 777;
-
-		int t = 11;
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			for ( int d = 0; d < n; d++ )
-				result += t * ( vertices.get( i )[ d ] * vertices.get( i )[ d ] );
-			t += 3;
-		}
-
-		return result;
+		return Polyline.hashCode( this );
 	}
 
 	// -- Helper methods --

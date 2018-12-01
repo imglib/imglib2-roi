@@ -36,7 +36,6 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.IterableRealInterval;
-import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 import net.imglib2.neighborsearch.NearestNeighborSearch;
@@ -135,38 +134,26 @@ public class NNSRealPointCollection< L extends RealLocalizable > extends Abstrac
 	}
 
 	@Override
-	public Iterable< L > points()
+	public IterableRealInterval< L > points()
 	{
 		return interval;
 	}
 
 	@Override
+	public long size()
+	{
+		return interval.size();
+	}
+
+	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof RealPointCollection ) )
-			return false;
-
-		final RealPointCollection< ? extends RealLocalizable > rpc = ( RealPointCollection< ? > ) obj;
-		if ( rpc.numDimensions() != n || boundaryType() != rpc.boundaryType() )
-			return false;
-
-		final RealCursor< L > c = interval.cursor();
-		for ( final RealLocalizable l : rpc.points() )
-		{
-			if ( !c.hasNext() || !test( l ) )
-				return false;
-			c.next();
-		}
-		return !c.hasNext();
+		return obj instanceof RealPointCollection && RealPointCollection.equals( this, ( RealPointCollection< ? > ) obj );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = 71;
-		for ( RealLocalizable l : interval )
-			for ( int d = 0; d < l.numDimensions(); d++ )
-				result += 3 * l.getDoublePosition( d );
-		return result;
+		return RealPointCollection.hashCode( this );
 	}
 }

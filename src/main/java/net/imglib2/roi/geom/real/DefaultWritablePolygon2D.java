@@ -39,7 +39,6 @@ import java.util.List;
 import net.imglib2.AbstractRealInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.roi.BoundaryType;
 import net.imglib2.roi.geom.GeomMaths;
 import net.imglib2.roi.util.AbstractRealMaskPoint;
 import net.imglib2.roi.util.RealLocalizableRealPositionable;
@@ -180,41 +179,13 @@ public class DefaultWritablePolygon2D extends AbstractRealInterval implements Wr
 	@Override
 	public boolean equals( final Object obj )
 	{
-		if ( !( obj instanceof Polygon2D ) )
-			return false;
-
-		final Polygon2D p = ( Polygon2D ) obj;
-		if ( numVertices() != p.numVertices() || boundaryType() != p.boundaryType() )
-			return false;
-
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			if ( x.get( i ) != p.vertex( i ).getDoublePosition( 0 ) || y.get( i ) != p.vertex( i ).getDoublePosition( 1 ) )
-				return false;
-		}
-
-		return true;
+		return obj instanceof Polygon2D && Polyshape.equals( this, ( Polygon2D ) obj );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = 203;
-		int t = 5;
-		for ( int i = 0; i < numVertices(); i++ )
-		{
-			result += ( x.get( i ) * x.get( i ) ) + ( y.get( i ) * t );
-			t += 7;
-		}
-
-		if ( BoundaryType.CLOSED == boundaryType() )
-			result += 21;
-		else if ( BoundaryType.OPEN == boundaryType() )
-			result += 61;
-		else
-			result += 3;
-
-		return result;
+		return Polygon2D.hashCode( this );
 	}
 
 	// -- Helper methods --

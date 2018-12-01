@@ -36,21 +36,90 @@ package net.imglib2.roi.geom.real;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.roi.BoundaryType;
+import net.imglib2.roi.MaskPredicate;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
 
 /**
  * A {@link RealMaskRealInterval} which defines a collection of real space points in n-d space.
  *
  * @author Alison Walter
+ * @author Curtis Rueden
  */
 public interface RealPointCollection< L extends RealLocalizable > extends RealMaskRealInterval
 {
 	/** Returns the points in the collection. */
 	Iterable< L > points();
 
+	/** Returns the number of points in the collection. */
+	long size();
+
+	@Override
+	default Class<?> maskType()
+	{
+		return RealPointCollection.class;
+	}
+
 	@Override
 	default BoundaryType boundaryType()
 	{
 		return BoundaryType.CLOSED;
+	}
+
+	/**
+	 * Determines whether this point collection describes the same region as
+	 * another one.
+	 * 
+	 * @param obj
+	 *            The point collection to compare with this one.
+	 * @return True iff the point collections describe the same region.
+	 * @see MaskPredicate#equals(Object)
+	 * @see #equals(RealPointCollection, RealPointCollection)
+	 */
+	@Override
+	boolean equals( Object obj );
+
+	/**
+	 * Computes a hash code for a point collection. The hash code value is based
+	 * on the point positions.
+	 * 
+	 * @param points
+	 *            The point collection for which to compute the hash code.
+	 * @return Hash code of the point collection.
+	 */
+	static int hashCode( final RealPointCollection< ? > points )
+	{
+		int result = 71;
+		for ( RealLocalizable l : points.points() )
+			for ( int d = 0; d < l.numDimensions(); d++ )
+				result += 3 * l.getDoublePosition( d );
+		return result;
+	}
+
+	/**
+	 * Determines whether two point collections describe the same region.
+	 * <p>
+	 * Two point collections are equal iff they have the same dimensionality and
+	 * vertices.
+	 * </p>
+	 * 
+	 * @param points1
+	 *            The first point collection to compare.
+	 * @param points2
+	 *            The second point collection to compare.
+	 * @return True iff the point collections describe the same region.
+	 */
+	static boolean equals( final RealPointCollection< ? > points1, final RealPointCollection< ? > points2 )
+	{
+		if ( points1 == null && points2 == null )
+			return true;
+		if ( points1 == null || points2 == null || !Masks.sameTypesAndDimensions( points1, points2 ) || points1.size() != points2.size() )
+			return false;
+		for ( final RealLocalizable p : points1.points() )
+		{
+			if ( !points2.test( p ) )
+				return false;
+		}
+		return true;
 	}
 }

@@ -36,8 +36,13 @@ package net.imglib2.roi.geom.real;
 
 import java.util.AbstractList;
 import java.util.List;
+
 import net.imglib2.RealLocalizable;
+import net.imglib2.roi.Masks;
 import net.imglib2.roi.RealMaskRealInterval;
+import net.imglib2.util.IterablePair;
+import net.imglib2.util.Pair;
+import net.imglib2.util.Util;
 
 /**
  * A {@link RealMaskRealInterval} which defines a polygonal shape in n-d space.
@@ -66,5 +71,35 @@ public interface Polyshape extends RealMaskRealInterval
 				return numVertices();
 			}
 		};
+	}
+
+	/**
+	 * Determines whether two polyshapes describe the same region.
+	 * <p>
+	 * Two polyshapes are equal iff they have the same mask type, boundary type,
+	 * dimensions and vertices.
+	 * </p>
+	 * 
+	 * @param polyshape1
+	 *            The first polyshape to compare.
+	 * @param polyshape2
+	 *            The second polyshape to compare.
+	 * @return True iff the polyshapes describe the same region.
+	 */
+	static boolean equals( final Polyshape polyshape1, final Polyshape polyshape2 )
+	{
+		if ( polyshape1 == null && polyshape2 == null )
+			return true;
+		if ( polyshape1 == null || polyshape2 == null || !Masks.sameTypesAndDimensions( polyshape1, polyshape2 ) )
+			return false;
+
+		// Ensure same vertices in same order.
+		final List< RealLocalizable > vertices1 = polyshape1.vertices();
+		final List< RealLocalizable > vertices2 = polyshape2.vertices();
+		for ( final Pair< RealLocalizable, RealLocalizable > pair : new IterablePair<>( vertices1, vertices2 ) )
+			if ( !Util.locationsEqual( pair.getA(), pair.getB() ) )
+				return false;
+
+		return true;
 	}
 }
