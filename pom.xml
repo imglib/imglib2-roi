@@ -197,5 +197,10 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<artifactId>junit-benchmarks</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>bigdataviewer-vistools</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
