@@ -201,6 +201,12 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-vistools</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>net.imglib2</groupId>
+					<artifactId>imglib2-roi</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
