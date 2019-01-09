@@ -8,7 +8,6 @@ import net.imglib2.EuclideanSpace;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.roi.sparse.SparseBitmaskNTree.Node;
-import net.imglib2.roi.sparse.Tree.BitMask;
 import net.imglib2.util.Intervals;
 
 /**

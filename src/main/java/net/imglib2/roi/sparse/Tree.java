@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import net.imglib2.Interval;
-import net.imglib2.roi.sparse.util.BitUtils;
 import net.imglib2.roi.sparse.util.DefaultInterval;
 import net.imglib2.util.Intervals;
 
@@ -40,22 +39,7 @@ public class Tree implements SparseBitmaskNTree
 	 */
 	private final int[] leafDims;
 
-	/**
-	 * Mask out tile coordinate part from a position. Because leafDims are power
-	 * of 2, {@code leafMask[ d ] = leafDims[ d ] - 1}
-	 */
-	private final int[] leafMask;
-
-	/**
-	 * Number of bits in a leaf bit-mask.
-	 */
-	private final int leafBitSize;
-
-	/**
-	 * Dimensions of a leaf bit-mask in bytes. This is the same as leafDims (the
-	 * dimensions of the bitmask), except that leafDims[0] is divided by 8.
-	 */
-	private final int[] leafByteDims;
+	private final BitMask.Specification bitmaskSpecification;
 
 	/**
 	 * The current height of the tree.
@@ -85,19 +69,10 @@ public class Tree implements SparseBitmaskNTree
 	{
 		checkLeafDims( leafDims );
 
-		n = leafDims.length;
 		this.leafDims = leafDims.clone();
+		n = leafDims.length;
 
-		leafMask = new int[ n ];
-		Arrays.setAll( leafMask, d -> leafDims[ d ] - 1 );
-
-		final long lsize = Intervals.numElements( leafDims );
-		if ( lsize > Integer.MAX_VALUE )
-			throw new IllegalArgumentException();
-		leafBitSize = ( int ) lsize;
-
-		leafByteDims = leafDims.clone();
-		leafByteDims[ 0 ] = leafByteDims[ 0 ] >> 3;
+		bitmaskSpecification = new BitMask.Specification( this.leafDims );
 
 		this.height = height;
 		numChildren = 1 << n;
@@ -263,7 +238,7 @@ public class Tree implements SparseBitmaskNTree
 		}
 
 		if ( current.data == null && current.value != value )
-			current.data = new BitMask( current.value );
+			current.data = new BitMask( bitmaskSpecification, current.value );
 
 		if ( current.data != null && current.data.set( pos, value ) )
 		{
@@ -321,158 +296,6 @@ public class Tree implements SparseBitmaskNTree
 		parent.value = value;
 		parent.children = null;
 		mergeUpwards( parent, value );
-	}
-
-	/**
-	 * Bit-mask are stored in the leafs of the tree. Each bit-mask is a
-	 * {@code leafDims}-sized boolean image backed by a {@code byte[]} array. It
-	 * also keeps track of how many bits are currently set.
-	 */
-	class BitMask
-	{
-		/**
-		 * Stores data of this mask
-		 */
-		private final byte[] bytes;
-
-		/**
-		 * Current number of true bits in this mask
-		 */
-		private int numSet;
-
-		/**
-		 * Create a new BitMask that is initially completely filled with the
-		 * given value.
-		 *
-		 * @param initialValue
-		 */
-		BitMask( final boolean initialValue )
-		{
-			bytes = new byte[ leafBitSize >> 3 ];
-			if ( initialValue )
-			{
-				Arrays.fill( bytes, ( byte ) 255 );
-				numSet = leafBitSize;
-			}
-			else
-			{
-				numSet = 0;
-			}
-		}
-
-		/**
-		 * @param globalpos
-		 *            global position of the bit to set
-		 * @param value
-		 *            value to set the bit to
-		 * @return {@code true} iff the mask was completely filled or emptied by
-		 *         this operation
-		 */
-		boolean set( final long[] globalpos, final boolean value )
-		{
-			final int i = byteIndex( globalpos );
-			final int mask = 1 << ( globalpos[ 0 ] & leafMask[ 0 ] & 0x07 );
-
-			final byte b = bytes[ i ];
-			if ( value )
-			{
-				final byte bm = ( byte ) ( b | mask );
-				if ( bm != b ) // changing bit from 0 to 1
-				{
-					bytes[ i ] = bm;
-					if ( ++numSet == leafBitSize )
-						return true;
-				}
-			}
-			else
-			{
-				final byte bm = ( byte ) ( b & ~mask );
-				if ( bm != b ) // changing bit from 1 to 0
-				{
-					bytes[ i ] = bm;
-					if ( --numSet == 0 )
-						return true;
-				}
-			}
-
-			return false;
-		}
-
-		boolean get( final long[] globalpos )
-		{
-			final byte b = bytes[ byteIndex( globalpos ) ];
-			final int mask = 1 << ( globalpos[ 0 ] & leafMask[ 0 ] & 0x07 );
-			return ( b & mask ) != 0;
-		}
-
-		private int byteIndex( final long[] globalpos )
-		{
-			int i = 0;
-			for ( int d = n - 1; d > 0; --d )
-				i = ( i + ( int ) ( globalpos[ d ] & leafMask[ d ] ) ) * leafByteDims[ d - 1 ];
-			return i + ( ( ( int ) ( globalpos[ 0 ] & leafMask[ 0 ] ) ) >> 3 );
-		}
-
-		int numSet()
-		{
-			return numSet;
-		}
-
-		/**
-		 * Recompute the bounding box of true mask pixels. The result is stored
-		 * in {@code bbmin}, {@code bbmax}
-		 *
-		 * @param bbmin
-		 *            bounding box min is stored here
-		 * @param bbmax
-		 *            bounding box min is stored here
-		 * @param tmp
-		 *            temporary variable for storing positions while scanning
-		 *            the mask.
-		 */
-		void computeBoundingBox( final int[] bbmin, final int[] bbmax, final int[] tmp )
-		{
-			Arrays.fill( bbmin, Integer.MAX_VALUE );
-			Arrays.fill( bbmax, Integer.MIN_VALUE );
-			if ( numSet == 0 )
-				return;
-
-			Arrays.fill( tmp, 0 );
-			for ( int i = 0; i < bytes.length; ++i )
-			{
-				if ( bytes[ i ] != 0 )
-				{
-					for ( int d = 0; d < n; ++d )
-					{
-						bbmin[ d ] = Math.min( bbmin[ d ], tmp[ d ] );
-						bbmax[ d ] = Math.max( bbmax[ d ], tmp[ d ] );
-					}
-				}
-				for ( int d = 0; d < n; ++d )
-				{
-					if ( ++tmp[ d ] == leafByteDims[ d ] )
-						tmp[ d ] = 0;
-					else
-						break;
-				}
-			}
-
-			final int step = leafByteDims[ 0 ];
-
-			byte minproj = 0;
-			for ( int i = bbmin[ 0 ]; i < bytes.length; i += step )
-				minproj |= bytes[ i ];
-
-			byte maxproj = 0;
-			if ( bbmin[ 0 ] == bbmax[ 0 ] )
-				maxproj = minproj;
-			else
-				for ( int i = bbmax[ 0 ]; i < bytes.length; i += step )
-					maxproj |= bytes[ i ];
-
-			bbmin[ 0 ] = ( bbmin[ 0 ] << 3 ) + BitUtils.lowestOneBit( minproj );
-			bbmax[ 0 ] = ( bbmax[ 0 ] << 3 ) + BitUtils.highestOneBit( maxproj );
-		}
 	}
 
 	@Override

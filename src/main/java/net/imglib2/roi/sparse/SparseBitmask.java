@@ -15,7 +15,6 @@ import net.imglib2.img.basictypeaccess.BooleanAccess;
 import net.imglib2.roi.IterableRegion;
 import net.imglib2.roi.sparse.SparseBitmaskNTree.Node;
 import net.imglib2.roi.sparse.SparseBitmaskNTree.NodeIterator;
-import net.imglib2.roi.sparse.Tree.BitMask;
 import net.imglib2.roi.sparse.util.DefaultInterval;
 import net.imglib2.type.logic.NativeBoolType;
 import net.imglib2.util.Intervals;

@@ -246,7 +246,7 @@ public class GrowableTree implements SparseBitmaskNTree
 		}
 
 		@Override
-		public Tree.BitMask bitmask()
+		public BitMask bitmask()
 		{
 			return source.bitmask();
 		}
