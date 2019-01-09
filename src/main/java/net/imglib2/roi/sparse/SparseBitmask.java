@@ -338,7 +338,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 
 			private Node nextNode;
 
-			private int currentSize;
+			private int currentMax;
 
 			private int currentIndex;
 
@@ -351,7 +351,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 				nodeMin = new long[ n ];
 				nodeMax = new long[ n ];
 				nextNode = nextNonEmptyNode();
-				currentSize = 0;
+				currentMax = 0;
 				currentIndex = 0;
 			}
 
@@ -363,7 +363,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 				nodeMin = other.nodeMin.clone();
 				nodeMax = other.nodeMax.clone();
 				nextNode = iter.current();
-				currentSize = other.currentSize;
+				currentMax = other.currentMax;
 				currentIndex = other.currentIndex;
 				currentMask = other.currentMask;
 			}
@@ -385,21 +385,22 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 				iter.reset();
 				nextNode = nextNonEmptyNode();
 				currentIndex = 0;
-				currentSize = 0;
+				currentMax = 0;
 			}
 
 			@Override
 			public boolean hasNext()
 			{
-				return currentIndex < currentSize || nextNode != null;
+				return currentIndex < currentMax || nextNode != null;
 			}
 
 			@Override
 			public void fwd()
 			{
 				checkForComodification();
-				if ( ++currentIndex < currentSize )
+				if ( currentIndex < currentMax )
 				{
+					++currentIndex;
 					if ( currentMask == null )
 						advance();
 					else
@@ -417,14 +418,14 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 						if ( nextNode.hasBitMask() )
 						{
 							currentMask = nextNode.bitmask();
-							currentSize = currentMask.numSet();
+							currentMax = currentMask.numSet() - 1;
 							while ( !currentMask.get( position ) )
 								advance();
 						}
 						else
 						{
 							currentMask = null;
-							currentSize = ( int ) Intervals.numElements( nextNode.interval() );
+							currentMax = ( int ) Intervals.numElements( nextNode.interval() ) - 1;
 						}
 						currentIndex = 0;
 						nextNode = nextNonEmptyNode();
