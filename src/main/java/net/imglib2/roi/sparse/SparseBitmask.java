@@ -342,7 +342,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 
 			private int currentIndex;
 
-			private BitMask currentMask;
+			private LeafBitmask currentMask;
 
 			TrueCursor()
 			{

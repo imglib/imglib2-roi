@@ -111,7 +111,7 @@ public interface SparseBitmaskNTree extends EuclideanSpace, Iterable< Node >
 		/**
 		 * internal
 		 */
-		BitMask bitmask();
+		LeafBitmask bitmask();
 
 		/**
 		 * Get the coordinate interval covered by this node.

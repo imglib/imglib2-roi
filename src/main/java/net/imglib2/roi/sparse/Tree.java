@@ -1,12 +1,10 @@
 package net.imglib2.roi.sparse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Predicate;
 
 import net.imglib2.Interval;
 import net.imglib2.roi.sparse.util.DefaultInterval;
-import net.imglib2.util.Intervals;
 
 /*
  * The level of a nodeData corresponds to its height in a fully populated tree.
@@ -39,7 +37,7 @@ public class Tree implements SparseBitmaskNTree
 	 */
 	private final int[] leafDims;
 
-	private final BitMask.Specification bitmaskSpecification;
+	private final LeafBitmask.Specification bitmaskSpecification;
 
 	/**
 	 * The current height of the tree.
@@ -72,7 +70,7 @@ public class Tree implements SparseBitmaskNTree
 		this.leafDims = leafDims.clone();
 		n = leafDims.length;
 
-		bitmaskSpecification = new BitMask.Specification( this.leafDims );
+		bitmaskSpecification = new LeafBitmask.Specification( this.leafDims );
 
 		this.height = height;
 		numChildren = 1 << n;
@@ -125,7 +123,7 @@ public class Tree implements SparseBitmaskNTree
 	{
 		boolean value;
 
-		BitMask data;
+		LeafBitmask data;
 
 		NodeData parent;
 
@@ -238,7 +236,7 @@ public class Tree implements SparseBitmaskNTree
 		}
 
 		if ( current.data == null && current.value != value )
-			current.data = new BitMask( bitmaskSpecification, current.value );
+			current.data = new LeafBitmask( bitmaskSpecification, current.value );
 
 		if ( current.data != null && current.data.set( pos, value ) )
 		{
@@ -379,7 +377,7 @@ public class Tree implements SparseBitmaskNTree
 		}
 
 		@Override
-		public BitMask bitmask()
+		public LeafBitmask bitmask()
 		{
 			return nodeData.data;
 		}

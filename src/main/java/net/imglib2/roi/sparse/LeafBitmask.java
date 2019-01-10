@@ -11,7 +11,7 @@ import net.imglib2.util.Intervals;
  * Bitmask is NOT THREADSAFE.
  * Bitmask is periodically extended comparable to {@link net.imglib2.view.Views#extendPeriodic}.
  */
-class BitMask
+class LeafBitmask
 {
 
 	private final Specification specification;
@@ -32,7 +32,7 @@ class BitMask
 	 *
 	 * @param initialValue
 	 */
-	public BitMask( final Specification specification, final boolean initialValue )
+	public LeafBitmask( final Specification specification, final boolean initialValue )
 	{
 		this.specification = specification;
 		data = new byte[ specification.size >> 3 ];
