@@ -6,9 +6,10 @@ import net.imglib2.roi.sparse.util.BitUtils;
 import net.imglib2.util.Intervals;
 
 /**
- * Bit-mask are stored in the leafs of the tree. Each bit-mask is a
- * {@code leafDims}-sized boolean image backed by a {@code byte[]} array. It
- * also keeps track of how many bits are currently set.
+ * Bitmask that is used to implement {@link Tree}.
+ * The size of the Bitmask is given with the specification.
+ * Bitmask is NOT THREADSAFE.
+ * Bitmask is periodically extended comparable to {@link net.imglib2.view.Views#extendPeriodic}.
  */
 class BitMask
 {
@@ -18,12 +19,12 @@ class BitMask
 	/**
 	 * Stores data of this mask
 	 */
-	private final byte[] bytes;
+	private final byte[] data;
 
 	/**
 	 * Current number of true bits in this mask
 	 */
-	private int numSet;
+	private int numberOfOnes;
 
 	/**
 	 * Create a new BitMask that is initially completely filled with the given
@@ -31,18 +32,18 @@ class BitMask
 	 *
 	 * @param initialValue
 	 */
-	BitMask( final Specification specification, final boolean initialValue )
+	public BitMask( final Specification specification, final boolean initialValue )
 	{
 		this.specification = specification;
-		bytes = new byte[ specification.size >> 3 ];
+		data = new byte[ specification.size >> 3 ];
 		if ( initialValue )
 		{
-			Arrays.fill( bytes, ( byte ) 255 );
-			numSet = specification.size;
+			Arrays.fill( data, ( byte ) 255 );
+			numberOfOnes = specification.size;
 		}
 		else
 		{
-			numSet = 0;
+			numberOfOnes = 0;
 		}
 	}
 
@@ -54,19 +55,19 @@ class BitMask
 	 * @return {@code true} iff the mask was completely filled or emptied by
 	 *         this operation
 	 */
-	boolean set( final long[] globalpos, final boolean value )
+	public boolean set( final long[] globalpos, final boolean value )
 	{
 		final int i = byteIndex( globalpos );
-		final int mask = 1 << ( globalpos[ 0 ] & specification.mask[ 0 ] & 0x07 );
+		final int mask = byteMask( globalpos );
 
-		final byte b = bytes[ i ];
+		final byte b = data[ i ];
 		if ( value )
 		{
 			final byte bm = ( byte ) ( b | mask );
 			if ( bm != b ) // changing bit from 0 to 1
 			{
-				bytes[ i ] = bm;
-				if ( ++numSet == specification.size )
+				data[ i ] = bm;
+				if ( ++numberOfOnes == specification.size )
 					return true;
 			}
 		}
@@ -75,8 +76,8 @@ class BitMask
 			final byte bm = ( byte ) ( b & ~mask );
 			if ( bm != b ) // changing bit from 1 to 0
 			{
-				bytes[ i ] = bm;
-				if ( --numSet == 0 )
+				data[ i ] = bm;
+				if ( --numberOfOnes == 0 )
 					return true;
 			}
 		}
@@ -84,11 +85,16 @@ class BitMask
 		return false;
 	}
 
-	boolean get( final long[] globalpos )
+	public boolean get( final long[] globalpos )
 	{
-		final byte b = bytes[ byteIndex( globalpos ) ];
-		final int mask = 1 << ( globalpos[ 0 ] & specification.mask[ 0 ] & 0x07 );
+		final byte b = data[ byteIndex( globalpos ) ];
+		final int mask = byteMask( globalpos );
 		return ( b & mask ) != 0;
+	}
+
+	private int byteMask( final long[] globalpos )
+	{
+		return 1 << ( globalpos[0] & specification.mask[ 0 ] & 0x07 );
 	}
 
 	private int byteIndex( final long[] globalpos )
@@ -99,9 +105,9 @@ class BitMask
 		return i + ( ( ( int ) ( globalpos[ 0 ] & specification.mask[ 0 ] ) ) >> 3 );
 	}
 
-	int numSet()
+	public int numSet()
 	{
-		return numSet;
+		return numberOfOnes;
 	}
 
 	/**
@@ -116,17 +122,17 @@ class BitMask
 	 *            temporary variable for storing positions while scanning the
 	 *            mask.
 	 */
-	void computeBoundingBox( final int[] bbmin, final int[] bbmax, final int[] tmp )
+	public void computeBoundingBox( final int[] bbmin, final int[] bbmax, final int[] tmp )
 	{
 		Arrays.fill( bbmin, Integer.MAX_VALUE );
 		Arrays.fill( bbmax, Integer.MIN_VALUE );
-		if ( numSet == 0 )
+		if ( numberOfOnes == 0 )
 			return;
 
 		Arrays.fill( tmp, 0 );
-		for ( int i = 0; i < bytes.length; ++i )
+		for ( int i = 0; i < data.length; ++i )
 		{
-			if ( bytes[ i ] != 0 )
+			if ( data[ i ] != 0 )
 			{
 				for ( int d = 0; d < specification.n; ++d )
 				{
@@ -146,15 +152,15 @@ class BitMask
 		final int step = specification.byteDims[ 0 ];
 
 		byte minproj = 0;
-		for ( int i = bbmin[ 0 ]; i < bytes.length; i += step )
-			minproj |= bytes[ i ];
+		for ( int i = bbmin[ 0 ]; i < data.length; i += step )
+			minproj |= data[ i ];
 
 		byte maxproj = 0;
 		if ( bbmin[ 0 ] == bbmax[ 0 ] )
 			maxproj = minproj;
 		else
-			for ( int i = bbmax[ 0 ]; i < bytes.length; i += step )
-				maxproj |= bytes[ i ];
+			for ( int i = bbmax[ 0 ]; i < data.length; i += step )
+				maxproj |= data[ i ];
 
 		bbmin[ 0 ] = ( bbmin[ 0 ] << 3 ) + BitUtils.lowestOneBit( minproj );
 		bbmax[ 0 ] = ( bbmax[ 0 ] << 3 ) + BitUtils.highestOneBit( maxproj );
@@ -183,15 +189,15 @@ class BitMask
 		 */
 		private final int[] byteDims;
 
-		public Specification( final int[] leafDims )
+		public Specification( final int[] dims )
 		{
-			this.n = leafDims.length;
+			this.n = dims.length;
 
 			this.mask = new int[ n ];
-			Arrays.setAll( mask, d -> leafDims[ d ] - 1 );
-			final long lsize = Intervals.numElements( leafDims );
+			Arrays.setAll( mask, d -> dims[ d ] - 1 );
+			final long lsize = Intervals.numElements( dims );
 			this.size = toInt( lsize );
-			this.byteDims = leafDims.clone();
+			this.byteDims = dims.clone();
 			byteDims[ 0 ] = byteDims[ 0 ] >> 3;
 		}
 
