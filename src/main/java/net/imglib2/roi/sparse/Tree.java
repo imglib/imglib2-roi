@@ -198,7 +198,7 @@ public class Tree implements SparseBitmaskNTree
 	 * returns 1 if true
 	 * returns 2 if mixed
 	 */
-	public int get( final long[] pos, final int level )
+	public int getForDebugging( final long[] pos, final int level )
 	{
 		final NodeData node = getNode( pos, level );
 
