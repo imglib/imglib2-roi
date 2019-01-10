@@ -161,21 +161,26 @@ public class Tree implements SparseBitmaskNTree
 	private NodeData getNode( final long[] pos, final int maxDepth )
 	{
 		NodeData current = root;
-		for ( int l = height - 1; l >= maxDepth; --l )
+		for ( int level = height - 1; level >= maxDepth; --level )
 		{
 			if ( !current.hasChildren() )
 				break;
 
-			int childindex = 0;
-			for ( int d = 0; d < n; ++d )
-			{
-				final long bitmask = ( ( long ) leafDims[ d ] ) << l;
-				if ( ( pos[ d ] & bitmask ) != 0 )
-					childindex |= 1 << d;
-			}
-			current = current.children[ childindex ];
+			current = current.children[ getChildIndex( pos, level ) ];
 		}
 		return current;
+	}
+
+	private int getChildIndex( long[] pos, int level )
+	{
+		int childindex = 0;
+		for ( int d = 0; d < n; ++d )
+		{
+			final long bitmask = ( ( long ) leafDims[ d ] ) << level;
+			if ( ( pos[ d ] & bitmask ) != 0 )
+				childindex |= 1 << d;
+		}
+		return childindex;
 	}
 
 	@Override
@@ -225,14 +230,7 @@ public class Tree implements SparseBitmaskNTree
 					current.children[ i ] = new NodeData( current, current.value );
 			}
 
-			int childindex = 0;
-			for ( int d = 0; d < n; ++d )
-			{
-				final long bitmask = ( ( long ) leafDims[ d ] ) << l;
-				if ( ( pos[ d ] & bitmask ) != 0 )
-					childindex |= 1 << d;
-			}
-			current = current.children[ childindex ];
+			current = current.children[ getChildIndex( pos, l ) ];
 		}
 
 		if ( current.data == null && current.value != value )
