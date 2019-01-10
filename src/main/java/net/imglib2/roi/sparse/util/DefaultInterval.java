@@ -7,6 +7,7 @@ import net.imglib2.RealPositionable;
 /**
  * @author Tobias Pietzsch
  */
+// FIXME: move all the default implementations to the Interval class
 public interface DefaultInterval extends Interval
 {
 	@Override
@@ -20,7 +21,7 @@ public interface DefaultInterval extends Interval
 	{
 		final int n = numDimensions();
 		for ( int d = 0; d < n; d++ )
-			min[ d ] = min( d );
+			min[ d ] = realMin( d );
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public interface DefaultInterval extends Interval
 	{
 		final int n = numDimensions();
 		for ( int d = 0; d < n; d++ )
-			min.setPosition( min( d ), d );
+			min.setPosition( realMin( d ), d );
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public interface DefaultInterval extends Interval
 	{
 		final int n = numDimensions();
 		for ( int d = 0; d < n; d++ )
-			max[ d ] = max( d );
+			max[ d ] = realMax( d );
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public interface DefaultInterval extends Interval
 	{
 		final int n = numDimensions();
 		for ( int d = 0; d < n; d++ )
-			max.setPosition( max( d ), d );
+			max.setPosition( realMax( d ), d );
 	}
 
 	@Override
