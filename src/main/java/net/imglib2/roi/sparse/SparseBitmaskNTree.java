@@ -200,7 +200,7 @@ public interface SparseBitmaskNTree extends EuclideanSpace, Iterable< Node >
 	 * @param tree a {@code SparseBitmaskNTree}
 	 * @return the bounding box of {@code true} pixels in a {@code tree}.
 	 */
-	static Interval bbox( final SparseBitmaskNTree tree )
+	static Interval boundingBox( final SparseBitmaskNTree tree )
 	{
 		final int n = tree.numDimensions();
 

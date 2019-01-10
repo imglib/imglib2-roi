@@ -205,7 +205,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 
 		private void checkModifications()
 		{
-			bbox = SparseBitmaskNTree.bbox( tree );
+			bbox = SparseBitmaskNTree.boundingBox( tree );
 			size = SparseBitmaskNTree.size( tree );
 			expectedModCount = modCount;
 		}
@@ -261,7 +261,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 		{
 			checkForComodification();
 			if ( bbox == null )
-				bbox = SparseBitmaskNTree.bbox( tree );
+				bbox = SparseBitmaskNTree.boundingBox( tree );
 			return bbox.min( d );
 		}
 
@@ -270,7 +270,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 		{
 			checkForComodification();
 			if ( bbox == null )
-				bbox = SparseBitmaskNTree.bbox( tree );
+				bbox = SparseBitmaskNTree.boundingBox( tree );
 			return bbox.max( d );
 		}
 
@@ -279,7 +279,7 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 		{
 			checkForComodification();
 			if ( bbox == null )
-				bbox = SparseBitmaskNTree.bbox( tree );
+				bbox = SparseBitmaskNTree.boundingBox( tree );
 			return bbox.dimension( d );
 		}
 
