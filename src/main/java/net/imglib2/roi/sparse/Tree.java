@@ -330,6 +330,7 @@ public class Tree implements SparseBitmaskNTree
 
 		int nextChildindex;
 
+		// TODO: the should be and Intervals.wrap( min, max ) method that does this
 		private final Interval interval = new DefaultInterval()
 		{
 			@Override
