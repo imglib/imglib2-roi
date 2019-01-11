@@ -121,6 +121,7 @@ public class Tree implements SparseBitmaskNTree
 
 	private static class NodeData
 	{
+		// The value, represented only counts if data and children are zero
 		boolean value;
 
 		LeafBitmask data;
@@ -138,6 +139,51 @@ public class Tree implements SparseBitmaskNTree
 		boolean hasChildren()
 		{
 			return children != null;
+		}
+
+		private void createChildren( final int numChildren ) {
+			NodeData[] children = new NodeData[ numChildren ];
+			for ( int i = 0; i < numChildren; ++i )
+				children[ i ] = new NodeData( this, value );
+			// NB: One atomic operation, that doesn't change the Bitmask represented.
+			this.children = children;
+		}
+
+		private void createBitmask( LeafBitmask.Specification bitmaskSpecification )
+		{
+			// NB: One atomic operation, that doesn't change the Bitmask represented.
+			data = new LeafBitmask( bitmaskSpecification, value );
+		}
+
+		private NodeData newParent( final int childindex, final int numChildren )
+		{
+			NodeData newRoot = new NodeData( null, false );
+			newRoot.children = new NodeData[ numChildren ];
+			for ( int i = 0; i < numChildren; ++i )
+				newRoot.children[ i ] = ( i == childindex )
+						? this : new NodeData( newRoot, false );
+			this.parent = newRoot;
+			return newRoot;
+		}
+
+		private boolean merge( final boolean value )
+		{
+			for ( NodeData child : children )
+			{
+				if ( child.hasChildren() || child.data != null || child.value != value )
+					return false;
+			}
+			// NB: Two operations, that doesn't change the Bitmask represented.
+			this.value = value;
+			this.children = null;
+			return true;
+		}
+
+		private void mergeLeafToValue( boolean value )
+		{
+			this.value = value;
+			// NB: One atomic change, that set's all pixels represented by the lead two value
+			this.data = null;
 		}
 	}
 
@@ -225,21 +271,18 @@ public class Tree implements SparseBitmaskNTree
 				if ( current.value == value )
 					return;
 
-				current.children = new NodeData[ numChildren ];
-				for ( int i = 0; i < numChildren; ++i )
-					current.children[ i ] = new NodeData( current, current.value );
+				current.createChildren( numChildren );
 			}
 
 			current = current.children[ getChildIndex( pos, l ) ];
 		}
 
 		if ( current.data == null && current.value != value )
-			current.data = new LeafBitmask( bitmaskSpecification, current.value );
+			current.createBitmask( bitmaskSpecification );
 
 		if ( current.data != null && current.data.set( pos, value ) )
 		{
-			current.data = null;
-			current.value = value;
+			current.mergeLeafToValue( value );
 			mergeUpwards( current, value );
 		}
 	}
@@ -254,20 +297,11 @@ public class Tree implements SparseBitmaskNTree
 	{
 		++height;
 		final NodeData oldroot = root;
-
-		root = new NodeData( null, false );
-		root.children = new NodeData[ numChildren ];
-		for ( int i = 0; i < numChildren; ++i )
-			root.children[ i ] = ( i == childindex )
-					? oldroot
-					: new NodeData( root, false );
-		oldroot.parent = root;
+		root = oldroot.newParent( childindex, numChildren );
 		if ( !oldroot.hasChildren() && oldroot.data == null )
 			mergeUpwards( oldroot, oldroot.value );
-
 		updateCurrentBoundsMax();
 	}
-
 
 	/**
 	 * If all the children of our parent have the same value remove them all.
@@ -283,14 +317,8 @@ public class Tree implements SparseBitmaskNTree
 		final NodeData parent = node.parent;
 		if ( parent == null )
 			return;
-		for ( int i = 0; i < numChildren; ++i )
-		{
-			final NodeData child = parent.children[ i ];
-			if ( child.hasChildren() || child.data != null || child.value != value )
-				return;
-		}
-		parent.value = value;
-		parent.children = null;
+		if ( ! parent.merge( value ) )
+			return;
 		mergeUpwards( parent, value );
 	}
 
