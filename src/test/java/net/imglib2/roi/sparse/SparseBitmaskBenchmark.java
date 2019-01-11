@@ -1,14 +1,13 @@
 package net.imglib2.roi.sparse;
 
+import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.algorithm.neighborhood.HyperSphereShape;
 import net.imglib2.algorithm.neighborhood.Neighborhood;
 import net.imglib2.img.sparse.NtreeImg;
 import net.imglib2.img.sparse.NtreeImgFactory;
-import net.imglib2.type.BooleanType;
-import net.imglib2.type.logic.BitType;
-import net.imglib2.type.logic.NativeBoolType;
+import net.imglib2.roi.sparse.labkit.SparseIterableRegion;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -22,14 +21,20 @@ public class SparseBitmaskBenchmark
 {
 	@Benchmark
 	public void benchmark() {
-		SparseBitmask bitmask = new SparseBitmask( 2 );
-		fillHypersphere( bitmask, 50, 50, 50 );
+		SparseBitmask image = new SparseBitmask( 3 );
+		fillHypersphere( image, 50, 50, 50, 50 );
 	}
 
 	@Benchmark
 	public void benchmarkNDTree() {
-		NtreeImg< UnsignedByteType, ? > image = new NtreeImgFactory<>( new UnsignedByteType() ).create( 100, 100 );
-		fillHypersphere( image, 50, 50, 50 );
+		NtreeImg< UnsignedByteType, ? > image = new NtreeImgFactory<>( new UnsignedByteType() ).create( 100, 100, 100 );
+		fillHypersphere( image, 50, 50, 50, 50 );
+	}
+
+	@Benchmark
+	public void labkitSparse() {
+		SparseIterableRegion image = new SparseIterableRegion( new FinalInterval( 100, 100, 100 ) );
+		fillHypersphere( image, 50, 50, 50, 50 );
 	}
 
 	public static void main( final String... args ) throws RunnerException
