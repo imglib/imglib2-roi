@@ -31,8 +31,6 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 {
 	private final GrowableTree tree;
 
-	private final ReentrantReadWriteLock lock;
-
 	private int modCount;
 
 	public SparseBitmask(
@@ -41,7 +39,6 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 		final int[] leafDims = new int[ numDimensions ];
 		Arrays.fill( leafDims, 8 );
 		tree = new GrowableTree( leafDims );
-		lock = new ReentrantReadWriteLock();
 	}
 
 	public SparseBitmaskNTree tree()
@@ -100,30 +97,14 @@ public class SparseBitmask implements RandomAccessible< NativeBoolType >
 		@Override
 		public boolean getValue( final int index )
 		{
-			try
-			{
-				lock.readLock().lock();
-				return tree.get( position, tmp );
-			}
-			finally
-			{
-				lock.readLock().unlock();
-			}
+			return tree.get( position, tmp );
 		}
 
 		@Override
 		public void setValue( final int index, final boolean value )
 		{
-			try
-			{
-				lock.writeLock().lock();
-				tree.set( position, tmp, value );
-				++modCount;
-			}
-			finally
-			{
-				lock.writeLock().unlock();
-			}
+			tree.set( position, tmp, value );
+			++modCount;
 		}
 	}
 
