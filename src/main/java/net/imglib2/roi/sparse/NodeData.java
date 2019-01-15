@@ -72,7 +72,7 @@ class NodeData
 		return value;
 	}
 
-	public LeafBitmask data()
+	public LeafBitmask bitmask()
 	{
 		return data;
 	}

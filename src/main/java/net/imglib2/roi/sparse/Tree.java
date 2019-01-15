@@ -166,10 +166,10 @@ public class Tree implements SparseBitmaskNTree
 	{
 		final NodeData node = getNode( pos, 0 );
 
-		if ( node.data() == null )
+		if ( node.bitmask() == null )
 			return node.value();
 
-		return node.data().get( pos );
+		return node.bitmask().get( pos );
 	}
 
 	/**
@@ -186,10 +186,10 @@ public class Tree implements SparseBitmaskNTree
 		if ( node.hasChildren() )
 			return 2;
 
-		if ( node.data() == null )
+		if ( node.bitmask() == null )
 			return node.value() ? 1 : 0;
 
-		return node.data().get( pos ) ? 1 : 0;
+		return node.bitmask().get( pos ) ? 1 : 0;
 	}
 
 	@Override
@@ -209,10 +209,10 @@ public class Tree implements SparseBitmaskNTree
 			current = current.child( getChildIndex( pos, l ) );
 		}
 
-		if ( current.data() == null && current.value() != value )
+		if ( current.bitmask() == null && current.value() != value )
 			current.createBitmask( bitmaskSpecification );
 
-		if ( current.data() != null && current.data().set( pos, value ) )
+		if ( current.bitmask() != null && current.bitmask().set( pos, value ) )
 		{
 			current.mergeLeafToValue( value );
 			mergeUpwards( current, value );
@@ -230,7 +230,7 @@ public class Tree implements SparseBitmaskNTree
 		++height;
 		final NodeData oldroot = root;
 		root = oldroot.newParent( childindex, numChildren );
-		if ( !oldroot.hasChildren() && oldroot.data() == null )
+		if ( !oldroot.hasChildren() && oldroot.bitmask() == null )
 			mergeUpwards( oldroot, oldroot.value() );
 		updateCurrentBoundsMax();
 	}
@@ -337,7 +337,7 @@ public class Tree implements SparseBitmaskNTree
 		@Override
 		public LeafBitmask bitmask()
 		{
-			return nodeData.data();
+			return nodeData.bitmask();
 		}
 
 		@Override
