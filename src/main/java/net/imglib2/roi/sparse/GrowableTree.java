@@ -9,7 +9,7 @@ import net.imglib2.roi.sparse.util.DefaultInterval;
  * A unbounded {@link SparseBitmaskNTree}, based on a {@link Tree} that grows
  * when out-of-bounds pixels are set.
  * <p>
- * This class is not thread-safe!
+ * This class is thread-safe!
  *
  * @author Tobias Pietzsch
  */
@@ -54,7 +54,7 @@ public class GrowableTree implements SparseBitmaskNTree
 	 * @param value
 	 *            value to store at {@code position}.
 	 */
-	public void set( final long[] position, final long[] tmp, final boolean value )
+	public synchronized void set( final long[] position, final long[] tmp, final boolean value )
 	{
 		final TreeAndOffset o = treeAndOffset;
 		final int n = o.tree.numDimensions();
