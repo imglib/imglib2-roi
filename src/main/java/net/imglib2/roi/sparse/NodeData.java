@@ -60,7 +60,7 @@ class NodeData
 		return true;
 	}
 
-	public void mergeLeafToValue( boolean value )
+	public void mergeLeafToValue( final boolean value )
 	{
 		this.value = value;
 		// NB: One atomic change, that set's all pixels represented by the lead two value
