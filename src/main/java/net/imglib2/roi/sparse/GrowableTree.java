@@ -15,7 +15,7 @@ import net.imglib2.roi.sparse.util.DefaultInterval;
  */
 public class GrowableTree implements SparseBitmaskNTree
 {
-	private final Tree tree;
+	private Tree tree;
 
 	/**
 	 * Offset of position 0 in root to global coordinates. {@code offset} is a
@@ -82,7 +82,7 @@ public class GrowableTree implements SparseBitmaskNTree
 		{
 			if ( value )
 			{
-				tree.grow( childindex );
+				tree = Tree.newParentTree( tree, childindex );
 				set( position, tmp, value );
 			}
 		}

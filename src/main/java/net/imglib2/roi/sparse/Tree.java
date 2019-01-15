@@ -3,6 +3,7 @@ package net.imglib2.roi.sparse;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
+import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.roi.sparse.util.DefaultInterval;
 
@@ -40,45 +41,51 @@ public class Tree implements SparseBitmaskNTree
 	private final LeafBitmask.Specification bitmaskSpecification;
 
 	/**
-	 * The current height of the tree.
+	 * The height of the tree.
 	 */
-	private int height;
+	private final int height;
 
 	/**
-	 * The current root node.
+	 * The root node.
 	 */
-	private NodeData root;
+	private final NodeData root;
+
+	private final Interval bounds;
 
 	/**
-	 * Max of interval covered by current root node.
-	 */
-	private final long[] currentBoundsMax;
-
-	/**
-	 * @param leafDims
-	 *            Dimensions of a leaf bit-mask. <em>Every element must be a
-	 *            power of 2!</em>
-	 * @param height
-	 *            Initial height of the tree.
+	 * @param leafDims Dimensions of a leaf bit-mask. <em>Every element must be a
+	 *                 power of 2!</em>
+	 * @param height   Initial height of the tree.
 	 */
 	public Tree(
 			final int[] leafDims,
 			final int height )
 	{
-		checkLeafDims( leafDims );
+		this( checkLeafDims( leafDims.clone() ), height, new NodeData( null, false ) );
+	}
 
-		this.leafDims = leafDims.clone();
-		n = leafDims.length;
-
-		bitmaskSpecification = new LeafBitmask.Specification( this.leafDims );
-
+	private Tree( final int[] leafDims, final int height, final NodeData root ) {
+		this.leafDims = leafDims;
+		this.n = leafDims.length;
+		this.bitmaskSpecification = new LeafBitmask.Specification( leafDims );
 		this.height = height;
-		numChildren = 1 << n;
+		this.numChildren = 1 << n;
+		this.root = root;
+		this.bounds = initBounds( leafDims, height );
+	}
 
-		root = new NodeData( null, false );
-
-		currentBoundsMax = new long[ n ];
-		updateCurrentBoundsMax();
+	/**
+	 * Creates a new parent tree.
+	 * The child trees root will become a child of parent trees root at index {@code childindex}.
+	 * All other children of the new root are leaf nodes with value
+	 * {@code false}.
+	 */
+	public static Tree newParentTree( Tree childTree, final int childIndex )
+	{
+		Tree parentTree = new Tree( childTree.leafDims, childTree.height + 1, childTree.root.newParent( childIndex, childTree.numChildren ) );
+		if ( !childTree.root.hasChildren() && childTree.root.bitmask() == null )
+			childTree.mergeUpwards( childTree.root, childTree.root.value() );
+		return parentTree;
 	}
 
 	/**
@@ -90,7 +97,7 @@ public class Tree implements SparseBitmaskNTree
 	 *     <li>{@code leafDims[0]} is at least 8.</li>
 	 * </ul>
 	 */
-	private static void checkLeafDims( final int[] leafDims )
+	private static int[] checkLeafDims( final int[] leafDims )
 	{
 		if ( leafDims == null || leafDims.length == 0 )
 			throw new IllegalArgumentException( "leafDims must not be empty");
@@ -105,6 +112,8 @@ public class Tree implements SparseBitmaskNTree
 			if ( Integer.highestOneBit( leafDim ) != leafDim )
 				throw new IllegalArgumentException( "leafDim[ " + i + "] must be a power of 2");
 		}
+
+		return leafDims;
 	}
 
 	@Override
@@ -218,23 +227,6 @@ public class Tree implements SparseBitmaskNTree
 			current.mergeLeafToValue( value );
 			mergeUpwards( current, value );
 		}
-	}
-
-	/**
-	 * Create a new root, and push current root one level down. The new
-	 * root will have the current root as a child at index {@code childindex}.
-	 * All other children of the new root are leaf nodes with value
-	 * {@code false}.
-	 */
-	void grow( final int childindex )
-	{
-		++height;
-		final NodeData oldroot = root;
-		root = oldroot.newParent( childindex, numChildren );
-		if ( !oldroot.hasChildren() && oldroot.bitmask() == null )
-			mergeUpwards( oldroot, oldroot.value() );
-		updateCurrentBoundsMax();
-		throw new RuntimeException( "Changing height and root separately breaks get and set." );
 	}
 
 	/**
@@ -473,44 +465,16 @@ public class Tree implements SparseBitmaskNTree
 		}
 	}
 
-	private void updateCurrentBoundsMax()
+	private static FinalInterval initBounds( int[] leafDims, int height )
 	{
-		for ( int d = 0; d < n; ++d )
-			currentBoundsMax[ d ] = ( leafDims[ d ] << height ) - 1;
+		long[] dimensions = new long[leafDims.length];
+		for ( int d = 0; d < dimensions.length; ++d )
+			dimensions[ d ] = ( leafDims[ d ] << height ) - 1;
+		return new FinalInterval( dimensions );
 	}
-
-	/**
-	 * The current interval covered by the tree (resp. the root node).
-	 */
-	private final Interval currentBounds = new DefaultInterval()
-	{
-		@Override
-		public int numDimensions()
-		{
-			return n;
-		}
-
-		@Override
-		public long dimension( final int d )
-		{
-			return currentBoundsMax[ d ] + 1;
-		}
-
-		@Override
-		public long min( final int d )
-		{
-			return 0;
-		}
-
-		@Override
-		public long max( final int d )
-		{
-			return currentBoundsMax[ d ];
-		}
-	};
 
 	Interval bounds()
 	{
-		return currentBounds;
+		return bounds;
 	}
 }
