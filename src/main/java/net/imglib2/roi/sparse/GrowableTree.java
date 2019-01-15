@@ -15,14 +15,7 @@ import net.imglib2.roi.sparse.util.DefaultInterval;
  */
 public class GrowableTree implements SparseBitmaskNTree
 {
-	private Tree tree;
-
-	/**
-	 * Offset of position 0 in root to global coordinates. {@code offset} is a
-	 * multiple of {@code tileDims}, so that we can skip computing differences
-	 * in {@code LeafData}.
-	 */
-	private final long[] offset;
+	private OffsetTree tree;
 
 	/**
 	 * @param leafDims
@@ -31,8 +24,7 @@ public class GrowableTree implements SparseBitmaskNTree
 	 */
 	public GrowableTree( final int[] leafDims )
 	{
-		tree = new Tree( leafDims, 0 );
-		offset = new long[ tree.numDimensions() ];
+		tree = new OffsetTree( new long[ this.numDimensions() ], new Tree( leafDims, 0 ) );
 	}
 
 	@Override
@@ -64,30 +56,36 @@ public class GrowableTree implements SparseBitmaskNTree
 	 */
 	public void set( final long[] position, final long[] tmp, final boolean value )
 	{
-		final int n = tree.numDimensions();
+		final OffsetTree o = tree;
+		final int n = o.tree.numDimensions();
 		int childindex = 0;
 		boolean needtogrow = false;
+		long[] newOffset = null;
 		for ( int d = 0; d < n; ++d )
 		{
-			final long p = position[ d ] - offset[ d ];
+			final long p = position[ d ] - o.offset[ d ];
 			tmp[ d ] = p;
-			needtogrow = needtogrow || p < 0 || p > tree.bounds().max( d );
+			needtogrow = needtogrow || p < 0 || p > o.tree.bounds().max( d );
 			if ( p < 0 )
 			{
+				if(newOffset == null)
+					newOffset = new long[n];
 				childindex |= 1 << d;
-				offset[ d ] -= tree.bounds().dimension( d );
+				newOffset[ d ] -= o.tree.bounds().dimension( d );
 			}
 		}
 		if ( needtogrow )
 		{
 			if ( value )
 			{
-				tree = Tree.newParentTree( tree, childindex );
+				if(newOffset == null)
+					newOffset = new long[n];
+				tree = new OffsetTree( newOffset, Tree.newParentTree( o.tree, childindex ) );
 				set( position, tmp, value );
 			}
 		}
 		else
-			tree.set( tmp, value );
+			o.tree.set( tmp, value );
 	}
 
 	/**
@@ -104,15 +102,16 @@ public class GrowableTree implements SparseBitmaskNTree
 	 */
 	public boolean get( final long[] position, final long[] tmp )
 	{
-		final int n = tree.numDimensions();
+		OffsetTree o = tree;
+		final int n = o.tree.numDimensions();
 		for ( int d = 0; d < n; ++d )
 		{
-			final long p = position[ d ] - offset[ d ];
-			if ( p < 0 || p > tree.bounds().max( d ) )
+			final long p = position[ d ] - o.offset[ d ];
+			if ( p < 0 || p > o.tree.bounds().max( d ) )
 				return false;
 			tmp[ d ] = p;
 		}
-		return tree.get( tmp );
+		return o.tree.get( tmp );
 	}
 
 	/**
@@ -127,41 +126,55 @@ public class GrowableTree implements SparseBitmaskNTree
 	@Override
 	public int height()
 	{
-		return tree.height();
+		return tree.tree.height();
 	}
 
 	@Override
 	public int numDimensions()
 	{
-		return tree.numDimensions();
+		return tree.tree.numDimensions();
 	}
 
 	@Override
 	public void forEach( final Predicate< Node > op )
 	{
-		final NodeImp w = new NodeImp();
-		tree.forEach( ( final Node nd ) -> op.test( w.wrap( nd ) ) );
+		OffsetTree o = tree;
+		final NodeImp w = new NodeImp( o.offset );
+		o.tree.forEach( ( final Node nd ) -> op.test( w.wrap( nd ) ) );
 	}
 
 	@Override
 	public NodeIterator iterator()
 	{
-		return new NodeIteratorImp();
+		return new NodeIteratorImp(tree);
 	}
 
-	private class NodeIteratorImp implements NodeIterator
+	private static class OffsetTree {
+		private final long[] offset;
+		private final Tree tree;
+
+		private OffsetTree( long[] offset, Tree tree )
+		{
+			this.offset = offset;
+			this.tree = tree;
+		}
+	}
+
+	private static class NodeIteratorImp implements NodeIterator
 	{
-		private final NodeImp w = new NodeImp();
+		private final NodeImp w;
 
 		private final NodeIterator wi;
 
-		NodeIteratorImp()
+		private NodeIteratorImp( OffsetTree tree )
 		{
-			wi = tree.iterator();
+			w = new NodeImp( tree.offset );
+			wi = tree.tree.iterator();
 		}
 
-		NodeIteratorImp( final NodeIteratorImp other )
+		private NodeIteratorImp( final NodeIteratorImp other )
 		{
+			w = new NodeImp( other.w );
 			wi = other.wi.copy();
 		}
 
@@ -196,9 +209,22 @@ public class GrowableTree implements SparseBitmaskNTree
 		}
 	}
 
-	private class NodeImp implements Node
+	private static class NodeImp implements Node
 	{
 		private Node source;
+
+		private final long[] offset;
+
+		private NodeImp( final long[] offset )
+		{
+			this.offset = offset;
+		}
+
+		private NodeImp( final NodeImp other )
+		{
+			this.source = other.source;
+			this.offset = other.offset;
+		}
 
 		Node wrap( final Node source )
 		{
