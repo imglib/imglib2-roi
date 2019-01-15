@@ -84,6 +84,7 @@ class NodeData
 
 	public NodeData child( int i )
 	{
-		return children[ i ];
+		final NodeData[] children = this.children;
+		return children != null ? children[ i ] : null;
 	}
 }

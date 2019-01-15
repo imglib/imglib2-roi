@@ -141,10 +141,10 @@ public class Tree implements SparseBitmaskNTree
 		NodeData current = root;
 		for ( int level = height - 1; level >= maxDepth; --level )
 		{
-			if ( !current.hasChildren() )
-				break;
-
-			current = current.child( getChildIndex( pos, level ) );
+			final NodeData child = current.child( getChildIndex( pos, level ) );
+			if( child == null )
+				return current;
+			current = child;
 		}
 		return current;
 	}
@@ -166,10 +166,11 @@ public class Tree implements SparseBitmaskNTree
 	{
 		final NodeData node = getNode( pos, 0 );
 
-		if ( node.bitmask() == null )
+		final LeafBitmask bitmask = node.bitmask();
+		if ( bitmask == null )
 			return node.value();
 
-		return node.bitmask().get( pos );
+		return bitmask.get( pos );
 	}
 
 	/**
@@ -233,6 +234,7 @@ public class Tree implements SparseBitmaskNTree
 		if ( !oldroot.hasChildren() && oldroot.bitmask() == null )
 			mergeUpwards( oldroot, oldroot.value() );
 		updateCurrentBoundsMax();
+		throw new RuntimeException( "Changing height and root separately breaks get and set." );
 	}
 
 	/**
