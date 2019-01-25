@@ -335,6 +335,60 @@ public class MaskToLabelingTest
 			assertTrue( c.next().isEmpty() );
 	}
 
+	@Test
+	public void testDefaultLabelEntireMask()
+	{
+		final MaskInterval m = createBox( new long[] { 10, 10 }, new long[] { 20, 20 } );
+		final Img< IntType > indexImg = ArrayImgs.ints( 21, 21 );
+		final ImgLabeling< String, IntType > imgLabeling = new ImgLabeling<>( indexImg );
+		final String defaultLabel = "default";
+		Masks.addMasksToLabeling( Collections.singletonList( m ), imgLabeling, defaultLabel );
+
+		final Cursor< LabelingType< String > > c = imgLabeling.cursor();
+		while ( c.hasNext() )
+		{
+			final LabelingType< String > labels = c.next();
+			if ( m.test( c ) )
+			{
+				assertTrue( labels.contains( defaultLabel ) );
+				assertEquals( 1, labels.size() );
+			}
+			else
+				assertTrue( labels.isEmpty() );
+		}
+	}
+
+	@Test
+	public void testDefaultLabelPartialMask()
+	{
+		final LabeledMaskInterval< String > labeledSphere = new LabeledMaskInterval<>( createSphere( new long[] { 10, 10 }, 5 ), "label" );
+		final MaskInterval sphere = createSphere( new long[] { 15, 13 }, 4 );
+		final MaskInterval or = labeledSphere.or( sphere );
+		final MaskInterval minus = sphere.minus( labeledSphere );
+		final String defaultLabel = "default";
+		final Img< IntType > indexImg = ArrayImgs.ints( 20, 20 );
+		final ImgLabeling< String, IntType > imgLabeling = new ImgLabeling<>( indexImg );
+		Masks.addMasksToLabeling( Collections.singletonList( or ), imgLabeling, defaultLabel );
+
+		final Cursor< LabelingType< String > > c = imgLabeling.cursor();
+		while ( c.hasNext() )
+		{
+			final LabelingType< String > labels = c.next();
+			if ( labeledSphere.test( c ) )
+			{
+				assertTrue( labels.contains( labeledSphere.getLabel() ) );
+				assertEquals( 1, labels.size() );
+			}
+			else if ( minus.test( c ) )
+			{
+				assertTrue( labels.contains( defaultLabel ) );
+				assertEquals( 1, labels.size() );
+			}
+			else
+				assertTrue( labels.isEmpty() );
+		}
+	}
+
 	// -- Helper methods --
 
 	private static MaskInterval createBox( final long[] min, final long[] max )

@@ -442,6 +442,44 @@ public class Masks
 		}
 	}
 
+	/**
+	 * Adds any {@link LabeledMaskInterval}s in the list to the provided
+	 * {@link ImgLabeling}. If a given {@link MaskInterval} is a
+	 * {@link CompositeMaskPredicate}, this method will recurse through the
+	 * children looking for {@link LabeledMaskInterval}s. And if one is found,
+	 * its label will be added to the {@code ImgLabeling} only at the locations
+	 * in the root/parent {@code CompositeMaskPredicate}. If a given
+	 * {@link MaskInterval} or part of a {@code CompositeMaskPredicate} does not
+	 * contain a label, the given default label will be set at those locations.
+	 *
+	 * @param masks
+	 *            list of potential {@link MaskInterval}s to add
+	 * @param labeling
+	 *            {@link ImgLabeling} to add labels/masks to
+	 * @param defaultLabel
+	 *            the label to assign to pixels inside the given
+	 *            {@link MaskInterval}s that do not already have labels (i.e.
+	 *            not part of a {@link LabeledMaskInterval}
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static < T, I extends IntegerType< I > > void addMasksToLabeling( final List< MaskInterval > masks, final ImgLabeling< T, I > labeling, final T defaultLabel )
+	{
+		addMasksToLabeling( masks, labeling, ( Class< T > ) defaultLabel.getClass() );
+
+		final RandomAccess< LabelingType< T > > ra = labeling.randomAccess();
+		for ( final MaskInterval mi : masks )
+		{
+			final Cursor< Void > c = Regions.iterable( Masks.toRandomAccessibleInterval( mi ) ).cursor();
+			while ( c.hasNext() )
+			{
+				c.next();
+				ra.setPosition( c );
+				if ( ra.get().isEmpty() )
+					ra.get().add( defaultLabel );
+			}
+		}
+	}
+
 	/*
 	 * Empty Masks
 	 * ===============================================================
