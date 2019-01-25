@@ -33,7 +33,9 @@
  */
 package net.imglib2.roi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import net.imglib2.FinalInterval;
@@ -46,8 +48,13 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.roi.labeling.ImgLabeling;
+import net.imglib2.roi.labeling.LabelRegion;
+import net.imglib2.roi.labeling.LabelRegions;
+import net.imglib2.roi.labeling.LabelingType;
 import net.imglib2.roi.mask.integer.DefaultMask;
 import net.imglib2.roi.mask.integer.DefaultMaskInterval;
+import net.imglib2.roi.mask.integer.LabeledMaskInterval;
 import net.imglib2.roi.mask.integer.MaskAsRandomAccessible;
 import net.imglib2.roi.mask.integer.MaskIntervalAsRandomAccessibleInterval;
 import net.imglib2.roi.mask.integer.RandomAccessibleAsMask;
@@ -330,6 +337,42 @@ public class Masks
 	public static < B extends BooleanType< B > > RealMaskRealInterval toRealMaskRealInterval( final RealRandomAccessibleRealInterval< B > rrari )
 	{
 		return new RealRandomAccessibleRealIntervalAsRealMaskRealInterval<>( rrari );
+	}
+
+	/**
+	 * Wraps the given {@link LabelRegion} as a {@link MaskInterval}.
+	 *
+	 * @param region
+	 *            the {@code LabelRegion<T>} to wrap
+	 * @return a {@link LabeledMaskInterval} equivalent to the given
+	 *         {@code LabelRegion<T>}
+	 */
+	public static < T > LabeledMaskInterval< T > toMaskInterval( final LabelRegion< T > region )
+	{
+		final MaskInterval mask = toMaskInterval( ( RandomAccessibleInterval< BoolType > ) region );
+		return new LabeledMaskInterval<>( mask, region.getLabel() );
+	}
+
+	/*
+	 * Mask/Labeling Conversions
+	 * ===============================================================
+	 */
+
+	/**
+	 * Extracts a {@link MaskInterval} for each label in the given labeling.
+	 *
+	 * @param labeling
+	 *            an {@link ImgLabeling}, view on ImgLabeling, etc. from which
+	 *            the {@code MaskInterval}s will be extracted
+	 * @return a list of {@code MaskInterval}s, one for each label in the
+	 *         labeling
+	 */
+	public static < T > List< LabeledMaskInterval< T > > extractMaskIntervals( final RandomAccessibleInterval< LabelingType< T > > labeling )
+	{
+		final List< LabeledMaskInterval< T > > masks = new ArrayList<>();
+		final LabelRegions< T > regions = new LabelRegions<>( labeling );
+		regions.forEach( r -> masks.add( toMaskInterval( r ) ) );
+		return masks;
 	}
 
 	/*
