@@ -177,27 +177,33 @@ public class MaskToLabelingTest
 		final ImgLabeling< Character, IntType > imgLabeling = new ImgLabeling<>( indexImg );
 		Masks.addMasksToLabeling( Arrays.asList( boxComposite, labelXor ), imgLabeling, Character.class );
 
+		final MaskInterval XorBoxComposite = labelBoxThree.xor( labelBoxTwo.or( labelBoxOne ) );
 		final Cursor< LabelingType< Character > > c = imgLabeling.cursor();
 		while ( c.hasNext() )
 		{
-			final LabelingType< Character > labels = c.next();
 			int numLabels = 0;
-			// Even though all box points are not in the composite ROI, they are
-			// labeled
-			if ( boxOne.test( c ) )
+			final LabelingType< Character > labels = c.next();
+			// Only labels of the children with the parent ROI should be written
+			// to the ImgLabeling
+			// So none of the labels in the xor should be in the ImgLabeling
+			if ( XorBoxComposite.test( c ) )
 			{
-				assertTrue( labels.contains( labelBoxOne.getLabel() ) );
-				numLabels++;
+				assertTrue( labels.isEmpty() );
 			}
-			if ( boxTwo.test( c ) )
-			{
-				assertTrue( labels.contains( labelBoxTwo.getLabel() ) );
-				numLabels++;
-			}
-			if ( boxThree.test( c ) )
+			if ( boxComposite.test( c ) )
 			{
 				assertTrue( labels.contains( labelBoxThree.getLabel() ) );
 				numLabels++;
+				if ( boxOne.test( c ) )
+				{
+					assertTrue( labels.contains( labelBoxOne.getLabel() ) );
+					numLabels++;
+				}
+				if ( boxTwo.test( c ) )
+				{
+					assertTrue( labels.contains( labelBoxTwo.getLabel() ) );
+					numLabels++;
+				}
 			}
 			// Label was set on the Xor so none of the inner circles points
 			// should have labels
@@ -208,7 +214,6 @@ public class MaskToLabelingTest
 			}
 			if ( sphereOne.test( c ) )
 				assertTrue( labels.isEmpty() );
-
 			assertEquals( numLabels, labels.size() );
 		}
 	}

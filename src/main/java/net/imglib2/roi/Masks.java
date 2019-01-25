@@ -35,7 +35,10 @@ package net.imglib2.roi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import net.imglib2.Cursor;
@@ -386,7 +389,10 @@ public class Masks
 	 * {@link ImgLabeling}. If a given {@link Mask} is a
 	 * {@link CompositeMaskPredicate}, this method will recurse through the
 	 * children looking for {@link LabeledMaskInterval}s. And if one is found,
-	 * it will be added to the {@code ImgLabeling}.
+	 * its label will be added to the {@code ImgLabeling} only at the locations
+	 * in the root/parent {@code CompositeMaskPredicate}. If the given
+	 * {@code Mask} is not a {@code LabeledMaskInterval} it will not be written
+	 * to the {@code ImgLabeling}
 	 *
 	 * @param masks
 	 *            list of potential {@link Mask}s to add, only the discovered
@@ -399,25 +405,31 @@ public class Masks
 	 */
 	public static < T, I extends IntegerType< I > > void addMasksToLabeling( final List< MaskInterval > masks, final ImgLabeling< T, I > labeling, final Class< T > type )
 	{
-		final List< LabeledMaskInterval< ? extends T > > labeledMasks = new ArrayList<>();
+		final Map< Mask, List< LabeledMaskInterval< ? extends T > > > labeledMasks = new HashMap<>();
 		final long[] max = new long[ labeling.numDimensions() ];
 		final long[] min = new long[ labeling.numDimensions() ];
 		labeling.max( max );
 		labeling.min( min );
 
 		for ( final MaskInterval maskInterval : masks )
-			collectLabels( maskInterval, max, min, labeledMasks, type );
+			collectLabels( maskInterval, max, min, labeledMasks, type, null );
 
 		final RandomAccess< LabelingType< T > > ra = labeling.randomAccess();
-		for ( final LabeledMaskInterval< ? extends T > labeledMask : labeledMasks )
+		for ( final Entry< Mask, List< LabeledMaskInterval< ? extends T > > > s : labeledMasks.entrySet() )
 		{
-			final IterableRegion< BoolType > iterable = Regions.iterable( toRandomAccessibleInterval( labeledMask ) );
-			final Cursor< Void > c = iterable.cursor();
-			while ( c.hasNext() )
+			for ( final LabeledMaskInterval< ? extends T > labeledMask : s.getValue() )
 			{
-				c.next();
-				ra.setPosition( c );
-				ra.get().add( labeledMask.getLabel() );
+				final IterableRegion< BoolType > iterable = Regions.iterable( toRandomAccessibleInterval( labeledMask ) );
+				final Cursor< Void > c = iterable.cursor();
+				while ( c.hasNext() )
+				{
+					c.next();
+					if ( s.getKey().test( c ) )
+					{
+						ra.setPosition( c );
+						ra.get().add( labeledMask.getLabel() );
+					}
+				}
 			}
 		}
 	}
@@ -566,8 +578,7 @@ public class Masks
 
 	// -- Helper methods --
 
-	@SuppressWarnings( "unchecked" )
-	private static < T > void collectLabels( final Mask mask, final long[] max, final long[] min, final List< LabeledMaskInterval< ? extends T > > labeledMasks, final Class< T > type )
+	private static < T > void collectLabels( final Mask mask, final long[] max, final long[] min, final Map< Mask, List< LabeledMaskInterval< ? extends T > > > labeledMasks, final Class< T > type, final Mask parent )
 	{
 		Mask copy = mask;
 		if ( mask instanceof MaskInterval )
@@ -585,23 +596,41 @@ public class Masks
 				final Class< ? > labelMaskType = ( ( LabeledMaskInterval< ? > ) mask ).getLabel().getClass();
 				if ( !type.isAssignableFrom( labelMaskType ) )
 					throw new IllegalArgumentException( "Incompatible label type, " + labelMaskType + ", for labeing type " + type );
-				labeledMasks.add( ( LabeledMaskInterval< ? extends T > ) mask );
-				copy = ( ( LabeledMaskInterval< ? > ) mask ).getSource();
+				@SuppressWarnings( "unchecked" )
+				final LabeledMaskInterval< ? extends T > labeledMask = ( LabeledMaskInterval< ? extends T > ) mask;
+				if ( parent == null )
+				{
+					final List< LabeledMaskInterval< ? extends T > > l = new ArrayList<>();
+					l.add( labeledMask );
+					labeledMasks.put( labeledMask.getSource(), l );
+				}
+				else if ( labeledMasks.containsKey( parent ) )
+				{
+					labeledMasks.get( parent ).add( labeledMask );
+				}
+				else
+				{
+					final List< LabeledMaskInterval< ? extends T > > l = new ArrayList<>();
+					l.add( labeledMask );
+					labeledMasks.put( parent, l );
+				}
+				copy = labeledMask.getSource();
 			}
 		}
 		if ( copy instanceof BinaryCompositeMaskPredicate )
 		{
 			final BinaryCompositeMaskPredicate< ? > bcmp = ( BinaryCompositeMaskPredicate< ? > ) copy;
+			final Mask p = parent == null ? copy : parent;
 			if ( bcmp.arg0() instanceof Mask )
-				collectLabels( ( Mask ) bcmp.arg0(), max, min, labeledMasks, type );
+				collectLabels( ( Mask ) bcmp.arg0(), max, min, labeledMasks, type, p );
 			if ( bcmp.arg1() instanceof Mask )
-				collectLabels( ( Mask ) bcmp.arg1(), max, min, labeledMasks, type );
+				collectLabels( ( Mask ) bcmp.arg1(), max, min, labeledMasks, type, p );
 		}
 		if ( copy instanceof UnaryCompositeMaskPredicate )
 		{
 			final UnaryCompositeMaskPredicate< ? > ucmp = ( UnaryCompositeMaskPredicate< ? > ) copy;
 			if ( ucmp.arg0() instanceof Mask )
-				collectLabels( ( Mask ) ucmp.arg0(), max, min, labeledMasks, type );
+				collectLabels( ( Mask ) ucmp.arg0(), max, min, labeledMasks, type, parent == null ? copy : parent );
 		}
 	}
 }
