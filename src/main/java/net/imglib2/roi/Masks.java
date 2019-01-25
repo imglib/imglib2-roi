@@ -386,7 +386,7 @@ public class Masks
 
 	/**
 	 * Adds any {@link LabeledMaskInterval}s in the list to the provided
-	 * {@link ImgLabeling}. If a given {@link Mask} is a
+	 * {@link ImgLabeling}. If a given {@link MaskInterval} is a
 	 * {@link CompositeMaskPredicate}, this method will recurse through the
 	 * children looking for {@link LabeledMaskInterval}s. And if one is found,
 	 * its label will be added to the {@code ImgLabeling} only at the locations
@@ -395,8 +395,8 @@ public class Masks
 	 * to the {@code ImgLabeling}
 	 *
 	 * @param masks
-	 *            list of potential {@link Mask}s to add, only the discovered
-	 *            {@link LabeledMaskInterval}s will be added
+	 *            list of potential {@link MaskInterval}s to add, only the
+	 *            discovered {@link LabeledMaskInterval}s will be added
 	 * @param labeling
 	 *            {@link ImgLabeling} to add labels/masks to
 	 * @param type
@@ -406,13 +406,21 @@ public class Masks
 	public static < T, I extends IntegerType< I > > void addMasksToLabeling( final List< MaskInterval > masks, final ImgLabeling< T, I > labeling, final Class< T > type )
 	{
 		final Map< Mask, List< LabeledMaskInterval< ? extends T > > > labeledMasks = new HashMap<>();
-		final long[] max = new long[ labeling.numDimensions() ];
-		final long[] min = new long[ labeling.numDimensions() ];
-		labeling.max( max );
-		labeling.min( min );
 
 		for ( final MaskInterval maskInterval : masks )
-			collectLabels( maskInterval, max, min, labeledMasks, type, null );
+		{
+			if ( maskInterval.numDimensions() != labeling.numDimensions() )
+				throw new IllegalArgumentException( "Incompatible dimensions. Dims labeling: " + labeling.numDimensions() + " dims mask: " + maskInterval.numDimensions() );
+			for ( int d = 0; d < labeling.numDimensions(); d++ )
+			{
+				if ( maskInterval.min( d ) < labeling.min( d ) || maskInterval.max( d ) > labeling.max( d ) )
+					throw new IllegalArgumentException( "MaskInterval [" + maskInterval.min( d ) + ", " + maskInterval.max( d ) + "] exceeds the range of labeling [" + labeling.min( d ) + ", " + labeling.max( d ) + "] in dimension " + d );
+			}
+			final List< LabeledMaskInterval< ? extends T > > list = new ArrayList<>();
+			collectLabels( maskInterval, list, type );
+			if ( !list.isEmpty() )
+				labeledMasks.put( maskInterval, list );
+		}
 
 		final RandomAccess< LabelingType< T > > ra = labeling.randomAccess();
 		for ( final Entry< Mask, List< LabeledMaskInterval< ? extends T > > > s : labeledMasks.entrySet() )
@@ -578,59 +586,32 @@ public class Masks
 
 	// -- Helper methods --
 
-	private static < T > void collectLabels( final Mask mask, final long[] max, final long[] min, final Map< Mask, List< LabeledMaskInterval< ? extends T > > > labeledMasks, final Class< T > type, final Mask parent )
+	private static < T > void collectLabels( final Mask mask, final List< LabeledMaskInterval< ? extends T > > labeledMasks, final Class< T > type )
 	{
 		Mask copy = mask;
-		if ( mask instanceof MaskInterval )
+		if ( mask instanceof LabeledMaskInterval )
 		{
-			final MaskInterval maskInterval = ( MaskInterval ) mask;
-			if ( mask.numDimensions() != max.length )
-				throw new IllegalArgumentException( "Incompatible dimensions. Dims labeling: " + max.length + " dims mask: " + mask.numDimensions() );
-			for ( int d = 0; d < max.length; d++ )
-			{
-				if ( maskInterval.min( d ) < min[ d ] || maskInterval.max( d ) > max[ d ] )
-					throw new IllegalArgumentException( "MaskInterval [" + maskInterval.min( d ) + ", " + maskInterval.max( d ) + "] exceeds the range of labeling [" + min[ d ] + ", " + max[ d ] + "] in dimension " + d );
-			}
-			if ( mask instanceof LabeledMaskInterval )
-			{
-				final Class< ? > labelMaskType = ( ( LabeledMaskInterval< ? > ) mask ).getLabel().getClass();
-				if ( !type.isAssignableFrom( labelMaskType ) )
-					throw new IllegalArgumentException( "Incompatible label type, " + labelMaskType + ", for labeing type " + type );
-				@SuppressWarnings( "unchecked" )
-				final LabeledMaskInterval< ? extends T > labeledMask = ( LabeledMaskInterval< ? extends T > ) mask;
-				if ( parent == null )
-				{
-					final List< LabeledMaskInterval< ? extends T > > l = new ArrayList<>();
-					l.add( labeledMask );
-					labeledMasks.put( labeledMask.getSource(), l );
-				}
-				else if ( labeledMasks.containsKey( parent ) )
-				{
-					labeledMasks.get( parent ).add( labeledMask );
-				}
-				else
-				{
-					final List< LabeledMaskInterval< ? extends T > > l = new ArrayList<>();
-					l.add( labeledMask );
-					labeledMasks.put( parent, l );
-				}
-				copy = labeledMask.getSource();
-			}
+			final Class< ? > labelMaskType = ( ( LabeledMaskInterval< ? > ) mask ).getLabel().getClass();
+			if ( !type.isAssignableFrom( labelMaskType ) )
+				throw new IllegalArgumentException( "Incompatible label type, " + labelMaskType + ", for labeing type " + type );
+			@SuppressWarnings( "unchecked" )
+			final LabeledMaskInterval< ? extends T > labeledMask = ( LabeledMaskInterval< ? extends T > ) mask;
+			labeledMasks.add( labeledMask );
+			copy = labeledMask.getSource();
 		}
 		if ( copy instanceof BinaryCompositeMaskPredicate )
 		{
 			final BinaryCompositeMaskPredicate< ? > bcmp = ( BinaryCompositeMaskPredicate< ? > ) copy;
-			final Mask p = parent == null ? copy : parent;
 			if ( bcmp.arg0() instanceof Mask )
-				collectLabels( ( Mask ) bcmp.arg0(), max, min, labeledMasks, type, p );
+				collectLabels( ( Mask ) bcmp.arg0(), labeledMasks, type );
 			if ( bcmp.arg1() instanceof Mask )
-				collectLabels( ( Mask ) bcmp.arg1(), max, min, labeledMasks, type, p );
+				collectLabels( ( Mask ) bcmp.arg1(), labeledMasks, type );
 		}
 		if ( copy instanceof UnaryCompositeMaskPredicate )
 		{
 			final UnaryCompositeMaskPredicate< ? > ucmp = ( UnaryCompositeMaskPredicate< ? > ) copy;
 			if ( ucmp.arg0() instanceof Mask )
-				collectLabels( ( Mask ) ucmp.arg0(), max, min, labeledMasks, type, parent == null ? copy : parent );
+				collectLabels( ( Mask ) ucmp.arg0(), labeledMasks, type );
 		}
 	}
 }
