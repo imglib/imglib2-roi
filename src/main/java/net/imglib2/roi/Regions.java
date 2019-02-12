@@ -51,6 +51,19 @@ public class Regions
 	{
 		return SamplingIterableInterval.create( region, img );
 	}
+	
+	/**
+	 * Given a mask and an image, return an {@link IterableInterval}
+	 * over the pixels of the image inside the mask.
+	 * 
+	 * @param mask The mask that defines which pixels in {@code img} to iterate over.
+	 * @param img The source from which to grab the pixels inside the mask.
+	 * @return An IterableInterval over the samples of img inside the mask.
+	 */
+	public static < T > IterableInterval< T > sample( final RealMaskRealInterval mask, final RandomAccessible< T > img )
+	{
+		return Regions.sample( Masks.toIterableInterval( mask ), img );
+	}
 
 	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
 	{
