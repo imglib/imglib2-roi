@@ -60,6 +60,8 @@ import net.imglib2.roi.mask.real.RealRandomAccessibleAsRealMask;
 import net.imglib2.roi.mask.real.RealRandomAccessibleRealIntervalAsRealMaskRealInterval;
 import net.imglib2.type.BooleanType;
 import net.imglib2.type.logic.BoolType;
+import net.imglib2.util.Intervals;
+import net.imglib2.view.Views;
 
 /**
  * Utility class for working with {@link Mask}s and {@link RealMask}s.
@@ -229,6 +231,38 @@ public class Masks
 	public static RealRandomAccessibleRealInterval< BoolType > toRealRandomAccessibleRealInterval( final RealMaskRealInterval mask )
 	{
 		return new RealMaskRealIntervalAsRealRandomAccessibleRealInterval<>( mask, new BoolType() );
+	}
+	
+	/**
+	 * View a {@link RealMaskRealInterval} as an {@link IterableRegion},
+	 * in integer coordinates.
+	 * 
+	 * This method enables using a {@link RealMaskRealInterval} as the ROI
+	 * to iterate over in a {@link RandomAccessible}, in conjunction
+	 * with {@link Regions#sample(net.imglib2.IterableInterval, RandomAccessible)}.
+	 * 
+	 * For example, to iterate the values inside a sphere, do:
+	 * 
+	 * <pre>{@code
+	 * final ClosedWritableSphere sphere = ...
+	 * final RandomAccessibleInterval rai = ...
+	 * 
+	 * for ( final T t : Regions.sample( Masks.toIterableInterval( sphere ), rai )
+	 * {
+	 *     // Do something with t
+	 * }
+	 * }</pre>
+	 * 
+	 * @param mask {@link RealMaskRealInterval} to be iterated in
+	 *             in integer coordinates.
+	 * @return IterableRegion&lt; BoolType &gt;
+	 */
+	public static IterableRegion< BoolType > toIterableInterval( final RealMaskRealInterval mask )
+	{
+		return Regions.iterable(
+				Views.interval(
+						Views.raster( Masks.toRealRandomAccessible( mask )),
+						Intervals.largestContainedInterval( mask ) ) );
 	}
 
 	/*
