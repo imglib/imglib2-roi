@@ -88,15 +88,11 @@ public class DefaultWritableRealPointCollection< L extends RealLocalizable > ext
 	{
 		if ( Intervals.contains( this, l ) )
 		{
-			double bestDistance = Double.POSITIVE_INFINITY;
 			for ( final L pt : points.values() )
 			{
-				final double distance = squareDistance( pt, l );
-				if ( distance < bestDistance )
-					bestDistance = distance;
+				if ( squareDistance( pt, l ) <= 0 )
+					return true;
 			}
-
-			return bestDistance <= 0;
 		}
 		return false;
 	}
