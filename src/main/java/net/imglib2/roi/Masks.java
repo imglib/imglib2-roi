@@ -257,7 +257,7 @@ public class Masks
 	 *             in integer coordinates.
 	 * @return IterableRegion&lt; BoolType &gt;
 	 */
-	public static IterableRegion< BoolType > toIterableInterval( final RealMaskRealInterval mask )
+	public static IterableRegion< BoolType > toIterableRegion( final RealMaskRealInterval mask )
 	{
 		return Regions.iterable(
 				Views.interval(

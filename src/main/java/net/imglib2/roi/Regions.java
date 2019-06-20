@@ -62,7 +62,7 @@ public class Regions
 	 */
 	public static < T > IterableInterval< T > sample( final RealMaskRealInterval mask, final RandomAccessible< T > img )
 	{
-		return Regions.sample( Masks.toIterableInterval( mask ), img );
+		return Regions.sample( Masks.toIterableRegion( mask ), img );
 	}
 
 	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
