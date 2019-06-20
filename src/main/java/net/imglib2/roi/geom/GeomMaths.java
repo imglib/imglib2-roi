@@ -104,7 +104,7 @@ public class GeomMaths
 
 	/**
 	 * Return true if the given point is contained inside the boundary. See:
-	 * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+	 * https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
 	 */
 	public static boolean pnpoly( final TDoubleArrayList x, final TDoubleArrayList y, final RealLocalizable localizable )
 	{
