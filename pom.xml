@@ -64,6 +64,8 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>deploy-to-scijava</releaseProfiles>
+
+		<imglib2-realtransform.version>2.2.1</imglib2-realtransform.version>
 	</properties>
 
 	<developers>
@@ -159,6 +161,11 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<name>Mark Hiner</name>
 			<url>https://imagej.net/User:Hinerm</url>
 			<properties><id>hinerm</id></properties>
+		</contributor>
+		<contributor>
+			<name>John Bogovic</name>
+			<url>https://imagej.net/User:Bogovic</url>
+			<properties><id>bogovicj</id></properties>
 		</contributor>
 	</contributors>
 

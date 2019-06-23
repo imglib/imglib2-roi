@@ -44,6 +44,7 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
+import net.imglib2.position.FunctionRealRandomAccessible;
 import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.AffineTransform;
 import net.imglib2.realtransform.AffineTransform2D;
@@ -76,6 +77,8 @@ import net.imglib2.roi.geom.real.WritablePolygon2D;
 import net.imglib2.roi.geom.real.WritableSphere;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.ConstantUtils;
+
+import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
@@ -800,7 +803,8 @@ public class OperatorsTest
 	public void testNonInvertibleTransform()
 	{
 		final Ellipsoid e = new OpenWritableEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
-		final RandomAccessibleInterval< DoubleType > def = ConstantUtils.constantRandomAccessibleInterval( new DoubleType( -10.0 ), 3, new FinalInterval( 4, 4, 2 ) );
+		final BiConsumer< RealLocalizable, DoubleType > f = ( p, v ) -> v.set( -10 );
+		final FunctionRealRandomAccessible< DoubleType > def = new FunctionRealRandomAccessible<>( 3, f, DoubleType::new );
 		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def );
 		final RealMask rm = e.transform( transformToSource );
 
