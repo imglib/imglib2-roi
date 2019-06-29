@@ -247,7 +247,7 @@ public class Masks
 	 * final ClosedWritableSphere sphere = ...
 	 * final RandomAccessibleInterval rai = ...
 	 * 
-	 * for ( final T t : Regions.sample( Masks.toIterableInterval( sphere ), rai )
+	 * for ( final T t : Regions.sample( Masks.toIterableRegion( sphere ), rai )
 	 * {
 	 *     // Do something with t
 	 * }
