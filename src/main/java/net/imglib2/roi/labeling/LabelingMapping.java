@@ -57,9 +57,6 @@ import net.imglib2.type.numeric.IntegerType;
  * {@link #removeLabelFromSetAtIndex(Object, int)} for efficiently adding and
  * removing labels to the set at a given index value.
  *
- * LabelingMapping implements the List interface, but cannot be modified using
- * this interface.
- *
  * @param <T>
  *            the desired type of the pixel labels, for instance {@link Integer}
  *            to number objects or {@link String} for user-assigned label names.
@@ -67,7 +64,7 @@ import net.imglib2.type.numeric.IntegerType;
  * @author Lee Kamentsky
  * @author Tobias Pietzsch
  */
-public class LabelingMapping< T > extends AbstractList< Set< T > >
+public class LabelingMapping< T >
 {
 	private static final int INT_NO_ENTRY_VALUE = -1;
 
@@ -148,18 +145,6 @@ public class LabelingMapping< T > extends AbstractList< Set< T > >
 	LabelingMapping< T > newInstance()
 	{
 		return new LabelingMapping< T >( maxNumLabelSets );
-	}
-
-	@Override
-	public Set< T > get( int i )
-	{
-		return labelsAtIndex( i );
-	}
-
-	@Override
-	public int size()
-	{
-		return numSets();
 	}
 
 	/**
