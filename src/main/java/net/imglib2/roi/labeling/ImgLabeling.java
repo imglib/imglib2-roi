@@ -119,7 +119,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 			final List< Set< T > > labelSets )
 	{
 		ImgLabeling< T, I > result = new ImgLabeling<>( img );
-		new LabelingMapping.SerialisationAccess<>( result.getMapping() ).setLabelSets( labelSets );
+		result.getMapping().setLabelSets( labelSets );
 		return result;
 	}
 
