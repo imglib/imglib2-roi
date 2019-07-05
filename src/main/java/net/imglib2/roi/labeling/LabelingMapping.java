@@ -38,7 +38,6 @@ import gnu.trove.impl.Constants;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,15 +99,15 @@ public class LabelingMapping< T >
 	private final ArrayList< TObjectIntMap< T > > addMapsByIndex;
 
 	/**
-	 * Lookup tables for removing labels. Assume that by removing label <em>L</em>
-	 * from label set <em>S</em> we obtain <em>S' = S &setminus; {L}</em>.
-	 * {@code subMapsByIndex} contains at index of set <em>S</em> a map from
-	 * <em>L</em> to index of <em>S'</em>.
+	 * Lookup tables for removing labels. Assume that by removing label
+	 * <em>L</em> from label set <em>S</em> we obtain <em>S' = S &setminus;
+	 * {L}</em>. {@code subMapsByIndex} contains at index of set <em>S</em> a
+	 * map from <em>L</em> to index of <em>S'</em>.
 	 *
 	 * <p>
 	 * When a new <em>(L,S)</em> combination occurs for the first time in
-	 * {@link #removeLabelFromSetAtIndex(Object, int)}, it is added to the lookup
-	 * table.
+	 * {@link #removeLabelFromSetAtIndex(Object, int)}, it is added to the
+	 * lookup table.
 	 */
 	private final ArrayList< TObjectIntMap< T > > subMapsByIndex;
 
@@ -130,12 +129,12 @@ public class LabelingMapping< T >
 	{
 		this.maxNumLabelSets = maxNumLabelSets;
 
-		internedSets = new HashMap< Set< T >, InternedSet< T > >();
-		setsByIndex = new ArrayList< InternedSet< T > >();
-		addMapsByIndex = new ArrayList< TObjectIntMap< T > >();
-		subMapsByIndex = new ArrayList< TObjectIntMap< T > >();
+		internedSets = new HashMap<>();
+		setsByIndex = new ArrayList<>();
+		addMapsByIndex = new ArrayList<>();
+		subMapsByIndex = new ArrayList<>();
 
-		final HashSet< T > background = new HashSet< T >( 0 );
+		final HashSet< T > background = new HashSet<>( 0 );
 		theEmptySet = intern( background );
 	}
 
@@ -144,7 +143,7 @@ public class LabelingMapping< T >
 	 */
 	LabelingMapping< T > newInstance()
 	{
-		return new LabelingMapping< T >( maxNumLabelSets );
+		return new LabelingMapping<>( maxNumLabelSets );
 	}
 
 	/**
@@ -224,7 +223,7 @@ public class LabelingMapping< T >
 			if ( intIndex > maxNumLabelSets )
 				throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", intIndex ) );
 
-			interned = new InternedSet< T >( src, intIndex );
+			interned = new InternedSet<>( src, intIndex );
 			setsByIndex.add( interned );
 			addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
 			subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
@@ -250,7 +249,7 @@ public class LabelingMapping< T >
 			if ( i != INT_NO_ENTRY_VALUE )
 				return setsByIndex.get( i );
 
-			final HashSet< T > set = new HashSet< T >( setsByIndex.get( index ).set );
+			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
 			set.add( label );
 			final InternedSet< T > interned = intern( set );
 			addMap.put( label, interned.index );
@@ -275,7 +274,7 @@ public class LabelingMapping< T >
 			if ( i != INT_NO_ENTRY_VALUE )
 				return setsByIndex.get( i );
 
-			final HashSet< T > set = new HashSet< T >( setsByIndex.get( index ).set );
+			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
 			set.remove( label );
 			final InternedSet< T > interned = intern( set );
 			subMap.put( label, interned.index );
@@ -305,7 +304,7 @@ public class LabelingMapping< T >
 	// TODO: build only once (while adding labels).
 	public Set< T > getLabels()
 	{
-		final HashSet< T > result = new HashSet< T >();
+		final HashSet< T > result = new HashSet<>();
 		for ( final InternedSet< T > instance : setsByIndex )
 		{
 			for ( final T label : instance.set )
@@ -317,8 +316,8 @@ public class LabelingMapping< T >
 	}
 
 	/**
-	 * Returns a snapshot of the {@link LabelingMapping} represented
-	 * as a list of sets.
+	 * Returns a snapshot of the {@link LabelingMapping} represented as a list
+	 * of sets.
 	 * <p>
 	 * {@link List#get(int)} of the returned list will give the same value
 	 * {@link LabelingMapping#labelsAtIndex(int)}. The size of the return listed
@@ -326,27 +325,28 @@ public class LabelingMapping< T >
 	 */
 	public List< Set< T > > getLabelSets()
 	{
-		final ArrayList< Set< T > > labelSets= new ArrayList< Set< T > >( numSets() );
+		final ArrayList< Set< T > > labelSets = new ArrayList<>( numSets() );
 		for ( final InternedSet< T > interned : setsByIndex )
 			labelSets.add( interned.getSet() );
 		return labelSets;
 	}
 
 	/**
-	 * Replaces the current label mapping, with the mapping given as list of sets.
+	 * Replaces the current label mapping, with the mapping given as list of
+	 * sets.
 	 * <p>
 	 * WARNING: Using this method could easily result in a malfunctioning
 	 * {@link ImgLabeling}. This is certainly the case, if values of the index
-	 * image don't map to any value in this list. This is the case, if
-	 * the index image contains negative values or values greater than or equal to
-	 * the size of the list.
+	 * image don't map to any value in this list. This is the case, if the index
+	 * image contains negative values or values greater than or equal to the
+	 * size of the list.
 	 * <p>
-	 * @param labelSets The given list must not be empty.
-	 *                  The first entry, must be the empty set.
-	 *                  All list entries must be unique.
-	 *                  If used together with a {@link ImgLabeling}, a pixel
-	 *                  in the index image will be mapped to the set with the
-	 *					given index in the list.
+	 *
+	 * @param labelSets
+	 *            The given list must not be empty. The first entry must be the
+	 *            empty set. All list entries must be unique. If used together
+	 *            with a {@link ImgLabeling}, a pixel in the index image will be
+	 *            mapped to the set with the given index in the list.
 	 *
 	 * @see LabelingMapping#getLabelSets()
 	 */

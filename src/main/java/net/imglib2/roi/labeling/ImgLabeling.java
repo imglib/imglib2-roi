@@ -94,50 +94,53 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		indexIterable = Views.iterable( img );
 		subIterable = indexIterable instanceof SubIntervalIterable;
 		generation = new ModCount();
-		mapping = new LabelingMapping< T >( indexIterable.firstElement() );
+		mapping = new LabelingMapping<>( indexIterable.firstElement() );
 	}
 
 	/**
-	 * Creates a non empty ImgLabeling, from an index image and a list of label sets.
+	 * Creates a non empty ImgLabeling, from an index image and a list of label
+	 * sets.
 	 * <p>
 	 * Each pixel can have multiple labels. If there's only one label per pixel,
 	 * see {@link #fromImageAndLabels}
 	 * <p>
-	 * The list of label sets gives the initial mapping between pixel values and labels.
-	 * The pixel values of the index image must be non negative, and smaller than
-	 * the size of the list of label sets.
-	 * The first element of the list of label sets must always be the empty set.
-	 * Every element in the list must be unique.
+	 * The list of label sets gives the initial mapping between pixel values and
+	 * labels. The pixel values of the index image must be non negative, and
+	 * smaller than the size of the list of label sets. The first element of the
+	 * list of label sets must always be the empty set. Every element in the
+	 * list must be unique.
 	 * <p>
 	 * A pixel value of i represents a pixel, which has the labels, that are at
-	 * index i in the list of label sets.
-	 * A pixel value of 0 always represents a pixel with no labels, because
-	 * the first entry in the list is always the empty set.
+	 * index i in the list of label sets. A pixel value of 0 always represents a
+	 * pixel with no labels, because the first entry in the list is always the
+	 * empty set.
 	 */
 	public static < T, I extends IntegerType< I > > ImgLabeling< T, I > fromImageAndLabelSets(
 			final RandomAccessibleInterval< I > img,
 			final List< Set< T > > labelSets )
 	{
-		ImgLabeling< T, I > result = new ImgLabeling<>( img );
+		final ImgLabeling< T, I > result = new ImgLabeling<>( img );
 		result.getMapping().setLabelSets( labelSets );
 		return result;
 	}
 
 	/**
-	 * Creates a non empty ImgLabeling, from an index image and a list of labels.
+	 * Creates a non empty ImgLabeling, from an index image and a list of
+	 * labels.
 	 * <p>
-	 * This method does not support intersection labels,
-	 * for intersecting labels set see {@link #fromImageAndLabelSets}.
+	 * This method does not support intersection labels, for intersecting labels
+	 * set see {@link #fromImageAndLabelSets}.
 	 * <p>
-	 * The pixel values of the index image must be between 0 and the length of the list of labels.
-	 * A pixel value of zero represents a pixel with no label.
-	 * A pixel value of N represents the label, which is given by the Nth entry in the list of labels.
+	 * The pixel values of the index image must be between 0 and the length of
+	 * the list of labels. A pixel value of zero represents a pixel with no
+	 * label. A pixel value of N represents the label, which is given by the Nth
+	 * entry in the list of labels.
 	 */
 	public static < T, I extends IntegerType< I > > ImgLabeling< T, I > fromImageAndLabels(
 			final RandomAccessibleInterval< I > img,
 			final List< T > labels )
 	{
-		List< Set< T > > labelSets = Stream.concat( Stream.< Set< T > >of( Collections.emptySet() ),
+		final List< Set< T > > labelSets = Stream.concat( Stream.< Set< T > >of( Collections.emptySet() ),
 				labels.stream().map( Collections::singleton ) ).collect( Collectors.toList() );
 		return fromImageAndLabelSets( img, labelSets );
 	}
@@ -154,7 +157,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		public LabelingConvertedRandomAccess( final RandomAccess< I > source )
 		{
 			super( source );
-			this.type = new LabelingType< T >( source.get(), mapping, generation );
+			this.type = new LabelingType<>( source.get(), mapping, generation );
 		}
 
 		@Override
@@ -177,7 +180,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		public LabelingConvertedCursor( final Cursor< I > source )
 		{
 			super( source );
-			this.type = new LabelingType< T >( source.get(), mapping, generation );
+			this.type = new LabelingType<>( source.get(), mapping, generation );
 		}
 
 		@Override
@@ -288,7 +291,8 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 	/**
 	 * @return RandomAccessibleInterval containing the indices
 	 */
-	public RandomAccessibleInterval< I > getIndexImg(){
+	public RandomAccessibleInterval< I > getIndexImg()
+	{
 		return indexAccessible;
 	}
 }
