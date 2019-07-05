@@ -196,6 +196,18 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- Test dependencies -->
 		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>1.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<version>1.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -204,6 +216,17 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<groupId>org.scijava</groupId>
 			<artifactId>junit-benchmarks</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>bigdataviewer-vistools</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>net.imglib2</groupId>
+					<artifactId>imglib2-roi</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
