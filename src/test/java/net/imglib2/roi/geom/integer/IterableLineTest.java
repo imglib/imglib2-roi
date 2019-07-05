@@ -20,6 +20,8 @@ import net.imglib2.roi.Regions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.util.Util;
 
+import org.junit.Test;
+
 public class IterableLineTest
 {
 
@@ -29,8 +31,8 @@ public class IterableLineTest
 		final Point P1 = new Point( new long[] { 0, 0 } );
 		final Point P2 = new Point( new long[] { 10, 0 } );
 		final IterableLine line = new IterableLine( P1, P2 );
-		
-		final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes( 100, 100 );
+
+		final Img< UnsignedByteType > img = ArrayImgs.unsignedBytes( 100, 100 );
 		final IterableInterval< UnsignedByteType > sample = Regions.sample( line, img );
 		for ( final UnsignedByteType p : sample )
 			p.inc();
@@ -42,18 +44,18 @@ public class IterableLineTest
 		int sum = 0;
 		for ( final UnsignedByteType p : img )
 			sum += p.get();
-		
+
 		assertEquals( "Iterated over unexpected pixels.", line.size(), sum );
 	}
-	
+
 	@Test
 	public void testHorizontalLine()
 	{
 		final Point P1 = new Point( new long[] { 0, 0 } );
 		final Point P2 = new Point( new long[] { 0, 10 } );
 		final IterableLine line = new IterableLine( P1, P2 );
-		
-		final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes( 100, 100 );
+
+		final Img< UnsignedByteType > img = ArrayImgs.unsignedBytes( 100, 100 );
 		final IterableInterval< UnsignedByteType > sample = Regions.sample( line, img );
 		for ( final UnsignedByteType p : sample )
 			p.inc();
@@ -65,44 +67,44 @@ public class IterableLineTest
 		int sum = 0;
 		for ( final UnsignedByteType p : img )
 			sum += p.get();
-		
+
 		assertEquals( "Iterated over unexpected pixels.", line.size(), sum );
 	}
-	
+
 	@Test
 	public void testEqual()
 	{
 		// Different concrete class for Localizable but same location.
 		final Point s1 = new Point( new long[] { 12, 37, 6 } );
 		final ArrayImg< UnsignedByteType, ByteArray > img = ArrayImgs.unsignedBytes( 50, 50, 50 );
-		final RandomAccess<UnsignedByteType> ra = img.randomAccess();
-		ra.setPosition( new int[]  { 12, 37, 6 } );
+		final RandomAccess< UnsignedByteType > ra = img.randomAccess();
+		ra.setPosition( new int[] { 12, 37, 6 } );
 
 		final Point e1 = new Point( new long[] { 12, 37, 60 } );
 		final Point e2 = new Point( new long[] { 12, 37, 60 } );
-		
+
 		final IterableLine line1 = new IterableLine( s1, e1 );
 		final IterableLine line2 = new IterableLine( ra, e2 );
 		assertTrue( "The two lines should be equal.", line1.equals( line2 ) );
 		assertTrue( "The two lines should be equal.", line2.equals( line1 ) );
 		assertTrue( "The line should be equal to itself.", line1.equals( line1 ) );
 		assertTrue( "The line should be equal to itself.", line2.equals( line2 ) );
-		
+
 		// Move point. The line instance should not bother
 		ra.fwd( 0 );
 		assertTrue( "The two lines should still be equal.", line1.equals( line2 ) );
 		// But after instantiation with this point, it should.
 		assertFalse( "The two lines should not be equal.", line1.equals( new IterableLine( ra, e2 ) ) );
-		
+
 		// Permute order. It matters.
 		final IterableLine line1reverse = new IterableLine( e1, s1 );
 		assertFalse( "The two lines should not be equal.", line1.equals( line1reverse ) );
-		
+
 		// What about iteration order?
 		assertTrue( "The two iteration order should be equal.", line1.iterationOrder().equals( line2.iterationOrder() ) );
 		assertFalse( "The two iteration order should be equal.", line1.iterationOrder().equals( line1reverse.iterationOrder() ) );
 	}
-	
+
 	@Test
 	public void testVoidLine()
 	{
@@ -118,7 +120,7 @@ public class IterableLineTest
 				assertEquals( "Unexpected position.", P1.getLongPosition( d ), cursor.getLongPosition( d ) );
 		}
 		assertEquals( "Should have iterated over a single point.", 1, count );
-		assertEquals( "Size should be 1.", 1, line.size());
+		assertEquals( "Size should be 1.", 1, line.size() );
 	}
 
 	@Test
@@ -162,7 +164,7 @@ public class IterableLineTest
 			cursorLine.next().inc();
 			count++;
 		}
-		
+
 		// Test if we had the same number of points
 		assertEquals( nsteps, count );
 
@@ -188,7 +190,7 @@ public class IterableLineTest
 		}
 
 		assertEquals( totalIntensity, imageSum );
-		assertEquals( "Unexpected size.", 35, line.size());
+		assertEquals( "Unexpected size.", 35, line.size() );
 	}
 
 	/*
@@ -203,9 +205,9 @@ public class IterableLineTest
 		final Point p2 = new Point( 21474836480L, 1L );
 		final IterableLine line = new IterableLine( p1, p2 );
 		final Cursor< Void > cursor = line.localizingCursor();
-		while(cursor.hasNext())
+		while ( cursor.hasNext() )
 			cursor.fwd();
-		
+
 		for ( int d = 0; d < p2.numDimensions(); d++ )
 			assertEquals( "Did not reach the last point.", p2.getLongPosition( d ), cursor.getLongPosition( d ) );
 	}

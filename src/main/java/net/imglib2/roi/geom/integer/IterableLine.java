@@ -26,7 +26,7 @@ import net.imglib2.Sampler;
  * logic of Bresenham line (<a href=
  * "https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">Wikipedia</a>)
  * but the results are quasi identical and the performance penalty small.
- * 
+ *
  * @author Jean-Yves Tinevez
  *
  */
@@ -50,7 +50,7 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 
 	/**
 	 * Instantiates a new line that goes from start to end points.
-	 * 
+	 *
 	 * @param start
 	 *            the location of the start point.
 	 * @param end
@@ -58,16 +58,16 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 	 */
 	public IterableLine( final Localizable start, final Localizable end )
 	{
-		super( start.numDimensions());
+		super( start.numDimensions() );
 		this.start = new Point( start );
 		this.end = new Point( end );
-		
+
 		final Point diff = new Point( n );
 		long maxDiff = -1;
 		for ( int d = 0; d < n; d++ )
 		{
-			min[d] = Math.min( start.getLongPosition( d ), end.getLongPosition( d ) );
-			max[d] = Math.max( start.getLongPosition( d ), end.getLongPosition( d ) );
+			min[ d ] = Math.min( start.getLongPosition( d ), end.getLongPosition( d ) );
+			max[ d ] = Math.max( start.getLongPosition( d ), end.getLongPosition( d ) );
 			final long dx = end.getLongPosition( d ) - start.getLongPosition( d );
 			diff.setPosition( dx, d );
 			if ( Math.abs( dx ) > maxDiff )
@@ -139,7 +139,6 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 		private final RealPoint current;
 
 		private long index;
-		
 
 		public LineCursor()
 		{
@@ -156,7 +155,7 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 			}
 
 			this.increment = new RealPoint( n );
-			if (maxDiff != 0)
+			if ( maxDiff != 0 )
 				for ( int d = 0; d < n; d++ )
 					increment.setPosition( diff.getDoublePosition( d ) / maxDiff, d );
 
@@ -207,7 +206,7 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 			index = -1;
 			current.setPosition( start );
 			for ( int d = 0; d < n; d++ )
-				current.move( - increment.getDoublePosition( d ), d );
+				current.move( -increment.getDoublePosition( d ), d );
 		}
 
 		@Override
@@ -259,14 +258,14 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 		public void localize( final float[] position )
 		{
 			for ( int d = 0; d < position.length; d++ )
-				position[d] = getLongPosition( d );
+				position[ d ] = getLongPosition( d );
 		}
 
 		@Override
 		public void localize( final double[] position )
 		{
 			for ( int d = 0; d < position.length; d++ )
-				position[d] = getLongPosition( d );
+				position[ d ] = getLongPosition( d );
 		}
 
 		@Override
