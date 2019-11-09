@@ -71,6 +71,46 @@ public class Regions
 	}
 
 	/**
+	 * Given a mask and an image, return an {@link IterableInterval}
+	 * over the pixels of the image inside the mask.
+	 * 
+	 * @param mask The mask that defines which pixels in {@code img} to iterate over.
+	 * @param img The source from which to grab the pixels inside the mask.
+	 * @return An IterableInterval over the samples of img inside the mask.
+	 */
+	public static < T, B extends BooleanType<B> > IterableInterval< T > sample( final RandomAccessible< B > mask, final RandomAccessibleInterval< T > img )
+	{
+		final IterableInterval< Void > region = iterable( Views.interval( mask, img ) );
+		return sample( region, img );
+	}
+
+	/**
+	 * Given a mask and an image, return an {@link IterableInterval}
+	 * over the pixels of the image inside the mask.
+	 * 
+	 * @param mask The mask that defines which pixels in {@code img} to iterate over.
+	 * @param img The source from which to grab the pixels inside the mask.
+	 * @return An IterableInterval over the samples of img inside the mask.
+	 */
+	public static < T > IterableInterval< T > sample( final Mask mask, final RandomAccessibleInterval< T > img )
+	{
+		return sample( Masks.toRandomAccessible( mask ), img );
+	}
+
+	/**
+	 * Given a mask and an image, return an {@link IterableInterval}
+	 * over the pixels of the image inside the mask.
+	 * 
+	 * @param mask The mask that defines which pixels in {@code img} to iterate over.
+	 * @param img The source from which to grab the pixels inside the mask.
+	 * @return An IterableInterval over the samples of img inside the mask.
+	 */
+	public static < T > IterableInterval< T > sample( final RealMask mask, final RandomAccessibleInterval< T > img )
+	{
+		return sample( Views.raster( Masks.toRealRandomAccessible( mask ) ), img );
+	}
+
+	/**
 	 * Obtains an {@link IterableRegion} whose iteration consists of only the
 	 * true pixels of a region (instead of all pixels in bounding box).
 	 * 
