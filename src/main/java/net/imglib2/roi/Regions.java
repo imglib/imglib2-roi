@@ -67,7 +67,7 @@ public class Regions
 	 */
 	public static < T > IterableInterval< T > sample( final RealMaskRealInterval mask, final RandomAccessible< T > img )
 	{
-		return Regions.sample( Masks.toIterableRegion( mask ), img );
+		return sample( Masks.toIterableRegion( mask ), img );
 	}
 
 	/**
