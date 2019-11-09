@@ -98,10 +98,10 @@ public class Regions
 	 *            The region whose true values should be counted.
 	 * @return The number of true values in the region.
 	 */
-	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
+	public static < B extends BooleanType< B > > long countTrue( final RandomAccessibleInterval< B > interval )
 	{
 		long sum = 0;
-		for ( final T t : Views.iterable( interval ) )
+		for ( final B t : Views.iterable( interval ) )
 			if ( t.get() )
 				++sum;
 		return sum;
