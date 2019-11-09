@@ -44,6 +44,14 @@ import net.imglib2.view.Views;
 public class Regions
 {
 
+	/**
+	 * Given a region and an image, return an {@link IterableInterval}
+	 * over the pixels of the image inside the mask.
+	 * 
+	 * @param region The region that defines which pixels in {@code img} to iterate over.
+	 * @param img The source from which to grab the pixels inside the region.
+	 * @return An IterableInterval over the samples of img inside the region.
+	 */
 	public static < T > IterableInterval< T > sample( final IterableInterval< Void > region, final RandomAccessible< T > img )
 	{
 		return SamplingIterableInterval.create( region, img );
@@ -62,6 +70,17 @@ public class Regions
 		return Regions.sample( Masks.toIterableRegion( mask ), img );
 	}
 
+	/**
+	 * Obtains an {@link IterableRegion} whose iteration consists of only the
+	 * true pixels of a region (instead of all pixels in bounding box).
+	 * 
+	 * @param <B>
+	 *            The {@link BooleanType} of the region.
+	 * @param region
+	 *            The region to filter by its true values.
+	 * @return An {@link IterableRegion} consisting of true values of the input
+	 *         region.
+	 */
 	public static < B extends BooleanType< B > > IterableRegion< B > iterable( final RandomAccessibleInterval< B > region )
 	{
 		if ( region instanceof IterableRegion )
@@ -70,6 +89,15 @@ public class Regions
 			return IterableRandomAccessibleRegion.create( region );
 	}
 
+	/**
+	 * Counts the number of true pixels in the given region.
+	 * 
+	 * @param <B>
+	 *            The {@link BooleanType} of the region.
+	 * @param interval
+	 *            The region whose true values should be counted.
+	 * @return The number of true values in the region.
+	 */
 	public static < T extends BooleanType< T > > long countTrue( final RandomAccessibleInterval< T > interval )
 	{
 		long sum = 0;
