@@ -44,7 +44,6 @@ import net.imglib2.RandomAccess;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
-import net.imglib2.labeling.Labeling;
 import net.imglib2.outofbounds.OutOfBounds;
 import net.imglib2.outofbounds.OutOfBoundsConstantValue;
 import net.imglib2.roi.PositionableIterableRegion;
@@ -53,7 +52,7 @@ import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
 
 /**
- * Present pixels of a given label in a {@link Labeling} as a
+ * Present pixels of a given label in a {@link ImgLabeling} as a
  * {@link PositionableIterableRegion}. The interval bounds represent the
  * bounding box of all pixels having the label. If a {@link RandomAccess} is
  * {@link #randomAccess(Interval) requested} for an interval not fully contained
