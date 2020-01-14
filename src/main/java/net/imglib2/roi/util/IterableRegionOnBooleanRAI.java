@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,36 +31,96 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.util;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import net.imglib2.AbstractWrappedInterval;
+import net.imglib2.Cursor;
+import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import net.imglib2.type.BooleanType;
+import net.imglib2.view.Views;
 
 /**
- * A region that allows to iterate only the pixels contained in the region
- * (instead of all pixels in bounding box).
- * <p>
- * Specifically, a region is a {@code RandomAccessibleInterval} of some
- * {@code BooleanType} having value {@code true} for all pixels contained in the
- * region. The interval is a (not necessarily tight) bounding box of the region,
- * i.e., it is assumed that all pixels outside the interval have value
- * {@code false}.
- * <p>
- * Iterating only the pixels contained in the region is indicated by
- * {@code IterableInterval<Void>}, i.e., when iterating, only the coordinates
- * that are visited are interesting. There is no associated value.
- * <p>
- * We put interfaces {@code RandomAccessibleInterval<BooleanType>}, extended by
- * {@code IterableRegion<BooleanType>}, extended by
- * {@code PositionableIterableRegion<BooleanType>} into this sequence such that
- * the {@link Regions} methods that "add capabilities" (being iterable,
- * positionable) can have appropriate result types.
+ * Wrap a boolean {@link RandomAccessibleInterval} as a {@link IterableRegion}.
+ * Cursors on the result only iterate {@code true} samples of the source interval.
  *
- * @param <T>
- *            some {@code BooleanType} indicating containment in region
+ * {@link Cursor Cursors} are realized by wrapping source cursors (using {@link TrueCursor}).
  *
  * @author Tobias Pietzsch
  */
-public interface IterableRegion< T extends BooleanType< T > > extends IterableInterval< Void >, RandomAccessibleInterval< T >
-{}
+public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
+		extends AbstractWrappedInterval< RandomAccessibleInterval< T > >
+		implements IterableRegion< T >
+{
+	private final long size;
+
+	private final IterableInterval< T > sourceIterable;
+
+	public IterableRegionOnBooleanRAI( final RandomAccessibleInterval< T > interval )
+	{
+		this( interval, Regions.countTrue( interval ) );
+	}
+
+	public IterableRegionOnBooleanRAI( final RandomAccessibleInterval< T > interval, final long size )
+	{
+		super( interval );
+		this.size = size;
+		sourceIterable = Views.iterable( interval );
+	}
+
+	@Override
+	public long size()
+	{
+		return size;
+	}
+
+	@Override
+	public Void firstElement()
+	{
+		if ( size() == 0 )
+			throw new NoSuchElementException();
+		return cursor().next();
+	}
+
+	@Override
+	public Object iterationOrder()
+	{
+		return this;
+	}
+
+	@Override
+	public Iterator< Void > iterator()
+	{
+		return cursor();
+	}
+
+	@Override
+	public Cursor< Void > cursor()
+	{
+		return new TrueCursor< T >( sourceIterable.cursor(), size );
+	}
+
+	@Override
+	public Cursor< Void > localizingCursor()
+	{
+		return new TrueCursor< T >( sourceIterable.localizingCursor(), size );
+	}
+
+	@Override
+	public RandomAccess< T > randomAccess()
+	{
+		return sourceInterval.randomAccess();
+	}
+
+	@Override
+	public RandomAccess< T > randomAccess( final Interval interval )
+	{
+		return sourceInterval.randomAccess( interval );
+	}
+}

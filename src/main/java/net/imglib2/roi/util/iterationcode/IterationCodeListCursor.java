@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,44 +33,88 @@
  */
 package net.imglib2.roi.util.iterationcode;
 
+import java.util.ArrayList;
+
+import net.imglib2.AbstractLocalizable;
+import net.imglib2.Cursor;
+import net.imglib2.Point;
+import net.imglib2.roi.labeling.LabelRegion;
+
 import gnu.trove.list.array.TIntArrayList;
-import net.imglib2.EuclideanSpace;
 
 /**
- * Iteration code encodes a bitmask as a set of intervals along dimension 0.
- * It is a list of numbers (see {@link #getItcode()}) structured as follows:
- *
- * <pre>
- * {@code
- * [o0]             a general X offset
- *                  (to ensure that no negative X coordinates occur.)
- * [p1, ..., pn]    the starting position in dimensions 1, ..., n
- *
- * Then follows a arbitrary long sequence of tuples
- * [p0min, p0max] where p0min >= 0
- *  or
- * [-dim, p1, ..., p(dim)] where -dim < 0.
- * Based on the sign of first element it can be decided which it is.
- * In the second case, the first element determines the length of the tuple.
- *
- * [p0min, p0max] means that the positions from [p0min + o0, p1, ..., pn] to
- * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
- * current starting position in dimensions 1, ..., n.
- *
- * [-dim, p1, ..., p(dim)] modifies dimensions p1, ..., p(dim) of the current
- * starting position.
- * }
- * </pre>
+ * A {@code Cursor<Void>} that visits all positions in the bitmask encoded by a
+ * given list of {@link IterationCode}s. (This is used to iterate a
+ * {@link LabelRegion} which is the union of fragments which are encoded by
+ * {@link IterationCode}s.)
+ * <p>
+ * It is constructed with a {@code long[]} offset which is not copied, so it can
+ * be used to shift the bitmask and reuse this cursor.
  *
  * @author Tobias Pietzsch
  */
-public interface IterationCode extends EuclideanSpace
+public class IterationCodeListCursor extends AbstractLocalizable implements Cursor< Void >
 {
-	public TIntArrayList getItcode();
+	private final IterationCodeListIterator< Point > iter;
 
-	public long getSize();
+	public IterationCodeListCursor( final ArrayList< TIntArrayList > itcodesList, final long[] offset )
+	{
+		super( offset.length );
+		iter = new IterationCodeListIterator<>( itcodesList, offset, Point.wrap( position ) );
+	}
 
-	public long[] getBoundingBoxMin();
+	protected IterationCodeListCursor( final IterationCodeListCursor c )
+	{
+		super( c.position );
+		iter = new IterationCodeListIterator<>( c.iter, Point.wrap( position ) );
+	}
 
-	public long[] getBoundingBoxMax();
+	@Override
+	public Void get()
+	{
+		return null;
+	}
+
+	@Override
+	public void jumpFwd( final long steps )
+	{
+		iter.jumpFwd( steps );
+	}
+
+	@Override
+	public void fwd()
+	{
+		iter.fwd();
+	}
+
+	@Override
+	public void reset()
+	{
+		iter.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return iter.hasNext();
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return null;
+	}
+
+	@Override
+	public IterationCodeListCursor copy()
+	{
+		return new IterationCodeListCursor( this );
+	}
+
+	@Override
+	public IterationCodeListCursor copyCursor()
+	{
+		return copy();
+	}
 }

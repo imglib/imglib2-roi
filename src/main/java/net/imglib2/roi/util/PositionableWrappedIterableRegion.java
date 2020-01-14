@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,46 +31,72 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util.iterationcode;
+package net.imglib2.roi.util;
 
-import gnu.trove.list.array.TIntArrayList;
-import net.imglib2.EuclideanSpace;
+import net.imglib2.Interval;
+import net.imglib2.RandomAccess;
+import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.PositionableIterableRegion;
+import net.imglib2.type.BooleanType;
+import net.imglib2.util.Intervals;
 
 /**
- * Iteration code encodes a bitmask as a set of intervals along dimension 0.
- * It is a list of numbers (see {@link #getItcode()}) structured as follows:
+ * Makes a {@link IterableRegion} {@code Positionable} by wrapping its accessors
+ * with an offset.
  *
- * <pre>
- * {@code
- * [o0]             a general X offset
- *                  (to ensure that no negative X coordinates occur.)
- * [p1, ..., pn]    the starting position in dimensions 1, ..., n
- *
- * Then follows a arbitrary long sequence of tuples
- * [p0min, p0max] where p0min >= 0
- *  or
- * [-dim, p1, ..., p(dim)] where -dim < 0.
- * Based on the sign of first element it can be decided which it is.
- * In the second case, the first element determines the length of the tuple.
- *
- * [p0min, p0max] means that the positions from [p0min + o0, p1, ..., pn] to
- * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
- * current starting position in dimensions 1, ..., n.
- *
- * [-dim, p1, ..., p(dim)] modifies dimensions p1, ..., p(dim) of the current
- * starting position.
- * }
- * </pre>
- *
- * @author Tobias Pietzsch
+ * @param <T>
+ *            pixel type of source
  */
-public interface IterationCode extends EuclideanSpace
+public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
+		extends PositionableWrappedIterableInterval< Void, IterableRegion< T > >
+		implements PositionableIterableRegion< T >
 {
-	public TIntArrayList getItcode();
+	public PositionableWrappedIterableRegion( final IterableRegion< T > source )
+	{
+		super( source );
+	}
 
-	public long getSize();
+	@Override
+	public RandomAccess< T > randomAccess()
+	{
+		return new RA( source.randomAccess(), currentOffset );
+	}
 
-	public long[] getBoundingBoxMin();
+	@Override
+	public RandomAccess< T > randomAccess( final Interval interval )
+	{
+		return new RA( source.randomAccess( Intervals.translate( interval, currentOffset ) ), currentOffset );
+	}
 
-	public long[] getBoundingBoxMax();
+	class RA extends OffsetPositionableLocalizable< RandomAccess< T > > implements RandomAccess< T >
+	{
+		public RA( final RandomAccess< T > source, final long[] offset )
+		{
+			super( source, offset );
+		}
+
+		@Override
+		public T get()
+		{
+			return source.get();
+		}
+
+		@Override
+		public RA copy()
+		{
+			return new RA( source.copyRandomAccess(), offset );
+		}
+
+		@Override
+		public RA copyRandomAccess()
+		{
+			return copy();
+		}
+	}
+
+	@Override
+	public PositionableWrappedIterableRegion< T > copy()
+	{
+		return new PositionableWrappedIterableRegion<>( this );
+	}
 }

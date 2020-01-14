@@ -35,10 +35,8 @@ package net.imglib2.roi.labeling;
 
 import java.util.ArrayList;
 
-import gnu.trove.list.array.TIntArrayList;
-import net.imglib2.AbstractLocalizable;
+import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
-import net.imglib2.Localizable;
 import net.imglib2.Positionable;
 import net.imglib2.RandomAccess;
 import net.imglib2.RealLocalizable;
@@ -48,8 +46,12 @@ import net.imglib2.outofbounds.OutOfBounds;
 import net.imglib2.outofbounds.OutOfBoundsConstantValue;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
+import net.imglib2.roi.util.PositionableInterval;
+import net.imglib2.roi.util.PositionableLocalizable;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.util.Intervals;
+
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * Present pixels of a given label in a {@link ImgLabeling} as a
@@ -64,7 +66,7 @@ import net.imglib2.util.Intervals;
  *
  * @author Tobias Pietzsch
  */
-public class LabelRegion< T > extends AbstractLocalizable implements PositionableIterableRegion< BoolType >
+public class LabelRegion< T > extends PositionableInterval implements PositionableIterableRegion< BoolType >
 {
 	final LabelRegions< T > regions;
 
@@ -74,42 +76,38 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 
 	private final ArrayList< TIntArrayList > itcodes;
 
-	private final long[] currentOffset;
-
-	private final long[] currentMin;
-
-	private final long[] currentMax;
-
 	private long size;
 
 	private final RealPoint centerOfMass;
-
-	private final Origin origin;
 
 	private int expectedGeneration;
 
 	public LabelRegion( final LabelRegions< T > regions, final LabelRegionProperties regionProperties, final T label )
 	{
-		super( regions.numDimensions() );
+		super( new FinalInterval( regionProperties.getBoundingBoxMin(), regionProperties.getBoundingBoxMax() ) );
 		this.regions = regions;
 		this.regionProperties = regionProperties;
 		this.label = label;
 
 		expectedGeneration = regionProperties.update();
-		currentOffset = new long[ n ];
-		currentMin = new long[ n ];
-		currentMax = new long[ n ];
-		final long[] bbmin = regionProperties.getBoundingBoxMin();
-		final long[] bbmax = regionProperties.getBoundingBoxMax();
-		for ( int d = 0; d < n; ++d )
-		{
-			currentMin[ d ] = currentOffset[ d ] + bbmin[ d ];
-			currentMax[ d ] = currentOffset[ d ] + bbmax[ d ];
-		}
 		size = regionProperties.getSize();
 		itcodes = regionProperties.getItcodes();
 		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
-		origin = new Origin();
+	}
+
+	/**
+	 * Copy constructor.
+	 */
+	protected LabelRegion( final LabelRegion< T > other )
+	{
+		super( other );
+		this.regions = other.regions;
+		this.regionProperties = other.regionProperties;
+		this.label = other.label;
+		this.expectedGeneration = other.expectedGeneration;
+		this.size = other.size;
+		this.itcodes = other.itcodes;
+		this.centerOfMass = other.centerOfMass;
 	}
 
 	/**
@@ -121,19 +119,14 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	 */
 	public LabelRegion< T > copy()
 	{
-		final LabelRegion< T > r = new LabelRegion< T >( regions, regionProperties, label );
-		System.arraycopy( position, 0, r.position, 0, n );
-		System.arraycopy( currentOffset, 0, r.currentOffset, 0, n );
-		System.arraycopy( currentMin, 0, r.currentMin, 0, n );
-		System.arraycopy( currentMax, 0, r.currentMax, 0, n );
-		r.expectedGeneration = expectedGeneration;
-		return r;
+		return new LabelRegion<>( this );
 	}
 
-	public Origin origin()
+	@Override
+	public PositionableLocalizable origin()
 	{
 		update();
-		return origin;
+		return super.origin();
 	}
 
 	public T getLabel()
@@ -151,8 +144,8 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 			final long[] bbmax = regionProperties.getBoundingBoxMax();
 			for ( int d = 0; d < n; ++d )
 			{
-				currentMin[ d ] = currentOffset[ d ] + bbmin[ d ];
-				currentMax[ d ] = currentOffset[ d ] + bbmax[ d ];
+				initialMin[ d ] = bbmin[ d ];
+				initialMax[ d ] = bbmax[ d ];
 			}
 			size = regionProperties.getSize();
 		}
@@ -168,7 +161,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	public LabelRegionRandomAccess< T > randomAccess()
 	{
 		update();
-		return new LabelRegionRandomAccess< T >( this, currentOffset );
+		return new LabelRegionRandomAccess<>( this, currentOffset );
 	}
 
 	@Override
@@ -178,7 +171,7 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 		if ( Intervals.contains( this, interval ) )
 			return randomAccess();
 		else
-			return new OutOfBoundsConstantValue< BoolType >( this, new BoolType( false ) );
+			return new OutOfBoundsConstantValue<>( this, new BoolType( false ) );
 	}
 
 	@Override
@@ -220,387 +213,100 @@ public class LabelRegion< T > extends AbstractLocalizable implements Positionabl
 	}
 
 	@Override
-	public void fwd( final int d )
-	{
-		++position[ d ];
-		++currentOffset[ d ];
-		++currentMin[ d ];
-		++currentMax[ d ];
-	}
-
-	@Override
-	public void bck( final int d )
-	{
-		--position[ d ];
-		--currentOffset[ d ];
-		--currentMin[ d ];
-		--currentMax[ d ];
-	}
-
-	@Override
-	public void move( final int distance, final int d )
-	{
-		position[ d ] += distance;
-		currentOffset[ d ] += distance;
-		currentMin[ d ] += distance;
-		currentMax[ d ] += distance;
-	}
-
-	@Override
-	public void move( final long distance, final int d )
-	{
-		position[ d ] += distance;
-		currentOffset[ d ] += distance;
-		currentMin[ d ] += distance;
-		currentMax[ d ] += distance;
-	}
-
-	@Override
-	public void move( final Localizable localizable )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			final long distance = localizable.getLongPosition( d );
-			position[ d ] += distance;
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
-	}
-
-	@Override
-	public void move( final int[] distance )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			position[ d ] += distance[ d ];
-			currentOffset[ d ] += distance[ d ];
-			currentMin[ d ] += distance[ d ];
-			currentMax[ d ] += distance[ d ];
-		}
-	}
-
-	@Override
-	public void move( final long[] distance )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			position[ d ] += distance[ d ];
-			currentOffset[ d ] += distance[ d ];
-			currentMin[ d ] += distance[ d ];
-			currentMax[ d ] += distance[ d ];
-		}
-	}
-
-	@Override
-	public void setPosition( final Localizable localizable )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			final long distance = localizable.getLongPosition( d ) - position[ d ];
-			position[ d ] += distance;
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
-	}
-
-	@Override
-	public void setPosition( final int[] pos )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			final long distance = pos[ d ] - position[ d ];
-			position[ d ] += distance;
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
-	}
-
-	@Override
-	public void setPosition( final long[] pos )
-	{
-		for ( int d = 0; d < n; ++d )
-		{
-			final long distance = pos[ d ] - position[ d ];
-			position[ d ] += distance;
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
-	}
-
-	@Override
-	public void setPosition( final int pos, final int d )
-	{
-		final long distance = pos - position[ d ];
-		position[ d ] += distance;
-		currentOffset[ d ] += distance;
-		currentMin[ d ] += distance;
-		currentMax[ d ] += distance;
-	}
-
-	@Override
-	public void setPosition( final long pos, final int d )
-	{
-		final long distance = pos - position[ d ];
-		position[ d ] += distance;
-		currentOffset[ d ] += distance;
-		currentMin[ d ] += distance;
-		currentMax[ d ] += distance;
-	}
-
-	@Override
 	public double realMin( final int d )
 	{
 		update();
-		return currentMin[ d ];
+		return super.realMin( d );
 	}
 
 	@Override
 	public void realMin( final double[] min )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			min[ d ] = currentMin[ d ];
+		super.realMin( min );
 	}
 
 	@Override
 	public void realMin( final RealPositionable min )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			min.setPosition( currentMin[ d ], d );
+		super.realMin( min );
 	}
 
 	@Override
 	public double realMax( final int d )
 	{
 		update();
-		return currentMax[ d ];
+		return super.realMax( d );
 	}
 
 	@Override
 	public void realMax( final double[] max )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			max[ d ] = currentMax[ d ];
+		super.realMax( max );
 	}
 
 	@Override
 	public void realMax( final RealPositionable max )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			max.setPosition( currentMax[ d ], d );
+		super.realMax( max );
 	}
 
 	@Override
 	public long min( final int d )
 	{
 		update();
-		return currentMin[ d ];
+		return super.min( d );
 	}
 
 	@Override
 	public void min( final long[] min )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			min[ d ] = currentMin[ d ];
+		super.min( min );
 	}
 
 	@Override
 	public void min( final Positionable min )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			min.setPosition( currentMin[ d ], d );
+		super.min( min );
 	}
 
 	@Override
 	public long max( final int d )
 	{
 		update();
-		return currentMax[ d ];
+		return super.max( d );
 	}
 
 	@Override
 	public void max( final long[] max )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			max[ d ] = currentMax[ d ];
+		super.max( max );
 	}
 
 	@Override
 	public void max( final Positionable max )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			max.setPosition( currentMax[ d ], d );
+		super.max( max );
 	}
 
 	@Override
 	public void dimensions( final long[] dimensions )
 	{
 		update();
-		for ( int d = 0; d < n; ++d )
-			dimensions[ d ] = currentMax[ d ] - currentMin[ d ] + 1;
+		super.dimensions( dimensions );
 	}
 
 	@Override
 	public long dimension( final int d )
 	{
 		update();
-		return currentMax[ d ] - currentMin[ d ] + 1;
-	}
-
-	public class Origin implements Localizable, Positionable
-	{
-		@Override
-		public int numDimensions()
-		{
-			return n;
-		}
-
-		@Override
-		public void localize( final float[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				pos[ d ] = position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public void localize( final double[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				pos[ d ] = position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public float getFloatPosition( final int d )
-		{
-			return position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public double getDoublePosition( final int d )
-		{
-			return position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public void localize( final int[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				pos[ d ] = ( int ) ( position[ d ] - currentOffset[ d ] );
-		}
-
-		@Override
-		public void localize( final long[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				pos[ d ] = position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public int getIntPosition( final int d )
-		{
-			return ( int ) ( position[ d ] - currentOffset[ d ] );
-		}
-
-		@Override
-		public long getLongPosition( final int d )
-		{
-			return position[ d ] - currentOffset[ d ];
-		}
-
-		@Override
-		public void fwd( final int d )
-		{
-			currentOffset[ d ]++;
-			currentMin[ d ]++;
-			currentMax[ d ]++;
-		}
-
-		@Override
-		public void bck( final int d )
-		{
-			currentOffset[ d ]--;
-			currentMin[ d ]--;
-			currentMax[ d ]--;
-		}
-
-		@Override
-		public void move( final int distance, final int d )
-		{
-			move( ( long ) distance, d );
-		}
-
-		@Override
-		public void move( final long distance, final int d )
-		{
-			currentOffset[ d ] += distance;
-			currentMin[ d ] += distance;
-			currentMax[ d ] += distance;
-		}
-
-		@Override
-		public void move( final Localizable localizable )
-		{
-			for ( int d = 0; d < n; ++d )
-				move( localizable.getLongPosition( d ), d );
-		}
-
-		@Override
-		public void move( final int[] distance )
-		{
-			for ( int d = 0; d < n; ++d )
-				move( distance[ d ], d );
-		}
-
-		@Override
-		public void move( final long[] distance )
-		{
-			for ( int d = 0; d < n; ++d )
-				move( distance[ d ], d );
-		}
-
-		@Override
-		public void setPosition( final Localizable localizable )
-		{
-			for ( int d = 0; d < n; ++d )
-				setPosition( localizable.getLongPosition( d ), d );
-		}
-
-		@Override
-		public void setPosition( final int[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				setPosition( pos[ d ], d );
-		}
-
-		@Override
-		public void setPosition( final long[] pos )
-		{
-			for ( int d = 0; d < n; ++d )
-				setPosition( pos[ d ], d );
-		}
-
-		@Override
-		public void setPosition( final int pos, final int d )
-		{
-			setPosition( ( long ) pos, d );
-		}
-
-		@Override
-		public void setPosition( final long pos, final int d )
-		{
-			final long distance = position[ d ] - currentOffset[ d ] - pos;
-			move( distance, d );
-		}
+		return super.dimension( d );
 	}
 }

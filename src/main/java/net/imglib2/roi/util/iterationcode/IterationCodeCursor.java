@@ -31,76 +31,90 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi;
+package net.imglib2.roi.util.iterationcode;
 
-import static org.junit.Assume.assumeTrue;
-
-import java.util.ArrayList;
-import java.util.Random;
-
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-
-import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import com.carrotsearch.junitbenchmarks.BenchmarkRule;
-
+import net.imglib2.AbstractLocalizable;
 import net.imglib2.Cursor;
-import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
-import net.imglib2.type.logic.BitType;
+import net.imglib2.Point;
+
+import gnu.trove.list.array.TIntArrayList;
 
 /**
- * Benchmarks for {@link IterableRandomAccessibleRegion} iteration.
+ * A {@code Cursor<Void>} that visits all positions in the bitmask encoded by a
+ * given {@link IterationCode}.
+ * <p>
+ * It is constructed with a {@code long[]} offset which is not copied, so it can
+ * be used to shift the bitmask and reuse this cursor.
  *
- * @author Alison Walter
  * @author Tobias Pietzsch
  */
-public class IterableRandomAccessibleRegionBenchmarkTest
+public class IterationCodeCursor extends AbstractLocalizable implements Cursor< Void >
 {
+	private final IterationCodeIterator< Point > iter;
 
-	private static ArrayList< IterableRegion< BitType > > regions = new ArrayList<>();
-
-	@Rule
-	public TestRule benchmarkRun = new BenchmarkRule();
-
-	@BeforeClass
-	public static void setup()
+	public IterationCodeCursor( final IterationCode iterationCode, final long[] offset )
 	{
-		// comment out assumeTrue to actually run benchmark
-		assumeTrue( false );
-
-		final long[] dimensions = { 500, 250, 100 };
-		for ( double ratioFalseToTrue = 0.2; ratioFalseToTrue < 1.0; ratioFalseToTrue += 0.2 )
-		{
-			regions.add( Regions.iterable( createRandomMask( ratioFalseToTrue, dimensions ) ) );
-		}
+		this( iterationCode.getItcode(), offset );
 	}
 
-	private static Img< BitType > createRandomMask( final double ratioFalseToTrue, final long... dim )
+	public IterationCodeCursor( final TIntArrayList itcode, final long[] offset )
 	{
-		final Img< BitType > mask = ArrayImgs.bits( dim );
-		final Random rand = new Random( 12 );
-		if ( ratioFalseToTrue < 1.0 )
-		{
-			final Cursor< BitType > c = mask.cursor();
-			while ( c.hasNext() )
-				c.next().set( rand.nextDouble() > ratioFalseToTrue );
-		}
-		return mask;
+		super( offset.length );
+		iter = new IterationCodeIterator<>( itcode, offset, Point.wrap( position ) );
 	}
 
-	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 20 )
-	@Test
-	public void testIterating()
+	protected IterationCodeCursor( final IterationCodeCursor c )
 	{
-		for ( final IterableRegion< BitType > region : regions )
-		{
-			final Cursor< Void > cursor = region.cursor();
-			while ( cursor.hasNext() )
-				cursor.fwd();
-		}
+		super( c.position );
+		iter = new IterationCodeIterator<>( c.iter, Point.wrap( position ) );
+	}
+
+	@Override
+	public Void get()
+	{
+		return null;
+	}
+
+	@Override
+	public void jumpFwd( final long steps )
+	{
+		iter.jumpFwd( steps );
+	}
+
+	@Override
+	public void fwd()
+	{
+		iter.fwd();
+	}
+
+	@Override
+	public void reset()
+	{
+		iter.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return iter.hasNext();
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return null;
+	}
+
+	@Override
+	public IterationCodeCursor copy()
+	{
+		return new IterationCodeCursor( this );
+	}
+
+	@Override
+	public IterationCodeCursor copyCursor()
+	{
+		return copy();
 	}
 }

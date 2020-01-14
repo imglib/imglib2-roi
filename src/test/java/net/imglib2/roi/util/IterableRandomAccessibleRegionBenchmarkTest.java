@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,93 +33,77 @@
  */
 package net.imglib2.roi.util;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import static org.junit.Assume.assumeTrue;
 
-import net.imglib2.AbstractWrappedInterval;
-import net.imglib2.Cursor;
-import net.imglib2.Interval;
-import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
+import java.util.ArrayList;
+import java.util.Random;
+
 import net.imglib2.roi.IterableRegion;
 import net.imglib2.roi.Regions;
-import net.imglib2.type.BooleanType;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
+import com.carrotsearch.junitbenchmarks.BenchmarkRule;
+
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.type.logic.BitType;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
+ * Benchmarks for {@link IterableRandomAccessibleRegion} iteration.
  *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
- *
+ * @author Alison Walter
  * @author Tobias Pietzsch
  */
 @Deprecated
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class IterableRandomAccessibleRegionBenchmarkTest
 {
-	final long size;
 
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
+	private static ArrayList< IterableRegion< BitType > > regions = new ArrayList<>();
+
+	@Rule
+	public TestRule benchmarkRun = new BenchmarkRule();
+
+	@BeforeClass
+	public static void setup()
 	{
-		return new IterableRandomAccessibleRegion<>( interval, Regions.countTrue( interval ) );
+		// comment out assumeTrue to actually run benchmark
+		assumeTrue( false );
+
+		final long[] dimensions = { 500, 250, 100 };
+		for ( double ratioFalseToTrue = 0.2; ratioFalseToTrue < 1.0; ratioFalseToTrue += 0.2 )
+		{
+			regions.add( Regions.iterable( createRandomMask( ratioFalseToTrue, dimensions ) ) );
+		}
 	}
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
+	private static Img< BitType > createRandomMask( final double ratioFalseToTrue, final long... dim )
 	{
-		super( interval );
-		this.size = size;
+		final Img< BitType > mask = ArrayImgs.bits( dim );
+		final Random rand = new Random( 12 );
+		if ( ratioFalseToTrue < 1.0 )
+		{
+			final Cursor< BitType > c = mask.cursor();
+			while ( c.hasNext() )
+				c.next().set( rand.nextDouble() > ratioFalseToTrue );
+		}
+		return mask;
 	}
 
-	@Override
-	public long size()
+	@BenchmarkOptions( benchmarkRounds = 20, warmupRounds = 20 )
+	@Test
+	public void testIterating()
 	{
-		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		if ( size() == 0 )
-			throw new NoSuchElementException();
-		return cursor().next();
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public Iterator< Void > iterator()
-	{
-		return cursor();
-	}
-
-	@Override
-	public Cursor< Void > cursor()
-	{
-		return new RandomAccessibleRegionCursor<>( sourceInterval, size );
-	}
-
-	@Override
-	public Cursor< Void > localizingCursor()
-	{
-		return cursor();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess()
-	{
-		return sourceInterval.randomAccess();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
-	{
-		return sourceInterval.randomAccess( interval );
+		for ( final IterableRegion< BitType > region : regions )
+		{
+			final Cursor< Void > cursor = region.cursor();
+			while ( cursor.hasNext() )
+				cursor.fwd();
+		}
 	}
 }

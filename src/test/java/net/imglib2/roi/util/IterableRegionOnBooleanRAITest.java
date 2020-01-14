@@ -32,27 +32,26 @@
  * #L%
  */
 
-package net.imglib2.roi;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package net.imglib2.roi.util;
 
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.roi.util.IterableRandomAccessibleRegion;
+import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.Regions;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.util.ConstantUtils;
-
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link IterableRandomAccessibleRegion}.
@@ -60,7 +59,7 @@ import org.junit.rules.ExpectedException;
  * @author Alison Walter
  *
  */
-public class IterableRandomAccessibleRegionTest
+public class IterableRegionOnBooleanRAITest
 {
 
 	private static IterableRegion< BitType > empty;

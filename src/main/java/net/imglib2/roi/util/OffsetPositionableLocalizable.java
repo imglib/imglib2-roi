@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,46 +31,98 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util.iterationcode;
+package net.imglib2.roi.util;
 
-import gnu.trove.list.array.TIntArrayList;
-import net.imglib2.EuclideanSpace;
+import net.imglib2.Localizable;
+import net.imglib2.Positionable;
 
 /**
- * Iteration code encodes a bitmask as a set of intervals along dimension 0.
- * It is a list of numbers (see {@link #getItcode()}) structured as follows:
- *
- * <pre>
- * {@code
- * [o0]             a general X offset
- *                  (to ensure that no negative X coordinates occur.)
- * [p1, ..., pn]    the starting position in dimensions 1, ..., n
- *
- * Then follows a arbitrary long sequence of tuples
- * [p0min, p0max] where p0min >= 0
- *  or
- * [-dim, p1, ..., p(dim)] where -dim < 0.
- * Based on the sign of first element it can be decided which it is.
- * In the second case, the first element determines the length of the tuple.
- *
- * [p0min, p0max] means that the positions from [p0min + o0, p1, ..., pn] to
- * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
- * current starting position in dimensions 1, ..., n.
- *
- * [-dim, p1, ..., p(dim)] modifies dimensions p1, ..., p(dim) of the current
- * starting position.
- * }
- * </pre>
+ * A {@link Localizable} {@link Positionable} that is the position of another
+ * {@link Localizable} {@link Positionable} with an offset.
  *
  * @author Tobias Pietzsch
  */
-public interface IterationCode extends EuclideanSpace
+public class OffsetPositionableLocalizable< P extends Positionable & Localizable >
+		extends OffsetLocalizable< P >
+		implements Positionable
 {
-	public TIntArrayList getItcode();
+	public OffsetPositionableLocalizable( final P source, final long[] offset )
+	{
+		super( source, offset );
+	}
 
-	public long getSize();
+	@Override
+	public void fwd( final int d )
+	{
+		source.fwd( d );
+	}
 
-	public long[] getBoundingBoxMin();
+	@Override
+	public void bck( final int d )
+	{
+		source.bck( d );
+	}
 
-	public long[] getBoundingBoxMax();
+	@Override
+	public void move( final int distance, final int d )
+	{
+		source.move( distance, d );
+	}
+
+	@Override
+	public void move( final long distance, final int d )
+	{
+		source.move( distance, d );
+	}
+
+	@Override
+	public void move( final Localizable distance )
+	{
+		source.move( distance );
+	}
+
+	@Override
+	public void move( final int[] distance )
+	{
+		source.move( distance );
+	}
+
+	@Override
+	public void move( final long[] distance )
+	{
+		source.move( distance );
+	}
+
+	@Override
+	public void setPosition( final Localizable position )
+	{
+		for ( int d = 0; d < n; ++d )
+			source.setPosition( position.getLongPosition( d ) - offset[ d ], d );
+	}
+
+	@Override
+	public void setPosition( final int[] position )
+	{
+		for ( int d = 0; d < n; ++d )
+			source.setPosition( position[ d ] - offset[ d ], d );
+	}
+
+	@Override
+	public void setPosition( final long[] position )
+	{
+		for ( int d = 0; d < n; ++d )
+			source.setPosition( position[ d ] - offset[ d ], d );
+	}
+
+	@Override
+	public void setPosition( final int position, final int d )
+	{
+		source.setPosition( position - offset[ d ], d );
+	}
+
+	@Override
+	public void setPosition( final long position, final int d )
+	{
+		source.setPosition( position - offset[ d ], d );
+	}
 }

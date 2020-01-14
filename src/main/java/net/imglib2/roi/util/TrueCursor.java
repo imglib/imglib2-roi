@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,46 +31,96 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package net.imglib2.roi.util.iterationcode;
+package net.imglib2.roi.util;
 
-import gnu.trove.list.array.TIntArrayList;
-import net.imglib2.EuclideanSpace;
+import net.imglib2.AbstractWrappedLocalizable;
+import net.imglib2.Cursor;
+import net.imglib2.type.BooleanType;
 
 /**
- * Iteration code encodes a bitmask as a set of intervals along dimension 0.
- * It is a list of numbers (see {@link #getItcode()}) structured as follows:
- *
- * <pre>
- * {@code
- * [o0]             a general X offset
- *                  (to ensure that no negative X coordinates occur.)
- * [p1, ..., pn]    the starting position in dimensions 1, ..., n
- *
- * Then follows a arbitrary long sequence of tuples
- * [p0min, p0max] where p0min >= 0
- *  or
- * [-dim, p1, ..., p(dim)] where -dim < 0.
- * Based on the sign of first element it can be decided which it is.
- * In the second case, the first element determines the length of the tuple.
- *
- * [p0min, p0max] means that the positions from [p0min + o0, p1, ..., pn] to
- * [p0max, p1, ..., pn] are contained in the bitmask, where p1, ..., pn are the
- * current starting position in dimensions 1, ..., n.
- *
- * [-dim, p1, ..., p(dim)] modifies dimensions p1, ..., p(dim) of the current
- * starting position.
- * }
- * </pre>
+ * A {@code Cursor<Void>} that iterates only the {@code true} pixels of a source
+ * {@code Cursor<BooleanType>}.
  *
  * @author Tobias Pietzsch
  */
-public interface IterationCode extends EuclideanSpace
+class TrueCursor< T extends BooleanType< T > >
+		extends AbstractWrappedLocalizable< Cursor< T > >
+		implements Cursor< Void >
 {
-	public TIntArrayList getItcode();
+	private long index;
 
-	public long getSize();
+	private final long maxIndex;
 
-	public long[] getBoundingBoxMin();
+	private final boolean empty;
 
-	public long[] getBoundingBoxMax();
+	public TrueCursor( final Cursor< T > cursor, final long size )
+	{
+		super( cursor );
+		maxIndex = size;
+		empty = size == 0;
+		reset();
+	}
+
+	protected TrueCursor( final TrueCursor< T > other )
+	{
+		super( other.source.copyCursor() );
+		index = other.index;
+		empty = other.empty;
+		maxIndex = other.maxIndex;
+	}
+
+	@Override
+	public Void get()
+	{
+		return null;
+	}
+
+	@Override
+	public void jumpFwd( final long steps )
+	{
+		for ( long i = 0; i < steps; ++i )
+			fwd();
+	}
+
+	@Override
+	public void fwd()
+	{
+		if ( empty )
+			return;
+		while ( !source.next().get() )
+			;
+		++index;
+	}
+
+	@Override
+	public void reset()
+	{
+		index = 0;
+		source.reset();
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return index < maxIndex;
+	}
+
+	@Override
+	public Void next()
+	{
+		fwd();
+		return get();
+	}
+
+	@Override
+	public TrueCursor< T > copy()
+	{
+		return new TrueCursor<>( this );
+	}
+
+	@Override
+	public TrueCursor< T > copyCursor()
+	{
+		return copy();
+	}
 }

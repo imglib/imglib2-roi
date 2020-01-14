@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * ImgLib2: a general-purpose, multidimensional image processing library.
  * %%
@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,57 +34,51 @@
 package net.imglib2.roi.util;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
-import net.imglib2.Interval;
 import net.imglib2.IterableInterval;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.roi.IterableRegion;
-import net.imglib2.roi.Regions;
-import net.imglib2.type.BooleanType;
+import net.imglib2.roi.PositionableIterableInterval;
 
 /**
- * Make a boolean {@link RandomAccessibleInterval} iterable. The resulting
- * {@link IterableInterval} contains all samples of the source interval that
- * evaluate to {@code true}.
+ * Makes a {@link IterableInterval} {@code Positionable} by wrapping its cursors
+ * with an offset.
  *
- * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
- * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
+ * @param <T>
+ *            pixel type of source
+ * @param <S>
+ *            source type
  *
  * @author Tobias Pietzsch
+ * @author Christian Dietz
  */
-@Deprecated
-public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
+public class PositionableWrappedIterableInterval< T, S extends IterableInterval< T > >
+		extends PositionableInterval
+		implements PositionableIterableInterval< T >
 {
-	final long size;
+	protected final S source;
 
-	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
+	public PositionableWrappedIterableInterval( final S source )
 	{
-		return new IterableRandomAccessibleRegion<>( interval, Regions.countTrue( interval ) );
+		super( source );
+		this.source = source;
 	}
 
-	public IterableRandomAccessibleRegion( final RandomAccessibleInterval< T > interval, final long size )
+	protected PositionableWrappedIterableInterval( final PositionableWrappedIterableInterval< T, S > other )
 	{
-		super( interval );
-		this.size = size;
+		super( other );
+		this.source = other.source;
 	}
 
 	@Override
 	public long size()
 	{
-		return size;
+		return source.size();
 	}
 
 	@Override
-	public Void firstElement()
+	public T firstElement()
 	{
-		if ( size() == 0 )
-			throw new NoSuchElementException();
-		return cursor().next();
+		return source.firstElement();
 	}
 
 	@Override
@@ -94,32 +88,82 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	}
 
 	@Override
-	public Iterator< Void > iterator()
+	public Iterator< T > iterator()
 	{
 		return cursor();
 	}
 
 	@Override
-	public Cursor< Void > cursor()
+	public Cursor< T > cursor()
 	{
-		return new RandomAccessibleRegionCursor<>( sourceInterval, size );
+		return new PositionableIterableIntervalCursor( source.cursor() );
 	}
 
 	@Override
-	public Cursor< Void > localizingCursor()
+	public Cursor< T > localizingCursor()
 	{
-		return cursor();
+		return new PositionableIterableIntervalCursor( source.localizingCursor() );
+	}
+
+	class PositionableIterableIntervalCursor extends OffsetLocalizable< Cursor< T > > implements Cursor< T >
+	{
+		public PositionableIterableIntervalCursor( final Cursor< T > cursor )
+		{
+			super( cursor, currentOffset );
+		}
+
+		@Override
+		public T get()
+		{
+			return source.get();
+		}
+
+		@Override
+		public void jumpFwd( final long steps )
+		{
+			source.jumpFwd( steps );
+		}
+
+		@Override
+		public void fwd()
+		{
+			source.fwd();
+		}
+
+		@Override
+		public void reset()
+		{
+			source.reset();
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return source.hasNext();
+		}
+
+		@Override
+		public T next()
+		{
+			return source.next();
+		}
+
+		@Override
+		public PositionableIterableIntervalCursor copy()
+		{
+			return new PositionableIterableIntervalCursor( source.copyCursor() );
+		}
+
+		@Override
+		public PositionableIterableIntervalCursor copyCursor()
+		{
+			return copy();
+		}
 	}
 
 	@Override
-	public RandomAccess< T > randomAccess()
+	public PositionableWrappedIterableInterval< T, S > copy()
 	{
-		return sourceInterval.randomAccess();
-	}
-
-	@Override
-	public RandomAccess< T > randomAccess( final Interval interval )
-	{
-		return sourceInterval.randomAccess( interval );
+		return new PositionableWrappedIterableInterval<>( this );
 	}
 }
