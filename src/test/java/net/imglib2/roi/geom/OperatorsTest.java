@@ -803,9 +803,11 @@ public class OperatorsTest
 	public void testNonInvertibleTransform()
 	{
 		final Ellipsoid e = new OpenWritableEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
+
+		// A 2d deformation field with identical deformations in x and y
 		final BiConsumer< RealLocalizable, DoubleType > f = ( p, v ) -> v.set( -10 );
-		final FunctionRealRandomAccessible< DoubleType > def = new FunctionRealRandomAccessible<>( 3, f, DoubleType::new );
-		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def );
+		final FunctionRealRandomAccessible< DoubleType > def = new FunctionRealRandomAccessible<>( 2, f, DoubleType::new );
+		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def, def );
 		final RealMask rm = e.transform( transformToSource );
 
 		// Since the transform is not continuous, the boundary behavior may not
