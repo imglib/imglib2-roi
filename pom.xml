@@ -11,7 +11,7 @@
 
 	<groupId>net.imglib2</groupId>
 	<artifactId>imglib2-roi</artifactId>
-	<version>0.10.1-SNAPSHOT</version>
+	<version>0.10.2-SNAPSHOT</version>
 
 	<name>ImgLib2 ROI</name>
 	<description>Regions of interest in ImgLib2.</description>
