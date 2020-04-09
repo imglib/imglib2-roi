@@ -87,7 +87,8 @@ public class Regions
 	 *
 	 * @return An IterableInterval over the samples of img inside the mask.
 	 */
-	public static < T, B extends BooleanType< B > > IterableInterval< T > sample( final RandomAccessible< B > mask, final RandomAccessibleInterval< T > img )
+	// NB: this method is not named "sample" to avoid ambiguation with sample(IterableInterval<Void>, RandomAccessible<T>)
+	public static < T, B extends BooleanType< B > > IterableInterval< T > sampleWithRandomAccessible( final RandomAccessible< B > mask, final RandomAccessibleInterval< T > img )
 	{
 		final IterableInterval< Void > region = iterable( Views.interval( mask, img ) );
 		return sample( region, img );
@@ -106,7 +107,7 @@ public class Regions
 	 */
 	public static < T > IterableInterval< T > sample( final Mask mask, final RandomAccessibleInterval< T > img )
 	{
-		return sample( Masks.toRandomAccessible( mask ), img );
+		return sampleWithRandomAccessible( Masks.toRandomAccessible( mask ), img );
 	}
 
 	/**
@@ -122,7 +123,7 @@ public class Regions
 	 */
 	public static < T > IterableInterval< T > sample( final RealMask mask, final RandomAccessibleInterval< T > img )
 	{
-		return sample( Views.raster( Masks.toRealRandomAccessible( mask ) ), img );
+		return sampleWithRandomAccessible( Views.raster( Masks.toRealRandomAccessible( mask ) ), img );
 	}
 
 	/**
