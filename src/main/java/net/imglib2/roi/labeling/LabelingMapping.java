@@ -238,7 +238,20 @@ public class LabelingMapping< T >
 	 */
 	InternedSet< T > addLabelToSetAtIndex( final T label, final int index )
 	{
-		final TObjectIntMap< T > addMap = addMapsByIndex.get( index );
+		TObjectIntMap< T > addMap = addMapsByIndex.get( index );
+		if ( addMap == null )
+		{
+			synchronized ( this )
+			{
+				addMap = addMapsByIndex.get( index );
+				if ( addMap == null )
+				{
+					addMap = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE );
+					addMapsByIndex.set( index, addMap );
+				}
+			}
+		}
+
 		int i = addMap.get( label );
 		if ( i != INT_NO_ENTRY_VALUE )
 			return setsByIndex.get( i );
@@ -263,7 +276,20 @@ public class LabelingMapping< T >
 	 */
 	InternedSet< T > removeLabelFromSetAtIndex( final T label, final int index )
 	{
-		final TObjectIntMap< T > subMap = subMapsByIndex.get( index );
+		TObjectIntMap< T > subMap = subMapsByIndex.get( index );
+		if ( subMap == null )
+		{
+			synchronized ( this )
+			{
+				subMap = subMapsByIndex.get( index );
+				if ( subMap == null )
+				{
+					subMap = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE );
+					subMapsByIndex.set( index, subMap );
+				}
+			}
+		}
+
 		int i = subMap.get( label );
 		if ( i != INT_NO_ENTRY_VALUE )
 			return setsByIndex.get( i );
@@ -367,8 +393,8 @@ public class LabelingMapping< T >
 		// add back the empty set
 		final InternedSet< T > theEmptySet = this.theEmptySet;
 		setsByIndex.add( theEmptySet );
-		addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
-		subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+		addMapsByIndex.add( null );
+		subMapsByIndex.add( null );
 		internedSets.put( theEmptySet.getSet(), theEmptySet );
 
 		// add remaining label sets
