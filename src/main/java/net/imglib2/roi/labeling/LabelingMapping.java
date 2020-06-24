@@ -160,7 +160,12 @@ public class LabelingMapping< T >
 
 		public InternedSet( final Set< T > set, final int index )
 		{
-			this.set = Collections.unmodifiableSet( new HashSet<>( set ) );
+			this( set, index, true );
+		}
+
+		public InternedSet( final Set< T > set, final int index, final boolean copySet )
+		{
+			this.set = Collections.unmodifiableSet( copySet ? new HashSet<>( set ) : set );
 			this.hashCode = set.hashCode();
 			this.index = index;
 		}
@@ -225,8 +230,8 @@ public class LabelingMapping< T >
 
 			interned = new InternedSet<>( src, intIndex );
 			setsByIndex.add( interned );
-			addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
-			subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+			addMapsByIndex.add( null );
+			subMapsByIndex.add( null );
 			internedSets.put( interned.getSet(), interned );
 			return interned;
 		}
@@ -390,6 +395,11 @@ public class LabelingMapping< T >
 		addMapsByIndex.clear();
 		subMapsByIndex.clear();
 
+		final int numLabelSets = labelSets.size();
+		setsByIndex.ensureCapacity( numLabelSets );
+		addMapsByIndex.ensureCapacity( numLabelSets );
+		subMapsByIndex.ensureCapacity( numLabelSets );
+
 		// add back the empty set
 		final InternedSet< T > theEmptySet = this.theEmptySet;
 		setsByIndex.add( theEmptySet );
@@ -398,12 +408,17 @@ public class LabelingMapping< T >
 		internedSets.put( theEmptySet.getSet(), theEmptySet );
 
 		// add remaining label sets
-		for ( int i = 1; i < labelSets.size(); ++i )
+		for ( int i = 1; i < numLabelSets; ++i )
 		{
 			final Set< T > set = labelSets.get( i );
-			final InternedSet< T > interned = intern( set );
-			if ( interned.index != i )
+			if ( internedSets.get( set ) != null )
 				throw new IllegalArgumentException( "no duplicates allowed in list of label-sets" );
+
+			final InternedSet< T > interned = new InternedSet<>( set, i, false );
+			setsByIndex.add( interned );
+			addMapsByIndex.add( null );
+			subMapsByIndex.add( null );
+			internedSets.put( interned.getSet(), interned );
 		}
 	}
 
