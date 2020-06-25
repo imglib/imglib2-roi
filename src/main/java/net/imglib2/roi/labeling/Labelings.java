@@ -33,19 +33,89 @@
  */
 package net.imglib2.roi.labeling;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.view.Views;
 
 /**
  * Utility class for labeling tasks.
  *
  * @author Alison Walter
+ * @author Jan Eglinger
  *
  */
 public class Labelings
 {
+	/**
+	 * Get a {@link LabelingMapping} from any {@link RandomAccessibleInterval}
+	 * on {@link LabelingType}.
+	 * 
+	 * @param labeling
+	 *            The label image
+	 * @return mapping of indices to sets of labels
+	 */
 	public static < T > LabelingMapping< T > getLabelingMapping( final RandomAccessibleInterval< LabelingType< T > > labeling )
 	{
 		return Views.iterable( labeling ).firstElement().getMapping();
+	}
+
+	/**
+	 * Create a new {@link ImgLabeling} from an input labeling, with the labels
+	 * transformed according to the provided {@link Function}.
+	 * 
+	 * The mapping function needs to be an injective function (i.e. no
+	 * duplicates are allowed in the result of the mapping), otherwise an
+	 * {@link IllegalArgumentException} will be thrown.
+	 * 
+	 * @param labeling
+	 *            The {@link ImgLabeling} to be transformed
+	 * @param function
+	 *            The {@link Function} providing the mapping from input to
+	 *            output labels
+	 * @return the transformed {@link ImgLabeling}
+	 */
+	public static < T, U, I extends IntegerType< I > > ImgLabeling< U, I > remapLabels( ImgLabeling< T, I > labeling, Function< T, U > function )
+	{
+		// populate map of all existing labels
+		Set< T > inputLabels = labeling.getMapping().getLabels();
+		Map< T, U > labelMap = new HashMap<>( inputLabels.size() );
+		inputLabels.stream().forEach( t -> labelMap.put( t, function.apply( t ) ) );
+
+		return remapLabels( labeling, labelMap );
+	}
+
+	/**
+	 * Create a new {@link ImgLabeling} from an input labeling, with the labels
+	 * transformed according to the provided {@link Map}.
+	 * 
+	 * The map needs to be injective/bijective (i.e. no duplicates are allowed
+	 * in the result of the mapping), otherwise an
+	 * {@link IllegalArgumentException} will be thrown.
+	 * 
+	 * @param labeling
+	 *            The {@link ImgLabeling} to be transformed
+	 * @param mapping
+	 *            The {@link Map} mapping input to output labels
+	 * @return the transformed {@link ImgLabeling}
+	 */
+	public static < T, U, I extends IntegerType< I > > ImgLabeling< U, I > remapLabels( ImgLabeling< T, I > labeling, Map< T, U > mapping )
+	{
+		List< Set< T > > labelSets = labeling.getMapping().getLabelSets();
+		List< Set< U > > resultLabelSets = new ArrayList<>( labelSets.size() );
+
+		labelSets.forEach( labelSet -> resultLabelSets.add( labelSet.stream().map( t -> mapping.get( t ) ).collect( Collectors.toSet() ) ) );
+
+		ImgLabeling< U, I > result = new ImgLabeling<>( labeling.getIndexImg() );
+		LabelingMapping< U > resultMapping = result.getMapping();
+		resultMapping.setLabelSets( resultLabelSets );
+		return result;
 	}
 }
