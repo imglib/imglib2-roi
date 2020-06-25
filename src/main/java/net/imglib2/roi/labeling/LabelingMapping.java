@@ -337,12 +337,7 @@ public class LabelingMapping< T >
 	{
 		final HashSet< T > result = new HashSet<>();
 		for ( final InternedSet< T > instance : setsByIndex )
-		{
-			for ( final T label : instance.set )
-			{
-				result.add( label );
-			}
-		}
+			result.addAll( instance.set );
 		return result;
 	}
 
