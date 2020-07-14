@@ -232,30 +232,30 @@ public class Masks
 	{
 		return new RealMaskRealIntervalAsRealRandomAccessibleRealInterval<>( mask, new BoolType() );
 	}
-	
+
 	/**
 	 * View a {@link RealMaskRealInterval} as an {@link IterableRegion},
 	 * in integer coordinates.
-	 * 
+	 *
 	 * This method enables using a {@link RealMaskRealInterval} as the ROI
 	 * to iterate over in a {@link RandomAccessible}, in conjunction
 	 * with {@link Regions#sample(net.imglib2.IterableInterval, RandomAccessible)}.
-	 * 
+	 *
 	 * For example, to iterate the values inside a sphere, do:
-	 * 
+	 *
 	 * <pre>{@code
 	 * final ClosedWritableSphere sphere = ...
 	 * final RandomAccessibleInterval rai = ...
-	 * 
+	 *
 	 * for ( final T t : Regions.sample( Masks.toIterableRegion( sphere ), rai )
 	 * {
 	 *     // Do something with t
 	 * }
 	 * }</pre>
-	 * 
+	 *
 	 * @param mask {@link RealMaskRealInterval} to be iterated in
 	 *             in integer coordinates.
-	 * @return IterableRegion&lt; BoolType &gt;
+	 * @return {@code IterableRegion<BoolType>}
 	 */
 	public static IterableRegion< BoolType > toIterableRegion( final RealMaskRealInterval mask )
 	{
@@ -263,6 +263,34 @@ public class Masks
 				Views.interval(
 						Views.raster( Masks.toRealRandomAccessible( mask )),
 						Intervals.largestContainedInterval( mask ) ) );
+	}
+
+	/**
+	 * View a {@link MaskInterval} as an {@link IterableRegion},
+	 * in integer coordinates.
+	 *
+	 * This method enables using a {@link MaskInterval} as the ROI
+	 * to iterate over in a {@link RandomAccessible}, in conjunction
+	 * with {@link Regions#sample(net.imglib2.IterableInterval, RandomAccessible)}.
+	 *
+	 * For example, to iterate the values inside a sphere, do:
+	 *
+	 * <pre>{@code
+	 * final ClosedWritableSphere sphere = ...
+	 * final RandomAccessibleInterval rai = ...
+	 *
+	 * for ( final T t : Regions.sample( Masks.toIterableRegion( sphere ), rai )
+	 * {
+	 *     // Do something with t
+	 * }
+	 * }</pre>
+	 *
+	 * @param mask {@link MaskInterval} to be iterated.
+	 * @return {@code IterableRegion<BoolType>}
+	 */
+	public static IterableRegion< BoolType > toIterableRegion( final MaskInterval mask )
+	{
+		return Regions.iterable( Masks.toRandomAccessibleInterval( mask ) );
 	}
 
 	/*
@@ -460,7 +488,7 @@ public class Masks
 	/**
 	 * Returns true iff the two masks have the same mask type, boundary type and
 	 * dimensionality.
-	 * 
+	 *
 	 * @param mask1
 	 *            The first mask to compare.
 	 * @param mask2
