@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>28.0.0</version>
+		<version>29.0.0-beta-3</version>
 		<relativePath />
 	</parent>
 
@@ -65,9 +65,6 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>deploy-to-scijava</releaseProfiles>
-
-		<imglib2.version>5.9.0</imglib2.version>
-		<imglib2-realtransform.version>3.0.0</imglib2-realtransform.version>
 	</properties>
 
 	<developers>
