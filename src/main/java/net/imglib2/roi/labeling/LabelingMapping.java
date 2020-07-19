@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,39 +34,33 @@
 
 package net.imglib2.roi.labeling;
 
-import gnu.trove.impl.Constants;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
-
+import java.lang.ref.WeakReference;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
+import java.util.concurrent.ConcurrentHashMap;
 import net.imglib2.type.numeric.IntegerType;
 
 /**
  * The LabelingMapping maps a set of labelings of a pixel to an index value
  * which can be more compactly stored than the set of labelings. It provides an
  * {@link #intern(Set)} function that supplies a canonical object for each set
- * of labelings in a container, and functions
- * {@link #addLabelToSetAtIndex(Object, int)},
- * {@link #removeLabelFromSetAtIndex(Object, int)} for efficiently adding and
- * removing labels to the set at a given index value.
+ * of labelings in a container.
  *
  * @param <T>
- *            the desired type of the pixel labels, for instance {@link Integer}
- *            to number objects or {@link String} for user-assigned label names.
+ * 		the desired type of the pixel labels, for instance {@link Integer}
+ * 		to number objects or {@link String} for user-assigned label names.
  *
  * @author Lee Kamentsky
  * @author Tobias Pietzsch
  */
 public class LabelingMapping< T >
 {
-	private static final int INT_NO_ENTRY_VALUE = -1;
-
 	/**
 	 * Maximum number of distinct label sets that can be represented by this
 	 * mapping. Depends on the {@link IntegerType} to which label sets are
@@ -75,46 +69,26 @@ public class LabelingMapping< T >
 	private final int maxNumLabelSets;
 
 	/**
-	 * TODO
+	 * Stores labels for all interned sets.
 	 */
-	private final HashMap< Set< T >, InternedSet< T > > internedSets;
+	private final ArrayList< T > data = new ArrayList<>();
 
 	/**
 	 * Maps indices to {@link InternedSet} (canonical label sets).
 	 * {@code setsByIndex.get( i ).index == i} holds.
 	 */
-	private final ArrayList< InternedSet< T > > setsByIndex;
+	private final ArrayList< InternedSet< T > > setsByIndex = new ArrayList<>();
 
 	/**
-	 * Lookup tables for adding labels. Assume that by adding label <em>L</em>
-	 * to label set <em>S</em> we obtain <em>S' = S &cup; {L}</em>.
-	 * {@code addMapsByIndex} contains at index of set <em>S</em> a map from
-	 * <em>L</em> to index of <em>S'</em>.
-	 *
-	 * <p>
-	 * When a new <em>(L,S)</em> combination occurs for the first time in
-	 * {@link #addLabelToSetAtIndex(Object, int)}, it is added to the lookup
-	 * table.
+	 * TODO
 	 */
-	private final ArrayList< TObjectIntMap< T > > addMapsByIndex;
-
-	/**
-	 * Lookup tables for removing labels. Assume that by removing label
-	 * <em>L</em> from label set <em>S</em> we obtain <em>S' = S &setminus;
-	 * {L}</em>. {@code subMapsByIndex} contains at index of set <em>S</em> a
-	 * map from <em>L</em> to index of <em>S'</em>.
-	 *
-	 * <p>
-	 * When a new <em>(L,S)</em> combination occurs for the first time in
-	 * {@link #removeLabelFromSetAtIndex(Object, int)}, it is added to the
-	 * lookup table.
-	 */
-	private final ArrayList< TObjectIntMap< T > > subMapsByIndex;
+	private final Map< Set< T >, InternedSet< T > > internedSets = new ConcurrentHashMap<>();
 
 	/**
 	 * the empty label set.
 	 */
-	private final InternedSet< T > theEmptySet;
+	private InternedSet< T > theEmptySet;
+
 
 	/**
 	 * Create a new {@link LabelingMapping} that maps label sets to the given
@@ -128,14 +102,7 @@ public class LabelingMapping< T >
 	private LabelingMapping( final int maxNumLabelSets )
 	{
 		this.maxNumLabelSets = maxNumLabelSets;
-
-		internedSets = new HashMap<>();
-		setsByIndex = new ArrayList<>();
-		addMapsByIndex = new ArrayList<>();
-		subMapsByIndex = new ArrayList<>();
-
-		final HashSet< T > background = new HashSet<>( 0 );
-		theEmptySet = intern( background );
+		theEmptySet = intern( new HashSet<>( 0 ) );
 	}
 
 	/**
@@ -146,49 +113,16 @@ public class LabelingMapping< T >
 		return new LabelingMapping<>( maxNumLabelSets );
 	}
 
-	/**
-	 * Canonical representative for a label set. Contains a label set and the
-	 * index to which it is mapped.
-	 */
-	static class InternedSet< T >
+	void clear()
 	{
-		final Set< T > set;
-
-		final int hashCode;
-
-		final int index;
-
-		public InternedSet( final Set< T > set, final int index )
-		{
-			this( set, index, true );
-		}
-
-		public InternedSet( final Set< T > set, final int index, final boolean copySet )
-		{
-			this.set = Collections.unmodifiableSet( copySet ? new HashSet<>( set ) : set );
-			this.hashCode = set.hashCode();
-			this.index = index;
-		}
-
-		public Set< T > getSet()
-		{
-			return set;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return hashCode;
-		}
-
-		@Override
-		public boolean equals( final Object obj )
-		{
-			return obj == this;
-		}
+		clearCacheMaps();
+		data.clear();
+		setsByIndex.clear();
+		internedSets.clear();
+		theEmptySet = intern( new HashSet<>( 0 ) );
 	}
 
-	InternedSet< T > emptySet()
+	public InternedSet< T > emptySet()
 	{
 		return theEmptySet;
 	}
@@ -210,107 +144,19 @@ public class LabelingMapping< T >
 	}
 
 	/**
+	 * Returns the (unmodifiable) set of labels for the given index value.
+	 */
+	public Set< T > labelsAtIndex( final int index )
+	{
+		return setAtIndex( index );
+	}
+
+	/**
 	 * Return the canonical set for the given label set.
 	 */
-	InternedSet< T > intern( final Set< T > src )
+	public InternedSet< T > intern( final Set< T > src )
 	{
-		InternedSet< T > interned = internedSets.get( src );
-		if ( interned != null )
-			return interned;
-
-		synchronized ( this )
-		{
-			interned = internedSets.get( src );
-			if ( interned != null )
-				return interned;
-
-			final int intIndex = setsByIndex.size();
-			if ( intIndex > maxNumLabelSets )
-				throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", intIndex ) );
-
-			interned = new InternedSet<>( src, intIndex );
-			setsByIndex.add( interned );
-			addMapsByIndex.add( null );
-			subMapsByIndex.add( null );
-			internedSets.put( interned.getSet(), interned );
-			return interned;
-		}
-	}
-
-	/**
-	 * Get the canonical set obtained by adding {@code label} to the
-	 * {@link #setAtIndex(int) set at index} {@code index}.
-	 */
-	InternedSet< T > addLabelToSetAtIndex( final T label, final int index )
-	{
-		TObjectIntMap< T > addMap = addMapsByIndex.get( index );
-		if ( addMap == null )
-		{
-			synchronized ( this )
-			{
-				addMap = addMapsByIndex.get( index );
-				if ( addMap == null )
-				{
-					addMap = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE );
-					addMapsByIndex.set( index, addMap );
-				}
-			}
-		}
-
-		int i = addMap.get( label );
-		if ( i != INT_NO_ENTRY_VALUE )
-			return setsByIndex.get( i );
-
-		synchronized ( this )
-		{
-			i = addMap.get( label );
-			if ( i != INT_NO_ENTRY_VALUE )
-				return setsByIndex.get( i );
-
-			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
-			set.add( label );
-			final InternedSet< T > interned = intern( set );
-			addMap.put( label, interned.index );
-			return interned;
-		}
-	}
-
-	/**
-	 * Get the canonical set obtained by removing {@code label} from the
-	 * {@link #setAtIndex(int) set at index} {@code index}.
-	 */
-	InternedSet< T > removeLabelFromSetAtIndex( final T label, final int index )
-	{
-		TObjectIntMap< T > subMap = subMapsByIndex.get( index );
-		if ( subMap == null )
-		{
-			synchronized ( this )
-			{
-				subMap = subMapsByIndex.get( index );
-				if ( subMap == null )
-				{
-					subMap = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE );
-					subMapsByIndex.set( index, subMap );
-				}
-			}
-		}
-
-		int i = subMap.get( label );
-		if ( i != INT_NO_ENTRY_VALUE )
-			return setsByIndex.get( i );
-
-		synchronized ( this )
-		{
-			i = subMap.get( label );
-			if ( i != INT_NO_ENTRY_VALUE )
-				return setsByIndex.get( i );
-
-			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
-			set.remove( label );
-			final InternedSet< T > interned = intern( set );
-			subMap.put( label, interned.index );
-			return interned;
-		}
+		return internedSets.computeIfAbsent( src, this::create );
 	}
 
 	/**
@@ -322,23 +168,11 @@ public class LabelingMapping< T >
 	}
 
 	/**
-	 * Returns the (unmodifiable) set of labels for the given index value.
-	 */
-	public Set< T > labelsAtIndex( final int index )
-	{
-		return setsByIndex.get( index ).set;
-	}
-
-	/**
 	 * Return the set of all labels defined in this {@link LabelingMapping}.
 	 */
-	// TODO: build only once (while adding labels).
 	public Set< T > getLabels()
 	{
-		final HashSet< T > result = new HashSet<>();
-		for ( final InternedSet< T > instance : setsByIndex )
-			result.addAll( instance.set );
-		return result;
+		return new HashSet<>( data );
 	}
 
 	/**
@@ -352,8 +186,7 @@ public class LabelingMapping< T >
 	public List< Set< T > > getLabelSets()
 	{
 		final ArrayList< Set< T > > labelSets = new ArrayList<>( numSets() );
-		for ( final InternedSet< T > interned : setsByIndex )
-			labelSets.add( interned.getSet() );
+		labelSets.addAll( setsByIndex );
 		return labelSets;
 	}
 
@@ -384,36 +217,220 @@ public class LabelingMapping< T >
 		if ( !labelSets.get( 0 ).isEmpty() )
 			throw new IllegalArgumentException( "label-set at index 0 expected to be the empty label set" );
 
-		// clear everything
-		internedSets.clear();
-		setsByIndex.clear();
-		addMapsByIndex.clear();
-		subMapsByIndex.clear();
-
-		final int numLabelSets = labelSets.size();
-		setsByIndex.ensureCapacity( numLabelSets );
-		addMapsByIndex.ensureCapacity( numLabelSets );
-		subMapsByIndex.ensureCapacity( numLabelSets );
-
-		// add back the empty set
-		final InternedSet< T > theEmptySet = this.theEmptySet;
-		setsByIndex.add( theEmptySet );
-		addMapsByIndex.add( null );
-		subMapsByIndex.add( null );
-		internedSets.put( theEmptySet.getSet(), theEmptySet );
+		// clear everything and add the empty set
+		clear();
 
 		// add remaining label sets
+		final int numLabelSets = labelSets.size();
 		for ( int i = 1; i < numLabelSets; ++i )
 		{
 			final Set< T > set = labelSets.get( i );
 			if ( internedSets.get( set ) != null )
 				throw new IllegalArgumentException( "no duplicates allowed in list of label-sets" );
+			intern( set );
+		}
 
-			final InternedSet< T > interned = new InternedSet<>( set, i, false );
-			setsByIndex.add( interned );
-			addMapsByIndex.add( null );
-			subMapsByIndex.add( null );
-			internedSets.put( interned.getSet(), interned );
+		data.trimToSize();
+		setsByIndex.trimToSize();
+	}
+
+	private synchronized InternedSet< T > create( final Set< T > set )
+	{
+		final int index = setsByIndex.size();
+		if ( index > maxNumLabelSets )
+			throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", index ) );
+
+		final int offset = data.size();
+		final int size = set.size();
+		final int hashCode = set.hashCode();
+
+		for ( T label : set )
+			data.add( label );
+
+		InternedSet< T > internedSet = new InternedSet<>( this, offset, size, hashCode, index );
+		setsByIndex.add( internedSet );
+		return internedSet;
+	}
+
+	/**
+	 * Canonical representative for a label set. Contains the
+	 * index to which the label set is mapped.
+	 */
+	public static class InternedSet< T > extends AbstractCollection< T > implements Set< T >
+	{
+		private final LabelingMapping< T > container;
+
+		private final int offset;
+
+		private final int size;
+
+		final int hashCode;
+
+		final int index;
+
+		private InternedSet( final LabelingMapping< T > container, final int offset, final int size, final int hashCode, final int index )
+		{
+			this.container = container;
+			this.offset = offset;
+			this.size = size;
+			this.hashCode = hashCode;
+			this.index = index;
+		}
+
+		@Override
+		public int size()
+		{
+			return size;
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			return size == 0;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return hashCode;
+		}
+
+		@Override
+		public boolean equals( final Object obj )
+		{
+			return obj == this;
+		}
+
+		@Override
+		public boolean contains( final Object o )
+		{
+			if ( o == null )
+				return false;
+
+			final int size = size();
+			for ( int i = 0; i < size; i++ )
+				if ( o.equals( container.data.get( offset + i ) ) )
+					return true;
+			return false;
+		}
+
+		@Override
+		public Iterator< T > iterator()
+		{
+			return new Iter();
+		}
+
+		class Iter implements Iterator< T >
+		{
+			private int index = 0;
+
+			@Override
+			public boolean hasNext()
+			{
+				return index < size;
+			}
+
+			@Override
+			public T next()
+			{
+				final T label = container.data.get( offset + index );
+				++index;
+				return label;
+			}
+		}
+	}
+
+	private List< WeakReference< AddRemoveCacheMap > > cacheMaps = new ArrayList<>();
+
+	private void clearCacheMaps()
+	{
+		cacheMaps.forEach( ref -> {
+			final AddRemoveCacheMap cacheMap = ref.get();
+			if ( cacheMap != null )
+				cacheMap.clear();
+		} );
+	}
+
+	AddRemoveCacheMap createAddRemoveCacheMap()
+	{
+		cacheMaps.removeIf( ref -> ref.get() == null );
+		final AddRemoveCacheMap cacheMap = new AddRemoveCacheMap();
+		cacheMaps.add( new WeakReference<>( cacheMap ) );
+		return cacheMap;
+	}
+
+	static class CachedTriple< T >
+	{
+		int fromIndex = -1;
+		T label = null;
+		int toIndex = -1;
+	}
+
+	class AddRemoveCacheMap
+	{
+		private static final int numSignificantIndexBits = 4;
+		private static final int significantIndexValues = ( 1 << numSignificantIndexBits );
+		private static final int significantIndexBitsMask = significantIndexValues - 1;
+
+		private static final int numSignificantLabelBits = 4;
+		private static final int significantLabelValues = ( 1 << numSignificantLabelBits );
+		private static final int significantLabelBitsMask = significantLabelValues - 1;
+
+		final CachedTriple< T >[] addCache;
+		final CachedTriple< T >[] removeCache;
+
+		@SuppressWarnings( { "unchecked", "raw" } )
+		AddRemoveCacheMap()
+		{
+			addCache = new CachedTriple[ significantIndexValues * significantLabelValues ];
+			removeCache = new CachedTriple[ significantIndexValues * significantLabelValues ];
+			clear();
+		}
+
+		void clear()
+		{
+			Arrays.setAll( addCache, i -> new CachedTriple<>() );
+			Arrays.setAll( removeCache, i -> new CachedTriple<>() );
+		}
+
+		public int addLabelToSetAtIndex( final T label, final int index )
+		{
+			final int row = index & significantIndexBitsMask;
+			final int col = label.hashCode() & significantLabelBitsMask;
+			final CachedTriple< T > triple = addCache[ row * significantIndexValues + col ];
+			if (triple.fromIndex == index && triple.label.equals( label ) )
+				return triple.toIndex;
+			else
+			{
+				// update triple
+				final Set< T > target = new HashSet<>( setAtIndex( index ) );
+				target.add( label );
+				final int toIndex = indexOf( target );
+				triple.fromIndex = index;
+				triple.label = label;
+				triple.toIndex = toIndex;
+				return toIndex;
+			}
+		}
+
+		public int removeLabelFromSetAtIndex( final T label, final int index )
+		{
+			final int row = index & significantIndexBitsMask;
+			final int col = label.hashCode() & significantLabelBitsMask;
+			final CachedTriple< T > triple = removeCache[ row * significantIndexValues + col ];
+			if (triple.fromIndex == index && triple.label.equals( label ) )
+				return triple.toIndex;
+			else
+			{
+				// update triple
+				final Set< T > target = new HashSet<>( setAtIndex( index ) );
+				target.remove( label );
+				final int toIndex = indexOf( target );
+				triple.fromIndex = index;
+				triple.label = label;
+				triple.toIndex = toIndex;
+				return toIndex;
+			}
 		}
 	}
 
