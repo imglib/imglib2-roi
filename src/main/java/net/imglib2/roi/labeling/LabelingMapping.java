@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import gnu.trove.impl.Constants;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.imglib2.type.numeric.IntegerType;
@@ -86,7 +87,8 @@ public class LabelingMapping< T >
 	private final Map< SortedInts, InternedSet< T > > internedSets = new ConcurrentHashMap<>();
 
 	private final List< T > labels = new ArrayList<>();
-	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>();
+
+	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
 
 	/**
 	 * the empty label set.
@@ -309,13 +311,31 @@ public class LabelingMapping< T >
 		@Override
 		public int hashCode()
 		{
-			return index;
+			int hashCode = 0;
+			for(T element : this)
+				hashCode += element.hashCode();
+			return hashCode;
 		}
 
 		@Override
 		public boolean equals( final Object obj )
 		{
-			return obj == this;
+			if(obj instanceof InternedSet && ( ( InternedSet ) obj ).container == container)
+				return obj == this;
+			return equalsSet( obj );
+		}
+
+		private boolean equalsSet( Object obj )
+		{
+			if(!(obj instanceof Set))
+				return false;
+			Set< T > other = ( Set< T > ) obj;
+			if(other.size() != this.size())
+				return false;
+			for(T elem : other)
+				if(! this.contains( elem ))
+					return false;
+			return true;
 		}
 
 		@Override

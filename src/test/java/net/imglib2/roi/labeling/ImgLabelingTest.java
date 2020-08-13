@@ -36,17 +36,20 @@ package net.imglib2.roi.labeling;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Matthias Arzt
@@ -109,5 +112,17 @@ public class ImgLabelingTest {
 
 	private <T> Set<T> asSet(T... values) {
 		return new TreeSet<>(Arrays.asList(values));
+	}
+
+	@Test
+	public void testHashCodeAndEquals()
+	{
+		ImgLabeling< String, IntType > labeling = new ImgLabeling<>( ArrayImgs.ints( 1, 1 ) );
+		LabelingType< String > pixel = labeling.firstElement();
+		pixel.add( "foo" );
+		pixel.add( "bar" );
+		HashSet< String > expected = new HashSet<>( Arrays.asList( "foo", "bar" ) );
+		assertTrue( pixel.equals( expected ) );
+		assertEquals( expected.hashCode(), pixel.hashCode() );
 	}
 }
