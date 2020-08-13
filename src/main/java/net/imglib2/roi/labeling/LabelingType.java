@@ -285,7 +285,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	@Override
 	public int hashCode()
 	{
-		return mapping.setAtIndex( type.getInteger() ).hashCode;
+		return mapping.setAtIndex( type.getInteger() ).hashCode();
 	}
 
 	@Override

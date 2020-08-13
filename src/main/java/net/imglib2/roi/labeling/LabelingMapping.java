@@ -34,16 +34,24 @@
 
 package net.imglib2.roi.labeling;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.map.TObjectIntMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import net.imglib2.type.numeric.IntegerType;
 
 /**
@@ -69,11 +77,6 @@ public class LabelingMapping< T >
 	private final int maxNumLabelSets;
 
 	/**
-	 * Stores labels for all interned sets.
-	 */
-	private final ArrayList< T > data = new ArrayList<>();
-
-	/**
 	 * Maps indices to {@link InternedSet} (canonical label sets).
 	 * {@code setsByIndex.get( i ).index == i} holds.
 	 */
@@ -82,7 +85,10 @@ public class LabelingMapping< T >
 	/**
 	 * TODO
 	 */
-	private final Map< Set< T >, InternedSet< T > > internedSets = new ConcurrentHashMap<>();
+	private final Map< TIntArrayList, InternedSet< T > > internedSets = new ConcurrentHashMap<>();
+
+	private final List< T > labels = new ArrayList<>();
+	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>();
 
 	/**
 	 * the empty label set.
@@ -102,7 +108,7 @@ public class LabelingMapping< T >
 	private LabelingMapping( final int maxNumLabelSets )
 	{
 		this.maxNumLabelSets = maxNumLabelSets;
-		theEmptySet = intern( new HashSet<>( 0 ) );
+		theEmptySet = intern( new TIntArrayList(0) );
 	}
 
 	/**
@@ -116,23 +122,14 @@ public class LabelingMapping< T >
 	void clear()
 	{
 		clearCacheMaps();
-		data.clear();
 		setsByIndex.clear();
 		internedSets.clear();
-		theEmptySet = intern( new HashSet<>( 0 ) );
+		theEmptySet = intern( new TIntArrayList(0) );
 	}
 
 	public InternedSet< T > emptySet()
 	{
 		return theEmptySet;
-	}
-
-	/**
-	 * Return the index value of the given set.
-	 */
-	int indexOf( final Set< T > key )
-	{
-		return intern( key ).index;
 	}
 
 	/**
@@ -156,7 +153,11 @@ public class LabelingMapping< T >
 	 */
 	public InternedSet< T > intern( final Set< T > src )
 	{
-		return internedSets.computeIfAbsent( src, this::create );
+		return intern(asElementIds(src));
+	}
+
+	private InternedSet< T > intern(TIntArrayList labelIds ) {
+		return internedSets.computeIfAbsent( labelIds, this::create );
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class LabelingMapping< T >
 	 */
 	public Set< T > getLabels()
 	{
-		return new HashSet<>( data );
+		return new HashSet<>(labels);
 	}
 
 	/**
@@ -230,26 +231,46 @@ public class LabelingMapping< T >
 			intern( set );
 		}
 
-		data.trimToSize();
 		setsByIndex.trimToSize();
 	}
 
-	private synchronized InternedSet< T > create( final Set< T > set )
-	{
+	private synchronized InternedSet< T > create(TIntArrayList labelIds) {
 		final int index = setsByIndex.size();
 		if ( index > maxNumLabelSets )
 			throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", index ) );
 
-		final int offset = data.size();
-		final int size = set.size();
-		final int hashCode = set.hashCode();
-
-		for ( T label : set )
-			data.add( label );
-
-		InternedSet< T > internedSet = new InternedSet<>( this, offset, size, hashCode, index );
+		InternedSet< T > internedSet = new InternedSet<>( this, labelIds, index );
 		setsByIndex.add( internedSet );
 		return internedSet;
+	}
+
+	private int getLabelId( T label )
+	{
+		int id = labelToId.get( label );
+		if ( id == labelToId.getNoEntryValue() )
+			id = createLabelId( label );
+		return id;
+	}
+
+	private synchronized int createLabelId(T object) {
+		int id = labelToId.get(object);
+		if(id != labelToId.getNoEntryValue())
+			return id;
+		id = labels.size();
+		labels.add(object);
+		labelToId.put(object, id);
+		return id;
+	}
+
+	private T getLabel(int id) {
+		return labels.get(id);
+	}
+
+	private TIntArrayList asElementIds(Set<T> labelSet) {
+		TIntArrayList result = new TIntArrayList(labelSet.size());
+		for (T label : labelSet) result.add(getLabelId(label));
+		result.sort();
+		return result;
 	}
 
 	/**
@@ -260,39 +281,33 @@ public class LabelingMapping< T >
 	{
 		private final LabelingMapping< T > container;
 
-		private final int offset;
-
-		private final int size;
-
-		final int hashCode;
+		private final TIntArrayList labelIds;
 
 		final int index;
 
-		private InternedSet( final LabelingMapping< T > container, final int offset, final int size, final int hashCode, final int index )
+		private InternedSet( final LabelingMapping< T > container, TIntArrayList labelIds, int index )
 		{
 			this.container = container;
-			this.offset = offset;
-			this.size = size;
-			this.hashCode = hashCode;
+			this.labelIds = labelIds;
 			this.index = index;
 		}
 
 		@Override
 		public int size()
 		{
-			return size;
+			return labelIds.size();
 		}
 
 		@Override
 		public boolean isEmpty()
 		{
-			return size == 0;
+			return labelIds.isEmpty();
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return hashCode;
+			return index;
 		}
 
 		@Override
@@ -307,11 +322,7 @@ public class LabelingMapping< T >
 			if ( o == null )
 				return false;
 
-			final int size = size();
-			for ( int i = 0; i < size; i++ )
-				if ( o.equals( container.data.get( offset + i ) ) )
-					return true;
-			return false;
+			return labelIds.binarySearch(container.getLabelId((T) o)) >= 0;
 		}
 
 		@Override
@@ -322,25 +333,24 @@ public class LabelingMapping< T >
 
 		class Iter implements Iterator< T >
 		{
-			private int index = 0;
+			private TIntIterator iterator = labelIds.iterator();
 
 			@Override
 			public boolean hasNext()
 			{
-				return index < size;
+				return iterator.hasNext();
 			}
 
 			@Override
 			public T next()
 			{
-				final T label = container.data.get( offset + index );
-				++index;
-				return label;
+				return container.getLabel(iterator.next());
 			}
 		}
 	}
 
-	private List< WeakReference< AddRemoveCacheMap > > cacheMaps = new ArrayList<>();
+	private Set< WeakReference< AddRemoveCacheMap > > cacheMaps = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	ReferenceQueue< AddRemoveCacheMap > referenceQueue = new ReferenceQueue<>();
 
 	private void clearCacheMaps()
 	{
@@ -353,10 +363,19 @@ public class LabelingMapping< T >
 
 	AddRemoveCacheMap createAddRemoveCacheMap()
 	{
-		cacheMaps.removeIf( ref -> ref.get() == null );
+		clearWeakReferences();
 		final AddRemoveCacheMap cacheMap = new AddRemoveCacheMap();
-		cacheMaps.add( new WeakReference<>( cacheMap ) );
+		cacheMaps.add( new WeakReference<>( cacheMap, referenceQueue ) );
 		return cacheMap;
+	}
+
+	private void clearWeakReferences() {
+		while(true) {
+			Reference< ? extends AddRemoveCacheMap > reference = referenceQueue.poll();
+			if(reference == null)
+				break;
+			cacheMaps.remove(reference);
+		}
 	}
 
 	static class CachedTriple< T >
@@ -395,17 +414,16 @@ public class LabelingMapping< T >
 
 		public int addLabelToSetAtIndex( final T label, final int index )
 		{
-			final int row = index & significantIndexBitsMask;
-			final int col = label.hashCode() & significantLabelBitsMask;
-			final CachedTriple< T > triple = addCache[ row * significantIndexValues + col ];
+			final CachedTriple< T > triple = addCache[getTripleIndex(label, index)];
 			if (triple.fromIndex == index && triple.label.equals( label ) )
 				return triple.toIndex;
 			else
 			{
 				// update triple
-				final Set< T > target = new HashSet<>( setAtIndex( index ) );
-				target.add( label );
-				final int toIndex = indexOf( target );
+				TIntArrayList labelIds = setAtIndex( index ).labelIds;
+				int labelId = getLabelId(label);
+				TIntArrayList newLabelIds = addToSortedList( labelIds, labelId );
+				int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
 				triple.label = label;
 				triple.toIndex = toIndex;
@@ -415,23 +433,65 @@ public class LabelingMapping< T >
 
 		public int removeLabelFromSetAtIndex( final T label, final int index )
 		{
-			final int row = index & significantIndexBitsMask;
-			final int col = label.hashCode() & significantLabelBitsMask;
-			final CachedTriple< T > triple = removeCache[ row * significantIndexValues + col ];
+			final CachedTriple< T > triple = removeCache[getTripleIndex(label, index)];
 			if (triple.fromIndex == index && triple.label.equals( label ) )
 				return triple.toIndex;
 			else
 			{
 				// update triple
-				final Set< T > target = new HashSet<>( setAtIndex( index ) );
-				target.remove( label );
-				final int toIndex = indexOf( target );
+				TIntArrayList labelIds = setAtIndex(index).labelIds;
+				int labelId = getLabelId(label);
+				TIntArrayList newLabelIds = removeFromSortedList( labelIds, labelId );
+				int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
 				triple.label = label;
 				triple.toIndex = toIndex;
 				return toIndex;
 			}
 		}
+
+		private int getTripleIndex(T label, int index) {
+			final int row = index & significantIndexBitsMask;
+			final int col = label.hashCode() & significantLabelBitsMask;
+			return row * significantIndexValues + col;
+		}
+	}
+
+	private TIntArrayList removeFromSortedList( TIntArrayList labelIds, int labelId )
+	{
+		int position = labelIds.binarySearch(labelId);
+		// TODO: beautify this
+		TIntArrayList newLabelIds;
+		if(position > 0) {
+			newLabelIds = new TIntArrayList( labelIds );
+			newLabelIds.removeAt(position);
+		} else
+			newLabelIds = labelIds;
+		return newLabelIds;
+	}
+
+
+	private TIntArrayList addToSortedList(TIntArrayList sortedList, int value)
+	{
+		if(sortedList.binarySearch( value ) >= 0)
+			return sortedList;
+		TIntArrayList result = new TIntArrayList(sortedList.size() + 1);
+		int i = 0;
+		while(i < sortedList.size()) {
+			int element = sortedList.get(i);
+			if(element < value)
+				result.add(element);
+			else
+				break;
+			i++;
+		}
+		result.add(value);
+		while (i < sortedList.size()) {
+			int element = sortedList.get(i);
+			result.add(element);
+			i++;
+		}
+		return result;
 	}
 
 	/**
