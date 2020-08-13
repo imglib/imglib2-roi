@@ -411,13 +411,9 @@ public class LabelingMapping< T >
 
 	class AddRemoveCacheMap
 	{
-		private static final int numSignificantIndexBits = 4;
-		private static final int significantIndexValues = ( 1 << numSignificantIndexBits );
-		private static final int significantIndexBitsMask = significantIndexValues - 1;
-
-		private static final int numSignificantLabelBits = 4;
-		private static final int significantLabelValues = ( 1 << numSignificantLabelBits );
-		private static final int significantLabelBitsMask = significantLabelValues - 1;
+		private static final int CACHE_BITS = 8;
+		private static final int CACHE_SIZE = ( 1 << CACHE_BITS );
+		private static final int CACHE_MASK = CACHE_SIZE - 1;
 
 		final CachedTriple< T >[] addCache;
 		final CachedTriple< T >[] removeCache;
@@ -425,8 +421,8 @@ public class LabelingMapping< T >
 		@SuppressWarnings( { "unchecked", "raw" } )
 		AddRemoveCacheMap()
 		{
-			addCache = new CachedTriple[ significantIndexValues * significantLabelValues ];
-			removeCache = new CachedTriple[ significantIndexValues * significantLabelValues ];
+			addCache = new CachedTriple[ CACHE_SIZE ];
+			removeCache = new CachedTriple[ CACHE_SIZE ];
 			clear();
 		}
 
@@ -475,9 +471,7 @@ public class LabelingMapping< T >
 		}
 
 		private int getTripleIndex(T label, int index) {
-			final int row = index & significantIndexBitsMask;
-			final int col = label.hashCode() & significantLabelBitsMask;
-			return row * significantIndexValues + col;
+			return (index * 37 + label.hashCode() * 31) & CACHE_MASK;
 		}
 	}
 
