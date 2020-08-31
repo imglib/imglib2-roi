@@ -11,13 +11,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -64,7 +64,9 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 
 	protected final LabelingMapping< T > mapping;
 
-	protected final IntegerType< ? > type;
+	private final LabelingMapping< T >.AddRemoveCacheMap addRemoveCache;
+
+	protected IntegerType< ? > type;
 
 	/**
 	 * Constructor for mirroring state with another labeling
@@ -80,7 +82,13 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	{
 		this.type = type;
 		this.mapping = mapping;
+		this.addRemoveCache = mapping.createAddRemoveCacheMap();
 		this.generation = modCount;
+	}
+
+	void setType( final IntegerType< ? > type )
+	{
+		this.type = type;
 	}
 
 	@Override
@@ -123,7 +131,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	@Override
 	public String toString()
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.toString();
+		return mapping.setAtIndex( type.getInteger() ).toString();
 	}
 
 	/**
@@ -164,7 +172,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	public boolean add( final T label )
 	{
 		final int index = type.getInteger();
-		final int newindex = mapping.addLabelToSetAtIndex( label, index ).index;
+		final int newindex = addRemoveCache.addLabelToSetAtIndex( label, index );
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
@@ -178,7 +186,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		final int index = type.getInteger();
 		int newindex = index;
 		for ( final T label : c )
-			newindex = mapping.addLabelToSetAtIndex( label, newindex ).index;
+			newindex = addRemoveCache.addLabelToSetAtIndex( label, newindex );
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
@@ -201,19 +209,19 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	@Override
 	public boolean contains( final Object label )
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.contains( label );
+		return mapping.setAtIndex( type.getInteger() ).contains( label );
 	}
 
 	@Override
 	public boolean containsAll( final Collection< ? > labels )
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.containsAll( labels );
+		return mapping.setAtIndex( type.getInteger() ).containsAll( labels );
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.isEmpty();
+		return mapping.setAtIndex( type.getInteger() ).isEmpty();
 	}
 
 	/**
@@ -224,27 +232,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	@Override
 	public Iterator< T > iterator()
 	{
-		final Iterator< T > iter = mapping.setAtIndex( type.getInteger() ).set.iterator();
-		return new Iterator< T >()
-		{
-			@Override
-			public boolean hasNext()
-			{
-				return iter.hasNext();
-			}
-
-			@Override
-			public T next()
-			{
-				return iter.next();
-			}
-
-			@Override
-			public void remove()
-			{
-				throw new UnsupportedOperationException();
-			}
-		};
+		return mapping.setAtIndex( type.getInteger() ).iterator();
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -252,7 +240,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	public boolean remove( final Object label )
 	{
 		final int index = type.getInteger();
-		final int newindex = mapping.removeLabelFromSetAtIndex( ( T ) label, index ).index;
+		final int newindex = addRemoveCache.removeLabelFromSetAtIndex( ( T ) label, index );
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
@@ -267,7 +255,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		final int index = type.getInteger();
 		int newindex = index;
 		for ( final T label : ( Collection< ? extends T > ) c )
-			newindex = mapping.removeLabelFromSetAtIndex( label, newindex ).index;
+			newindex = addRemoveCache.removeLabelFromSetAtIndex( label, newindex );
 		if ( newindex == index )
 			return false;
 		type.setInteger( newindex );
@@ -284,25 +272,25 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 	@Override
 	public int size()
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.size();
+		return mapping.setAtIndex( type.getInteger() ).size();
 	}
 
 	@Override
 	public Object[] toArray()
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.toArray();
+		return mapping.setAtIndex( type.getInteger() ).toArray();
 	}
 
 	@Override
 	public < T1 > T1[] toArray( final T1[] a )
 	{
-		return mapping.setAtIndex( type.getInteger() ).set.toArray( a );
+		return mapping.setAtIndex( type.getInteger() ).toArray( a );
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return mapping.setAtIndex( type.getInteger() ).hashCode;
+		return mapping.setAtIndex( type.getInteger() ).hashCode();
 	}
 
 	@Override
@@ -315,18 +303,18 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 			if ( c.mapping == mapping )
 				return c.type.getInteger() == type.getInteger();
 		}
-		return mapping.setAtIndex( type.getInteger() ).set.equals( obj );
+		return mapping.setAtIndex( type.getInteger() ).equals( obj );
 	}
 
 	/**
 	 * Creates a new {@link LabelingType} based on the underlying
 	 * {@link IntegerType} of the existing {@link LabelingType} with a different
 	 * label type L
-	 * 
+	 *
 	 * @param newType
 	 *            the type of the labels of the created {@link LabelingType}
-	 * 
-	 * @return new {@link LabelingType} 
+	 *
+	 * @return new {@link LabelingType}
 	 */
 	public < L > LabelingType< L > createVariable( Class< ? extends L > newType )
 	{
