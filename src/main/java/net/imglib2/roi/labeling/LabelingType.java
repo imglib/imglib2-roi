@@ -86,7 +86,8 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		this.generation = modCount;
 	}
 
-	void setType( final IntegerType< ? > type) {
+	void setType( final IntegerType< ? > type )
+	{
 		this.type = type;
 	}
 

@@ -5,6 +5,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.integer.IntType;
+
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -15,26 +16,27 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-import static junit.framework.TestCase.assertFalse;
-
 @State( value = Scope.Benchmark )
 public class ImgLabelingBenchmark
 {
-	Img<IntType > indexImg = ArrayImgs.ints(100, 100, 100);
-	ImgLabeling<String, ?> imgLabeling = new ImgLabeling<>( indexImg );
+	Img< IntType > indexImg = ArrayImgs.ints( 100, 100, 100 );
+
+	ImgLabeling< String, ? > imgLabeling = new ImgLabeling<>( indexImg );
 
 	@Benchmark
-	public void benchmarkCursor( Blackhole bh ) {
-		Cursor< LabelingType< String > > cursor = imgLabeling.cursor();
-		while( cursor.hasNext() )
+	public void benchmarkCursor( final Blackhole bh )
+	{
+		final Cursor< LabelingType< String > > cursor = imgLabeling.cursor();
+		while ( cursor.hasNext() )
 			bh.consume( cursor.next() );
 	}
 
 	@Benchmark
-	public void benchmarkRandomAccess( Blackhole bh ) {
-		RandomAccess< LabelingType< String > > randomAccess = imgLabeling.randomAccess();
-		Cursor< ? > cursor = indexImg.localizingCursor();
-		while( cursor.hasNext() )
+	public void benchmarkRandomAccess( final Blackhole bh )
+	{
+		final RandomAccess< LabelingType< String > > randomAccess = imgLabeling.randomAccess();
+		final Cursor< ? > cursor = indexImg.localizingCursor();
+		while ( cursor.hasNext() )
 		{
 			cursor.fwd();
 			randomAccess.setPosition( cursor );
@@ -42,7 +44,7 @@ public class ImgLabelingBenchmark
 		}
 	}
 
-	public static void main( String... args ) throws RunnerException
+	public static void main( final String... args ) throws RunnerException
 	{
 		final Options opt = new OptionsBuilder()
 				.include( ImgLabelingBenchmark.class.getSimpleName() )
