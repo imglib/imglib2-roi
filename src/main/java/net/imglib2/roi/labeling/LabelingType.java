@@ -66,7 +66,7 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 
 	private final LabelingMapping< T >.AddRemoveCacheMap addRemoveCache;
 
-	protected final IntegerType< ? > type;
+	protected IntegerType< ? > type;
 
 	/**
 	 * Constructor for mirroring state with another labeling
@@ -84,6 +84,11 @@ public class LabelingType< T > implements Type< LabelingType< T > >, Set< T >
 		this.mapping = mapping;
 		this.addRemoveCache = mapping.createAddRemoveCacheMap();
 		this.generation = modCount;
+	}
+
+	void setType( final IntegerType< ? > type )
+	{
+		this.type = type;
 	}
 
 	@Override
