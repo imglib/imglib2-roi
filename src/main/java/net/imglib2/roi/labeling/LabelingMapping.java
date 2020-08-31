@@ -107,7 +107,7 @@ public class LabelingMapping< T >
 	private LabelingMapping( final int maxNumLabelSets )
 	{
 		this.maxNumLabelSets = maxNumLabelSets;
-		theEmptySet = intern( SortedInts.wrapSortedValues() );
+		theEmptySet = intern( SortedInts.emptyList() );
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class LabelingMapping< T >
 		clearCacheMaps();
 		setsByIndex.clear();
 		internedSets.clear();
-		theEmptySet = intern( SortedInts.wrapSortedValues() );
+		theEmptySet = intern( SortedInts.emptyList() );
 	}
 
 	public InternedSet< T > emptySet()
