@@ -88,13 +88,12 @@ public class LabelingMapping< T >
 
 	private final List< T > labels = new ArrayList<>();
 
-	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1);
+	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1 );
 
 	/**
 	 * the empty label set.
 	 */
 	private InternedSet< T > theEmptySet;
-
 
 	/**
 	 * Create a new {@link LabelingMapping} that maps label sets to the given
@@ -153,10 +152,11 @@ public class LabelingMapping< T >
 	 */
 	public InternedSet< T > intern( final Set< T > src )
 	{
-		return intern(asElementIds(src));
+		return intern( asElementIds( src ) );
 	}
 
-	private InternedSet< T > intern( SortedInts labelIds ) {
+	private InternedSet< T > intern( final SortedInts labelIds )
+	{
 		return internedSets.computeIfAbsent( labelIds, this::create );
 	}
 
@@ -173,7 +173,7 @@ public class LabelingMapping< T >
 	 */
 	public Set< T > getLabels()
 	{
-		return new HashSet<>(labels);
+		return new HashSet<>( labels );
 	}
 
 	/**
@@ -234,17 +234,18 @@ public class LabelingMapping< T >
 		setsByIndex.trimToSize();
 	}
 
-	private synchronized InternedSet< T > create( SortedInts labelIds ) {
+	private synchronized InternedSet< T > create( final SortedInts labelIds )
+	{
 		final int index = setsByIndex.size();
 		if ( index > maxNumLabelSets )
 			throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", index ) );
 
-		InternedSet< T > internedSet = new InternedSet<>( this, labelIds, index );
+		final InternedSet< T > internedSet = new InternedSet<>( this, labelIds, index );
 		setsByIndex.add( internedSet );
 		return internedSet;
 	}
 
-	private int getLabelId( T label )
+	private int getLabelId( final T label )
 	{
 		int id = labelToId.get( label );
 		if ( id == labelToId.getNoEntryValue() )
@@ -252,34 +253,37 @@ public class LabelingMapping< T >
 		return id;
 	}
 
-	private synchronized int createLabelId(T object) {
-		int id = labelToId.get(object);
-		if(id != labelToId.getNoEntryValue())
+	private synchronized int createLabelId( final T object )
+	{
+		int id = labelToId.get( object );
+		if ( id != labelToId.getNoEntryValue() )
 			return id;
 		id = labels.size();
-		labels.add(object);
-		labelToId.put(object, id);
+		labels.add( object );
+		labelToId.put( object, id );
 		return id;
 	}
 
-	private T getLabel(int id) {
-		return labels.get(id);
+	private T getLabel( final int id )
+	{
+		return labels.get( id );
 	}
 
-	private SortedInts asElementIds(Set<T> labelSet) {
-		int[] values = new int[labelSet.size()];
-		Iterator< T > iterator = labelSet.iterator();
+	private SortedInts asElementIds( final Set< T > labelSet )
+	{
+		final int[] values = new int[ labelSet.size() ];
+		final Iterator< T > iterator = labelSet.iterator();
 		for ( int i = 0; i < values.length; i++ )
 		{
-			values[i] = getLabelId( iterator.next() );
+			values[ i ] = getLabelId( iterator.next() );
 		}
 		Arrays.sort( values );
 		return SortedInts.wrapSortedValues( values );
 	}
 
 	/**
-	 * Canonical representative for a label set. Contains the
-	 * index to which the label set is mapped.
+	 * Canonical representative for a label set. Contains the index to which the
+	 * label set is mapped.
 	 */
 	public static class InternedSet< T > extends AbstractCollection< T > implements Set< T >
 	{
@@ -289,7 +293,7 @@ public class LabelingMapping< T >
 
 		final int index;
 
-		private InternedSet( final LabelingMapping< T > container, SortedInts labelIds, int index )
+		private InternedSet( final LabelingMapping< T > container, final SortedInts labelIds, final int index )
 		{
 			this.container = container;
 			this.labelIds = labelIds;
@@ -312,7 +316,7 @@ public class LabelingMapping< T >
 		public int hashCode()
 		{
 			int hashCode = 0;
-			for(T element : this)
+			for ( final T element : this )
 				hashCode += element.hashCode();
 			return hashCode;
 		}
@@ -320,20 +324,20 @@ public class LabelingMapping< T >
 		@Override
 		public boolean equals( final Object obj )
 		{
-			if(obj instanceof InternedSet && ( ( InternedSet ) obj ).container == container)
+			if ( obj instanceof InternedSet && ( ( InternedSet ) obj ).container == container )
 				return obj == this;
 			return equalsSet( obj );
 		}
 
-		private boolean equalsSet( Object obj )
+		private boolean equalsSet( final Object obj )
 		{
-			if(!(obj instanceof Set))
+			if ( !( obj instanceof Set ) )
 				return false;
-			Set< T > other = ( Set< T > ) obj;
-			if(other.size() != this.size())
+			final Set< T > other = ( Set< T > ) obj;
+			if ( other.size() != this.size() )
 				return false;
-			for(T elem : other)
-				if(! this.contains( elem ))
+			for ( final T elem : other )
+				if ( !this.contains( elem ) )
 					return false;
 			return true;
 		}
@@ -343,8 +347,8 @@ public class LabelingMapping< T >
 		{
 			if ( o == null )
 				return false;
-			int labelId = container.labelToId.get( o );
-			if (labelId == container.labelToId.getNoEntryValue())
+			final int labelId = container.labelToId.get( o );
+			if ( labelId == container.labelToId.getNoEntryValue() )
 				return false;
 			return labelIds.contains( labelId );
 		}
@@ -368,13 +372,14 @@ public class LabelingMapping< T >
 			@Override
 			public T next()
 			{
-				return container.getLabel(labelIds.get(i++));
+				return container.getLabel( labelIds.get( i++ ) );
 			}
 		}
 	}
 
-	private Set< WeakReference< AddRemoveCacheMap > > cacheMaps = Collections.newSetFromMap(new ConcurrentHashMap<>());
-	private ReferenceQueue< AddRemoveCacheMap > referenceQueue = new ReferenceQueue<>();
+	private final Set< WeakReference< AddRemoveCacheMap > > cacheMaps = Collections.newSetFromMap( new ConcurrentHashMap<>() );
+
+	private final ReferenceQueue< AddRemoveCacheMap > referenceQueue = new ReferenceQueue<>();
 
 	private void clearCacheMaps()
 	{
@@ -393,12 +398,14 @@ public class LabelingMapping< T >
 		return cacheMap;
 	}
 
-	private void clearWeakReferences() {
-		while(true) {
-			Reference< ? extends AddRemoveCacheMap > reference = referenceQueue.poll();
-			if(reference == null)
+	private void clearWeakReferences()
+	{
+		while ( true )
+		{
+			final Reference< ? extends AddRemoveCacheMap > reference = referenceQueue.poll();
+			if ( reference == null )
 				break;
-			cacheMaps.remove(reference);
+			cacheMaps.remove( reference );
 		}
 	}
 
@@ -434,16 +441,16 @@ public class LabelingMapping< T >
 
 		public int addLabelToSetAtIndex( final T label, final int index )
 		{
-			final CachedTriple< T > triple = addCache[getTripleIndex(label, index)];
-			if (triple.fromIndex == index && triple.label.equals( label ) )
+			final CachedTriple< T > triple = addCache[ getTripleIndex( label, index ) ];
+			if ( triple.fromIndex == index && triple.label.equals( label ) )
 				return triple.toIndex;
 			else
 			{
 				// update triple
-				SortedInts labelIds = setAtIndex( index ).labelIds;
-				int labelId = getLabelId(label);
-				SortedInts newLabelIds = labelIds.copyAndAdd(labelId);
-				int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
+				final SortedInts labelIds = setAtIndex( index ).labelIds;
+				final int labelId = getLabelId( label );
+				final SortedInts newLabelIds = labelIds.copyAndAdd( labelId );
+				final int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
 				triple.label = label;
 				triple.toIndex = toIndex;
@@ -453,16 +460,16 @@ public class LabelingMapping< T >
 
 		public int removeLabelFromSetAtIndex( final T label, final int index )
 		{
-			final CachedTriple< T > triple = removeCache[getTripleIndex(label, index)];
-			if (triple.fromIndex == index && triple.label.equals( label ) )
+			final CachedTriple< T > triple = removeCache[ getTripleIndex( label, index ) ];
+			if ( triple.fromIndex == index && triple.label.equals( label ) )
 				return triple.toIndex;
 			else
 			{
 				// update triple
-				SortedInts labelIds = setAtIndex(index).labelIds;
-				int labelId = getLabelId(label);
-				SortedInts newLabelIds = labelIds.copyAndRemove( labelId );
-				int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
+				final SortedInts labelIds = setAtIndex( index ).labelIds;
+				final int labelId = getLabelId( label );
+				final SortedInts newLabelIds = labelIds.copyAndRemove( labelId );
+				final int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
 				triple.label = label;
 				triple.toIndex = toIndex;
@@ -470,8 +477,9 @@ public class LabelingMapping< T >
 			}
 		}
 
-		private int getTripleIndex(T label, int index) {
-			return (index * 37 + label.hashCode() * 31) & CACHE_MASK;
+		private int getTripleIndex( final T label, final int index )
+		{
+			return ( index * 37 + label.hashCode() * 31 ) & CACHE_MASK;
 		}
 	}
 

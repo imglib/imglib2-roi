@@ -33,6 +33,8 @@
  */
 package net.imglib2.roi.labeling;
 
+import java.util.Random;
+
 import net.imglib2.Cursor;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
@@ -43,18 +45,16 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.util.StopWatch;
 import net.imglib2.view.Views;
 
-import java.util.Random;
-
 /**
- * Draws 100,000 spheres in a ImgLabeling of size 500 * 500 * 500.
- * Measures performance & memory usage.
+ * Draws 100,000 spheres in a ImgLabeling of size 500 * 500 * 500. Measures
+ * performance & memory usage.
  *
  * @author Matthias Arzt
  */
 public class LabelingBenchmark
 {
 
-	public static void main( String... args )
+	public static void main( final String... args )
 	{
 		final Img< IntType > image = ArrayImgs.ints( 500, 500, 500 );
 		final ImgLabeling< Integer, ? > labeling = new ImgLabeling<>( image );
@@ -72,15 +72,15 @@ public class LabelingBenchmark
 			System.out.println( subwatch );
 		}
 		System.out.println( watch );
-		System.out.println( (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + " MB");
+		System.out.println( ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024 / 1024 + " MB" );
 		System.gc();
 		System.gc();
-		System.out.println( (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024 + " MB");
+		System.out.println( ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024 / 1024 + " MB" );
 		System.out.println( "Number of label sets: " + labeling.getMapping().getLabelSets().size() );
 	}
 
-	private static < T > void draw( ImgLabeling< T, ? > image,
-			MaskInterval shape, T b )
+	private static < T > void draw( final ImgLabeling< T, ? > image,
+			final MaskInterval shape, final T b )
 	{
 		final Cursor< LabelingType< T > > cursor =
 				Views.interval( image, shape ).cursor();
@@ -116,23 +116,23 @@ public class LabelingBenchmark
 		}
 
 		@Override
-		public long min( int d )
+		public long min( final int d )
 		{
 			return Math.max( 0, center.getLongPosition( d ) - 10 );
 		}
 
 		@Override
-		public long max( int d )
+		public long max( final int d )
 		{
 			return Math.min( 499, center.getLongPosition( d ) + 10 );
 		}
 
 		@Override
-		public boolean test( Localizable localizable )
+		public boolean test( final Localizable localizable )
 		{
-			long x = localizable.getLongPosition( 0 ) - center.getLongPosition( 0 );
-			long y = localizable.getLongPosition( 1 ) - center.getLongPosition( 1 );
-			long z = localizable.getLongPosition( 2 ) - center.getLongPosition( 2 );
+			final long x = localizable.getLongPosition( 0 ) - center.getLongPosition( 0 );
+			final long y = localizable.getLongPosition( 1 ) - center.getLongPosition( 1 );
+			final long z = localizable.getLongPosition( 2 ) - center.getLongPosition( 2 );
 			return 0 > x * x + y * y + z * z - r2;
 		}
 

@@ -1,13 +1,13 @@
 package net.imglib2.roi.labeling;
 
-import org.junit.Test;
-
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * Tests {@link SortedInts}.
@@ -48,7 +48,7 @@ public class SortedIntsTest
 	@Test
 	public void testCreate()
 	{
-		SortedInts list = SortedInts.create( new int[] { 3, 5, 4 } );
+		final SortedInts list = SortedInts.create( 3, 5, 4 );
 		assertArrayEquals( new int[] { 3, 4, 5 }, list.toArray() );
 	}
 
@@ -74,7 +74,7 @@ public class SortedIntsTest
 	@Test
 	public void testToString()
 	{
-		SortedInts a = SortedInts.wrapSortedValues( 1, 4, 7 );
+		final SortedInts a = SortedInts.wrapSortedValues( 1, 4, 7 );
 		assertEquals( "[1, 4, 7]", a.toString() );
 	}
 

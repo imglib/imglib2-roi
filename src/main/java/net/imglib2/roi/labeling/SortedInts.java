@@ -11,14 +11,13 @@ import java.util.Arrays;
  */
 class SortedInts
 {
-
 	private static final SortedInts EMPTY_LIST = wrapSortedValues();
 
 	private final int[] values;
 
 	private final int hashCode;
 
-	private SortedInts( int sortedValues[] )
+	private SortedInts( final int[] sortedValues )
 	{
 		this.values = sortedValues;
 		this.hashCode = Arrays.hashCode( sortedValues );
@@ -30,19 +29,19 @@ class SortedInts
 	}
 
 	@Override
-	public boolean equals( Object obj )
+	public boolean equals( final Object obj )
 	{
 		if ( this == obj )
 			return true;
 		if ( !( obj instanceof SortedInts ) )
 			return false;
-		SortedInts other = ( SortedInts ) obj;
+		final SortedInts other = ( SortedInts ) obj;
 		if ( hashCode != other.hashCode )
 			return false;
 		return Arrays.equals( values, other.values );
 	}
 
-	public boolean contains( int value )
+	public boolean contains( final int value )
 	{
 		return Arrays.binarySearch( values, value ) >= 0;
 	}
@@ -52,13 +51,13 @@ class SortedInts
 	 * plus the specified value. Simply returns this if the specified value is
 	 * already in the list.
 	 */
-	public SortedInts copyAndAdd( int value )
+	public SortedInts copyAndAdd( final int value )
 	{
-		int index = Arrays.binarySearch( values, value );
+		final int index = Arrays.binarySearch( values, value );
 		if ( index >= 0 )
 			return this;
-		int insertionPoint = -1 - index;
-		int[] newValues = new int[ values.length + 1 ];
+		final int insertionPoint = -1 - index;
+		final int[] newValues = new int[ values.length + 1 ];
 		System.arraycopy( values, 0, newValues, 0, insertionPoint );
 		newValues[ insertionPoint ] = value;
 		System.arraycopy( values, insertionPoint, newValues, insertionPoint + 1, values.length - insertionPoint );
@@ -70,25 +69,25 @@ class SortedInts
 	 * except the specified value. Simply returns {@code this} if the specified value
 	 * is not in the list.
 	 */
-	public SortedInts copyAndRemove( int value )
+	public SortedInts copyAndRemove( final int value )
 	{
-		int index = Arrays.binarySearch( values, value );
+		final int index = Arrays.binarySearch( values, value );
 		if ( index < 0 )
 			return this;
-		int[] newValues = new int[ values.length - 1 ];
+		final int[] newValues = new int[ values.length - 1 ];
 		System.arraycopy( values, 0, newValues, 0, index );
 		System.arraycopy( values, index + 1, newValues, index, values.length - index - 1 );
 		return SortedInts.wrapSortedValues( newValues );
 	}
 
-	public static SortedInts create( int... values )
+	public static SortedInts create( final int... values )
 	{
-		int[] newValues = Arrays.copyOf( values, values.length );
+		final int[] newValues = Arrays.copyOf( values, values.length );
 		Arrays.sort( newValues );
 		return new SortedInts( newValues );
 	}
 
-	public static SortedInts wrapSortedValues( int... sortedValues )
+	public static SortedInts wrapSortedValues( final int... sortedValues )
 	{
 		return new SortedInts( sortedValues );
 	}
@@ -114,7 +113,7 @@ class SortedInts
 		return values.length == 0;
 	}
 
-	public int get( int i )
+	public int get( final int i )
 	{
 		return values[ i ];
 	}
