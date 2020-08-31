@@ -40,7 +40,6 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -86,9 +85,42 @@ public class LabelingMapping< T >
 	 */
 	private final Map< SortedInts, InternedSet< T > > internedSets = new ConcurrentHashMap<>();
 
-	private final List< T > labels = new ArrayList<>();
+	private static class LabelIdBimap< T >
+	{
+		public static final int NO_ENTRY_VALUE = -1;
 
-	private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1 );
+		private final List< T > labels = new ArrayList<>();
+
+		private final TObjectIntMap< T > labelToId = new TObjectIntHashMap<>( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, NO_ENTRY_VALUE );
+
+		T getLabel( final int id )
+		{
+			return labels.get( id );
+		}
+
+		synchronized int getId( final T label )
+		{
+			int id = labelToId.get( label );
+			if ( id != NO_ENTRY_VALUE )
+				return id;
+			id = labels.size();
+			labels.add( label );
+			labelToId.put( label, id );
+			return id;
+		}
+
+		synchronized int getIdIfExists( final Object label )
+		{
+			return labelToId.get( label );
+		}
+
+		synchronized Set< T > getLabels()
+		{
+			return new HashSet<>( labels );
+		}
+	}
+
+	private LabelIdBimap< T > labelIdBimap = new LabelIdBimap<>();
 
 	/**
 	 * the empty label set.
@@ -173,7 +205,7 @@ public class LabelingMapping< T >
 	 */
 	public Set< T > getLabels()
 	{
-		return new HashSet<>( labels );
+		return labelIdBimap.getLabels();
 	}
 
 	/**
@@ -245,38 +277,12 @@ public class LabelingMapping< T >
 		return internedSet;
 	}
 
-	private int getLabelId( final T label )
-	{
-		int id = labelToId.get( label );
-		if ( id == labelToId.getNoEntryValue() )
-			id = createLabelId( label );
-		return id;
-	}
-
-	private synchronized int createLabelId( final T object )
-	{
-		int id = labelToId.get( object );
-		if ( id != labelToId.getNoEntryValue() )
-			return id;
-		id = labels.size();
-		labels.add( object );
-		labelToId.put( object, id );
-		return id;
-	}
-
-	private T getLabel( final int id )
-	{
-		return labels.get( id );
-	}
-
 	private SortedInts asElementIds( final Set< T > labelSet )
 	{
 		final int[] values = new int[ labelSet.size() ];
 		final Iterator< T > iterator = labelSet.iterator();
 		for ( int i = 0; i < values.length; i++ )
-		{
-			values[ i ] = getLabelId( iterator.next() );
-		}
+			values[ i ] = labelIdBimap.getId( iterator.next() );
 		Arrays.sort( values );
 		return SortedInts.wrapSortedValues( values );
 	}
@@ -347,8 +353,8 @@ public class LabelingMapping< T >
 		{
 			if ( o == null )
 				return false;
-			final int labelId = container.labelToId.get( o );
-			if ( labelId == container.labelToId.getNoEntryValue() )
+			final int labelId = container.labelIdBimap.getIdIfExists( o );
+			if ( labelId == LabelIdBimap.NO_ENTRY_VALUE )
 				return false;
 			return labelIds.contains( labelId );
 		}
@@ -372,37 +378,43 @@ public class LabelingMapping< T >
 			@Override
 			public T next()
 			{
-				return container.getLabel( labelIds.get( i++ ) );
+				return container.labelIdBimap.getLabel( labelIds.get( i++ ) );
 			}
 		}
 	}
 
-	private final Set< WeakReference< AddRemoveCacheMap > > cacheMaps = Collections.newSetFromMap( new ConcurrentHashMap<>() );
+	private final Set< Reference< AddRemoveCacheMap > > cacheMaps = new HashSet<>();
 
-	private final ReferenceQueue< AddRemoveCacheMap > referenceQueue = new ReferenceQueue<>();
+	private final ReferenceQueue< AddRemoveCacheMap > cacheMapReferenceQueue = new ReferenceQueue<>();
 
 	private void clearCacheMaps()
 	{
-		cacheMaps.forEach( ref -> {
-			final AddRemoveCacheMap cacheMap = ref.get();
-			if ( cacheMap != null )
-				cacheMap.clear();
-		} );
+		synchronized ( cacheMaps )
+		{
+			cacheMaps.forEach( ref -> {
+				final AddRemoveCacheMap cacheMap = ref.get();
+				if ( cacheMap != null )
+					cacheMap.clear();
+			} );
+		}
 	}
 
 	AddRemoveCacheMap createAddRemoveCacheMap()
 	{
-		clearWeakReferences();
-		final AddRemoveCacheMap cacheMap = new AddRemoveCacheMap();
-		cacheMaps.add( new WeakReference<>( cacheMap, referenceQueue ) );
-		return cacheMap;
+		synchronized ( cacheMaps )
+		{
+			clearWeakReferences();
+			final AddRemoveCacheMap cacheMap = new AddRemoveCacheMap();
+			cacheMaps.add( new WeakReference<>( cacheMap, cacheMapReferenceQueue ) );
+			return cacheMap;
+		}
 	}
 
 	private void clearWeakReferences()
 	{
 		while ( true )
 		{
-			final Reference< ? extends AddRemoveCacheMap > reference = referenceQueue.poll();
+			final Reference< ? extends AddRemoveCacheMap > reference = cacheMapReferenceQueue.poll();
 			if ( reference == null )
 				break;
 			cacheMaps.remove( reference );
@@ -448,7 +460,7 @@ public class LabelingMapping< T >
 			{
 				// update triple
 				final SortedInts labelIds = setAtIndex( index ).labelIds;
-				final int labelId = getLabelId( label );
+				final int labelId = labelIdBimap.getId( label );
 				final SortedInts newLabelIds = labelIds.copyAndAdd( labelId );
 				final int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
@@ -467,7 +479,7 @@ public class LabelingMapping< T >
 			{
 				// update triple
 				final SortedInts labelIds = setAtIndex( index ).labelIds;
-				final int labelId = getLabelId( label );
+				final int labelId = labelIdBimap.getId( label );
 				final SortedInts newLabelIds = labelIds.copyAndRemove( labelId );
 				final int toIndex = newLabelIds == labelIds ? index : intern( newLabelIds ).index;
 				triple.fromIndex = index;
