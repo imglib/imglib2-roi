@@ -192,6 +192,11 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<groupId>net.sf.trove4j</groupId>
 			<artifactId>trove4j</artifactId>
 		</dependency>
+		<dependency><!---->
+			<groupId>org.mongodb</groupId>
+			<artifactId>bson</artifactId>
+			<version>3.0.4</version>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>
