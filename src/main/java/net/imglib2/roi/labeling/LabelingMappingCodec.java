@@ -15,6 +15,15 @@ import org.bson.codecs.configuration.CodecRegistry;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A codec (encoder/decoder) for the LabelingMapping class to and from the BSON (binary JSON) data type.
+ * The resulting data structure consists of the number of sets, a mapping from complex type to integer
+ * as well as the actual label sets. The Codec class is used in the {@Link LabelingIO} class and handles
+ * the basic structure. For non-primitive label types, an additional codec must be written.
+ *
+ *
+ * @author Tom Burke
+ */
 public class LabelingMappingCodec implements Codec<LabelingMapping> {
 
 
@@ -160,7 +169,7 @@ public class LabelingMappingCodec implements Codec<LabelingMapping> {
                         labelSet.add(stringValue);
                         break;
                     case DOCUMENT:
-                        labelSet.add(codecRegistry.get(null).decode(reader, decoderContext));
+                        labelSet.add(codecRegistry.get(clazz).decode(reader, decoderContext));
                         break;
                     default:
                         System.out.println("Type currently not supported. " + reader.getCurrentBsonType());

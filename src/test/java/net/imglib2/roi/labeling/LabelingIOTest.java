@@ -30,7 +30,7 @@ public class LabelingIOTest {
         ImgLabeling< Integer, UnsignedByteType > labeling = ImgLabeling.fromImageAndLabelSets( indexImg, labelSets );
 
 
-        new LabelingIO().saveLabeling(labeling.getMapping(), "C:/Users/TomB/Desktop/labeling/labelSaveTest", Example.class);
+        new LabelingIO().saveLabeling(labeling.getMapping(), "C:/Users/TomB/Desktop/labeling/labelSaveTest");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class LabelingIOTest {
 
         LabelingIO io = new LabelingIO();
         io.addCodecs(new ExampleCodec());
-        io.saveLabeling(labeling.getMapping(), "C:/Users/TomB/Desktop/labeling/labelSaveTestComplex", Example.class);
+        io.saveLabeling(labeling.getMapping(), "C:/Users/TomB/Desktop/labeling/labelSaveTestComplex");
     }
 
     @Test
