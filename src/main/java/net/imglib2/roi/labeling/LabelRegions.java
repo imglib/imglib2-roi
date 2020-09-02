@@ -72,7 +72,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 
 	private final LabelingType< T > type;
 
-	private final ArrayList< FragmentProperties > indexToFragmentProperties;
+	protected final ArrayList< FragmentProperties > indexToFragmentProperties;
 
 	/**
 	 * Maps labels to {@link LabelRegionProperties} for all currently non-empty labels in the labeling.
