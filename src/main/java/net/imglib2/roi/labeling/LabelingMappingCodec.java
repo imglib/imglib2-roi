@@ -45,7 +45,7 @@ import org.bson.codecs.configuration.CodecRegistry;
  * // @formatter:on
  * @author Tom Burke
  */
-public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
+public class LabelingMappingCodec< T > implements Codec< LabelingMapping< T > >
 {
 	private final static int VERSION = 1;
 
@@ -59,7 +59,7 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 
 	private ToLongFunction< T > labelToId;
 
-	private LabelingMappingCodec( final Builder builder )
+	private LabelingMappingCodec( final Builder<T> builder )
 	{
 		this.clazz = builder.clazz;
 		this.codecRegistry = builder.codecRegistry;
@@ -70,16 +70,16 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 	}
 
 	@Override
-	public LabelingMapping<T> decode( BsonReader reader, DecoderContext decoderContext )
+	public LabelingMapping< T > decode( BsonReader reader, DecoderContext decoderContext )
 	{
-		LabelingMapping labelingMapping = new LabelingMapping( new IntType() );
+		LabelingMapping< T > labelingMapping = new LabelingMapping< T >( new IntType() );
 		reader.readStartDocument();
 		int version = reader.readInt32( "version" );
 		int numSets = reader.readInt32( "numSets" );
 		this.indexImg = reader.readString( "indexImg" );
 
-		Map< Integer, Object > mapping = readMapping( reader, decoderContext, clazz );
-		List labelSets;
+		Map< Integer, T > mapping = readMapping( reader, decoderContext, clazz );
+		List< Set< T > > labelSets;
 		if ( mapping.isEmpty() )
 		{
 			labelSets = readLabelSets( reader, decoderContext, numSets );
@@ -94,13 +94,13 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		return labelingMapping;
 	}
 
-	private List< Set > readLabelSets( BsonReader reader, DecoderContext decoderContext, int numSets, Map< Integer, Object > mapping )
+	private List< Set< T > > readLabelSets( BsonReader reader, DecoderContext decoderContext, int numSets, Map< Integer, T > mapping )
 	{
-		List< Set > labelSets = new ArrayList<>();
+		List< Set <T> > labelSets = new ArrayList<>();
 		reader.readStartDocument();
 		for ( int i = 0; i < numSets; i++ )
 		{
-			Set< Object > labelSet = new HashSet<>();
+			Set< T > labelSet = new HashSet<>();
 			reader.readStartArray();
 			while ( reader.readBsonType() != BsonType.END_OF_DOCUMENT )
 			{
@@ -115,41 +115,45 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 	}
 
 	@Override
-	public void encode( BsonWriter writer, LabelingMapping<T> value, EncoderContext encoderContext )
+	public void encode( BsonWriter writer, LabelingMapping< T > value, EncoderContext encoderContext )
 	{
 		writer.writeStartDocument();
 		writer.writeInt32( "version", VERSION );
 		writer.writeInt32( "numSets", value.numSets() );
 		writer.writeString( "indexImg", indexImg );
-		Optional first = value.getLabels().stream().findFirst();
-		if(first.isPresent() && !isWrapperType( first.get().getClass() )){
-			if(clazz == null){
+		Optional<T> first = value.getLabels().stream().findFirst();
+		if ( first.isPresent() && !isWrapperType( first.get().getClass() ) )
+		{
+			if ( clazz == null )
+			{
 				writer.writeStartDocument( "labelMapping" );
 				writer.writeEndDocument();
 				writer.writeStartDocument( "labelSets" );
 				for ( int i = 0; i < value.numSets(); i++ )
 				{
-					Set<T> labelSet =  value.labelsAtIndex( i );
+					Set< T > labelSet = value.labelsAtIndex( i );
 					writer.writeStartArray( "labelSet_" + i );
 					labelSet.forEach( v -> writeValue( labelToId.applyAsLong( v ), writer, encoderContext ) );
 					writer.writeEndArray();
 				}
 				writer.writeEndDocument();
-			}else{
+			}
+			else
+			{
 				AtomicInteger count = new AtomicInteger();
-				HashMap< Object, Integer > map = new HashMap();
+				HashMap< T, Integer > map = new HashMap<>();
 				writer.writeStartDocument( "labelMapping" );
 				value.getLabels().forEach( v -> {
 					map.put( v, count.get() );
 					writer.writeName( String.valueOf( count.getAndIncrement() ) );
-					Codec codec = codecRegistry.get( v.getClass() );
+					Codec<T> codec = ( Codec< T > ) codecRegistry.get( v.getClass() );
 					encoderContext.encodeWithChildContext( codec, writer, v );
 				} );
 				writer.writeEndDocument();
 				writer.writeStartDocument( "labelSets" );
 				for ( int i = 0; i < value.numSets(); i++ )
 				{
-					Set labelSet = value.labelsAtIndex( i );
+					Set<T> labelSet = value.labelsAtIndex( i );
 					writer.writeStartArray( "labelSet_" + i );
 					labelSet.forEach( v -> writeValue( map.get( v ), writer, encoderContext ) );
 					writer.writeEndArray();
@@ -164,7 +168,7 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 			writer.writeStartDocument( "labelSets" );
 			for ( int i = 0; i < value.numSets(); i++ )
 			{
-				Set labelSet = value.labelsAtIndex( i );
+				Set<T> labelSet = value.labelsAtIndex( i );
 				writer.writeStartArray( "labelSet_" + i );
 				labelSet.forEach( v -> writeValue( v, writer, encoderContext ) );
 				writer.writeEndArray();
@@ -175,15 +179,15 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		writer.writeEndDocument();
 	}
 
-	private Map< Integer, Object > readMapping( BsonReader reader, DecoderContext decoderContext, Class clazz )
+	private Map< Integer, T > readMapping( BsonReader reader, DecoderContext decoderContext, Class clazz )
 	{
-		Map< Integer, Object > mapping = new HashMap<>();
+		Map< Integer, T > mapping = new HashMap<>();
 		reader.readStartDocument();
 		while ( reader.readBsonType() != BsonType.END_OF_DOCUMENT )
 		{
 			int key = Integer.parseInt( reader.readName() );
-			Codec c = codecRegistry.get( clazz );
-			Object value = c.decode( reader, decoderContext );
+			Codec<T> c = codecRegistry.get( clazz );
+			T value = c.decode( reader, decoderContext );
 			mapping.put( key, value );
 		}
 
@@ -191,9 +195,9 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		return mapping;
 	}
 
-	private List< Set<T> > readLabelSets( BsonReader reader, DecoderContext decoderContext, int numSets )
+	private List< Set< T > > readLabelSets( BsonReader reader, DecoderContext decoderContext, int numSets )
 	{
-		List< Set<T> > labelSets = new ArrayList<>();
+		List< Set< T > > labelSets = new ArrayList<>();
 		reader.readStartDocument();
 		for ( int i = 0; i < numSets; i++ )
 		{
@@ -203,9 +207,12 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 
 			while ( reader.readBsonType() != BsonType.END_OF_DOCUMENT )
 			{
-				if(idToLabel!=null){
-					labelSet.add( idToLabel.apply( reader.readInt64() ));
-				}else{
+				if ( idToLabel != null )
+				{
+					labelSet.add( idToLabel.apply( reader.readInt64() ) );
+				}
+				else
+				{
 					switch ( reader.getCurrentBsonType() )
 					{
 					case INT32:
@@ -272,14 +279,15 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		}
 		else if ( v instanceof Character )
 		{
-			writer.writeString(  String.valueOf( v ) );
-		}else if ( v instanceof Byte )
+			writer.writeString( String.valueOf( v ) );
+		}
+		else if ( v instanceof Byte )
 		{
-			writer.writeInt32 ( ( ( Byte ) v ).intValue() );
+			writer.writeInt32( ( ( Byte ) v ).intValue() );
 		}
 		else if ( v instanceof Short )
 		{
-			writer.writeInt32 ( ( ( Short ) v ).intValue() );
+			writer.writeInt32( ( ( Short ) v ).intValue() );
 		}
 		else if ( v instanceof Boolean )
 		{
@@ -297,9 +305,9 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 	}
 
 	@Override
-	public Class< LabelingMapping<T> > getEncoderClass()
+	public Class< LabelingMapping< T > > getEncoderClass()
 	{
-		return ( Class< LabelingMapping< T > > ) new LabelingMapping<T>( new IntType() ).getClass();
+		return ( Class< LabelingMapping< T > > ) new LabelingMapping< T >( new IntType() ).getClass();
 	}
 
 	public void setCodecRegistry( CodecRegistry codecRegistry )
@@ -347,7 +355,7 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		this.labelToId = labelToId;
 	}
 
-	private static final Set< Class > WRAPPER_TYPES = new HashSet( Arrays.asList(IntType.class, LongType.class, BoolType.class,
+	private static final Set< Class > WRAPPER_TYPES = new HashSet( Arrays.asList( IntType.class, LongType.class, BoolType.class,
 			Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class, String.class ) );
 
 	public static boolean isWrapperType( Class clazz )
@@ -357,7 +365,7 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 
 	public static final class Builder< T >
 	{
-		private Class<T> clazz = null;
+		private Class< T > clazz = null;
 
 		private CodecRegistry codecRegistry = null;
 
@@ -376,19 +384,19 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		 *
 		 * @return
 		 */
-		public Builder<T> setClazz( final Class clazz )
+		public Builder< T > setClazz( final Class clazz )
 		{
 			this.clazz = clazz;
 			return this;
 		}
 
-		public Builder<T> setCodecRegistry( final CodecRegistry codecRegistry )
+		public Builder< T > setCodecRegistry( final CodecRegistry codecRegistry )
 		{
 			this.codecRegistry = codecRegistry;
 			return this;
 		}
 
-		public Builder<T> setIndexImg( final String indexImg )
+		public Builder< T > setIndexImg( final String indexImg )
 		{
 			this.indexImg = indexImg;
 			return this;
@@ -402,13 +410,13 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 		 *
 		 * @return
 		 */
-		public Builder<T> setIdToLabel( final LongFunction< T > idToLabel )
+		public Builder< T > setIdToLabel( final LongFunction< T > idToLabel )
 		{
 			this.idToLabel = idToLabel;
 			return this;
 		}
 
-		public Builder<T> setLabelToId( final ToLongFunction< T > labelToId )
+		public Builder< T > setLabelToId( final ToLongFunction< T > labelToId )
 		{
 			this.labelToId = labelToId;
 			return this;
@@ -416,7 +424,7 @@ public class LabelingMappingCodec< T > implements Codec< LabelingMapping<T> >
 
 		public LabelingMappingCodec< T > build()
 		{
-			return new LabelingMappingCodec<T>( this );
+			return new LabelingMappingCodec< T >( this );
 		}
 
 	}

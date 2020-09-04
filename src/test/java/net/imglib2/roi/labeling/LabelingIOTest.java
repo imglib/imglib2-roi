@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
@@ -37,7 +36,7 @@ public class LabelingIOTest
 	@Test
 	public void loadLabelingPrimitiveTest() throws IOException
 	{
-		LabelingMapping<Integer> mapping = new LabelingIO().loadLabeling( "src/test/resources/labeling/labelSaveTestSimple.bson", Integer.class );
+		LabelingMapping< Integer > mapping = new LabelingIO().loadLabeling( "src/test/resources/labeling/labelSaveTestSimple.bson", Integer.class );
 
 		Assert.assertEquals( getSimpleImgLabeling().getMapping().getLabels(), mapping.getLabels() );
 	}
@@ -49,7 +48,7 @@ public class LabelingIOTest
 
 		LabelingIO io = new LabelingIO();
 		io.addCodecs( new ExampleCodec() );
-		io.saveLabeling( labeling, File.createTempFile( "labelSaveTestComplex", ".tif" ).getAbsolutePath() );
+		io.saveLabeling( labeling, File.createTempFile( "labelSaveTestComplex", ".tif" ).getAbsolutePath(), Example.class );
 	}
 
 	@Test
@@ -58,7 +57,7 @@ public class LabelingIOTest
 		LabelingIO io = new LabelingIO();
 		io.addCodecs( new ExampleCodec() );
 
-		LabelingMapping<Example> mapping = io.loadLabeling( "src/test/resources/labeling/labelSaveTestComplex.bson", Example.class );
+		LabelingMapping< Example > mapping = io.loadLabeling( "src/test/resources/labeling/labelSaveTestComplex.bson", Example.class );
 
 		Assert.assertEquals( getComplexImgLabeling().getMapping().getLabels(), mapping.getLabels() );
 	}
@@ -69,38 +68,32 @@ public class LabelingIOTest
 		ImgLabeling< Example, UnsignedByteType > labeling = getComplexImgLabeling();
 
 		LabelingIO io = new LabelingIO();
-		Map<Example, Long> mapping = new HashMap<>();
-		AtomicLong atomicLong = new AtomicLong(0);
+		Map< Example, Long > mapping = new HashMap<>();
+		AtomicLong atomicLong = new AtomicLong( 0 );
 		labeling.getMapping().getLabels().forEach( label -> mapping.put( label, atomicLong.getAndIncrement() ) );
-		io.saveLabeling( labeling, File.createTempFile( "labelSaveTestComplexFunction", ".tif" ).getAbsolutePath(), v->{
-
-			return mapping.get( v );
-		} );
+		io.saveLabeling( labeling, File.createTempFile( "labelSaveTestComplexFunction", ".tif" ).getAbsolutePath(), mapping::get );
 	}
 
 	@Test
 	public void loadLabelingComplexWithFunctionTest() throws IOException
 	{
-		Set<Example> labels = getComplexImgLabeling().getMapping().getLabels();
+		Set< Example > labels = getComplexImgLabeling().getMapping().getLabels();
 		LabelingIO io = new LabelingIO();
-		Map<Long, Example> map = new HashMap<>();
-		AtomicLong atomicLong = new AtomicLong(0);
+		Map< Long, Example > map = new HashMap<>();
+		AtomicLong atomicLong = new AtomicLong( 0 );
 		labels.forEach( label -> map.put( atomicLong.getAndIncrement(), label ) );
 
-		ImgLabeling<Example,UnsignedByteType> imgLabeling = io.loadLabeling( "src/test/resources/labeling/labelSaveTestComplexFunction.bson", v->{
-			return map.get( v );
-		} );
+		ImgLabeling< Example, UnsignedByteType > imgLabeling = io.loadLabeling( "src/test/resources/labeling/labelSaveTestComplexFunction.bson", map::get );
 
 		Assert.assertEquals( labels, imgLabeling.getMapping().getLabels() );
 	}
-
 
 	@Test
 	public void encoderClassTest()
 	{
 		LabelingIO io = new LabelingIO();
 		io.addCodecs( new ExampleCodec() );
-		LabelingMappingCodec<Integer> labelingMappingCodec = new LabelingMappingCodec.Builder<Integer>().build();
+		LabelingMappingCodec< Integer > labelingMappingCodec = new LabelingMappingCodec.Builder< Integer >().build();
 		Class c = labelingMappingCodec.getEncoderClass();
 		Assert.assertEquals( LabelingMapping.class, c );
 	}
