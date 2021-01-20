@@ -279,20 +279,16 @@ public class WritableBoxTest
 	@Test
 	public void testMinGreaterThanMax()
 	{
-		exception.expect( IllegalArgumentException.class );
+		exception.expect(AssertionError.class);
 		new ClosedWritableBox( new double[] { 1, 2, 3 }, new double[] { 1, 2 } );
 	}
 
 	@Test
 	public void testMaxGreaterThanMin()
 	{
-		final WritableBox b = new ClosedWritableBox( new double[] { 1, 2, 3 }, new double[] { 3, 4, 5, 6 } );
-
-		assertEquals( b.numDimensions(), 3 );
-		assertEquals( b.sideLength( 2 ), 2, 0 );
-
-		exception.expect( ArrayIndexOutOfBoundsException.class );
-		b.sideLength( 3 );
+		exception.expect(AssertionError.class);
+		new ClosedWritableBox(new double[] { 1, 2, 3 }, new double[] { 3, 4, 5,
+			6 });
 	}
 
 	@Test

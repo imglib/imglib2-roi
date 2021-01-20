@@ -60,8 +60,6 @@ public abstract class AbstractWritableBox extends AbstractRealInterval implement
 	public AbstractWritableBox( final double[] min, final double[] max )
 	{
 		super( min, max );
-		if ( max.length < min.length )
-			throw new IllegalArgumentException( "Max array cannot be smaller than the min array" );
 	}
 
 	@Override
