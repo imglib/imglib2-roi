@@ -46,8 +46,8 @@
 		<url>https://github.com/imglib/imglib2-roi/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Travis CI</system>
-		<url>https://travis-ci.org/imglib/imglib2-roi</url>
+		<system>GitHub Actions</system>
+		<url>https://github.com/imglib/imglib2-roi/actions</url>
 	</ciManagement>
 
 	<properties>
@@ -64,7 +64,7 @@ Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
 Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
-		<releaseProfiles>deploy-to-scijava</releaseProfiles>
+		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 	</properties>
 
 	<developers>
