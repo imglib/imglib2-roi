@@ -34,6 +34,8 @@
 package net.imglib2.roi.labeling;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +45,7 @@ import java.util.TreeSet;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 
 import org.junit.Test;
@@ -85,6 +88,72 @@ public class LabelingsTest
 		ImgLabeling< Integer, UnsignedByteType > labeling = ImgLabeling.fromImageAndLabelSets( indexImg, labelSets );
 		// process
 		Labelings.remapLabels( labeling, i -> "foo" );
+	}
+
+	@Test
+	public void testOcurringPixelSets()
+	{
+		final byte[] exampleIndexArray = new byte[] {
+				1, 0, 0, 0, 0,
+				0, 1, 0, 5, 0,
+				0, 0, 0, 3, 3,
+				0, 0, 3, 3, 0
+		};
+
+		Img< UnsignedByteType > indexImg = ArrayImgs.unsignedBytes( exampleIndexArray, 4, 5 );
+
+		List< Set< String > > intersectSets = Arrays.asList(
+				asSet(),
+				asSet( "A"),
+				asSet( "A", "B" ),
+				asSet( "C" ),
+				asSet( "D" ),
+				asSet( "D", "E" ));
+		ImgLabeling< String, UnsignedByteType > intersectLabeling = ImgLabeling.fromImageAndLabelSets( indexImg, intersectSets );
+
+		Set< UnsignedByteType > occIntersect = Labelings.getOccurringPixelSets( intersectLabeling );
+
+		assertEquals( 3, occIntersect.size() );
+
+		for ( UnsignedByteType it : occIntersect )
+		{
+			int i = it.getInteger();
+			assertTrue( i == 1 || i == 3 || i == 5 );
+		}
+	}
+
+	@Test
+	public void testHasIntersectingLabels()
+	{
+		final byte[] exampleIndexArray = new byte[] {
+				1, 0, 0, 0, 0,
+				0, 1, 0, 5, 0,
+				0, 0, 0, 3, 3,
+				0, 0, 3, 3, 0
+		};
+
+		Img< UnsignedByteType > indexImg = ArrayImgs.unsignedBytes( exampleIndexArray, 4, 5 );
+
+		List< Set< String > > intersectSets = Arrays.asList(
+				asSet(),
+				asSet( "A"),
+				asSet( "A", "B" ),
+				asSet( "C" ),
+				asSet( "D" ),
+				asSet( "D", "E" ));
+		List< Set< String > > nonIntersectSets = Arrays.asList(
+				asSet(),
+				asSet( "A"),
+				asSet( "A","B" ),
+				asSet( "C" ),
+				asSet( "D" ),
+				asSet( "E" ));
+
+		ImgLabeling< String, UnsignedByteType > intersectLabeling = ImgLabeling.fromImageAndLabelSets( indexImg, intersectSets );
+		assertTrue( Labelings.hasIntersectingLabels( intersectLabeling ) );
+
+		ImgLabeling< String, UnsignedByteType > nonIntersectLabeling = ImgLabeling.fromImageAndLabelSets( indexImg, nonIntersectSets );
+		assertFalse( Labelings.hasIntersectingLabels( nonIntersectLabeling ) );
 	}
 
 	@SuppressWarnings( "unchecked" )
