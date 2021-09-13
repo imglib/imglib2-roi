@@ -137,7 +137,7 @@ public class Labelings
 		Set< I > occurringValues = new HashSet<>();
 		for ( I pixel : Views.iterable( img.getIndexImg() ) )
 		{
-			if ( pixel.getInteger() > 0 )
+			if ( pixel.getInteger() > 0 && !occurringValues.contains( pixel ))
 				occurringValues.add( pixel.copy() );
 		}
 
