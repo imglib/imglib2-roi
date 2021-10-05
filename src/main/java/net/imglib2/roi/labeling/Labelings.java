@@ -35,6 +35,7 @@ package net.imglib2.roi.labeling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -117,5 +118,55 @@ public class Labelings
 		LabelingMapping< U > resultMapping = result.getMapping();
 		resultMapping.setLabelSets( resultLabelSets );
 		return result;
+	}
+
+	/**
+	 * Return a {@link Set} of occurring pixel values in the {@link ImgLabeling} index image.
+	 *
+	 * @param img
+	 * 		Image labeling from which to extract the occurring pixel values
+	 * @param <T>
+	 * 		The type of labels assigned to pixels
+	 * @param <I>
+	 * 		The pixel type of the backing image
+	 *
+	 * @return {@link Set} of occurring pixel values
+	 */
+	public static < T, I extends IntegerType< I > > Set< I > getOccurringPixelSets( ImgLabeling< T, I > img )
+	{
+		Set< I > occurringValues = new HashSet<>();
+		for ( I pixel : Views.iterable( img.getIndexImg() ) )
+		{
+			if ( pixel.getInteger() > 0 && !occurringValues.contains( pixel ))
+				occurringValues.add( pixel.copy() );
+		}
+
+		return occurringValues;
+	}
+
+	/**
+	 * Check if the image labeling {@code img} has intersecting labels. Two labels intersect if there
+	 * is at least one pixel in the image labeled with both labels.
+	 *
+	 * @param img
+	 * 		Image labeling
+	 * @param <T>
+	 * 		The type of labels assigned to pixels
+	 * @param <I>
+	 * 		The pixel type of the backing image
+	 *
+	 * @return True if the image labeling has intersecting labels, false otherwise.
+	 */
+	public static < T, I extends IntegerType< I > > boolean hasIntersectingLabels( ImgLabeling< T, I > img )
+	{
+		List< Set< T > > labelSets = img.getMapping().getLabelSets();
+		for ( I i : getOccurringPixelSets( img ) )
+		{
+			if ( labelSets.get( i.getInteger() ).size() > 1 )
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
