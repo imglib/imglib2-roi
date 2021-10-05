@@ -132,7 +132,7 @@ public class Labelings
 	 *
 	 * @return {@link Set} of occurring pixel values
 	 */
-	static < T, I extends IntegerType< I > > Set< I > getOccurringPixelSets( ImgLabeling< T, I > img )
+	public static < T, I extends IntegerType< I > > Set< I > getOccurringPixelSets( ImgLabeling< T, I > img )
 	{
 		Set< I > occurringValues = new HashSet<>();
 		for ( I pixel : Views.iterable( img.getIndexImg() ) )
@@ -157,7 +157,7 @@ public class Labelings
 	 *
 	 * @return True if the image labeling has intersecting labels, false otherwise.
 	 */
-	static < T, I extends IntegerType< I > > boolean hasIntersectingLabels( ImgLabeling< T, I > img )
+	public static < T, I extends IntegerType< I > > boolean hasIntersectingLabels( ImgLabeling< T, I > img )
 	{
 		List< Set< T > > labelSets = img.getMapping().getLabelSets();
 		for ( I i : getOccurringPixelSets( img ) )
