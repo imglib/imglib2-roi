@@ -535,40 +535,60 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		private final RealInterval i2;
 
+		private final double[] min;
+
+		private final double[] max;
+
 		public UnionRealInterval( final RealInterval i1, final RealInterval i2 )
 		{
 			super( i1.numDimensions() );
 			this.i1 = i1;
 			this.i2 = i2;
 			assert ( i1.numDimensions() == i2.numDimensions() );
+			min = new double[ i1.numDimensions() ];
+			max = new double[ i1.numDimensions() ];
+			Arrays.fill( min, Double.NaN );
+			Arrays.fill( max, Double.NaN );
 		}
 
 		@Override
 		public double realMin( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) )
+			if ( Double.isNaN( min[ d ] ) )
 			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Double.POSITIVE_INFINITY;
-				return i2.realMin( d );
+				if ( Intervals.isEmpty( i1 ) )
+				{
+					if ( Intervals.isEmpty( i2 ) )
+						min[ d ] = Double.POSITIVE_INFINITY;
+					else
+						min[ d ] = i2.realMin( d );
+				}
+				else if ( Intervals.isEmpty( i2 ) )
+					min[ d] = i1.realMin( d );
+				else
+					min[ d ] = Math.min( i1.realMin( d ), i2.realMin( d ) );
 			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.realMin( d );
-			return Math.min( i1.realMin( d ), i2.realMin( d ) );
+			return min[ d ];
 		}
 
 		@Override
 		public double realMax( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) )
+			if ( Double.isNaN( max[d] ) )
 			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Double.NEGATIVE_INFINITY;
-				return i2.realMax( d );
+				if ( Intervals.isEmpty( i1 ) )
+				{
+					if ( Intervals.isEmpty( i2 ) )
+						max[ d ] = Double.NEGATIVE_INFINITY;
+					else
+						max[ d ] = i2.realMax( d );
+				}
+				else if ( Intervals.isEmpty( i2 ) )
+					max[ d ] = i1.realMax( d );
+				else
+					max[ d ] = Math.max( i1.realMax( d ), i2.realMax( d ) );
 			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.realMax( d );
-			return Math.max( i1.realMax( d ), i2.realMax( d ) );
+			return max[ d ];
 		}
 	}
 
