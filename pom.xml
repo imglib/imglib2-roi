@@ -168,6 +168,10 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 			<url>https://imagej.net/User:Bogovic</url>
 			<properties><id>bogovicj</id></properties>
 		</contributor>
+		<contributor>
+			<name>Christian Tischer</name>
+			<properties><id>tischi</id></properties>
+		</contributor>
 	</contributors>
 
 	<repositories>
