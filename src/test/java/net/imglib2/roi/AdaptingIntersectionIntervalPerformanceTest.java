@@ -13,9 +13,7 @@ public class AdaptingIntersectionIntervalPerformanceTest
 		RealMaskRealInterval maskInterval = new DefaultRealMaskRealInterval( new FinalInterval( 1, 1, 1 ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
 		RealMaskRealInterval intersection = maskInterval;
 		for ( int i = 0; i < 100; i++ )
-		{
 			intersection = intersection.and( maskInterval );
-		}
 		intersection.isEmpty();
 	}
 
