@@ -33,6 +33,8 @@
  */
 package net.imglib2.roi;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
