@@ -33,11 +33,6 @@
  */
 package net.imglib2.roi;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.function.Predicate;
-
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
@@ -45,6 +40,9 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
 import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.util.Intervals;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  * Operations on mask bounds. Bounds can be UNBOUNDED, or a (possibly empty)
