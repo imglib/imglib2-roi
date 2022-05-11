@@ -33,9 +33,6 @@
  */
 package net.imglib2.roi;
 
-import java.util.Arrays;
-import java.util.function.Predicate;
-
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
@@ -43,6 +40,9 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
 import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.util.Intervals;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  * Operations on mask bounds. Bounds can be UNBOUNDED, or a (possibly empty)
@@ -342,16 +342,12 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		@Override
 		public long min( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) || Intervals.isEmpty( i2 ) )
-				return Long.MAX_VALUE;
 			return Math.max( i1.min( d ), i2.min( d ) );
 		}
 
 		@Override
 		public long max( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) || Intervals.isEmpty( i2 ) )
-				return Long.MIN_VALUE;
 			return Math.min( i1.max( d ), i2.max( d ) );
 		}
 	}
@@ -512,16 +508,12 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		@Override
 		public double realMin( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) || Intervals.isEmpty( i2 ) )
-				return Double.POSITIVE_INFINITY;
 			return Math.max( i1.realMin( d ), i2.realMin( d ) );
 		}
 
 		@Override
 		public double realMax( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) || Intervals.isEmpty( i2 ) )
-				return Double.NEGATIVE_INFINITY;
 			return Math.min( i1.realMax( d ), i2.realMax( d ) );
 		}
 	}
