@@ -34,6 +34,7 @@
 package net.imglib2.roi;
 
 import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
 import net.imglib2.RealInterval;
@@ -518,6 +519,31 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 	}
 
+	private static boolean isEmpty( final double[] realMin, final double[] realMax )
+	{
+		for ( int d = 0; d < realMin.length; ++d )
+			if ( realMin[ d ] > realMax[ d ] )
+				return true;
+		return false;
+	}
+
+	private static void getMinMax( final RealInterval interval, final double[] min, final double[] max )
+	{
+		if ( interval instanceof AbstractWrappedRealInterval )
+		{
+			getMinMax( ( ( AbstractWrappedRealInterval< ? > ) interval ).getSource(), min, max );
+		}
+		else if ( interval instanceof UnionRealInterval )
+		{
+			( ( UnionRealInterval ) interval ).realMinMax( min, max );
+		}
+		else
+		{
+			interval.realMin( min );
+			interval.realMax( max );
+		}
+	}
+
 	/**
 	 * The union of two intervals. Adapts to changes of the source intervals.
 	 */
@@ -535,32 +561,85 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			assert ( i1.numDimensions() == i2.numDimensions() );
 		}
 
+		public void realMinMax( final double[] realMin, final double[] realMax )
+		{
+			final double[] min1 = new double[ n ];
+			final double[] max1 = new double[ n ];
+			getMinMax( i1, min1, max1 );
+
+			final double[] min2 = new double[ n ];
+			final double[] max2 = new double[ n ];
+			getMinMax( i2, min2, max2 );
+
+			if ( isEmpty( min1, max1 ) )
+			{
+				if ( realMin != null )
+					System.arraycopy( min2, 0, realMin, 0, n );
+				if ( realMax != null )
+					System.arraycopy( max2, 0, realMax, 0, n );
+			}
+			else if ( isEmpty( min2, max2 ) )
+			{
+				if ( realMin != null )
+					System.arraycopy( min1, 0, realMin, 0, n );
+				if ( realMax != null )
+					System.arraycopy( max1, 0, realMax, 0, n );
+			}
+			else
+			{
+				if ( realMin != null )
+					for ( int d = 0; d < n; d++ )
+						realMin[ d ] = Math.min( min1[ d ], min2[ d ] );
+				if ( realMax != null )
+					for ( int d = 0; d < n; d++ )
+						realMax[ d ] = Math.max( max1[ d ], max2[ d ] );
+			}
+		}
+
+		@Override
+		public void realMin( final double[] realMin )
+		{
+			realMinMax( realMin, null );
+		}
+
+		@Override
+		public void realMin( final RealPositionable realMin )
+		{
+			final double[] pos = new double[ n ];
+			realMin( pos );
+			for ( int d = 0; d < n; ++d )
+				realMin.setPosition( pos[ d ], d );
+		}
+
+		@Override
+		public void realMax( final double[] realMax )
+		{
+			realMinMax( null, realMax );
+		}
+
+		@Override
+		public void realMax( final RealPositionable realMax )
+		{
+			final double[] pos = new double[ n ];
+			realMax( pos );
+			for ( int d = 0; d < n; ++d )
+				realMax.setPosition( pos[ d ], d );
+		}
+
 		@Override
 		public double realMin( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) )
-			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Double.POSITIVE_INFINITY;
-				return i2.realMin( d );
-			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.realMin( d );
-			return Math.min( i1.realMin( d ), i2.realMin( d ) );
+			final double[] min = new double[ n ];
+			realMin( min );
+			return min[ d ];
 		}
 
 		@Override
 		public double realMax( final int d )
 		{
-			if ( Intervals.isEmpty( i1 ) )
-			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Double.NEGATIVE_INFINITY;
-				return i2.realMax( d );
-			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.realMax( d );
-			return Math.max( i1.realMax( d ), i2.realMax( d ) );
+			final double[] max = new double[ n ];
+			realMax( max );
+			return max[ d ];
 		}
 	}
 
