@@ -26,4 +26,14 @@ public class AdaptingIntersectionIntervalPerformanceTest
 			intersection = intersection.and( maskInterval );
 		intersection.isEmpty();
 	}
+
+	@Test(timeout=5000)
+	public void testRecursiveUnionRealIntervalPerformance()
+	{
+		RealMaskRealInterval maskInterval = new DefaultRealMaskRealInterval( new FinalInterval( 1, 1, 1 ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
+		RealMaskRealInterval union = maskInterval;
+		for ( int i = 0; i < 100; i++ )
+			union = union.or( maskInterval );
+		union.isEmpty();
+	}
 }
