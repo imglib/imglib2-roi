@@ -510,8 +510,8 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	}
 
 	/**
-	 * The intersection of two intervals. Adapts to changes of the source
-	 * intervals.
+	 * The intersection of two intervals.
+	 * Adapts to changes of the source intervals.
 	 */
 	public static class IntersectionRealInterval extends AbstractAdaptingRealInterval
 	{
@@ -528,21 +528,23 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		public double realMin( final int d )
-		{
-			return Math.max( i1.realMin( d ), i2.realMin( d ) );
-		}
-
-		@Override
-		public double realMax( final int d )
-		{
-			return Math.min( i1.realMax( d ), i2.realMax( d ) );
-		}
-
-		@Override
 		public void realMinMax( double[] realMin, double[] realMax )
 		{
+			final double[] min1 = new double[ n ];
+			final double[] max1 = new double[ n ];
+			getMinMax( i1, min1, max1 );
 
+			final double[] min2 = new double[ n ];
+			final double[] max2 = new double[ n ];
+			getMinMax( i2, min2, max2 );
+
+			if ( realMin != null )
+				for ( int d = 0; d < n; d++ )
+					realMin[ d ] = Math.max( min1[ d ], min2[ d ] );
+
+			if ( realMax != null )
+				for ( int d = 0; d < n; d++ )
+					realMax[ d ] = Math.min( max1[ d ], max2[ d ] );
 		}
 	}
 
@@ -560,9 +562,9 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		{
 			getMinMax( ( ( AbstractWrappedRealInterval< ? > ) interval ).getSource(), min, max );
 		}
-		else if ( interval instanceof UnionRealInterval )
+		else if ( interval instanceof AbstractAdaptingRealInterval )
 		{
-			( ( UnionRealInterval ) interval ).realMinMax( min, max );
+			( ( AbstractAdaptingRealInterval ) interval ).realMinMax( min, max );
 		}
 		else
 		{
@@ -572,7 +574,8 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	}
 
 	/**
-	 * The union of two intervals. Adapts to changes of the source intervals.
+	 * The union of two intervals.
+	 * Adapts to changes of the source intervals.
 	 */
 	public static class UnionRealInterval extends AbstractAdaptingRealInterval
 	{
