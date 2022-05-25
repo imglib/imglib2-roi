@@ -449,7 +449,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 	/**
 	 * Abstract base class for bounds which adapt to changes in the source
-	 * interval, leaving {@link #realMin(int)} and {@link #realMax(int)} methods
+	 * interval, leaving the {@link #realMinMax(double[], double[])} method
 	 * to be implemented by derived classes.
 	 */
 	public static abstract class AbstractAdaptingRealInterval extends AbstractEuclideanSpace implements RealInterval
@@ -460,32 +460,53 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		public void realMin( final double[] realMin )
+		public double realMin( final int d )
 		{
-			for ( int d = 0; d < n; ++d )
-				realMin[ d ] = realMin( d );
+			final double[] min = new double[ n ];
+			realMin( min );
+			return min[ d ];
 		}
 
 		@Override
-		public void realMin( final RealPositionable realMin )
+		public double realMax( final int d )
 		{
-			for ( int d = 0; d < n; ++d )
-				realMin.setPosition( realMin( d ), d );
+			final double[] max = new double[ n ];
+			realMax( max );
+			return max[ d ];
+		}
+
+		@Override
+		public void realMin( final double[] realMin )
+		{
+			realMinMax( realMin, null );
 		}
 
 		@Override
 		public void realMax( final double[] realMax )
 		{
+			realMinMax( null, realMax );
+		}
+
+		@Override
+		public void realMin( final RealPositionable realMin )
+		{
+			final double[] pos = new double[ n ];
+			realMin( pos );
 			for ( int d = 0; d < n; ++d )
-				realMax[ d ] = realMax( d );
+				realMin.setPosition( pos[ d ], d );
 		}
 
 		@Override
 		public void realMax( final RealPositionable realMax )
 		{
+			final double[] pos = new double[ n ];
+			realMax( pos );
 			for ( int d = 0; d < n; ++d )
-				realMax.setPosition( realMax( d ), d );
+				realMax.setPosition( pos[ d ], d );
 		}
+
+		public abstract void realMinMax( final double[] realMin, final double[] realMax );
+
 	}
 
 	/**
@@ -516,6 +537,12 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		public double realMax( final int d )
 		{
 			return Math.min( i1.realMax( d ), i2.realMax( d ) );
+		}
+
+		@Override
+		public void realMinMax( double[] realMin, double[] realMax )
+		{
+
 		}
 	}
 
@@ -596,51 +623,6 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			}
 		}
 
-		@Override
-		public void realMin( final double[] realMin )
-		{
-			realMinMax( realMin, null );
-		}
-
-		@Override
-		public void realMin( final RealPositionable realMin )
-		{
-			final double[] pos = new double[ n ];
-			realMin( pos );
-			for ( int d = 0; d < n; ++d )
-				realMin.setPosition( pos[ d ], d );
-		}
-
-		@Override
-		public void realMax( final double[] realMax )
-		{
-			realMinMax( null, realMax );
-		}
-
-		@Override
-		public void realMax( final RealPositionable realMax )
-		{
-			final double[] pos = new double[ n ];
-			realMax( pos );
-			for ( int d = 0; d < n; ++d )
-				realMax.setPosition( pos[ d ], d );
-		}
-
-		@Override
-		public double realMin( final int d )
-		{
-			final double[] min = new double[ n ];
-			realMin( min );
-			return min[ d ];
-		}
-
-		@Override
-		public double realMax( final int d )
-		{
-			final double[] max = new double[ n ];
-			realMax( max );
-			return max[ d ];
-		}
 	}
 
 	/**
@@ -746,6 +728,18 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			if ( updateNeeded() )
 				updateMinMax();
 			return max[ d ];
+		}
+
+		@Override
+		public void realMinMax( double[] realMin, double[] realMax )
+		{
+			if ( updateNeeded() )
+				updateMinMax();
+
+			if ( realMin != null )
+				System.arraycopy( min, 0, realMin, 0 , n );
+			if ( realMax != null )
+				System.arraycopy( max, 0, realMax, 0 , n );
 		}
 
 		// -- Helper methods --

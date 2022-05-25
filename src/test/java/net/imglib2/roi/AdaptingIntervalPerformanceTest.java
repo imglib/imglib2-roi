@@ -5,7 +5,7 @@ import net.imglib2.roi.mask.integer.DefaultMaskInterval;
 import net.imglib2.roi.mask.real.DefaultRealMaskRealInterval;
 import org.junit.Test;
 
-public class AdaptingIntersectionIntervalPerformanceTest
+public class AdaptingIntervalPerformanceTest
 {
 	@Test(timeout=5000)
 	public void testRecursiveIntersectionRealIntervalPerformance()
