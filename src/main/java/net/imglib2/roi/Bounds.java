@@ -34,6 +34,7 @@
 package net.imglib2.roi;
 
 import net.imglib2.AbstractEuclideanSpace;
+import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.AbstractWrappedRealInterval;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
@@ -202,8 +203,8 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	}
 
 	/**
-	 * Abstract base class which adapts to changes in source interval, leaving
-	 * {@link #min(int)} and {@link #max(int)} methods to be implemented by
+	 * Abstract base class which adapts to changes in source interval, 
+	 * leaving {@link #minMax(long[], long[])} to be implemented by
 	 * derived classes.
 	 */
 	public static abstract class AbstractAdaptingInterval extends AbstractEuclideanSpace implements Interval
@@ -256,8 +257,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		@Override
 		public void min( final long[] min )
 		{
-			for ( int d = 0; d < n; ++d )
-				min[ d ] = min( d );
+			minMax( min, null );
 		}
 
 		@Override
@@ -270,8 +270,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		@Override
 		public void max( final long[] max )
 		{
-			for ( int d = 0; d < n; ++d )
-				max[ d ] = max( d );
+			minMax( null, max );
 		}
 
 		@Override
@@ -280,6 +279,24 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			for ( int d = 0; d < n; ++d )
 				max.setPosition( max( d ), d );
 		}
+
+		@Override
+		public long min( final int d )
+		{
+			final long[] min = new long[ n ];
+			min( min );
+			return min[ d ];
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			final long[] max = new long[ n ];
+			max( max );
+			return max[ d ];
+		}
+
+		public abstract void minMax( long[] min, long[] max );
 
 		@Override
 		public void dimensions( final long[] dimensions )
@@ -310,15 +327,15 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		public long min( final int d )
+		public void minMax( long[] min, long[] max )
 		{
-			return ( long ) Math.floor( source.realMin( d ) );
-		}
+			if ( min != null )
+				for ( int d = 0; d < n; d++ )
+					min[ d ] = ( long ) Math.floor( source.realMin( d ) );
 
-		@Override
-		public long max( final int d )
-		{
-			return ( long ) Math.ceil( source.realMax( d ) );
+			if ( max != null )
+				for ( int d = 0; d < n; d++ )
+					max[ d ] = ( long ) Math.ceil( source.realMax( d ) );
 		}
 	}
 
@@ -339,17 +356,25 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			this.i2 = i2;
 			assert ( i1.numDimensions() == i2.numDimensions() );
 		}
-
+		
 		@Override
-		public long min( final int d )
+		public void minMax( long[] min, long[] max )
 		{
-			return Math.max( i1.min( d ), i2.min( d ) );
-		}
+			final long[] min1 = new long[ n ];
+			final long[] max1 = new long[ n ];
+			getMinMax( i1, min1, max1 );
 
-		@Override
-		public long max( final int d )
-		{
-			return Math.min( i1.max( d ), i2.max( d ) );
+			final long[] min2 = new long[ n ];
+			final long[] max2 = new long[ n ];
+			getMinMax( i2, min2, max2 );
+
+			if ( min != null )
+				for ( int d = 0; d < n; d++ )
+					min[ d ] = Math.max( min1[ d ], min2[ d ] );
+
+			if ( max != null )
+				for ( int d = 0; d < n; d++ )
+					max[ d ] = Math.min( max1[ d ], max2[ d ] );
 		}
 	}
 
@@ -371,31 +396,39 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		public long min( final int d )
+		public void minMax( final long[] min, final long[] max )
 		{
-			if ( Intervals.isEmpty( i1 ) )
-			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Long.MAX_VALUE;
-				return i2.min( d );
-			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.min( d );
-			return Math.min( i1.min( d ), i2.min( d ) );
-		}
+			final long[] min1 = new long[ n ];
+			final long[] max1 = new long[ n ];
+			getMinMax( i1, min1, max1 );
 
-		@Override
-		public long max( final int d )
-		{
-			if ( Intervals.isEmpty( i1 ) )
+			final long[] min2 = new long[ n ];
+			final long[] max2 = new long[ n ];
+			getMinMax( i2, min2, max2 );
+
+			if ( isEmpty( min1, max1 ) )
 			{
-				if ( Intervals.isEmpty( i2 ) )
-					return Long.MIN_VALUE;
-				return i2.max( d );
+				if ( min != null )
+					System.arraycopy( min2, 0, min, 0, n );
+				if ( max != null )
+					System.arraycopy( max2, 0, max, 0, n );
 			}
-			if ( Intervals.isEmpty( i2 ) )
-				return i1.max( d );
-			return Math.max( i1.max( d ), i2.max( d ) );
+			else if ( isEmpty( min2, max2 ) )
+			{
+				if ( min != null )
+					System.arraycopy( min1, 0, min, 0, n );
+				if ( max != null )
+					System.arraycopy( max1, 0, max, 0, n );
+			}
+			else
+			{
+				if ( min != null )
+					for ( int d = 0; d < n; d++ )
+						min[ d ] = Math.min( min1[ d ], min2[ d ] );
+				if ( max != null )
+					for ( int d = 0; d < n; d++ )
+						max[ d ] = Math.max( max1[ d ], max2[ d ] );
+			}
 		}
 	}
 
@@ -556,6 +589,14 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		return false;
 	}
 
+	private static boolean isEmpty( final long[] min, final long[] max )
+	{
+		for ( int d = 0; d < min.length; ++d )
+			if ( min[ d ] > max[ d ] )
+				return true;
+		return false;
+	}
+
 	private static void getMinMax( final RealInterval interval, final double[] min, final double[] max )
 	{
 		if ( interval instanceof AbstractWrappedRealInterval )
@@ -570,6 +611,23 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		{
 			interval.realMin( min );
 			interval.realMax( max );
+		}
+	}
+
+	private static void getMinMax( final Interval interval, final long[] min, final long[] max )
+	{
+		if ( interval instanceof AbstractWrappedInterval )
+		{
+			getMinMax( ( ( AbstractWrappedInterval< ? > ) interval ).getSource(), min, max );
+		}
+		else if ( interval instanceof AbstractAdaptingInterval )
+		{
+			( ( AbstractAdaptingInterval ) interval ).minMax( min, max );
+		}
+		else
+		{
+			interval.min( min );
+			interval.max( max );
 		}
 	}
 

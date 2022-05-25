@@ -36,4 +36,14 @@ public class AdaptingIntervalPerformanceTest
 			union = union.or( maskInterval );
 		union.isEmpty();
 	}
+
+	@Test(timeout=5000)
+	public void testRecursiveUnionIntervalPerformance()
+	{
+		MaskInterval maskInterval = new DefaultMaskInterval( new FinalInterval( 1, 1, 1 ), BoundaryType.UNSPECIFIED, t -> false, KnownConstant.ALL_FALSE );
+		MaskInterval union = maskInterval;
+		for ( int i = 0; i < 100; i++ )
+			union = union.or( maskInterval );
+		union.isEmpty();
+	}
 }
