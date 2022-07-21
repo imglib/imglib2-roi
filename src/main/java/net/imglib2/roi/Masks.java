@@ -33,21 +33,36 @@
  */
 package net.imglib2.roi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
+import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.FinalRealInterval;
 import net.imglib2.Interval;
 import net.imglib2.Localizable;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.RealRandomAccessibleRealInterval;
+import net.imglib2.roi.composite.BinaryCompositeMaskPredicate;
+import net.imglib2.roi.composite.CompositeMaskPredicate;
+import net.imglib2.roi.composite.UnaryCompositeMaskPredicate;
+import net.imglib2.roi.labeling.ImgLabeling;
+import net.imglib2.roi.labeling.LabelRegion;
+import net.imglib2.roi.labeling.LabelRegions;
+import net.imglib2.roi.labeling.LabelingType;
 import net.imglib2.roi.mask.integer.DefaultMask;
 import net.imglib2.roi.mask.integer.DefaultMaskInterval;
+import net.imglib2.roi.mask.integer.LabeledMaskInterval;
 import net.imglib2.roi.mask.integer.MaskAsRandomAccessible;
 import net.imglib2.roi.mask.integer.MaskIntervalAsRandomAccessibleInterval;
 import net.imglib2.roi.mask.integer.RandomAccessibleAsMask;
@@ -60,6 +75,7 @@ import net.imglib2.roi.mask.real.RealRandomAccessibleAsRealMask;
 import net.imglib2.roi.mask.real.RealRandomAccessibleRealIntervalAsRealMaskRealInterval;
 import net.imglib2.type.BooleanType;
 import net.imglib2.type.logic.BoolType;
+import net.imglib2.type.numeric.IntegerType;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
@@ -360,6 +376,138 @@ public class Masks
 		return new RealRandomAccessibleRealIntervalAsRealMaskRealInterval<>( rrari );
 	}
 
+	/**
+	 * Wraps the given {@link LabelRegion} as a {@link MaskInterval}.
+	 *
+	 * @param region
+	 *            the {@code LabelRegion<T>} to wrap
+	 * @return a {@link LabeledMaskInterval} equivalent to the given
+	 *         {@code LabelRegion<T>}
+	 */
+	public static < T > LabeledMaskInterval< T > toMaskInterval( final LabelRegion< T > region )
+	{
+		final MaskInterval mask = toMaskInterval( ( RandomAccessibleInterval< BoolType > ) region );
+		return new LabeledMaskInterval<>( mask, region.getLabel() );
+	}
+
+	/*
+	 * Mask/Labeling Conversions
+	 * ===============================================================
+	 */
+
+	/**
+	 * Extracts a {@link MaskInterval} for each label in the given labeling.
+	 *
+	 * @param labeling
+	 *            an {@link ImgLabeling}, view on ImgLabeling, etc. from which
+	 *            the {@code MaskInterval}s will be extracted
+	 * @return a list of {@code MaskInterval}s, one for each label in the
+	 *         labeling
+	 */
+	public static < T > List< LabeledMaskInterval< T > > extractMaskIntervals( final RandomAccessibleInterval< LabelingType< T > > labeling )
+	{
+		final List< LabeledMaskInterval< T > > masks = new ArrayList<>();
+		final LabelRegions< T > regions = new LabelRegions<>( labeling );
+		regions.forEach( r -> masks.add( toMaskInterval( r ) ) );
+		return masks;
+	}
+
+	/**
+	 * Adds any {@link LabeledMaskInterval}s in the list to the provided
+	 * {@link ImgLabeling}. If a given {@link MaskInterval} is a
+	 * {@link CompositeMaskPredicate}, this method will recurse through the
+	 * children looking for {@link LabeledMaskInterval}s. And if one is found,
+	 * its label will be added to the {@code ImgLabeling} only at the locations
+	 * in the root/parent {@code CompositeMaskPredicate}. If the given
+	 * {@code Mask} is not a {@code LabeledMaskInterval} it will not be written
+	 * to the {@code ImgLabeling}
+	 *
+	 * @param masks
+	 *            list of potential {@link MaskInterval}s to add, only the
+	 *            discovered {@link LabeledMaskInterval}s will be added
+	 * @param labeling
+	 *            {@link ImgLabeling} to add labels/masks to
+	 * @param type
+	 *            the class of the user specified labels in the
+	 *            {@code ImgLabeling} and {@code LabelMaskPredicate}
+	 */
+	public static < T, I extends IntegerType< I > > void addMasksToLabeling( final List< MaskInterval > masks, final ImgLabeling< T, I > labeling, final Class< T > type )
+	{
+		final Map< Mask, List< LabeledMaskInterval< ? extends T > > > labeledMasks = new HashMap<>();
+
+		for ( final MaskInterval maskInterval : masks )
+		{
+			if ( maskInterval.numDimensions() != labeling.numDimensions() )
+				throw new IllegalArgumentException( "Incompatible dimensions. Dims labeling: " + labeling.numDimensions() + " dims mask: " + maskInterval.numDimensions() );
+			for ( int d = 0; d < labeling.numDimensions(); d++ )
+			{
+				if ( maskInterval.min( d ) < labeling.min( d ) || maskInterval.max( d ) > labeling.max( d ) )
+					throw new IllegalArgumentException( "MaskInterval [" + maskInterval.min( d ) + ", " + maskInterval.max( d ) + "] exceeds the range of labeling [" + labeling.min( d ) + ", " + labeling.max( d ) + "] in dimension " + d );
+			}
+			final List< LabeledMaskInterval< ? extends T > > list = new ArrayList<>();
+			collectLabels( maskInterval, list, type );
+			if ( !list.isEmpty() )
+				labeledMasks.put( maskInterval, list );
+		}
+
+		final RandomAccess< LabelingType< T > > ra = labeling.randomAccess();
+		for ( final Entry< Mask, List< LabeledMaskInterval< ? extends T > > > s : labeledMasks.entrySet() )
+		{
+			for ( final LabeledMaskInterval< ? extends T > labeledMask : s.getValue() )
+			{
+				final IterableRegion< BoolType > iterable = Regions.iterable( toRandomAccessibleInterval( labeledMask ) );
+				final Cursor< Void > c = iterable.cursor();
+				while ( c.hasNext() )
+				{
+					c.next();
+					if ( s.getKey().test( c ) )
+					{
+						ra.setPosition( c );
+						ra.get().add( labeledMask.getLabel() );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adds any {@link LabeledMaskInterval}s in the list to the provided
+	 * {@link ImgLabeling}. If a given {@link MaskInterval} is a
+	 * {@link CompositeMaskPredicate}, this method will recurse through the
+	 * children looking for {@link LabeledMaskInterval}s. And if one is found,
+	 * its label will be added to the {@code ImgLabeling} only at the locations
+	 * in the root/parent {@code CompositeMaskPredicate}. If a given
+	 * {@link MaskInterval} or part of a {@code CompositeMaskPredicate} does not
+	 * contain a label, the given default label will be set at those locations.
+	 *
+	 * @param masks
+	 *            list of potential {@link MaskInterval}s to add
+	 * @param labeling
+	 *            {@link ImgLabeling} to add labels/masks to
+	 * @param defaultLabel
+	 *            the label to assign to pixels inside the given
+	 *            {@link MaskInterval}s that do not already have labels (i.e.
+	 *            not part of a {@link LabeledMaskInterval}
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static < T, I extends IntegerType< I > > void addMasksToLabeling( final List< MaskInterval > masks, final ImgLabeling< T, I > labeling, final T defaultLabel )
+	{
+		addMasksToLabeling( masks, labeling, ( Class< T > ) defaultLabel.getClass() );
+
+		final RandomAccess< LabelingType< T > > ra = labeling.randomAccess();
+		for ( final MaskInterval mi : masks )
+		{
+			final Cursor< Void > c = Regions.iterable( Masks.toRandomAccessibleInterval( mi ) ).cursor();
+			while ( c.hasNext() )
+			{
+				c.next();
+				ra.setPosition( c );
+				if ( ra.get().isEmpty() )
+					ra.get().add( defaultLabel );
+			}
+		}
+	}
+
 	/*
 	 * Empty Masks
 	 * ===============================================================
@@ -500,5 +648,36 @@ public class Masks
 		return mask1.maskType() == mask2.maskType() && //
 				mask1.boundaryType() == mask2.boundaryType() && //
 				mask1.numDimensions() == mask2.numDimensions();
+	}
+
+	// -- Helper methods --
+
+	private static < T > void collectLabels( final Mask mask, final List< LabeledMaskInterval< ? extends T > > labeledMasks, final Class< T > type )
+	{
+		Mask copy = mask;
+		if ( mask instanceof LabeledMaskInterval )
+		{
+			final Class< ? > labelMaskType = ( ( LabeledMaskInterval< ? > ) mask ).getLabel().getClass();
+			if ( !type.isAssignableFrom( labelMaskType ) )
+				throw new IllegalArgumentException( "Incompatible label type, " + labelMaskType + ", for labeing type " + type );
+			@SuppressWarnings( "unchecked" )
+			final LabeledMaskInterval< ? extends T > labeledMask = ( LabeledMaskInterval< ? extends T > ) mask;
+			labeledMasks.add( labeledMask );
+			copy = labeledMask.getSource();
+		}
+		if ( copy instanceof BinaryCompositeMaskPredicate )
+		{
+			final BinaryCompositeMaskPredicate< ? > bcmp = ( BinaryCompositeMaskPredicate< ? > ) copy;
+			if ( bcmp.arg0() instanceof Mask )
+				collectLabels( ( Mask ) bcmp.arg0(), labeledMasks, type );
+			if ( bcmp.arg1() instanceof Mask )
+				collectLabels( ( Mask ) bcmp.arg1(), labeledMasks, type );
+		}
+		if ( copy instanceof UnaryCompositeMaskPredicate )
+		{
+			final UnaryCompositeMaskPredicate< ? > ucmp = ( UnaryCompositeMaskPredicate< ? > ) copy;
+			if ( ucmp.arg0() instanceof Mask )
+				collectLabels( ( Mask ) ucmp.arg0(), labeledMasks, type );
+		}
 	}
 }
