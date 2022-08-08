@@ -291,6 +291,17 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 			return max[ d ] - min[ d ] + 1;
 		}
+
+		@Override
+		public void dimensions( final Positionable dimensions )
+		{
+			final long[] min = new long[ n ];
+			final long[] max = new long[ n ];
+			minMax( min, max );
+
+			for ( int d = 0; d < n; d++ )
+				dimensions.setPosition( max[ d ] - min[ d ] + 1, d );
+		}
 	}
 
 	/**
