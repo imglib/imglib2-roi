@@ -239,19 +239,23 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		@Override
 		public void max( final long[] max )
 		{
-			// TODO (TP)
+			minMax( null, max );
 		}
 
 		@Override
 		public void min( final Positionable min )
 		{
-			// TODO (TP)
+			final long[] minArray = new long[ n ];
+			min( minArray );
+			min.setPosition( minArray );
 		}
 
 		@Override
 		public void max( final Positionable max )
 		{
-			// TODO (TP)
+			final long[] maxArray = new long[ n ];
+			max( maxArray );
+			max.setPosition( maxArray );
 		}
 
 		public abstract void minMax( long[] min, long[] max );
