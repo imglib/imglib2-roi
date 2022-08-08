@@ -207,77 +207,11 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 	 * leaving {@link #minMax(long[], long[])} to be implemented by
 	 * derived classes.
 	 */
-	public static abstract class AbstractAdaptingInterval extends AbstractEuclideanSpace implements Interval
+	public static abstract class AbstractAdaptingInterval extends AbstractAdaptingRealInterval implements Interval
 	{
 		public AbstractAdaptingInterval( final int n )
 		{
 			super( n );
-		}
-
-		@Override
-		public double realMin( final int d )
-		{
-			return min( d );
-		}
-
-		@Override
-		public void realMin( final double[] realMin )
-		{
-			for ( int d = 0; d < n; ++d )
-				realMin[ d ] = realMin( d );
-		}
-
-		@Override
-		public void realMin( final RealPositionable realMin )
-		{
-			for ( int d = 0; d < n; ++d )
-				realMin.setPosition( realMin( d ), d );
-		}
-
-		@Override
-		public double realMax( final int d )
-		{
-			return max( d );
-		}
-
-		@Override
-		public void realMax( final double[] realMax )
-		{
-			for ( int d = 0; d < n; ++d )
-				realMax[ d ] = realMax( d );
-		}
-
-		@Override
-		public void realMax( final RealPositionable realMax )
-		{
-			for ( int d = 0; d < n; ++d )
-				realMax.setPosition( realMax( d ), d );
-		}
-
-		@Override
-		public void min( final long[] min )
-		{
-			minMax( min, null );
-		}
-
-		@Override
-		public void min( final Positionable min )
-		{
-			for ( int d = 0; d < n; ++d )
-				min.setPosition( min( d ), d );
-		}
-
-		@Override
-		public void max( final long[] max )
-		{
-			minMax( null, max );
-		}
-
-		@Override
-		public void max( final Positionable max )
-		{
-			for ( int d = 0; d < n; ++d )
-				max.setPosition( max( d ), d );
 		}
 
 		@Override
@@ -296,19 +230,66 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 			return max[ d ];
 		}
 
+		@Override
+		public void min( final long[] min )
+		{
+			minMax( min, null );
+		}
+
+		@Override
+		public void max( final long[] max )
+		{
+			// TODO (TP)
+		}
+
+		@Override
+		public void min( final Positionable min )
+		{
+			// TODO (TP)
+		}
+
+		@Override
+		public void max( final Positionable max )
+		{
+			// TODO (TP)
+		}
+
 		public abstract void minMax( long[] min, long[] max );
+
+		@Override
+		public void realMinMax( final double[] realMin, final double[] realMax )
+		{
+			final long[] min = realMin == null ? null : new long[ n ];
+			final long[] max = realMax == null ? null : new long[ n ];
+			minMax( min, max );
+
+			if ( realMin != null )
+				for ( int d = 0; d < n; d++ )
+					realMin[ d ] = min[ d ];
+			if ( realMax != null )
+				for ( int d = 0; d < n; d++ )
+					realMax[ d ] = max[ d ];
+		}
 
 		@Override
 		public void dimensions( final long[] dimensions )
 		{
+			final long[] min = new long[ n ];
+			final long[] max = new long[ n ];
+			minMax( min, max );
+
 			for ( int d = 0; d < n; ++d )
-				dimensions[ d ] = dimension( d );
+				dimensions[ d ] = max[ d ] - min[ d ] + 1;
 		}
 
 		@Override
 		public long dimension( final int d )
 		{
-			return max( d ) - min( d ) + 1;
+			final long[] min = new long[ n ];
+			final long[] max = new long[ n ];
+			minMax( min, max );
+
+			return max[ d ] - min[ d ] + 1;
 		}
 	}
 
@@ -561,7 +542,7 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		}
 
 		@Override
-		public void realMinMax( double[] realMin, double[] realMax )
+		public void realMinMax( final double[] realMin, final double[] realMax )
 		{
 			final double[] min1 = new double[ n ];
 			final double[] max1 = new double[ n ];
@@ -807,6 +788,9 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		private boolean updateNeeded()
 		{
+			// TODO (TP): use getMinMax(source, sourceMin[], sourceMax[]) instead
+			//   (with new double[] sourceMin, new double[] sourceMax)
+			//   then reuse sourceMin, sourceMax in checks below and also in updateMinMax().
 			for ( int d = 0; d < transformToSource.numTargetDimensions(); d++ )
 			{
 				if ( cachedSourceMin[ d ] != source.realMin( d ) || cachedSourceMax[ d ] != source.realMax( d ) )
@@ -869,6 +853,9 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 					{
 						mn = !mn;
 					}
+					// TODO (TP): use getMinMax(..., sourceMin, sourceMax) outside the loop
+					//   (with new double[] sourceMin, new double[] sourceMax)
+					//   and then reuse sourceMin, sourceMax below
 					if ( mn )
 						cornersTransformed[ i ][ d ] = source.realMin( d );
 					else
