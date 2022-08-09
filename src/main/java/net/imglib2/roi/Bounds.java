@@ -741,9 +741,15 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		private final double[] cachedSourceMax;
 
+		private final double[] currentSourceMin;
+
+		private final double[] currentSourceMax;
+
 		private final double[] min;
 
 		private final double[] max;
+
+		private final int numSourceDimensions;
 
 		/**
 		 * Creates {@link Bounds} for a transformed source interval. These
@@ -756,42 +762,48 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 		 */
 		public RealTransformRealInterval( final RealInterval source, final InvertibleRealTransform transformToSource )
 		{
-			// NB: transformToSource so final dimensions of resulting Mask are source dimensions
+			// NB: transformToSource so dimensions of resulting Mask are source dimensions
 			super( transformToSource.numSourceDimensions() );
+
 			this.source = source;
 			this.transformToSource = transformToSource;
 
-			cachedSourceMin = new double[ this.transformToSource.numTargetDimensions() ];
-			cachedSourceMax = new double[ this.transformToSource.numTargetDimensions() ];
+			assert source.numDimensions() == transformToSource.numTargetDimensions();
+			numSourceDimensions = source.numDimensions();
+
+			cachedSourceMin = new double[ numSourceDimensions ];
+			cachedSourceMax = new double[ numSourceDimensions ];
+			getMinMax( source, cachedSourceMin, cachedSourceMax );
+
+			currentSourceMin = new double[ numSourceDimensions ];
+			currentSourceMax = new double[ numSourceDimensions ];
+
 			min = new double[ n ];
 			max = new double[ n ];
 
-			this.source.realMax( cachedSourceMax );
-			this.source.realMin( cachedSourceMin );
 			updateMinMax();
 		}
 
 		@Override
 		public double realMin( final int d )
 		{
-			if ( updateNeeded() )
-				updateMinMax();
+			updateMinMaxIfNeeded();
+
 			return min[ d ];
 		}
 
 		@Override
 		public double realMax( final int d )
 		{
-			if ( updateNeeded() )
-				updateMinMax();
+			updateMinMaxIfNeeded();
+
 			return max[ d ];
 		}
 
 		@Override
 		public void realMinMax( double[] realMin, double[] realMax )
 		{
-			if ( updateNeeded() )
-				updateMinMax();
+			updateMinMaxIfNeeded();
 
 			if ( realMin != null )
 				System.arraycopy( min, 0, realMin, 0 , n );
@@ -801,88 +813,74 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		// -- Helper methods --
 
-		private boolean updateNeeded()
+		private void updateMinMaxIfNeeded()
 		{
-			// TODO (TP): use getMinMax(source, sourceMin[], sourceMax[]) instead
-			//   (with new double[] sourceMin, new double[] sourceMax)
-			//   then reuse sourceMin, sourceMax in checks below and also in updateMinMax().
-			for ( int d = 0; d < transformToSource.numTargetDimensions(); d++ )
+			getMinMax( source, currentSourceMin, currentSourceMax );
+
+			for ( int d = 0; d < numSourceDimensions; d++ )
 			{
-				if ( cachedSourceMin[ d ] != source.realMin( d ) || cachedSourceMax[ d ] != source.realMax( d ) )
-					return true;
+				if ( cachedSourceMin[ d ] != currentSourceMin[ d ] || cachedSourceMax[ d ] != currentSourceMax[ d ] )
+				{
+					System.arraycopy( currentSourceMin, 0, cachedSourceMax, 0 , numSourceDimensions );
+					System.arraycopy( currentSourceMax, 0, cachedSourceMin, 0 , numSourceDimensions );
+					updateMinMax();
+					break;
+				}
 			}
-			return false;
 		}
 
-		private void updateMinMax()
+		private void updateMinMax( )
 		{
 			if( Intervals.isEmpty( source ) )
 			{
 				Arrays.fill( max, Double.NEGATIVE_INFINITY );
 				Arrays.fill( min, Double.POSITIVE_INFINITY );
 			}
-			final double[] sMx = new double[ transformToSource.numTargetDimensions() ];
-			final double[] sMn = new double[ sMx.length ];
 
-			while ( !Arrays.equals( sMx, cachedSourceMax ) ||
-					!Arrays.equals( sMn, cachedSourceMin ) )
+			final double[][] transformedCorners = createCorners();
+			final int numTransformedCorners = transformedCorners.length;
+
+			for ( int d = 0; d < n; d++ )
 			{
-				source.realMax( sMx );
-				source.realMin( sMn );
-
-				final double[][] transformedCorners = createCorners();
-				final int numTransformedCorners = transformedCorners.length;
-
-				for ( int d = 0; d < n; d++ )
+				double maxCorner = transformedCorners[ 0 ][ d ];
+				double minCorner = transformedCorners[ 0 ][ d ];
+				for ( int i = 1; i < numTransformedCorners; i++ )
 				{
-					double mx = transformedCorners[ 0 ][ d ];
-					double mn = transformedCorners[ 0 ][ d ];
-					for ( int i = 1; i < numTransformedCorners; i++ )
-					{
-						if ( transformedCorners[ i ][ d ] > mx )
-							mx = transformedCorners[ i ][ d ];
-						if ( transformedCorners[ i ][ d ] < mn )
-							mn = transformedCorners[ i ][ d ];
-					}
-					min[ d ] = mn;
-					max[ d ] = mx;
+					if ( transformedCorners[ i ][ d ] < minCorner )
+						minCorner = transformedCorners[ i ][ d ];
+					if ( transformedCorners[ i ][ d ] > maxCorner )
+						maxCorner = transformedCorners[ i ][ d ];
 				}
-
-				source.realMax( cachedSourceMax );
-				source.realMin( cachedSourceMin );
+				min[ d ] = minCorner;
+				max[ d ] = maxCorner;
 			}
 		}
 
 		private double[][] createCorners()
 		{
-			final int numCorners = ( int ) Math.pow( 2, transformToSource.numTargetDimensions() );
-			final int numSourceDims = transformToSource.numTargetDimensions();
-			final double[][] cornersTransformed = new double[ numCorners ][ numSourceDims ];
+			final int numCorners = ( int ) Math.pow( 2, numSourceDimensions );
+			final double[][] cornersTransformed = new double[ numCorners ][ numSourceDimensions ];
 			int s = numCorners / 2;
 			boolean mn = false;
-			for ( int d = 0; d < numSourceDims; d++ )
+			for ( int d = 0; d < numSourceDimensions; d++ )
 			{
 				for ( int i = 0; i < numCorners; i++ )
 				{
 					if ( i % s == 0 )
-					{
 						mn = !mn;
-					}
-					// TODO (TP): use getMinMax(..., sourceMin, sourceMax) outside the loop
-					//   (with new double[] sourceMin, new double[] sourceMax)
-					//   and then reuse sourceMin, sourceMax below
+
 					if ( mn )
-						cornersTransformed[ i ][ d ] = source.realMin( d );
+						cornersTransformed[ i ][ d ] = cachedSourceMin[ d ];
 					else
-						cornersTransformed[ i ][ d ] = source.realMax( d );
+						cornersTransformed[ i ][ d ] = cachedSourceMax[ d ];
 				}
 				s = s / 2;
 			}
 
 			final double[][] points = new double[ numCorners ][ n ];
 
-				for ( int i = 0; i < points.length; i++ )
-					transformToSource.inverse().apply( cornersTransformed[ i ], points[ i ] );
+			for ( int i = 0; i < points.length; i++ )
+				transformToSource.inverse().apply( cornersTransformed[ i ], points[ i ] );
 
 			return points;
 		}
