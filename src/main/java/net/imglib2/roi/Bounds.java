@@ -831,10 +831,11 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		private void updateMinMax( )
 		{
-			if( Intervals.isEmpty( source ) )
+			if ( Intervals.isEmpty( source ) )
 			{
 				Arrays.fill( max, Double.NEGATIVE_INFINITY );
 				Arrays.fill( min, Double.POSITIVE_INFINITY );
+				return;
 			}
 
 			final double[][] transformedCorners = createCorners();
