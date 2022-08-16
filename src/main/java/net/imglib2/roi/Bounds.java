@@ -846,10 +846,8 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 				double minCorner = transformedCorners[ 0 ][ d ];
 				for ( int i = 1; i < numTransformedCorners; i++ )
 				{
-					if ( transformedCorners[ i ][ d ] < minCorner )
-						minCorner = transformedCorners[ i ][ d ];
-					if ( transformedCorners[ i ][ d ] > maxCorner )
-						maxCorner = transformedCorners[ i ][ d ];
+					minCorner = Math.min( minCorner, transformedCorners[ i ][ d ] );
+					maxCorner = Math.max( maxCorner, transformedCorners[ i ][ d ] );
 				}
 				min[ d ] = minCorner;
 				max[ d ] = maxCorner;
@@ -858,31 +856,38 @@ public abstract class Bounds< I extends RealInterval, B extends Bounds< I, B > >
 
 		private double[][] createCorners()
 		{
-			final int numCorners = ( int ) Math.pow( 2, numSourceDimensions );
-			final double[][] cornersTransformed = new double[ numCorners ][ numSourceDimensions ];
-			int s = numCorners / 2;
-			boolean mn = false;
-			for ( int d = 0; d < numSourceDimensions; d++ )
-			{
-				for ( int i = 0; i < numCorners; i++ )
-				{
-					if ( i % s == 0 )
-						mn = !mn;
-
-					if ( mn )
-						cornersTransformed[ i ][ d ] = cachedSourceMin[ d ];
-					else
-						cornersTransformed[ i ][ d ] = cachedSourceMax[ d ];
-				}
-				s = s / 2;
-			}
-
-			final double[][] points = new double[ numCorners ][ n ];
-
+			final double[][] cornersTransformed = corners( cachedSourceMin, cachedSourceMax );
+			final double[][] points = new double[ cornersTransformed.length ][ n ];
 			for ( int i = 0; i < points.length; i++ )
 				transformToSource.inverse().apply( cornersTransformed[ i ], points[ i ] );
-
 			return points;
+		}
+
+		// TODO: This is similar to
+		//       	https://github.com/bigdataviewer/bigdataviewer-core/blob/d6edacb661291ef5d6b78df1cd9a1b8045553052/src/main/java/bdv/tools/boundingbox/IntervalCorners.java
+		//       Would it make sense to put it into imglib2 core?
+		//       Also related to (special case of)
+		//       	https://github.com/imglib/imglib2-realtransform/pull/37
+		//       	https://github.com/imglib/imglib2-realtransform/issues/6
+		/**
+		 * Compute the corners of a RealInterval given by {@code min} and {@code max}.
+		 * <p>
+		 * A n-dimensional interval has {@code 2^n} corners.
+		 * <p>
+		 * The index of a corner is interpreted as a binary number where bit 0
+		 * corresponds to X, bit 1 corresponds to Y, etc. A zero bit means min in the
+		 * corresponding dimension, a one bit means max in the corresponding dimension.
+		 */
+		private static double[][] corners( final double[] min, final double[] max )
+		{
+			assert min.length == max.length;
+			final int n = min.length;
+			final int numCorners = 1 << n;
+			final double[][] corners = new double[ numCorners ][ n ];
+			for ( int index = 0; index < numCorners; index++ )
+				for ( int d = 0, mask = numCorners >> 1; d < n; ++d, mask >>= 1 )
+					corners[ index ][ d ] = ( index & mask ) == 0 ? min[ d ] : max[ d ];
+			return corners;
 		}
 	}
 
