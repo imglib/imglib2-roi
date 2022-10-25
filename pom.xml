@@ -67,6 +67,8 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 
 		<jitk-tps.version>3.0.2</jitk-tps.version>
+		<imglib2.version>6.0.0</imglib2.version>
+		<imglib2-realtransform.version>4.0.0</imglib2-realtransform.version>
 	</properties>
 
 	<developers>

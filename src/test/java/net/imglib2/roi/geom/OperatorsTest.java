@@ -49,7 +49,7 @@ import net.imglib2.realtransform.AffineGet;
 import net.imglib2.realtransform.AffineTransform;
 import net.imglib2.realtransform.AffineTransform2D;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.realtransform.DeformationFieldTransform;
+import net.imglib2.realtransform.DisplacementFieldTransform;
 import net.imglib2.realtransform.InvertibleRealTransform;
 import net.imglib2.realtransform.RealTransform;
 import net.imglib2.roi.BoundaryType;
@@ -77,6 +77,7 @@ import net.imglib2.roi.geom.real.WritablePolygon2D;
 import net.imglib2.roi.geom.real.WritableSphere;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.ConstantUtils;
+import net.imglib2.view.composite.RealComposite;
 
 import java.util.function.BiConsumer;
 
@@ -805,9 +806,11 @@ public class OperatorsTest
 		final Ellipsoid e = new OpenWritableEllipsoid( new double[] { 10, -6.5 }, new double[] { 2.5, 4 } );
 
 		// A 2d deformation field with identical deformations in x and y
-		final BiConsumer< RealLocalizable, DoubleType > f = ( p, v ) -> v.set( -10 );
-		final FunctionRealRandomAccessible< DoubleType > def = new FunctionRealRandomAccessible<>( 2, f, DoubleType::new );
-		final DeformationFieldTransform< DoubleType > transformToSource = new DeformationFieldTransform<>( def, def );
+		final FunctionRealRandomAccessible< RealComposite<DoubleType> > def = new FunctionRealRandomAccessible<>( 2,
+				(p, v) -> { v.setPosition( -10, 0 ); v.setPosition(-10, 1); },
+				() -> DoubleType.createVector( 2 ));
+		final DisplacementFieldTransform transformToSource = new DisplacementFieldTransform( def );
+
 		final RealMask rm = e.transform( transformToSource );
 
 		// Since the transform is not continuous, the boundary behavior may not
