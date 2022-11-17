@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>31.1.0</version>
+		<version>33.2.0</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.imglib2</groupId>
 	<artifactId>imglib2-roi</artifactId>
-	<version>0.12.2-SNAPSHOT</version>
+	<version>0.13.0-SNAPSHOT</version>
 
 	<name>ImgLib2 ROI</name>
 	<description>Regions of interest in ImgLib2.</description>
@@ -65,8 +65,6 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
-
-		<jitk-tps.version>3.0.2</jitk-tps.version>
 	</properties>
 
 	<developers>
