@@ -276,15 +276,9 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 		}
 
 		@Override
-		public Sampler< Void > copy()
+		public Cursor< Void > copy()
 		{
 			return new LineCursor( this );
-		}
-
-		@Override
-		public Cursor< Void > copyCursor()
-		{
-			return new LineCursor();
 		}
 
 		@Override
