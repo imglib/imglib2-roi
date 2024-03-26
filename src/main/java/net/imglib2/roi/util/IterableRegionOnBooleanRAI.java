@@ -90,6 +90,12 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 	}
 
 	@Override
+	public T getType()
+	{
+		return sourceInterval.getType();
+	}
+
+	@Override
 	public IterableInterval< Void > inside()
 	{
 		return inside;
@@ -138,6 +144,12 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 		public Cursor< Void > localizingCursor()
 		{
 			return new TrueCursor< T >( sourceIterable.localizingCursor(), size );
+		}
+
+		@Override
+		public Void getType()
+		{
+			return null;
 		}
 	}
 }

@@ -146,6 +146,12 @@ public final class BoundaryRandomAccess8< T extends BooleanType< T > > extends A
 	}
 
 	@Override
+	public BoolType getType()
+	{
+		return type;
+	}
+
+	@Override
 	public BoundaryRandomAccess8< T > copy()
 	{
 		return new BoundaryRandomAccess8< T >( this );

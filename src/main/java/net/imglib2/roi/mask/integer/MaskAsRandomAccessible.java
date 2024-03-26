@@ -88,4 +88,9 @@ public class MaskAsRandomAccessible< B extends BooleanType< B > > extends Abstra
 		return randomAccess();
 	}
 
+	@Override
+	public B getType()
+	{
+		return type;
+	}
 }

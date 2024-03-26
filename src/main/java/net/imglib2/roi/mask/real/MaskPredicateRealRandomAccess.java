@@ -76,6 +76,12 @@ public class MaskPredicateRealRandomAccess< B extends BooleanType< B > > extends
 	}
 
 	@Override
+	public B getType()
+	{
+		return type;
+	}
+
+	@Override
 	public MaskPredicateRealRandomAccess< B > copy()
 	{
 		return new MaskPredicateRealRandomAccess<>( this );

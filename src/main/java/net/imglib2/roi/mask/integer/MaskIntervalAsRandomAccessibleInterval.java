@@ -78,4 +78,10 @@ public class MaskIntervalAsRandomAccessibleInterval< B extends BooleanType< B > 
 	{
 		return randomAccess();
 	}
+
+	@Override
+	public B getType()
+	{
+		return type;
+	}
 }

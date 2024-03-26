@@ -106,6 +106,12 @@ public class PositionableWrappedIterableInterval< T, S extends IterableInterval<
 		return new PositionableIterableIntervalCursor( source.localizingCursor() );
 	}
 
+	@Override
+	public T getType()
+	{
+		return source.getType();
+	}
+
 	class PositionableIterableIntervalCursor extends OffsetLocalizable< Cursor< T > > implements Cursor< T >
 	{
 		public PositionableIterableIntervalCursor( final Cursor< T > cursor )
@@ -117,6 +123,12 @@ public class PositionableWrappedIterableInterval< T, S extends IterableInterval<
 		public T get()
 		{
 			return source.get();
+		}
+
+		@Override
+		public T getType()
+		{
+			return source.getType();
 		}
 
 		@Override
