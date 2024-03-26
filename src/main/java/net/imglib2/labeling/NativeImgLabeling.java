@@ -226,4 +226,10 @@ public class NativeImgLabeling< T extends Comparable< T >, I extends IntegerType
 
 		return new LabelingConvertedCursor< I, T >( c, generation, mapping );
 	}
+
+	@Override
+	public LabelingType< T > getType()
+	{
+		return new LabelingType<>( null, mapping, generation );
+	}
 }

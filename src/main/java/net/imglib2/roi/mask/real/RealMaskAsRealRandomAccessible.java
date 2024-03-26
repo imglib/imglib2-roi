@@ -81,4 +81,9 @@ public class RealMaskAsRealRandomAccessible< B extends BooleanType< B > > extend
 		return realRandomAccess();
 	}
 
+	@Override
+	public B getType()
+	{
+		return type;
+	}
 }

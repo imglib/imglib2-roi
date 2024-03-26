@@ -128,6 +128,12 @@ public class BinaryMaskRegionOfInterest< T extends BitType, I extends RandomAcce
 			}
 
 			@Override
+			public TT getType()
+			{
+				return src.getType();
+			}
+
+			@Override
 			public void fwd()
 			{
 				validateNext();
@@ -213,6 +219,12 @@ public class BinaryMaskRegionOfInterest< T extends BitType, I extends RandomAcce
 		{
 			src.setPosition( getFirstRelativePosition() );
 			return src.get();
+		}
+
+		@Override
+		public TT getType()
+		{
+			return src.getType();
 		}
 
 		@Override

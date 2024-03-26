@@ -91,6 +91,12 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	}
 
 	@Override
+	public T getType()
+	{
+		return sourceInterval.getType();
+	}
+
+	@Override
 	public IterableInterval< Void > inside()
 	{
 		return inside;
@@ -139,6 +145,12 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 		public Cursor< Void > localizingCursor()
 		{
 			return cursor();
+		}
+
+		@Override
+		public Void getType()
+		{
+			return null;
 		}
 	}
 }
