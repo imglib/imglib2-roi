@@ -168,6 +168,12 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		}
 
 		@Override
+		public LabelingType< T > getType()
+		{
+			return type;
+		}
+
+		@Override
 		public LabelingConvertedRandomAccess copy()
 		{
 			return new LabelingConvertedRandomAccess( source.copyRandomAccess() );
@@ -188,6 +194,12 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 		public LabelingType< T > get()
 		{
 			type.setType( source.get() );
+			return type;
+		}
+
+		@Override
+		public LabelingType< T > getType()
+		{
 			return type;
 		}
 
@@ -226,6 +238,12 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 	public LabelingType< T > firstElement()
 	{
 		return cursor().next();
+	}
+
+	@Override
+	public LabelingType< T > getType()
+	{
+		return new LabelingType<>( null, mapping, generation );
 	}
 
 	@Override

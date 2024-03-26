@@ -70,4 +70,10 @@ public class RealMaskRealIntervalAsRealRandomAccessibleRealInterval< B extends B
 	{
 		return realRandomAccess();
 	}
+
+	@Override
+	public B getType()
+	{
+		return type;
+	}
 }

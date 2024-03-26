@@ -84,6 +84,12 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		return new RA( source.randomAccess( Intervals.translate( interval, currentOffset ) ), currentOffset );
 	}
 
+	@Override
+	public T getType()
+	{
+		return source.getType();
+	}
+
 	class RA extends OffsetPositionableLocalizable< RandomAccess< T > > implements RandomAccess< T >
 	{
 		public RA( final RandomAccess< T > source, final long[] offset )
@@ -95,6 +101,12 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		public T get()
 		{
 			return source.get();
+		}
+
+		@Override
+		public T getType()
+		{
+			return source.getType();
 		}
 
 		@Override
@@ -169,6 +181,12 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		public long max( final int d )
 		{
 			return PositionableWrappedIterableRegion.this.max( d );
+		}
+
+		@Override
+		public Void getType()
+		{
+			return null;
 		}
 	}
 

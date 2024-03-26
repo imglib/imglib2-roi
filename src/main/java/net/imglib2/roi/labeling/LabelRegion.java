@@ -181,6 +181,12 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 	}
 
 	@Override
+	public BoolType getType()
+	{
+		return new BoolType();
+	}
+
+	@Override
 	public PositionableIterableInterval< Void > inside()
 	{
 		return inside;
@@ -214,6 +220,12 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 
 		@Override
 		public Void firstElement()
+		{
+			return null;
+		}
+
+		@Override
+		public Void getType()
 		{
 			return null;
 		}

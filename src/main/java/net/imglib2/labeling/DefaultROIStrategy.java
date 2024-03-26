@@ -44,6 +44,7 @@ import net.imglib2.RandomAccess;
 import net.imglib2.roi.AbstractIterableRegionOfInterest;
 import net.imglib2.roi.IterableRegionOfInterest;
 import net.imglib2.roi.RegionOfInterest;
+import net.imglib2.type.logic.BitType;
 
 /**
  * A relatively conservative strategy suitable for blobby objects - retain the
@@ -329,6 +330,11 @@ public class DefaultROIStrategy< T extends Comparable< T >, L extends Labeling< 
 			throw new UnsupportedOperationException( "yet to be implemented" );
 		}
 
+		@Override
+		public BitType getType()
+		{
+			return new BitType();
+		}
 	}
 
 	@Override

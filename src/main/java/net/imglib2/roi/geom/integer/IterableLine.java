@@ -164,6 +164,12 @@ public class IterableLine extends AbstractInterval implements IterableInterval< 
 		return new LineCursor();
 	}
 
+	@Override
+	public Void getType()
+	{
+		return null;
+	}
+
 	private final class LineCursor implements Cursor< Void >
 	{
 

@@ -135,6 +135,12 @@ public final class Boundary< T extends BooleanType< T > >
 		return randomAccess();
 	}
 
+	@Override
+	public BoolType getType()
+	{
+		return new BoolType();
+	}
+
 	final class BoundaryIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
 	{
 		BoundaryIterable()
@@ -176,6 +182,12 @@ public final class Boundary< T extends BooleanType< T > >
 		public Void firstElement()
 		{
 			return cursor().next();
+		}
+
+		@Override
+		public Void getType()
+		{
+			return null;
 		}
 	}
 

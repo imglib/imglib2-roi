@@ -91,4 +91,10 @@ public class SamplingIterableInterval< T >
 	{
 		return cursor();
 	}
+
+	@Override
+	public T getType()
+	{
+		return target.getType();
+	}
 }
