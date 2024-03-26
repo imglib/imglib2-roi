@@ -64,6 +64,7 @@ Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
 Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 
 		<imglib2.version>6.3.1-SNAPSHOT</imglib2.version>
+		<imglib2-realtransform.version>4.0.3-SNAPSHOT</imglib2-realtransform.version>
 		<enforcer.skip>true</enforcer.skip>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
