@@ -51,6 +51,7 @@ import net.imglib2.roi.PositionableIterableInterval;
  * @author Tobias Pietzsch
  * @author Christian Dietz
  */
+@Deprecated
 public class PositionableWrappedIterableInterval< T, S extends IterableInterval< T > >
 		extends PositionableInterval
 		implements PositionableIterableInterval< T >
@@ -151,13 +152,7 @@ public class PositionableWrappedIterableInterval< T, S extends IterableInterval<
 		@Override
 		public PositionableIterableIntervalCursor copy()
 		{
-			return new PositionableIterableIntervalCursor( source.copyCursor() );
-		}
-
-		@Override
-		public PositionableIterableIntervalCursor copyCursor()
-		{
-			return copy();
+			return new PositionableIterableIntervalCursor( source.copy() );
 		}
 	}
 

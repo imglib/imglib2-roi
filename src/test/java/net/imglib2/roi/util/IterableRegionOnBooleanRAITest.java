@@ -93,7 +93,7 @@ public class IterableRegionOnBooleanRAITest
 	{
 		final long count = Regions.countTrue( img );
 		long countIR = 0;
-		final Cursor< Void > c = ir.cursor();
+		final Cursor< Void > c = ir.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.fwd();
@@ -107,7 +107,7 @@ public class IterableRegionOnBooleanRAITest
 	public void testCursorNext()
 	{
 		final Cursor< BitType > imgC = img.cursor();
-		final Cursor< Void > irC = ir.cursor();
+		final Cursor< Void > irC = ir.inside().cursor();
 
 		while ( imgC.hasNext() )
 		{
@@ -125,14 +125,14 @@ public class IterableRegionOnBooleanRAITest
 	public void testFirstElement()
 	{
 		// Ensure no error is thrown
-		assertTrue( ir.firstElement() == null );
+		assertTrue( ir.inside().firstElement() == null );
 	}
 
 	@Test
 	public void testCursorFwdEmptyRegion()
 	{
 		int count = 0;
-		final Cursor< Void > c = empty.cursor();
+		final Cursor< Void > c = empty.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.fwd();
@@ -148,7 +148,7 @@ public class IterableRegionOnBooleanRAITest
 		final long[] originalLocation = new long[ 2 ];
 		final long[] newLocation = new long[ 2 ];
 
-		final Cursor< Void > c = empty.cursor();
+		final Cursor< Void > c = empty.inside().cursor();
 		c.fwd();
 		c.localize( originalLocation );
 		c.next();
@@ -162,6 +162,6 @@ public class IterableRegionOnBooleanRAITest
 	public void testCursorFirstElementEmptyRegion()
 	{
 		exception.expect( NoSuchElementException.class );
-		empty.firstElement();
+		empty.inside().firstElement();
 	}
 }

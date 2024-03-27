@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>34.1.0</version>
+		<version>37.0.0</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.imglib2</groupId>
 	<artifactId>imglib2-roi</artifactId>
-	<version>0.14.2-SNAPSHOT</version>
+	<version>0.15.0-SNAPSHOT</version>
 
 	<name>ImgLib2 ROI</name>
 	<description>Regions of interest in ImgLib2.</description>
@@ -62,9 +62,6 @@ Aivar Grislis, Jonathan Hale, Grant Harris, Stefan Helfrich, Mark Hiner,
 Martin Horn, Steffen Jaensch, Lee Kamentsky, Larry Lindsey, Melissa Linkert,
 Mark Longair, Brian Northan, Nick Perry, Curtis Rueden, Johannes Schindelin,
 Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
-
-		<imglib2.version>6.1.0</imglib2.version>
-		<imglib2-realtransform.version>4.0.1</imglib2-realtransform.version>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>

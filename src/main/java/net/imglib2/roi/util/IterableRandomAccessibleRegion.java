@@ -54,6 +54,8 @@ import net.imglib2.type.BooleanType;
  * {@link Cursor Cursors} are realized by wrapping source {@link RandomAccess
  * RandomAccesses} (using {@link RandomAccessibleRegionCursor}).
  *
+ * @deprecated Use {@code IterableRegionOnBooleanRAI} instead.
+ *
  * @author Tobias Pietzsch
  */
 @Deprecated
@@ -61,6 +63,8 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< T >
 {
 	final long size;
+
+	private final InsideIterable inside;
 
 	public static < T extends BooleanType< T > > IterableRandomAccessibleRegion< T > create( final RandomAccessibleInterval< T > interval )
 	{
@@ -71,44 +75,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	{
 		super( interval );
 		this.size = size;
-	}
-
-	@Override
-	public long size()
-	{
-		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		if ( size() == 0 )
-			throw new NoSuchElementException();
-		return cursor().next();
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public Iterator< Void > iterator()
-	{
-		return cursor();
-	}
-
-	@Override
-	public Cursor< Void > cursor()
-	{
-		return new RandomAccessibleRegionCursor<>( sourceInterval, size );
-	}
-
-	@Override
-	public Cursor< Void > localizingCursor()
-	{
-		return cursor();
+		inside = new InsideIterable();
 	}
 
 	@Override
@@ -121,5 +88,57 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 	public RandomAccess< T > randomAccess( final Interval interval )
 	{
 		return sourceInterval.randomAccess( interval );
+	}
+
+	@Override
+	public IterableInterval< Void > inside()
+	{
+		return inside;
+	}
+
+	class InsideIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
+	{
+		InsideIterable()
+		{
+			super( IterableRandomAccessibleRegion.this.sourceInterval );
+		}
+
+		@Override
+		public long size()
+		{
+			return size;
+		}
+
+		@Override
+		public Void firstElement()
+		{
+			if ( size() == 0 )
+				throw new NoSuchElementException();
+			return cursor().next();
+		}
+
+		@Override
+		public Object iterationOrder()
+		{
+			return this;
+		}
+
+		@Override
+		public Iterator< Void > iterator()
+		{
+			return cursor();
+		}
+
+		@Override
+		public Cursor< Void > cursor()
+		{
+			return new RandomAccessibleRegionCursor<>( IterableRandomAccessibleRegion.this.sourceInterval, size );
+		}
+
+		@Override
+		public Cursor< Void > localizingCursor()
+		{
+			return cursor();
+		}
 	}
 }

@@ -62,6 +62,8 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 
 	private final IterableInterval< T > sourceIterable;
 
+	private final InsideIterable inside;
+
 	public IterableRegionOnBooleanRAI( final RandomAccessibleInterval< T > interval )
 	{
 		this( interval, Regions.countTrue( interval ) );
@@ -72,44 +74,7 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 		super( interval );
 		this.size = size;
 		sourceIterable = Views.iterable( interval );
-	}
-
-	@Override
-	public long size()
-	{
-		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		if ( size() == 0 )
-			throw new NoSuchElementException();
-		return cursor().next();
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public Iterator< Void > iterator()
-	{
-		return cursor();
-	}
-
-	@Override
-	public Cursor< Void > cursor()
-	{
-		return new TrueCursor< T >( sourceIterable.cursor(), size );
-	}
-
-	@Override
-	public Cursor< Void > localizingCursor()
-	{
-		return new TrueCursor< T >( sourceIterable.localizingCursor(), size );
+		inside = new InsideIterable();
 	}
 
 	@Override
@@ -122,5 +87,57 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 	public RandomAccess< T > randomAccess( final Interval interval )
 	{
 		return sourceInterval.randomAccess( interval );
+	}
+
+	@Override
+	public IterableInterval< Void > inside()
+	{
+		return inside;
+	}
+
+	class InsideIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
+	{
+		InsideIterable()
+		{
+			super( IterableRegionOnBooleanRAI.this );
+		}
+
+		@Override
+		public long size()
+		{
+			return size;
+		}
+
+		@Override
+		public Void firstElement()
+		{
+			if ( size() == 0 )
+				throw new NoSuchElementException();
+			return cursor().next();
+		}
+
+		@Override
+		public Object iterationOrder()
+		{
+			return this;
+		}
+
+		@Override
+		public Iterator< Void > iterator()
+		{
+			return cursor();
+		}
+
+		@Override
+		public Cursor< Void > cursor()
+		{
+			return new TrueCursor< T >( sourceIterable.cursor(), size );
+		}
+
+		@Override
+		public Cursor< Void > localizingCursor()
+		{
+			return new TrueCursor< T >( sourceIterable.localizingCursor(), size );
+		}
 	}
 }

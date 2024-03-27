@@ -33,9 +33,12 @@
  */
 package net.imglib2.roi.util;
 
+import net.imglib2.AbstractWrappedPositionableLocalizable;
+import net.imglib2.Cursor;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.roi.IterableRegion;
+import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.type.BooleanType;
 import net.imglib2.util.Intervals;
@@ -48,12 +51,25 @@ import net.imglib2.util.Intervals;
  *            pixel type of source
  */
 public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
-		extends PositionableWrappedIterableInterval< Void, IterableRegion< T > >
+		extends PositionableInterval
 		implements PositionableIterableRegion< T >
 {
+	private final IterableRegion< T > source;
+
+	private final PositionableWrappedIterableRegion< T >.InsideIterable inside;
+
 	public PositionableWrappedIterableRegion( final IterableRegion< T > source )
 	{
 		super( source );
+		this.source = source;
+		inside = new InsideIterable();
+	}
+
+	private PositionableWrappedIterableRegion( final PositionableWrappedIterableRegion< T > other )
+	{
+		super( other.source );
+		this.source = other.source;
+		inside = new InsideIterable();
 	}
 
 	@Override
@@ -84,13 +100,7 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		@Override
 		public RA copy()
 		{
-			return new RA( source.copyRandomAccess(), offset );
-		}
-
-		@Override
-		public RA copyRandomAccess()
-		{
-			return copy();
+			return new RA( source.copy(), offset );
 		}
 	}
 
@@ -98,5 +108,117 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 	public PositionableWrappedIterableRegion< T > copy()
 	{
 		return new PositionableWrappedIterableRegion<>( this );
+	}
+
+	@Override
+	public PositionableIterableInterval< Void > inside()
+	{
+		return inside;
+	}
+
+	class InsideIterable extends AbstractWrappedPositionableLocalizable< PositionableWrappedIterableRegion< T > > implements PositionableIterableInterval< Void >
+	{
+		InsideIterable()
+		{
+			super( PositionableWrappedIterableRegion.this );
+		}
+
+		@Override
+		public PositionableLocalizable origin()
+		{
+			return PositionableWrappedIterableRegion.this.origin();
+		}
+
+		@Override
+		public PositionableIterableInterval< Void > copy()
+		{
+			return PositionableWrappedIterableRegion.this.copy().inside();
+		}
+
+		@Override
+		public Cursor< Void > cursor()
+		{
+			return new PositionableInsideCursor( inside().cursor() );
+		}
+
+		@Override
+		public Cursor< Void > localizingCursor()
+		{
+			return new PositionableInsideCursor( inside().localizingCursor() );
+		}
+
+		@Override
+		public long size()
+		{
+			return inside().size();
+		}
+
+		@Override
+		public Object iterationOrder()
+		{
+			return this;
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			return PositionableWrappedIterableRegion.this.min( d );
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			return PositionableWrappedIterableRegion.this.max( d );
+		}
+	}
+
+	class PositionableInsideCursor extends OffsetLocalizable< Cursor< Void > > implements Cursor< Void >
+	{
+		public PositionableInsideCursor( final Cursor< Void > cursor )
+		{
+			super( cursor, currentOffset );
+		}
+
+		@Override
+		public Void get()
+		{
+			return null;
+		}
+
+		@Override
+		public void jumpFwd( final long steps )
+		{
+			source.jumpFwd( steps );
+		}
+
+		@Override
+		public void fwd()
+		{
+			source.fwd();
+		}
+
+		@Override
+		public void reset()
+		{
+			source.reset();
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return source.hasNext();
+		}
+
+		@Override
+		public Void next()
+		{
+			return source.next();
+		}
+
+		@Override
+		public PositionableInsideCursor copy()
+		{
+			return new PositionableInsideCursor( source.copy() );
+		}
 	}
 }
