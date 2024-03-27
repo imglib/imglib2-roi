@@ -35,6 +35,7 @@ package net.imglib2.roi.labeling;
 
 import java.util.ArrayList;
 
+import net.imglib2.AbstractWrappedPositionableLocalizable;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.Positionable;
@@ -44,6 +45,7 @@ import net.imglib2.RealPoint;
 import net.imglib2.RealPositionable;
 import net.imglib2.outofbounds.OutOfBounds;
 import net.imglib2.outofbounds.OutOfBoundsConstantValue;
+import net.imglib2.roi.PositionableIterableInterval;
 import net.imglib2.roi.PositionableIterableRegion;
 import net.imglib2.roi.labeling.LabelRegions.LabelRegionProperties;
 import net.imglib2.roi.util.PositionableInterval;
@@ -82,17 +84,19 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 
 	private int expectedGeneration;
 
+	private final LabelRegionIterable inside;
+
 	public LabelRegion( final LabelRegions< T > regions, final LabelRegionProperties regionProperties, final T label )
 	{
 		super( new FinalInterval( regionProperties.getBoundingBoxMin(), regionProperties.getBoundingBoxMax() ) );
 		this.regions = regions;
 		this.regionProperties = regionProperties;
 		this.label = label;
-
 		expectedGeneration = regionProperties.update();
 		size = regionProperties.getSize();
 		itcodes = regionProperties.getItcodes();
 		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
+		inside = new LabelRegionIterable();
 	}
 
 	/**
@@ -108,6 +112,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		this.size = other.size;
 		this.itcodes = other.itcodes;
 		this.centerOfMass = other.centerOfMass;
+		this.inside = new LabelRegionIterable();
 	}
 
 	/**
@@ -117,6 +122,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 	 *
 	 * @return an independent copy of this {@link LabelRegion}.
 	 */
+	@Override
 	public LabelRegion< T > copy()
 	{
 		return new LabelRegion<>( this );
@@ -175,41 +181,84 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 	}
 
 	@Override
-	public LabelRegionCursor cursor()
+	public PositionableIterableInterval< Void > inside()
 	{
-		update();
-		return new LabelRegionCursor( itcodes, currentOffset );
+		return inside;
 	}
 
-	@Override
-	public LabelRegionCursor localizingCursor()
+	class LabelRegionIterable extends AbstractWrappedPositionableLocalizable< LabelRegion > implements PositionableIterableInterval< Void >
 	{
-		return cursor();
+		LabelRegionIterable()
+		{
+			super( LabelRegion.this );
+		}
+
+		@Override
+		public LabelRegionCursor cursor()
+		{
+			update();
+			return new LabelRegionCursor( itcodes, currentOffset );
+		}
+
+		@Override
+		public LabelRegionCursor localizingCursor()
+		{
+			return cursor();
+		}
+
+		@Override
+		public long size()
+		{
+			return LabelRegion.this.size();
+		}
+
+		@Override
+		public Void firstElement()
+		{
+			return null;
+		}
+
+		@Override
+		public Object iterationOrder()
+		{
+			return this;
+		}
+
+		@Override
+		public LabelRegionCursor iterator()
+		{
+			return cursor();
+		}
+
+		@Override
+		public PositionableLocalizable origin()
+		{
+			return LabelRegion.this.origin();
+		}
+
+		@Override
+		public PositionableIterableInterval< Void > copy()
+		{
+			return LabelRegion.this.copy().inside();
+		}
+
+		@Override
+		public long min( final int d )
+		{
+			return LabelRegion.this.min( d );
+		}
+
+		@Override
+		public long max( final int d )
+		{
+			return LabelRegion.this.max( d );
+		}
 	}
 
-	@Override
 	public long size()
 	{
 		update();
 		return size;
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		return null;
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public LabelRegionCursor iterator()
-	{
-		return cursor();
 	}
 
 	@Override

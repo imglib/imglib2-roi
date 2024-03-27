@@ -60,6 +60,11 @@ public class Regions
 		return SamplingIterableInterval.create( region, img );
 	}
 
+	public static < T > IterableInterval< T > sample( final IterableRegion< ? > region, final RandomAccessible< T > img )
+	{
+		return sample( region.inside(), img );
+	}
+
 	/**
 	 * Given a mask and an image, return an {@link IterableInterval} over the
 	 * pixels of the image inside the mask.
@@ -106,8 +111,7 @@ public class Regions
 	// NB: this method is not named "sample" to avoid ambiguation with sample(IterableInterval<Void>, RandomAccessible<T>)
 	public static < T, B extends BooleanType< B > > IterableInterval< T > sampleWithRandomAccessible( final RandomAccessible< B > mask, final RandomAccessibleInterval< T > img )
 	{
-		final IterableInterval< Void > region = iterable( Views.interval( mask, img ) );
-		return sample( region, img );
+		return sample( iterable( Views.interval( mask, img ) ), img );
 	}
 
 	/**

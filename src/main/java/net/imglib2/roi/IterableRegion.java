@@ -47,9 +47,10 @@ import net.imglib2.type.BooleanType;
  * i.e., it is assumed that all pixels outside the interval have value
  * {@code false}.
  * <p>
- * Iterating only the pixels contained in the region is indicated by
- * {@code IterableInterval<Void>}, i.e., when iterating, only the coordinates
- * that are visited are interesting. There is no associated value.
+ * Iterating only the pixels contained in the region is done via the {@code
+ * IterableInterval<Void>} {@link #inside()}. (The pixel type is {@code Void}
+ * because, when iterating, only the coordinates that are visited are
+ * interesting. There is no associated value.)
  * <p>
  * We put interfaces {@code RandomAccessibleInterval<BooleanType>}, extended by
  * {@code IterableRegion<BooleanType>}, extended by
@@ -62,5 +63,13 @@ import net.imglib2.type.BooleanType;
  *
  * @author Tobias Pietzsch
  */
-public interface IterableRegion< T extends BooleanType< T > > extends IterableInterval< Void >, RandomAccessibleInterval< T >
-{}
+public interface IterableRegion< T extends BooleanType< T > > extends RandomAccessibleInterval< T >
+{
+	/**
+	 * Get an {@code IterableInterval} view of only the pixels contained in the
+	 * region (having value {@code true}).
+	 *
+	 * @return iterable of the pixels in the region
+	 */
+	IterableInterval< Void > inside();
+}

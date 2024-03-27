@@ -39,6 +39,7 @@ import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Cursor;
 import net.imglib2.Interval;
+import net.imglib2.IterableInterval;
 import net.imglib2.Localizable;
 import net.imglib2.Point;
 import net.imglib2.RandomAccess;
@@ -70,7 +71,8 @@ import net.imglib2.type.logic.BoolType;
 public final class Boundary< T extends BooleanType< T > >
 	extends AbstractWrappedInterval< RandomAccessibleInterval< T > > implements IterableRegion< BoolType >
 {
-	public static enum StructuringElement
+
+	public enum StructuringElement
 	{
 		FOUR_CONNECTED,
 		EIGHT_CONNECTED
@@ -83,6 +85,8 @@ public final class Boundary< T extends BooleanType< T > >
 	private final TIntArrayList coords;
 
 	private final int size;
+
+	private final BoundaryIterable inside;
 
 	public Boundary( final RandomAccessibleInterval< T > region )
 	{
@@ -108,42 +112,13 @@ public final class Boundary< T extends BooleanType< T > >
 				break;
 		}
 		size = coords.size() / n;
+		inside = new BoundaryIterable();
 	}
 
 	@Override
-	public long size()
+	public IterableInterval< Void > inside()
 	{
-		return size;
-	}
-
-	@Override
-	public Object iterationOrder()
-	{
-		return this;
-	}
-
-	@Override
-	public BoundaryCursor cursor()
-	{
-		return new BoundaryCursor();
-	}
-
-	@Override
-	public BoundaryCursor localizingCursor()
-	{
-		return cursor();
-	}
-
-	@Override
-	public BoundaryCursor iterator()
-	{
-		return cursor();
-	}
-
-	@Override
-	public Void firstElement()
-	{
-		return cursor().next();
+		return inside;
 	}
 
 	@Override
@@ -158,6 +133,50 @@ public final class Boundary< T extends BooleanType< T > >
 	public RandomAccess< BoolType > randomAccess( final Interval interval )
 	{
 		return randomAccess();
+	}
+
+	final class BoundaryIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
+	{
+		BoundaryIterable()
+		{
+			super( Boundary.this );
+		}
+
+		@Override
+		public long size()
+		{
+			return size;
+		}
+
+		@Override
+		public Object iterationOrder()
+		{
+			return this;
+		}
+
+		@Override
+		public BoundaryCursor cursor()
+		{
+			return new BoundaryCursor();
+		}
+
+		@Override
+		public BoundaryCursor localizingCursor()
+		{
+			return cursor();
+		}
+
+		@Override
+		public BoundaryCursor iterator()
+		{
+			return cursor();
+		}
+
+		@Override
+		public Void firstElement()
+		{
+			return cursor().next();
+		}
 	}
 
 	final class BoundaryCursor extends Point implements Cursor< Void >
@@ -246,7 +265,7 @@ public final class Boundary< T extends BooleanType< T > >
 
 		public BoundaryConstructor( final RandomAccessibleInterval< T > region, final StructuringElement structuringElement )
 		{
-			c = Regions.iterable( region ).localizingCursor();
+			c = Regions.iterable( region ).inside().localizingCursor();
 			a = structuringElement == FOUR_CONNECTED
 					? new BoundaryRandomAccess4< T >( region )
 					: new BoundaryRandomAccess8< T >( region );

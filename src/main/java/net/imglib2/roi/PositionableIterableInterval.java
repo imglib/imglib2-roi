@@ -74,7 +74,7 @@ public interface PositionableIterableInterval< T > extends IterableInterval< T >
 	 *
 	 * @return the origin to which the interval is relative.
 	 */
-	public PositionableLocalizable origin();
+	PositionableLocalizable origin();
 
 	/**
 	 * Make a copy of this {@link PositionableIterableInterval} which can be
@@ -82,5 +82,5 @@ public interface PositionableIterableInterval< T > extends IterableInterval< T >
 	 *
 	 * @return a copy with an independent position
 	 */
-	public PositionableIterableInterval< T > copy();
+	PositionableIterableInterval< T > copy();
 }
