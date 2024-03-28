@@ -87,7 +87,7 @@ public class IterableRegionOnBooleanRAIBenchmark
 	@Benchmark
 	public void testIterableRandomAccessibleRegion( MyState state )
 	{
-		final Cursor< Void > c = state.irOld.cursor();
+		final Cursor< Void > c = state.irOld.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.next();
@@ -97,7 +97,7 @@ public class IterableRegionOnBooleanRAIBenchmark
 	@Benchmark
 	public void testIterableRegionOnBooleanRAI( MyState state )
 	{
-		final Cursor< Void > c = state.ir.cursor();
+		final Cursor< Void > c = state.ir.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.next();
@@ -107,7 +107,7 @@ public class IterableRegionOnBooleanRAIBenchmark
 	@Benchmark
 	public void testIterableRandomAccessibleRegionForNonIterableView( MyState state )
 	{
-		final Cursor< Void > c = state.irViewOld.cursor();
+		final Cursor< Void > c = state.irViewOld.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.next();
@@ -117,7 +117,7 @@ public class IterableRegionOnBooleanRAIBenchmark
 	@Benchmark
 	public void testIterableRegionOnBooleanRAIForNonIterableView( MyState state )
 	{
-		final Cursor< Void > c = state.irView.cursor();
+		final Cursor< Void > c = state.irView.inside().cursor();
 		while ( c.hasNext() )
 		{
 			c.next();

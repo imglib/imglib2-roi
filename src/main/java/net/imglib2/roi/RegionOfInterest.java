@@ -59,4 +59,10 @@ public interface RegionOfInterest extends RealRandomAccessibleRealInterval< BitT
 	void move( double displacement, int d );
 
 	void move( double[] displacement );
+
+	@Override
+	default BitType getType()
+	{
+		return new BitType();
+	}
 }

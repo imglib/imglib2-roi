@@ -101,7 +101,7 @@ public class IterableRandomAccessibleRegionBenchmarkTest
 	{
 		for ( final IterableRegion< BitType > region : regions )
 		{
-			final Cursor< Void > cursor = region.cursor();
+			final Cursor< Void > cursor = region.inside().cursor();
 			while ( cursor.hasNext() )
 				cursor.fwd();
 		}

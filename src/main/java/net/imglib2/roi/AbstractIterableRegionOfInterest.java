@@ -327,6 +327,12 @@ public abstract class AbstractIterableRegionOfInterest extends AbstractRegionOfI
 			}
 
 			@Override
+			public T getType()
+			{
+				return randomAccess.getType();
+			}
+
+			@Override
 			public void jumpFwd( final long steps )
 			{
 				final Interval interval = ( src instanceof Interval ) ? ( Interval ) src : null;
@@ -400,6 +406,12 @@ public abstract class AbstractIterableRegionOfInterest extends AbstractRegionOfI
 		public long size()
 		{
 			return getCachedSize();
+		}
+
+		@Override
+		public T getType()
+		{
+			return src.getType();
 		}
 
 		@Override

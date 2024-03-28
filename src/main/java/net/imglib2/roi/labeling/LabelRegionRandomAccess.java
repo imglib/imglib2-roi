@@ -89,6 +89,12 @@ public class LabelRegionRandomAccess< T >  extends AbstractEuclideanSpace implem
 	}
 
 	@Override
+	public BoolType getType()
+	{
+		return type;
+	}
+
+	@Override
 	public LabelRegionRandomAccess< T > copy()
 	{
 		return new LabelRegionRandomAccess<>( this );
