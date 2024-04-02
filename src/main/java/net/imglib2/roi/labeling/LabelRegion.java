@@ -186,7 +186,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		return inside;
 	}
 
-	class LabelRegionIterable extends AbstractWrappedPositionableLocalizable< LabelRegion > implements PositionableIterableInterval< Void >
+	private final class LabelRegionIterable extends AbstractWrappedPositionableLocalizable< LabelRegion< T > > implements PositionableIterableInterval< Void >
 	{
 		LabelRegionIterable()
 		{
