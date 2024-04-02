@@ -96,7 +96,7 @@ public class IterableRandomAccessibleRegion< T extends BooleanType< T > >
 		return inside;
 	}
 
-	class InsideIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
+	private final class InsideIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
 	{
 		InsideIterable()
 		{

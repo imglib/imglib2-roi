@@ -135,7 +135,7 @@ public final class Boundary< T extends BooleanType< T > >
 		return randomAccess();
 	}
 
-	final class BoundaryIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
+	private final class BoundaryIterable extends AbstractWrappedInterval< Interval > implements IterableInterval< Void >
 	{
 		BoundaryIterable()
 		{
@@ -179,7 +179,7 @@ public final class Boundary< T extends BooleanType< T > >
 		}
 	}
 
-	final class BoundaryCursor extends Point implements Cursor< Void >
+	private final class BoundaryCursor extends Point implements Cursor< Void >
 	{
 		private int i;
 

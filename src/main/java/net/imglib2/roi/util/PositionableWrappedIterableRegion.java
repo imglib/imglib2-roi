@@ -84,7 +84,7 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		return new RA( source.randomAccess( Intervals.translate( interval, currentOffset ) ), currentOffset );
 	}
 
-	class RA extends OffsetPositionableLocalizable< RandomAccess< T > > implements RandomAccess< T >
+	private final class RA extends OffsetPositionableLocalizable< RandomAccess< T > > implements RandomAccess< T >
 	{
 		public RA( final RandomAccess< T > source, final long[] offset )
 		{
@@ -116,7 +116,7 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		return inside;
 	}
 
-	class InsideIterable extends AbstractWrappedPositionableLocalizable< PositionableWrappedIterableRegion< T > > implements PositionableIterableInterval< Void >
+	private final class InsideIterable extends AbstractWrappedPositionableLocalizable< PositionableWrappedIterableRegion< T > > implements PositionableIterableInterval< Void >
 	{
 		InsideIterable()
 		{
@@ -172,7 +172,7 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		}
 	}
 
-	class PositionableInsideCursor extends OffsetLocalizable< Cursor< Void > > implements Cursor< Void >
+	private final class PositionableInsideCursor extends OffsetLocalizable< Cursor< Void > > implements Cursor< Void >
 	{
 		public PositionableInsideCursor( final Cursor< Void > cursor )
 		{
