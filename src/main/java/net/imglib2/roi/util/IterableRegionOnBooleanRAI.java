@@ -90,6 +90,30 @@ public class IterableRegionOnBooleanRAI< T extends BooleanType< T > >
 	}
 
 	@Override
+	public Cursor< T > cursor()
+	{
+		return sourceInterval.cursor();
+	}
+
+	@Override
+	public Cursor< T > localizingCursor()
+	{
+		return sourceInterval.localizingCursor();
+	}
+
+	@Override
+	public Object iterationOrder()
+	{
+		return sourceInterval.iterationOrder();
+	}
+
+	@Override
+	public long size()
+	{
+		return sourceInterval.size();
+	}
+
+	@Override
 	public T getType()
 	{
 		return sourceInterval.getType();

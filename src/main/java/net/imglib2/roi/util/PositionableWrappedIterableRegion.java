@@ -85,6 +85,30 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 	}
 
 	@Override
+	public Cursor< T > cursor()
+	{
+		return new C( source.cursor(), currentOffset );
+	}
+
+	@Override
+	public Cursor< T > localizingCursor()
+	{
+		return new C( source.localizingCursor(), currentOffset );
+	}
+
+	@Override
+	public Object iterationOrder()
+	{
+		return this;
+	}
+
+	@Override
+	public long size()
+	{
+		return source.size();
+	}
+
+	@Override
 	public T getType()
 	{
 		return source.getType();
@@ -113,6 +137,56 @@ public class PositionableWrappedIterableRegion< T extends BooleanType< T > >
 		public RA copy()
 		{
 			return new RA( source.copy(), offset );
+		}
+	}
+
+	private final class C extends OffsetLocalizable< Cursor< T > > implements Cursor< T >
+	{
+		public C( final Cursor< T > cursor, final long[] offset )
+		{
+			super( cursor, offset );
+		}
+
+		@Override
+		public T get()
+		{
+			return source.get();
+		}
+
+		@Override
+		public void jumpFwd( final long steps )
+		{
+			source.jumpFwd( steps );
+		}
+
+		@Override
+		public void fwd()
+		{
+			source.fwd();
+		}
+
+		@Override
+		public void reset()
+		{
+			source.reset();
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return source.hasNext();
+		}
+
+		@Override
+		public T next()
+		{
+			return source.next();
+		}
+
+		@Override
+		public C copy()
+		{
+			return new C( source.copy(), offset );
 		}
 	}
 
