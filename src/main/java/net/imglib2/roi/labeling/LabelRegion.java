@@ -78,7 +78,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 
 	private final ArrayList< TIntArrayList > itcodes;
 
-	private long size;
+	private long insideSize;
 
 	private final RealPoint centerOfMass;
 
@@ -93,7 +93,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		this.regionProperties = regionProperties;
 		this.label = label;
 		expectedGeneration = regionProperties.update();
-		size = regionProperties.getSize();
+		insideSize = regionProperties.getSize();
 		itcodes = regionProperties.getItcodes();
 		centerOfMass = RealPoint.wrap( regionProperties.getCenterOfMass() );
 		inside = new LabelRegionIterable();
@@ -109,7 +109,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		this.regionProperties = other.regionProperties;
 		this.label = other.label;
 		this.expectedGeneration = other.expectedGeneration;
-		this.size = other.size;
+		this.insideSize = other.insideSize;
 		this.itcodes = other.itcodes;
 		this.centerOfMass = other.centerOfMass;
 		this.inside = new LabelRegionIterable();
@@ -153,7 +153,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 				initialMin[ d ] = bbmin[ d ];
 				initialMax[ d ] = bbmax[ d ];
 			}
-			size = regionProperties.getSize();
+			insideSize = regionProperties.getSize();
 		}
 	}
 
@@ -215,7 +215,7 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		@Override
 		public long size()
 		{
-			return LabelRegion.this.size();
+			return LabelRegion.this.insideSize();
 		}
 
 		@Override
@@ -267,10 +267,10 @@ public class LabelRegion< T > extends PositionableInterval implements Positionab
 		}
 	}
 
-	public long size()
+	private long insideSize()
 	{
 		update();
-		return size;
+		return insideSize;
 	}
 
 	@Override
