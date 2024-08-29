@@ -34,6 +34,7 @@
 package net.imglib2.roi.labeling;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -173,5 +174,15 @@ public class ImgLabelingTest
 		final HashSet< String > expected = new HashSet<>( Arrays.asList( "foo", "bar" ) );
 		assertTrue( pixel.equals( expected ) );
 		assertEquals( expected.hashCode(), pixel.hashCode() );
+	}
+
+	@Test
+	public void testGetType()
+	{
+		ImgLabeling< String, IntType > imgLabeling = new ImgLabeling<>( ArrayImgs.ints( 10, 10 ) );
+		LabelingType< String > type = imgLabeling.getType().createVariable();
+		type.clear();
+		type.add( "A" );
+		assertEquals( Collections.singleton( "A" ), type );
 	}
 }

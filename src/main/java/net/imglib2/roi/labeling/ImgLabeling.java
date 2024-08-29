@@ -243,7 +243,7 @@ public class ImgLabeling< T, I extends IntegerType< I > >
 	@Override
 	public LabelingType< T > getType()
 	{
-		return new LabelingType<>( null, mapping, generation );
+		return new LabelingType<>( indexAccessible.getType(), mapping, generation );
 	}
 
 	@Override
