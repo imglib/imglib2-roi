@@ -33,15 +33,16 @@
  */
 package net.imglib2.roi.labeling;
 
-import gnu.trove.list.array.TIntArrayList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.AbstractEuclideanSpace;
 import net.imglib2.Cursor;
 import net.imglib2.Localizable;
@@ -72,12 +73,12 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 
 	private final LabelingType< T > type;
 
-	protected final ArrayList< FragmentProperties > indexToFragmentProperties;
+	protected final List< FragmentProperties > indexToFragmentProperties;
 
 	/**
 	 * Maps labels to {@link LabelRegionProperties} for all currently non-empty labels in the labeling.
 	 */
-	private final HashMap< T, LabelRegionProperties > labelToLabelRegionProperties;
+	private final Map< T, LabelRegionProperties > labelToLabelRegionProperties;
 
 	/**
 	 * Maps labels to {@link LabelRegionProperties} for all labels that were
@@ -89,7 +90,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 	 * into the live map, meaning that {@link LabelRegion}s that reference it
 	 * will be updated correctly.
 	 */
-	private final HashMap< T, LabelRegionProperties > allLabelToLabelRegionProperties;
+	private final Map< T, LabelRegionProperties > allLabelToLabelRegionProperties;
 
 	/**
 	 * maintains "canonical" {@link LabelRegion}s that were created by
@@ -101,7 +102,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 	 * to always create new {@link LabelRegion}s, which are not re-positioned or
 	 * have had their origin changed.
 	 */
-	private final HashMap< T, LabelRegion< T > > labelToLabelRegion;
+	private final Map< T, LabelRegion< T > > labelToLabelRegion;
 
 	private int expectedGeneration;
 
@@ -109,11 +110,11 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 	{
 		super( labeling.numDimensions() );
 		this.labeling = labeling;
-		type = Views.iterable( labeling ).firstElement();
-		indexToFragmentProperties = new ArrayList< FragmentProperties >();
-		labelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
-		allLabelToLabelRegionProperties = new HashMap< T, LabelRegionProperties >();
-		labelToLabelRegion = new HashMap< T, LabelRegion< T > >();
+		type = labeling.getType();
+		indexToFragmentProperties = new ArrayList<>();
+		labelToLabelRegionProperties = new HashMap<>();
+		allLabelToLabelRegionProperties = new HashMap<>();
+		labelToLabelRegion = new HashMap<>();
 		expectedGeneration = type.getGeneration() - 1;
 	}
 
@@ -123,7 +124,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 		LabelRegion< T > labelRegion = labelToLabelRegion.get( label );
 		if ( labelRegion == null )
 		{
-			labelRegion = new LabelRegion< T >( this, labelToLabelRegionProperties.get( label ), label );
+			labelRegion = new LabelRegion<>(this, labelToLabelRegionProperties.get(label), label);
 			labelToLabelRegion.put( label, labelRegion );
 		}
 		return labelRegion;
@@ -159,7 +160,7 @@ public class LabelRegions< T > extends AbstractEuclideanSpace implements Iterabl
 				LabelRegion< T > labelRegion = labelToLabelRegion.get( label );
 				if ( labelRegion == null )
 				{
-					labelRegion = new LabelRegion< T >( LabelRegions.this, labelToLabelRegionProperties.get( label ), label );
+					labelRegion = new LabelRegion<>(LabelRegions.this, labelToLabelRegionProperties.get(label), label);
 					labelToLabelRegion.put( label, labelRegion );
 				}
 				return labelRegion;
