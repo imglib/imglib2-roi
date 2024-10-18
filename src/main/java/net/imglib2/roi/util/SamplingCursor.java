@@ -63,12 +63,6 @@ public class SamplingCursor< T > extends AbstractConvertedCursor< Void, T >
 	@Override
 	public SamplingCursor< T > copy()
 	{
-		return new SamplingCursor< T >( source.copyCursor(), target.copyRandomAccess() );
-	}
-
-	@Override
-	public SamplingCursor< T > copyCursor()
-	{
-		return copy();
+		return new SamplingCursor<>( source.copy(), target.copy() );
 	}
 }

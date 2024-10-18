@@ -56,10 +56,4 @@ public class LabelRegionCursor extends IterationCodeListCursor
 	{
 		return new LabelRegionCursor( this );
 	}
-
-	@Override
-	public LabelRegionCursor copyCursor()
-	{
-		return copy();
-	}
 }
