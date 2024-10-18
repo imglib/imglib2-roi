@@ -111,10 +111,4 @@ public class IterationCodeListCursor extends AbstractLocalizable implements Curs
 	{
 		return new IterationCodeListCursor( this );
 	}
-
-	@Override
-	public IterationCodeListCursor copyCursor()
-	{
-		return copy();
-	}
 }
