@@ -65,7 +65,7 @@ public class IterationCodeCursor extends AbstractLocalizable implements Cursor< 
 
 	protected IterationCodeCursor( final IterationCodeCursor c )
 	{
-		super( c.position );
+		super( c.position.clone() );
 		iter = new IterationCodeIterator<>( c.iter, Point.wrap( position ) );
 	}
 
